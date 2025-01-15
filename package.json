@@ -1,0 +1,94 @@
+{
+  "name": "node-modules-inspector",
+  "type": "module",
+  "version": "0.0.0",
+  "packageManager": "pnpm@9.15.4",
+  "description": "CLI to check your project's ESM support status",
+  "author": "Anthony Fu <anthonyfu117@hotmail.com>",
+  "license": "MIT",
+  "funding": "https://github.com/sponsors/antfu",
+  "homepage": "https://github.com/antfu/node-modules-inspector#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/antfu/node-modules-inspector.git"
+  },
+  "bugs": "https://github.com/antfu/node-modules-inspector/issues",
+  "keywords": [],
+  "sideEffects": false,
+  "bin": "bin.mjs",
+  "files": [
+    "*.mjs",
+    "dist"
+  ],
+  "scripts": {
+    "build": "nuxi build && unbuild",
+    "dev": "nuxi dev",
+    "prepare": "nuxi prepare && npx simple-git-hooks",
+    "start": "node bin.mjs",
+    "prepack": "pnpm build",
+    "lint": "nuxi prepare && eslint .",
+    "test": "vitest",
+    "typecheck": "vue-tsc --noEmit"
+  },
+  "dependencies": {
+    "@nodelib/fs.walk": "catalog:",
+    "bundle-require": "catalog:",
+    "cac": "catalog:",
+    "chokidar": "catalog:",
+    "debug": "catalog:",
+    "esbuild": "catalog:",
+    "fast-glob": "catalog:",
+    "find-up": "catalog:",
+    "get-port-please": "catalog:",
+    "h3": "catalog:",
+    "mlly": "catalog:",
+    "mrmime": "catalog:",
+    "open": "catalog:",
+    "picocolors": "catalog:",
+    "ws": "catalog:"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "catalog:",
+    "@iconify-json/carbon": "catalog:",
+    "@iconify-json/file-icons": "catalog:",
+    "@iconify-json/logos": "catalog:",
+    "@iconify-json/ph": "catalog:",
+    "@iconify-json/simple-icons": "catalog:",
+    "@iconify-json/svg-spinners": "catalog:",
+    "@iconify-json/twemoji": "catalog:",
+    "@iconify-json/vscode-icons": "catalog:",
+    "@nuxt/eslint": "catalog:",
+    "@shikijs/langs-precompiled": "catalog:",
+    "@shikijs/transformers": "catalog:",
+    "@types/connect": "catalog:",
+    "@types/ws": "catalog:",
+    "@typescript-eslint/utils": "catalog:",
+    "@unocss/eslint-config": "catalog:",
+    "@unocss/nuxt": "catalog:",
+    "@vueuse/nuxt": "catalog:",
+    "eslint": "catalog:",
+    "floating-vue": "catalog:",
+    "fuse.js": "catalog:",
+    "lint-staged": "catalog:",
+    "minimatch": "catalog:",
+    "nuxt": "catalog:",
+    "nuxt-eslint-auto-explicit-import": "catalog:",
+    "shiki": "catalog:",
+    "simple-git-hooks": "catalog:",
+    "typescript": "catalog:",
+    "unbuild": "catalog:",
+    "vitest": "catalog:",
+    "vue-tsc": "catalog:"
+  },
+  "pnpm": {
+    "overrides": {
+      "nitropack": "catalog:"
+    }
+  },
+  "simple-git-hooks": {
+    "pre-commit": "npx lint-staged"
+  },
+  "lint-staged": {
+    "*": "eslint --fix"
+  }
+}
