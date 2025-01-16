@@ -1,4 +1,5 @@
-packages: []
+packages:
+  - 'packages/*'
 catalog:
   '@antfu/eslint-config': ^3.14.0
   '@eslint/config-array': ^0.19.1
