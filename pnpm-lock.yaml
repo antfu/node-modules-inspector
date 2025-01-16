@@ -33,9 +33,6 @@ catalogs:
     '@iconify-json/vscode-icons':
       specifier: ^1.2.10
       version: 1.2.10
-    '@nodelib/fs.walk':
-      specifier: ^3.0.1
-      version: 3.0.1
     '@nuxt/eslint':
       specifier: ^0.7.5
       version: 0.7.5
@@ -63,9 +60,6 @@ catalogs:
     '@vueuse/nuxt':
       specifier: ^12.4.0
       version: 12.4.0
-    bundle-require:
-      specifier: ^5.1.0
-      version: 5.1.0
     cac:
       specifier: ^6.7.14
       version: 6.7.14
@@ -84,9 +78,6 @@ catalogs:
     fast-glob:
       specifier: ^3.3.3
       version: 3.3.3
-    find-up:
-      specifier: ^7.0.0
-      version: 7.0.0
     floating-vue:
       specifier: ^5.2.2
       version: 5.2.2
@@ -152,12 +143,6 @@ importers:
 
   .:
     dependencies:
-      '@nodelib/fs.walk':
-        specifier: 'catalog:'
-        version: 3.0.1
-      bundle-require:
-        specifier: 'catalog:'
-        version: 5.1.0(esbuild@0.24.2)
       cac:
         specifier: 'catalog:'
         version: 6.7.14
@@ -173,9 +158,6 @@ importers:
       fast-glob:
         specifier: 'catalog:'
         version: 3.3.3
-      find-up:
-        specifier: 'catalog:'
-        version: 7.0.0
       get-port-please:
         specifier: 'catalog:'
         version: 3.1.2
