@@ -114,6 +114,8 @@ export async function listPackageDependencies(
   }
 
   return {
+    cwd: options.cwd,
+    packageManager: 'pnpm',
     packages,
   }
 }

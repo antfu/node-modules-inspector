@@ -11,7 +11,7 @@ import { stripBomTag } from './utils'
  *
  * - Set `module` to the resolved module type (cjs, esm, dual, faux, none).
  */
-export async function analyzePackage(pkg: PackageNode): Promise<ResolvedPackageNode> {
+export async function resolvePackage(pkg: PackageNode): Promise<ResolvedPackageNode> {
   const _pkg = pkg as unknown as ResolvedPackageNode
   if (_pkg.resolved)
     return _pkg
@@ -20,6 +20,9 @@ export async function analyzePackage(pkg: PackageNode): Promise<ResolvedPackageN
   _pkg.resolved = {
     module: analyzePackageModuleType(json),
     engines: json.engines,
+    license: json.license,
+    author: typeof json.author === 'string' ? json.author : json.author?.url,
+    repository: typeof json.repository === 'string' ? json.repository : json.repository?.url,
   }
   return _pkg
 }

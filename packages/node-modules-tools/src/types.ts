@@ -21,6 +21,8 @@ export interface ListPackageDependenciesOptions {
 }
 
 export interface ListPackageDependenciesResult {
+  cwd: string
+  packageManager: string
   packages: PackageNode[]
 }
 
@@ -54,7 +56,9 @@ export interface PackageNode {
 export interface ResolvedPackageNode extends PackageNode {
   resolved: {
     module: PackageModuleType
+    license?: string
+    author?: string
+    repository?: string
     engines?: Record<string, string>
-    sizeTarball?: number
   }
 }
