@@ -1,9 +1,9 @@
 import { fileURLToPath } from 'node:url'
 import { expect, it } from 'vitest'
-import { listPackages } from '../src'
+import { listPackageDependencies } from '../src'
 
 it('runs', async () => {
-  const list = await listPackages({
+  const list = await listPackageDependencies({
     cwd: fileURLToPath(new URL('..', import.meta.url)),
     depth: 25,
     monorepo: false,
