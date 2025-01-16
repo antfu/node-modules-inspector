@@ -1,7 +1,7 @@
 {
   "name": "node-modules-inspector",
   "type": "module",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "packageManager": "pnpm@9.15.4",
   "description": "A Node Modules Inspector",
   "author": "Anthony Fu <anthonyfu117@hotmail.com>",
