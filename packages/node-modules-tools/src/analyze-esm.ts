@@ -5,7 +5,7 @@
 import type { PackageJson } from 'pkg-types'
 import type { PackageModuleType } from './types'
 
-export function analyzePackageJson(pkgJson: PackageJson): PackageModuleType {
+export function analyzePackageModuleType(pkgJson: PackageJson): PackageModuleType {
   const { exports, main, type } = pkgJson
   let cjs: boolean | undefined
   let esm: boolean | undefined
@@ -41,15 +41,21 @@ export function analyzePackageJson(pkgJson: PackageJson): PackageModuleType {
     if (type === 'module' || (main && /\.mjs$/.test(main))) {
       esm = true
     }
-    else {
+    else if (main) {
       cjs = true
     }
+    // If main is not yet, it might be a type only/cli only package.
   }
 
-  /** @type {PackageModuleType} */
-  const style = esm && cjs ? 'dual' : esm ? 'esm' : fauxEsm ? 'faux' : 'cjs'
-
-  return style
+  if (esm && cjs)
+    return 'dual'
+  if (esm)
+    return 'esm'
+  if (fauxEsm)
+    return 'faux'
+  if (!esm && !cjs)
+    return 'none'
+  return 'cjs'
 
   /**
    * @param {unknown} value

@@ -1,5 +1,5 @@
 export type PackageModuleTypeSimple = 'cjs' | 'esm'
-export type PackageModuleType = 'cjs' | 'esm' | 'dual' | 'faux'
+export type PackageModuleType = 'cjs' | 'esm' | 'dual' | 'faux' | 'none'
 
 export interface ListPackageDependenciesOptions {
   /**
@@ -52,5 +52,9 @@ export interface PackageNode {
 }
 
 export interface ResolvedPackageNode extends PackageNode {
-  module: PackageModuleType
+  resolved: {
+    module: PackageModuleType
+    engines?: Record<string, string>
+    sizeTarball?: number
+  }
 }

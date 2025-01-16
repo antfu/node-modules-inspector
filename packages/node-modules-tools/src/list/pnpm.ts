@@ -67,8 +67,6 @@ export async function listPackageDependencies(
     directImporter: string | undefined,
     nestedImporter: string[],
   ): void {
-    if (_node.from.startsWith('@types'))
-      return
     const node = normalize(_node)
 
     // Update note information
