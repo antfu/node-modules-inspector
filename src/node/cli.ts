@@ -1,9 +1,9 @@
-import type { Payload } from '~~/shared/types'
+import type { ServerFunctionsDump } from '~~/shared/types'
 import { existsSync } from 'node:fs'
 import fs from 'node:fs/promises'
 import { relative, resolve } from 'node:path'
-import process from 'node:process'
 
+import process from 'node:process'
 import cac from 'cac'
 import fg from 'fast-glob'
 import { getPort } from 'get-port-please'
@@ -13,9 +13,7 @@ import { MARK_CHECK, MARK_INFO } from './constants'
 import { distDir } from './dirs'
 import { createHostServer } from './server'
 
-const cli = cac(
-  'node-modules-inspector',
-)
+const cli = cac('node-modules-inspector')
 
 cli
   .command('build', 'Build inspector with current config file for static hosting')
@@ -30,11 +28,9 @@ cli
     const cwd = process.cwd()
     const outDir = resolve(cwd, options.outDir)
 
-    const payload: Payload = {
-      meta: {
-        lastUpdate: Date.now(),
-        root: options.root,
-      },
+    const rpc = await import('./rpc').then(r => r.createServerFunctions())
+    const rpcDump: ServerFunctionsDump = {
+      listDependencies: await rpc.listDependencies(),
     }
 
     let baseURL = options.base
@@ -61,8 +57,7 @@ cli
     }
     await fs.mkdir(resolve(outDir, 'api'), { recursive: true })
 
-    payload.meta.root = ''
-    await fs.writeFile(resolve(outDir, 'api/payload.json'), JSON.stringify(payload, null, 2), 'utf-8')
+    await fs.writeFile(resolve(outDir, 'api/rpc-dump.json'), JSON.stringify(rpcDump, null, 2), 'utf-8')
 
     console.log(MARK_CHECK, `Built to ${relative(cwd, outDir)}`)
     console.log(MARK_INFO, `You can use static server like \`npx serve ${relative(cwd, outDir)}\` to serve the inspector`)

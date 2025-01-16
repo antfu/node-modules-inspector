@@ -2,7 +2,8 @@ import { defineBuildConfig } from 'unbuild'
 
 export default defineBuildConfig({
   entries: [
-    'src/cli.ts',
+    'src/node/cli.ts',
+    'src/node/dirs.ts',
   ],
   clean: false,
   rollup: {

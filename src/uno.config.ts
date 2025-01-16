@@ -1,3 +1,4 @@
+import { fileURLToPath } from 'node:url'
 import { createLocalFontProcessor } from '@unocss/preset-web-fonts/local'
 import {
   defineConfig,
@@ -64,7 +65,7 @@ export default defineConfig({
         mono: 'DM Mono',
       },
       processors: createLocalFontProcessor({
-        fontAssetsDir: './app/public/fonts',
+        fontAssetsDir: fileURLToPath(new URL('./app/public/fonts', import.meta.url)),
         fontServeBaseUrl: './fonts',
       }),
     }),

@@ -21,9 +21,9 @@
     "dist"
   ],
   "scripts": {
-    "build": "nuxi build && unbuild",
-    "dev": "nuxi dev",
-    "prepare": "nuxi prepare && npx simple-git-hooks",
+    "build": "nuxi build src && unbuild",
+    "dev": "pnpm run -r stub && nuxi dev src",
+    "prepare": "nuxi prepare src && npx simple-git-hooks",
     "start": "node bin.mjs",
     "prepack": "pnpm build",
     "lint": "nuxi prepare && eslint .",
@@ -32,15 +32,16 @@
     "typecheck": "vue-tsc --noEmit"
   },
   "dependencies": {
+    "birpc": "^2.0.19",
     "cac": "catalog:",
-    "chokidar": "catalog:",
     "debug": "catalog:",
-    "esbuild": "catalog:",
     "fast-glob": "catalog:",
+    "flatted": "^3.3.2",
     "get-port-please": "catalog:",
     "h3": "catalog:",
     "mlly": "catalog:",
     "mrmime": "catalog:",
+    "node-modules-tools": "workspace:*",
     "open": "catalog:",
     "picocolors": "catalog:",
     "ws": "catalog:"
@@ -75,6 +76,7 @@
     "simple-git-hooks": "catalog:",
     "typescript": "catalog:",
     "unbuild": "catalog:",
+    "vite-hot-client": "^2.0.4",
     "vitest": "catalog:",
     "vue-tsc": "catalog:"
   },

@@ -1,5 +1,5 @@
 import process from 'node:process'
-import { createWsServer } from '~~/src/ws'
+import { createWsServer } from '~~/node/ws'
 
 export default lazyEventHandler(async () => {
   const ws = await createWsServer({
@@ -7,6 +7,6 @@ export default lazyEventHandler(async () => {
   })
 
   return defineEventHandler(async () => {
-    return await ws.getData()
+    return await ws.getMetadata()
   })
 })

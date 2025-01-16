@@ -1,3 +1,5 @@
+import { fileURLToPath } from 'node:url'
+
 export default defineNuxtConfig({
   ssr: false,
 
@@ -7,6 +9,10 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     'nuxt-eslint-auto-explicit-import',
   ],
+
+  alias: {
+    'node-modules-tools': fileURLToPath(new URL('../packages/node-modules-tools/src/index.ts', import.meta.url)),
+  },
 
   srcDir: 'app',
 
@@ -67,6 +73,10 @@ export default defineNuxtConfig({
 
   devtools: {
     enabled: false,
+  },
+
+  typescript: {
+    includeWorkspace: true,
   },
 
   compatibilityDate: '2024-07-17',

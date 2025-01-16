@@ -34,7 +34,7 @@
   ],
   "scripts": {
     "build": "unbuild",
-    "dev": "unbuild --stub",
+    "stub": "unbuild --stub",
     "prepublishOnly": "nr build",
     "start": "tsx src/index.ts",
     "test": "vitest"
