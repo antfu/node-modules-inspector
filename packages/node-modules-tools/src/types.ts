@@ -1,5 +1,5 @@
 export type PackageModuleTypeSimple = 'cjs' | 'esm'
-export type PackageModuleType = 'cjs' | 'esm' | 'dual' | 'faux' | 'none'
+export type PackageModuleType = 'cjs' | 'esm' | 'dual' | 'faux' | 'types'
 
 export interface ListPackageDependenciesOptions {
   /**
