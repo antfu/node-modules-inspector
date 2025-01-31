@@ -1,0 +1,52 @@
+<script setup lang="ts">
+import type { ResolvedPackageNode } from 'node-modules-tools'
+import { selectedNode } from '../state/current'
+
+defineProps<{
+  pkg: ResolvedPackageNode
+}>()
+</script>
+
+<template>
+  <button
+    border="~ base rounded" p2 flex="~ col gap-2"
+    hover="bg-active"
+    @click="selectedNode = pkg"
+  >
+    <div font-mono text-left>
+      {{ pkg.name }}<span op50>@{{ pkg.version }}</span>
+    </div>
+    <div flex="~ gap-2 items-center" text-sm>
+      <ModuleTypeLabel :type="pkg.resolved.module" />
+      <template v-if="pkg.flatDependents.size">
+        <div flex="~ items-center gap-1">
+          <div i-ph-arrow-elbow-down-right-duotone />
+          <div op75>
+            {{ pkg.flatDependents.size }}
+          </div>
+        </div>
+        <span op25>·</span>
+      </template>
+
+      <template v-if="pkg.flatDependencies.size">
+        <div flex="~ items-center gap-1">
+          <div i-ph-lego-duotone />
+          <div op75>
+            {{ pkg.flatDependencies.size }}
+          </div>
+        </div>
+        <span op25>·</span>
+      </template>
+
+      <div op75>
+        {{ pkg.resolved.license }}
+      </div>
+      <template v-if="pkg.resolved.author">
+        <span op25>·</span>
+        <div op75>
+          {{ pkg.resolved.author?.replace(/\<.*\>/, '').replace(/\(.*\)/, '') }}
+        </div>
+      </template>
+    </div>
+  </button>
+</template>

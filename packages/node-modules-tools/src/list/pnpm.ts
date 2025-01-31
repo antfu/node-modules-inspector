@@ -1,6 +1,6 @@
 import type { PackageDependencyHierarchy } from '@pnpm/list'
 import type { ProjectManifest } from '@pnpm/types'
-import type { ListPackageDependenciesOptions, ListPackageDependenciesResult, PackageNode } from '../types'
+import type { ListPackageDependenciesOptions, ListPackageDependenciesRawResult, PackageNode } from '../types'
 import { x } from 'tinyexec'
 
 type RawPackageNode = Pick<ProjectManifest, 'description' | 'license' | 'author' | 'homepage'> & {
@@ -33,7 +33,7 @@ async function getDependenciesTree(options: ListPackageDependenciesOptions): Pro
 
 export async function listPackageDependencies(
   options: ListPackageDependenciesOptions,
-): Promise<ListPackageDependenciesResult> {
+): Promise<ListPackageDependenciesRawResult> {
   const tree = await getDependenciesTree(options)
   const specs = new Map<string, PackageNode>()
 

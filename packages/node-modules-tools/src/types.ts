@@ -20,10 +20,14 @@ export interface ListPackageDependenciesOptions {
   traverseFilter?: (node: PackageNode) => boolean
 }
 
-export interface ListPackageDependenciesResult {
+export interface ListPackageDependenciesRawResult {
   cwd: string
   packageManager: string
   packages: PackageNode[]
+}
+
+export interface ListPackageDependenciesResult extends ListPackageDependenciesRawResult {
+  packages: ResolvedPackageNode[]
 }
 
 export interface PackageNode {

@@ -1,7 +1,7 @@
 import type { ClientFunctions, Metadata, ServerFunctions } from '~~/shared/types'
 import { useDebounce } from '@vueuse/core'
 import { createBirpc } from 'birpc'
-import { parse, stringify } from 'flatted'
+import { parse, stringify } from 'structured-clone-es'
 import { ref, shallowRef } from 'vue'
 
 export const wsConnecting = ref(false)

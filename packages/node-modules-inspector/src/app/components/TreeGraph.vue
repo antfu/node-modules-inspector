@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import type { ListPackageDependenciesResult } from 'node-modules-tools'
+import type { ListPackageDependenciesRawResult } from 'node-modules-tools'
 import { hierarchy } from 'd3-hierarchy'
 import { onMounted, useTemplateRef } from 'vue'
 
 const props = defineProps<{
-  data: ListPackageDependenciesResult
+  data: ListPackageDependenciesRawResult
 }>()
 
 const el = useTemplateRef<HTMLDivElement>('el')
