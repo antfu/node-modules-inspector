@@ -79,21 +79,20 @@ const duplicated = computed(() => {
       />
     </div>
 
-    <div v-if="pkg.flatDependencies.size" mt5 flex="~ col gap-1">
+    <div mt5 flex="~ col gap-1">
       <SubTitle>
         Dependencies ({{ pkg.dependencies.size }} / {{ pkg.flatDependencies.size }})
       </SubTitle>
       <PackageDependentTree
+        v-if="pkg.flatDependencies.size"
         of-auto
         :currents="Array.from(pkg.dependencies).map(getPackageFromSpec).filter(x => !!x)"
         :list="Array.from(pkg.flatDependencies).map(getPackageFromSpec).filter(x => !!x)"
         type="dependencies"
       />
-      <!-- <div flex="~ col gap-1" of-auto>
-        <template v-for="spec of pkg.flatDependencies" :key="spec">
-          <PackageInfoList :pkg="getPackageFromSpec(spec)" />
-        </template>
-      </div> -->
+      <div v-else op25 italic>
+        No dependencies
+      </div>
     </div>
   </div>
 </template>

@@ -6,7 +6,7 @@ const props = withDefaults(defineProps<{
   currents?: ResolvedPackageNode[]
   list?: ResolvedPackageNode[]
   type: 'dependencies' | 'dependents'
-  known?: string[]
+  seen?: string[]
   depth?: number
   maxDepth?: number
 }>(), {
@@ -14,16 +14,25 @@ const props = withDefaults(defineProps<{
   maxDepth: 6,
 })
 
-const known = computed(() => {
-  return [...props.known || [], ...props.currents?.map(i => i.spec) || []]
+const seen = computed(() => {
+  return [...props.seen || [], ...props.currents?.map(i => i.spec) || []]
 })
 
 const tree = computed(() => {
   return props.currents
-    ?.map((pkg) => {
+    ?.filter(x => !!x)
+    .map((pkg) => {
       return {
         pkg,
-        children: props.list?.filter(i => !known.value.includes(i.spec) && i[props.type].has(pkg.spec)),
+        children: props.list?.filter((i) => {
+          if (seen.value.includes(i.spec))
+            return false
+          if (props.type === 'dependents')
+            return i.dependents.has(pkg.spec)
+          else if (props.type === 'dependencies')
+            return pkg.dependencies.has(i.spec)
+          return false
+        }),
       }
     })
     .sort((a, b) => (b.children?.length || 0) - (a.children?.length || 0))
@@ -40,7 +49,7 @@ const tree = computed(() => {
         :currents="children"
         :list="props.list"
         :type="props.type"
-        :known="known"
+        :seen="seen"
         :depth="props.depth + 1"
         :max-depth="props.maxDepth"
       />

@@ -15,7 +15,7 @@ duplicated.forEach((packages) => {
 <template>
   <div pt-14 pl-100>
     <SubTitle>Packages with multiple versions</SubTitle>
-    <div grid="~ cols-minmax-400px gap-2">
+    <div grid="~ cols-minmax-250px gap-2">
       <div
         v-for="pkgs of duplicated" :key="pkgs[0].spec"
         border="~ base rounded-lg" px3 py2 bg-glass
