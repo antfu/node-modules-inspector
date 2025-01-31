@@ -9,7 +9,7 @@ const colors = {
   esm: 'bg-green:10 text-green',
   dual: 'bg-teal:10 text-teal',
   cjs: 'bg-yellow:10 text-yellow',
-  faux: 'bg-orange:10 text-orange',
+  faux: 'bg-lime:10 text-lime',
   dts: 'bg-blue:10 text-blue',
 }
 </script>

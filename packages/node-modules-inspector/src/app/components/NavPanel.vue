@@ -74,7 +74,11 @@ const tabsMeta = [
         <div i-ph-sun-duotone dark:i-ph-moon-duotone text-xl />
       </button>
     </div>
-    <div v-if="selectedNode || isSettingOpen" bg-glass rounded-1em border border-base shadow p5 flex-auto of-y-auto>
+    <div
+      v-if="selectedNode || isSettingOpen"
+      bg-glass rounded-1em border border-base shadow p5 of-y-auto
+      h-max max-h-full
+    >
       <div v-if="isSettingOpen">
         <div>Settings</div>
       </div>
