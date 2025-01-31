@@ -14,11 +14,11 @@ import {
 export default defineConfig({
   shortcuts: {
     'color-base': 'color-neutral-800 dark:color-neutral-300',
-    'bg-base': 'bg-white dark:bg-#222',
-    'border-base': 'border-#8884',
+    'bg-base': 'bg-white dark:bg-#111',
+    'border-base': 'border-#8882',
 
-    'bg-tooltip': 'bg-white:75 dark:bg-#222:75 backdrop-blur-8',
-    'bg-glass': 'bg-white:75 dark:bg-#222:75 backdrop-blur-5',
+    'bg-tooltip': 'bg-white:75 dark:bg-#111:75 backdrop-blur-8',
+    'bg-glass': 'bg-white:75 dark:bg-#111:75 backdrop-blur-5',
     'bg-code': 'bg-gray5:5',
     'bg-hover': 'bg-primary-400:5',
 

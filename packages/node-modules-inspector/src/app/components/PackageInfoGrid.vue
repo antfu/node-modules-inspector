@@ -9,7 +9,8 @@ defineProps<{
 
 <template>
   <button
-    border="~ base rounded" p2 flex="~ col gap-2"
+    border="~ base rounded-lg" px3 py2 flex="~ col gap-2"
+    bg-glass
     hover="bg-active"
     @click="selectedNode = pkg"
   >

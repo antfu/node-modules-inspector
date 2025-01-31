@@ -26,9 +26,9 @@ defineProps<{
     </div>
 
     <div v-if="pkg.flatDependents.size" mt5 flex="~ col gap-1">
-      <div op50>
+      <SubTitle>
         Used by ({{ pkg.dependents.size }} / {{ pkg.flatDependents.size }})
-      </div>
+      </SubTitle>
       <PackageDependentTree
         of-auto
         :currents="Array.from(pkg.flatDependents).map(getPackageFromSpec).filter(x => !!x).filter(i => i?.nestedLevels.has(1))"
@@ -38,9 +38,9 @@ defineProps<{
     </div>
 
     <div v-if="pkg.flatDependencies.size" mt5 flex="~ col gap-1">
-      <div op50>
+      <SubTitle>
         Dependencies ({{ pkg.dependencies.size }} / {{ pkg.flatDependencies.size }})
-      </div>
+      </SubTitle>
       <PackageDependentTree
         of-auto
         :currents="Array.from(pkg.dependencies).map(getPackageFromSpec).filter(x => !!x)"

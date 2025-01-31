@@ -14,14 +14,14 @@ duplicated.forEach((packages) => {
 
 <template>
   <div pt-14 pl-100>
-    <h1>Packages with multiple versions</h1>
+    <SubTitle>Packages with multiple versions</SubTitle>
     <div grid="~ cols-minmax-400px gap-2">
       <div
         v-for="pkgs of duplicated" :key="pkgs[0].spec"
-        border="~ base rounded" p2
+        border="~ base rounded-lg" px3 py2 bg-glass
         flex="~ col gap-2 "
       >
-        <h2 font-mono text-primary>
+        <h2 font-mono>
           {{ pkgs[0].name }}
         </h2>
         <div flex="~ col gap-2 items-start">
@@ -31,7 +31,7 @@ duplicated.forEach((packages) => {
             font-mono hover="bg-active"
             @click="selectedNode = pkg"
           >
-            v{{ pkg.version }}
+            <span op75>v{{ pkg.version }}</span>
             <ModuleTypeLabel :type="pkg.resolved.module" />
           </button>
         </div>

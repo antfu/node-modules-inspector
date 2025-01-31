@@ -4,29 +4,28 @@ html, body , #__nuxt{
   padding: 0;
 }
 
-summary::-webkit-details-marker {
-  display: none;
-}
 
-body {
-  --at-apply: bg-base color-base font-sans;
+html {
+  background-image: url('/dot-grid-light.png');
+  background-size: 50px;
+  background-repeat: repeat;
 }
 
 html.dark {
   color-scheme: dark;
+  background-color: black;
+  background-image: url('/dot-grid-dark.png');
 }
 
-.shiki {
-  font-size: 15px;
+html {
+  --at-apply: bg-base font-sans;
+}
+body {
+  --at-apply: color-base;
 }
 
-.shiki span.line.muted {
-  font-style: italic;
-  opacity: 75%;
-}
-
-.font-mono, [font-mono=""] {
-  font-variant-ligatures: none;
+summary::-webkit-details-marker {
+  display: none;
 }
 
 /* Overrides Floating Vue */
