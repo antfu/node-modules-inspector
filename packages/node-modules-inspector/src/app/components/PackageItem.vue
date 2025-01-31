@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { ResolvedPackageNode } from 'node-modules-tools'
+import { selectedNode } from '../state/current'
 
 defineProps<{
   pkg: ResolvedPackageNode
@@ -15,7 +16,11 @@ const colors = {
 </script>
 
 <template>
-  <div border="~ base rounded" p2 flex="~ col gap-2">
+  <button
+    border="~ base rounded" p2 flex="~ col gap-2"
+    hover="bg-active"
+    @click="selectedNode = pkg"
+  >
     <div font-mono>
       {{ pkg.name }}<span op50>@{{ pkg.version }}</span>
     </div>
@@ -30,5 +35,5 @@ const colors = {
         {{ pkg.resolved.author?.replace(/\<.*\>/, '').replace(/\(.*\)/, '') }}
       </div>
     </div>
-  </div>
+  </button>
 </template>

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useAsyncState } from '@vueuse/core'
-import PackageItem from '~/components/PackageItem.vue'
 import { rpc } from '../composables/rpc'
 
 const { state } = useAsyncState(() => rpc.listDependencies(), null)
@@ -8,6 +7,8 @@ const { state } = useAsyncState(() => rpc.listDependencies(), null)
 
 <template>
   <div>
+    <NavPanel />
+    <SearchPanel />
     <TreeGraph v-if="state" :data="state" />
     <div grid="~ cols-minmax-400px gap-2">
       <PackageItem
