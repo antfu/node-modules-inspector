@@ -7,4 +7,4 @@ dist
 .idea/
 .DS_Store
 .node-modules-inspector
-src/app/public/fonts
+packages/node-modules-inspector/src/app/public/fonts

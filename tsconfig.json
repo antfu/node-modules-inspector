@@ -1,5 +1,5 @@
 {
-  "extends": "./src/.nuxt/tsconfig.json",
+  "extends": "./packages/node-modules-inspector/src/.nuxt/tsconfig.json",
   "compilerOptions": {
     "moduleResolution": "Bundler",
     "resolveJsonModule": true,

@@ -11,7 +11,7 @@ export default defineNuxtConfig({
   ],
 
   alias: {
-    'node-modules-tools': fileURLToPath(new URL('../packages/node-modules-tools/src/index.ts', import.meta.url)),
+    'node-modules-tools': fileURLToPath(new URL('../../node-modules-tools/src/index.ts', import.meta.url)),
   },
 
   srcDir: 'app',
