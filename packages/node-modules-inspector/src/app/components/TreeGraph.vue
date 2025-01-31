@@ -13,7 +13,7 @@ onMounted(() => {
   const { data } = props
   const _root = hierarchy({
     name: 'root',
-    children: data.packages.map(pkg => ({
+    children: Array.from(data.packages.values()).map(pkg => ({
       name: pkg.name,
       value: 1,
     })),

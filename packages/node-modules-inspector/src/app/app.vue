@@ -3,6 +3,7 @@ import { useHead } from '@unhead/vue'
 import { wsConnecting } from './composables/rpc'
 import { fetchListDependenciesData, packageData } from './state/data'
 
+import { setupQuery } from './state/query'
 import 'floating-vue/dist/style.css'
 import './styles/global.css'
 import './composables/dark'
@@ -11,6 +12,7 @@ useHead({
   title: 'Node Modules Inspector',
 })
 
+setupQuery()
 fetchListDependenciesData()
 </script>
 

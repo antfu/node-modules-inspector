@@ -1,4 +1,12 @@
-import type { ResolvedPackageNode } from 'node-modules-tools'
-import { shallowRef } from 'vue'
+import { computed } from 'vue'
+import { getPackageFromSpec } from './data'
+import { query } from './query'
 
-export const selectedNode = shallowRef<null | ResolvedPackageNode>(null)
+export const selectedNode = computed({
+  get() {
+    return query.selected ? getPackageFromSpec(query.selected) : undefined
+  },
+  set(v) {
+    query.selected = v?.spec
+  },
+})

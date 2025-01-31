@@ -12,10 +12,10 @@ async function getPackageJsonPath(pkg: string) {
 
 it('types only', async () => {
   expect(analyzePackageModuleType(await getPackageJsonPath('type-fest')))
-    .toEqual('none')
+    .toEqual('dts')
 
   expect(analyzePackageModuleType(await getPackageJsonPath('@types/node')))
-    .toEqual('none')
+    .toEqual('dts')
 })
 
 it('dual', async () => {

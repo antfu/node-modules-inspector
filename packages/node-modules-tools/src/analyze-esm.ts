@@ -54,7 +54,7 @@ export function analyzePackageModuleType(pkgJson: PackageJson): PackageModuleTyp
   if (fauxEsm)
     return 'faux'
   if (!esm && !cjs && !pkgJson.main && !pkgJson.exports && pkgJson.types)
-    return 'types'
+    return 'dts'
   return 'cjs'
 
   /**

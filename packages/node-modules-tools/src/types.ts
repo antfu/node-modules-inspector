@@ -1,5 +1,5 @@
 export type PackageModuleTypeSimple = 'cjs' | 'esm'
-export type PackageModuleType = 'cjs' | 'esm' | 'dual' | 'faux' | 'types'
+export type PackageModuleType = 'cjs' | 'esm' | 'dual' | 'faux' | 'dts'
 
 export interface ListPackageDependenciesOptions {
   /**
@@ -23,11 +23,11 @@ export interface ListPackageDependenciesOptions {
 export interface ListPackageDependenciesRawResult {
   cwd: string
   packageManager: string
-  packages: PackageNode[]
+  packages: Map<string, PackageNode>
 }
 
 export interface ListPackageDependenciesResult extends ListPackageDependenciesRawResult {
-  packages: ResolvedPackageNode[]
+  packages: Map<string, ResolvedPackageNode>
 }
 
 export interface PackageNode {

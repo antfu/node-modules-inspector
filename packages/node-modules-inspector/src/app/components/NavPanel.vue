@@ -1,10 +1,21 @@
 <script setup lang="ts">
 import { useRoute } from '#app/composables/router'
-import { ref } from 'vue'
+import { computed } from 'vue'
+import { query } from '~/state/query'
 import { selectedNode } from '../state/current'
 
 const route = useRoute()
-const isSettingOpen = ref(false)
+const isSettingOpen = computed({
+  get() {
+    return query.selected === '~settings'
+  },
+  set(value) {
+    if (!value && query.selected === '~settings')
+      query.selected = ''
+    else if (value)
+      query.selected = '~settings'
+  },
+})
 
 const tabsMeta = [
   {
@@ -32,16 +43,16 @@ const tabsMeta = [
       flex="~ items-center gap-1" w-max
     >
       <template v-for="tab of tabsMeta" :key="tab.value">
-        <NuxtLink
+        <RouterLink
           w-10 h-10 rounded-full hover:bg-active
           flex="~ items-center justify-center"
           :title="tab.name"
           :class="(route.path.startsWith(tab.path) && !isSettingOpen) ? 'text-primary' : 'op50'"
-          :to="tab.path"
+          :to="{ path: tab.path, query: route.query }"
           @click="isSettingOpen = false"
         >
           <div :class="tab.icon" text-xl />
-        </NuxtLink>
+        </RouterLink>
       </template>
       <div w-1px h-20px mx2 border="l base" />
       <button

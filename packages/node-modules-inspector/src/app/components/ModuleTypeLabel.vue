@@ -10,12 +10,12 @@ const colors = {
   dual: 'bg-teal:10 text-teal',
   cjs: 'bg-yellow:10 text-yellow',
   faux: 'bg-orange:10 text-orange',
-  types: 'bg-blue:10 text-blue',
+  dts: 'bg-blue:10 text-blue',
 }
 </script>
 
 <template>
-  <div :class="colors[type]" px1 rounded w-12 text-sm flex-none text-center>
+  <div :class="colors[type]" px1 rounded w-11 text-sm flex-none text-center>
     {{ type.toUpperCase() }}
   </div>
 </template>

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { ResolvedPackageNode } from 'node-modules-tools'
 import { getPackageFromSpec } from '~/state/data'
-import PackageInfoList from './PackageInfoList.vue'
 
 defineProps<{
   pkg: ResolvedPackageNode
@@ -28,24 +27,31 @@ defineProps<{
 
     <div v-if="pkg.flatDependents.size" mt5 flex="~ col gap-1">
       <div op50>
-        Depended by ({{ pkg.flatDependents.size }})
+        Used by ({{ pkg.dependents.size }} / {{ pkg.flatDependents.size }})
       </div>
-      <div flex="~ col gap-1" of-auto>
-        <template v-for="spec of pkg.flatDependents" :key="spec">
-          <PackageInfoList :pkg="getPackageFromSpec(spec)" />
-        </template>
-      </div>
+      <PackageDependentTree
+        of-auto
+        :currents="Array.from(pkg.flatDependents).map(getPackageFromSpec).filter(x => !!x).filter(i => i?.nestedLevels.has(1))"
+        :list="Array.from(pkg.flatDependents).map(getPackageFromSpec).filter(x => !!x)"
+        type="dependents"
+      />
     </div>
 
     <div v-if="pkg.flatDependencies.size" mt5 flex="~ col gap-1">
       <div op50>
-        Dependencies ({{ pkg.flatDependencies.size }})
+        Dependencies ({{ pkg.dependencies.size }} / {{ pkg.flatDependencies.size }})
       </div>
-      <div flex="~ col gap-1" of-auto>
+      <PackageDependentTree
+        of-auto
+        :currents="Array.from(pkg.dependencies).map(getPackageFromSpec).filter(x => !!x)"
+        :list="Array.from(pkg.flatDependencies).map(getPackageFromSpec).filter(x => !!x)"
+        type="dependencies"
+      />
+      <!-- <div flex="~ col gap-1" of-auto>
         <template v-for="spec of pkg.flatDependencies" :key="spec">
           <PackageInfoList :pkg="getPackageFromSpec(spec)" />
         </template>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>

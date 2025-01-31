@@ -35,11 +35,11 @@ export async function listPackageDependencies(
   options: ListPackageDependenciesOptions,
 ): Promise<ListPackageDependenciesRawResult> {
   const tree = await getDependenciesTree(options)
-  const specs = new Map<string, PackageNode>()
+  const packages = new Map<string, PackageNode>()
 
-  const map = new WeakMap<RawPackageNode, PackageNode>()
+  const mapNormalize = new WeakMap<RawPackageNode, PackageNode>()
   function normalize(raw: RawPackageNode): PackageNode {
-    let node = map.get(raw)
+    let node = mapNormalize.get(raw)
     if (node)
       return node
     node = {
@@ -56,24 +56,22 @@ export async function listPackageDependencies(
       prod: false,
       optional: false,
     }
-    map.set(raw, node)
+    mapNormalize.set(raw, node)
     return node
   }
 
   function traverse(
-    _node: RawPackageNode,
+    raw: RawPackageNode,
     level: number,
     mode: 'dev' | 'prod' | 'optional',
     directImporter: string | undefined,
-    nestedImporter: string[],
-  ): void {
-    const node = normalize(_node)
+  ): PackageNode {
+    const node = normalize(raw)
 
     // Update note information
-    if (directImporter)
+    if (directImporter) {
       node.dependents.add(directImporter)
-    for (const im of nestedImporter)
-      node.flatDependents.add(im)
+    }
     node.nestedLevels.add(level)
     if (mode === 'dev')
       node.dev = true
@@ -84,32 +82,26 @@ export async function listPackageDependencies(
 
     // Filter out node
     if (options.traverseFilter?.(node) === false)
-      return
+      return node
 
-    if (specs.has(node.spec))
-      return
-    specs.set(node.spec, node)
-    for (const dep of Object.values(_node.dependencies || {})) {
-      traverse(dep, level + 1, mode, node.spec, [...nestedImporter, node.spec])
+    if (packages.has(node.spec))
+      return node
+
+    packages.set(node.spec, node)
+    for (const dep of Object.values(raw.dependencies || {})) {
+      const resolvedDep = traverse(dep, level + 1, mode, node.spec)
+      node.dependencies.add(resolvedDep.spec)
     }
+
+    return node
   }
 
   for (const pkg of tree) {
     for (const dep of Object.values(pkg.dependencies || {})) {
-      traverse(dep, 1, 'prod', undefined, [])
+      traverse(dep, 1, 'prod', undefined)
     }
     for (const dep of Object.values(pkg.devDependencies || {})) {
-      traverse(dep, 1, 'dev', undefined, [])
-    }
-  }
-
-  const packages = [...specs.values()].sort((a, b) => a.spec.localeCompare(b.spec))
-
-  for (const pkg of packages) {
-    for (const dep of pkg.flatDependents) {
-      const node = specs.get(dep)
-      if (node)
-        node.flatDependencies.add(pkg.spec)
+      traverse(dep, 1, 'dev', undefined)
     }
   }
 
