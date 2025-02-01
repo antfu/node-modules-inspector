@@ -1,19 +1,18 @@
 <script setup lang="ts">
-import type { ListPackageDependenciesRawResult } from 'node-modules-tools'
+import type { ResolvedPackageNode } from 'node-modules-tools'
 import { hierarchy } from 'd3-hierarchy'
 import { onMounted, useTemplateRef } from 'vue'
 
 const props = defineProps<{
-  data: ListPackageDependenciesRawResult
+  packages: ResolvedPackageNode[]
 }>()
 
 const el = useTemplateRef<HTMLDivElement>('el')
 
 onMounted(() => {
-  const { data } = props
   const _root = hierarchy({
     name: 'root',
-    children: Array.from(data.packages.values()).map(pkg => ({
+    children: props.packages.map(pkg => ({
       name: pkg.name,
       value: 1,
     })),

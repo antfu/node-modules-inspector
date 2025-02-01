@@ -76,7 +76,7 @@ const tabsMeta = [
     </div>
     <div
       v-if="selectedNode || isSettingOpen"
-      bg-glass rounded-1em border border-base shadow p5 of-y-auto
+      bg-glass rounded-1em border border-base shadow of-y-auto
       h-max max-h-full
     >
       <div v-if="isSettingOpen">
