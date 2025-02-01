@@ -17,7 +17,7 @@ defineProps<{
     <div font-mono text-left>
       {{ pkg.name }}<span op50>@{{ pkg.version }}</span>
     </div>
-    <div flex="~ gap-2 items-center" text-sm>
+    <div flex="~ wrap gap-2 items-center" text-sm>
       <ModuleTypeLabel :type="pkg.resolved.module" />
       <template v-if="pkg.flatDependents.size">
         <div flex="~ items-center gap-1">

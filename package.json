@@ -15,6 +15,7 @@
   "devDependencies": {
     "@antfu/eslint-config": "catalog:",
     "@iconify-json/carbon": "catalog:",
+    "@iconify-json/catppuccin": "^1.2.8",
     "@iconify-json/file-icons": "catalog:",
     "@iconify-json/logos": "catalog:",
     "@iconify-json/ph": "catalog:",

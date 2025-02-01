@@ -79,9 +79,7 @@ const tabsMeta = [
       bg-glass rounded-1em border border-base shadow of-y-auto
       h-max max-h-full
     >
-      <div v-if="isSettingOpen">
-        <div>Settings</div>
-      </div>
+      <SettingsPanel v-if="isSettingOpen" />
       <PackageInfoDetailed
         v-else-if="selectedNode"
         :pkg="selectedNode"

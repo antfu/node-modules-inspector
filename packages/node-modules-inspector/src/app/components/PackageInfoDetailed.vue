@@ -32,7 +32,7 @@ const duplicated = computed(() => {
     </button>
 
     <div flex="~ col gap-2" p5>
-      <div font-mono text-2xl flex="~ items-center gap-2">
+      <div font-mono text-2xl flex="~ wrap items-center gap-2" pr6>
         <span>{{ pkg.name }}</span>
         <ModuleTypeLabel text-sm :type="pkg.resolved.module" />
       </div>
@@ -61,16 +61,27 @@ const duplicated = computed(() => {
           </template>
         </VMenu>
       </div>
-      <div>
-        {{ pkg.resolved.license }}
-      </div>
-      <div>
-        {{ pkg.resolved.author?.replace(/\<.*\>/, '').replace(/\(.*\)/, '') }}
+      <div flex="~ gap-2 wrap items-center">
+        <span>{{ pkg.resolved.license }}</span>
+        <span op50>·</span>
+        <template v-if="pkg.resolved.author">
+          <span>
+            {{ pkg.resolved.author?.replace(/\<.*\>/, '').replace(/\(.*\)/, '') }}
+          </span>
+          <span op50>·</span>
+        </template>
+        <NuxtLink
+          :to="`https://www.npmjs.com/package/${pkg.name}/v/${pkg.version}`"
+          title="Open on NPM"
+          w-7 h-7 rounded-full hover:bg-hover flex
+        >
+          <div i-catppuccin-npm light="filter-invert-100 filter-hue-rotate-180 filter-brightness-80" ma />
+        </NuxtLink>
       </div>
     </div>
 
     <div flex="~ col gap-1">
-      <SubTitle px1 @click="settings.deepDependentsTree = !settings.deepDependentsTree">
+      <SubTitle px1 select-none @click="settings.deepDependentsTree = !settings.deepDependentsTree">
         <button
           w-5 h-5 rounded hover:bg-active flex="~ items-center justify-center"
           :class="pkg.flatDependents.size !== pkg.dependents.size ? '' : 'op0'"
@@ -96,7 +107,7 @@ const duplicated = computed(() => {
     </div>
 
     <div mb5 flex="~ col gap-1">
-      <SubTitle px1 @click="settings.deepDependenciesTree = !settings.deepDependenciesTree">
+      <SubTitle px1 select-none @click="settings.deepDependenciesTree = !settings.deepDependenciesTree">
         <button
           w-5 h-5 rounded hover:bg-active flex="~ items-center justify-center"
           :class="pkg.flatDependencies.size === pkg.dependencies.size ? 'op0' : ''"
