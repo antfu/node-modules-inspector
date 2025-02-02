@@ -25,7 +25,7 @@ export default defineConfig({
 
     'color-active': 'color-primary-600 dark:color-primary-400',
     'border-active': 'border-primary-600/25 dark:border-primary-400/25',
-    'bg-active': 'bg-gray:7',
+    'bg-active': 'bg-#8881',
 
     'btn-action': 'border border-base rounded flex gap-2 items-center px2 py1 op75 hover:op100 hover:bg-hover',
     'btn-action-sm': 'btn-action text-sm',

@@ -36,8 +36,7 @@ fetchListDependenciesData()
     </div>
   </div>
   <div v-else>
-    <NavPanel />
-    <SearchPanel />
+    <PanelNav />
     <NuxtPage />
   </div>
 </template>

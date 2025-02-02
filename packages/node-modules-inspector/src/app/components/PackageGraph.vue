@@ -34,6 +34,9 @@ const NODE_HEIGHT = 30
 const NODE_MARGIN = 100
 
 function calculateGraph() {
+  width.value = window.innerWidth
+  height.value = window.innerHeight
+
   const packageMap = new Map<string, PackageNode>(props.packages.map(x => [x.spec, x]))
 
   // Top-level packages are those that are not dependents of any other filtered package
@@ -114,8 +117,6 @@ function handleDragingScroll() {
   let x = 0
   let y = 0
   useEventListener(el, 'mousedown', (e) => {
-    if (Array.from(e.composedPath()).some(x => (x as HTMLDivElement).tagName?.toLowerCase() === 'button'))
-      return
     isDown = true
     x = el.value!.scrollLeft + e.pageX
     y = el.value!.scrollTop + e.pageY

@@ -6,11 +6,13 @@ export interface ServerFunctions {
   openInFinder: (filename: string) => void
 }
 
+export type RemoveVoidKeysFromObject<T> = { [K in keyof T]: T[K] extends void ? never : K } extends { [_ in keyof T]: never } ? T : { [K in keyof T as T[K] extends void ? never : K]: T[K] }
+
 export interface ClientFunctions {}
 
-export type ServerFunctionsDump = {
+export type ServerFunctionsDump = RemoveVoidKeysFromObject<{
   [K in keyof ServerFunctions]: Awaited<ReturnType<ServerFunctions[K]>>
-}
+}>
 
 export interface Metadata {
   cwd: string

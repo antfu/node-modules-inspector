@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { packageData } from '~/state/data'
-import { version } from '../../../package.json'
+import { version } from '../../../../package.json'
 </script>
 
 <template>

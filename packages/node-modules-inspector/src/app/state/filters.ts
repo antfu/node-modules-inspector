@@ -39,6 +39,7 @@ export const filteredPackages = computed(() => Array.from((function *() {
       continue
     if (debouncedSearch.value && !pkg.name.includes(debouncedSearch.value))
       continue
+    // TODO: better excludes
     if (filters.excludes && filters.excludes.some(i => pkg.name.includes(i)))
       continue
     if (filters.sourceType) {
