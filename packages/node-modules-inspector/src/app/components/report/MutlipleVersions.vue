@@ -2,6 +2,7 @@
 import { compareSemver } from '~~/shared/utils'
 import { selectedNode } from '~/state/current'
 import { packageVersionsMap } from '~/state/data'
+import { settings } from '~/state/settings'
 
 const duplicated = Array.from(packageVersionsMap.values())
   .filter(packages => packages.length > 1)
@@ -32,7 +33,7 @@ duplicated.forEach((packages) => {
           @click="selectedNode = pkg"
         >
           <span op75 flex-auto text-left>v{{ pkg.version }}</span>
-          <ModuleTypeLabel :pkg :badge="false" text-xs />
+          <ModuleTypeLabel v-if="!settings.moduleTypeHide" :pkg :badge="false" text-xs />
         </button>
       </div>
     </div>

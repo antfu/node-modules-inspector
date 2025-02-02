@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { packageData } from '~/state/data'
+import { filteredPackages } from '~/state/filters'
 import { version } from '../../../../package.json'
 </script>
 
@@ -27,6 +28,9 @@ import { version } from '../../../../package.json'
         <div i-catppuccin-java-class icon-catppuccin flex-none />
         <span>{{ packageData.packages.size }} packages</span>
       </div>
+    </div>
+    <div>
+      <ModuleTypePercentage :packages="filteredPackages" :rounded="false" />
     </div>
     <div border="t base" flex="~ gap-1.1 items-center" p3 pl5 pr4 text-hex-888e>
       Made with

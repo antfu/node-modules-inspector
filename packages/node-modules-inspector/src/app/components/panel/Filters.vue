@@ -41,7 +41,8 @@ const moduleTypes = Object.fromEntries(
 
 <template>
   <div>
-    <div flex="~ col gap-4" p4>
+    <PanelSettings />
+    <div flex="~ col gap-4" p4 border="t base">
       <OptionItem title="Dependency Source" description="Filter by source type of the dependency">
         <OptionSelectGroup
           v-model="filters.sourceType"

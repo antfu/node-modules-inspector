@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
 import { selectedNode } from '../state/current'
+import { settings } from '../state/settings'
 
 defineProps<{
   pkg?: PackageNode
@@ -15,7 +16,7 @@ defineProps<{
     hover="bg-active"
     @click="selectedNode = pkg"
   >
-    <ModuleTypeLabel :pkg />
+    <ModuleTypeLabel v-if="!settings.moduleTypeHide" :pkg />
     <div font-mono>
       {{ pkg.name }}<span op50>@{{ pkg.version }}</span>
     </div>

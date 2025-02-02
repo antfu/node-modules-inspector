@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
 import { selectedNode } from '../../state/current'
+import { settings } from '../../state/settings'
 
 defineProps<{
   pkg?: PackageNode
@@ -32,7 +33,10 @@ const classesInner = {
     >
       <span>{{ pkg.name }}</span>
       <span font-mono op50>@{{ pkg.version }}</span>
-      <ModuleTypeLabel ml2 text-xs text-right flex-auto :pkg :badge="false" />
+      <ModuleTypeLabel
+        v-if="!settings.moduleTypeHide"
+        ml2 text-xs text-right flex-auto :pkg :badge="false"
+      />
     </button>
   </div>
 </template>

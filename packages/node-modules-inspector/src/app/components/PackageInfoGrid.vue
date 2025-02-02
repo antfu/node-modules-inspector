@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
 import { selectedNode } from '../state/current'
+import { settings } from '../state/settings'
 
 defineProps<{
   pkg: PackageNode
@@ -19,7 +20,10 @@ defineProps<{
       {{ pkg.name }}<span op50>@{{ pkg.version }}</span>
     </div>
     <div flex="~ wrap gap-2 items-center" text-sm>
-      <ModuleTypeLabel :pkg />
+      <ModuleTypeLabel
+        v-if="!settings.moduleTypeHide"
+        :pkg
+      />
       <template v-if="pkg.flatDependents.size">
         <div flex="~ items-center gap-1">
           <div i-ph-arrow-elbow-down-right-duotone />
