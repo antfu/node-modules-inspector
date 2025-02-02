@@ -3,7 +3,7 @@ import type { HierarchyLink, HierarchyNode } from 'd3-hierarchy'
 import type { ResolvedPackageNode } from 'node-modules-tools'
 import { hierarchy, tree } from 'd3-hierarchy'
 import { linkHorizontal } from 'd3-shape'
-import { nextTick, onMounted, ref, shallowRef, useTemplateRef } from 'vue'
+import { nextTick, onMounted, ref, shallowRef, useTemplateRef, watch } from 'vue'
 import { query } from '~/state/query'
 
 const props = defineProps<{
@@ -18,6 +18,7 @@ const height = ref(window.innerHeight)
 const nodes = shallowRef<HierarchyNode<ResolvedPackageNode>[]>([])
 const links = shallowRef<HierarchyLink<ResolvedPackageNode>[]>([])
 const nodesMap = new Map<string, HierarchyNode<ResolvedPackageNode>>()
+const nodesRefMap = new Map<string, any>()
 
 const NODE_WIDTH = 400
 const NODE_HEIGHT = 30
@@ -85,8 +86,29 @@ onMounted(() => {
   nextTick(() => {
     width.value = el.value!.scrollWidth
     height.value = el.value!.scrollHeight
+
+    watch(
+      () => query.selected,
+      () => {
+        if (query.selected)
+          focusOn(query.selected)
+      },
+      { immediate: true, flush: 'post' },
+    )
   })
 })
+
+function focusOn(spec: string) {
+  const el = nodesRefMap.get(spec)?.$el as HTMLDivElement
+  if (!el)
+    return
+
+  el.scrollIntoView({
+    block: 'center',
+    inline: 'center',
+    behavior: 'smooth',
+  })
+}
 
 function getSelectionMode(node: ResolvedPackageNode) {
   if (!query.selected || query.selected.startsWith('~'))
@@ -132,6 +154,7 @@ function generateLink(link: HierarchyLink<ResolvedPackageNode>) {
     >
       <template v-if="node.data.spec !== '~root'">
         <PackageInfoNode
+          :ref="(el) => nodesRefMap.set(node.data.spec, el)"
           :selection-mode="getSelectionMode(node.data)"
           :pkg="node.data"
           :style="{
