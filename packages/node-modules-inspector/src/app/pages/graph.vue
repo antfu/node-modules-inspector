@@ -3,5 +3,5 @@ import { filteredPackages } from '~/state/filters'
 </script>
 
 <template>
-  <PackagesGraph :packages="filteredPackages" />
+  <PackageGraph :packages="filteredPackages" />
 </template>

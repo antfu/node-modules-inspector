@@ -22,7 +22,7 @@ const classesInner = {
 <template>
   <div
     class="graph-node"
-    :class="[classOuter[selectionMode], selectedNode === pkg ? 'ring-3 ring-primary:25! text-primary' : '']"
+    :class="[classOuter[selectionMode], selectedNode === pkg ? 'ring-3 ring-primary:25! text-primary-600 dark:text-primary-300' : '']"
   >
     <button
       v-if="pkg"

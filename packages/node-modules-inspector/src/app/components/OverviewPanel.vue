@@ -6,7 +6,7 @@ import { version } from '../../../package.json'
 <template>
   <div flex="~ col gap-2">
     <h1 text-lg border="b base" p5 flex="~ gap-3 items-center">
-      <img src="/favicon.svg" w-8 h-8 alt="Logo">
+      <Logo w-9 h-9 alt="Logo" />
       <div flex="~ col gap-0" leading-none>
         <span font-700 text-primary>Node Modules</span>
         <span op75>Inspector</span>

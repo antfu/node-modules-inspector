@@ -100,6 +100,11 @@ function calculateGraph() {
     linksMap.set(link.id, link)
   }
   links.value = _links
+
+  nextTick(() => {
+    width.value = el.value!.scrollWidth
+    height.value = el.value!.scrollHeight
+  })
 }
 
 function handleDragingScroll() {
@@ -130,9 +135,6 @@ onMounted(() => {
   watch(() => props.packages, calculateGraph, { immediate: true })
 
   nextTick(() => {
-    width.value = el.value!.scrollWidth
-    height.value = el.value!.scrollHeight
-
     watch(
       () => query.selected,
       () => {
@@ -256,7 +258,7 @@ function generateLink(link: HierarchyLink<PackageNode>) {
       :key="node.data.spec"
     >
       <template v-if="node.data.spec !== '~root'">
-        <PackageInfoNode
+        <PackageGraphNode
           :ref="(el: any) => nodesRefMap.set(node.data.spec, el?.$el)"
           :selection-mode="getSelectionMode(node.data)"
           :pkg="node.data"

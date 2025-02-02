@@ -19,7 +19,7 @@ const duplicated = computed(() => {
 </script>
 
 <template>
-  <div v-if="pkg" of-y-auto>
+  <div v-if="pkg" of-hidden h-full flex="~ col gap-0">
     <button
       absolute top-2 right-2
       w-10 h-10 rounded-full
@@ -46,30 +46,19 @@ const duplicated = computed(() => {
             <div i-ph-caret-down text-xs />
           </div>
           <template #popper>
-            <div>
-              <div v-for="versionNode of duplicated" :key="versionNode.version" flex="~ items-center gap-1">
-                <button
-                  py1 px2 rounded flex="~ items-center gap-1"
-                  font-mono hover="bg-active"
-                  @click="query.selected = versionNode.spec"
-                >
-                  <span op75>v{{ versionNode.version }}</span>
-                  <ModuleTypeLabel :pkg="versionNode" />
-                </button>
-              </div>
+            <div flex="~ col" p1>
+              <button
+                v-for="versionNode of duplicated" :key="versionNode.version"
+                py1 px2 rounded flex="~ items-center gap-1" min-w-40
+                font-mono hover="bg-active"
+                @click="query.selected = versionNode.spec"
+              >
+                <span op75 flex-auto text-left>v{{ versionNode.version }}</span>
+                <ModuleTypeLabel :pkg="versionNode" :badge="false" text-xs />
+              </button>
             </div>
           </template>
         </VMenu>
-      </div>
-      <div flex="~ gap-2 wrap items-center">
-        <span>{{ pkg.resolved.license }}</span>
-        <span op50>·</span>
-        <template v-if="pkg.resolved.author">
-          <span>
-            {{ pkg.resolved.author?.replace(/\<.*\>/, '').replace(/\(.*\)/, '') }}
-          </span>
-          <span op50>·</span>
-        </template>
         <div flex="~ gap-0 items-center">
           <NuxtLink
             :to="`https://www.npmjs.com/package/${pkg.name}/v/${pkg.version}`"
@@ -95,58 +84,72 @@ const duplicated = computed(() => {
           </button>
         </div>
       </div>
-    </div>
-
-    <div flex="~ col gap-1">
-      <SubTitle px1 select-none @click="settings.deepDependentsTree = !settings.deepDependentsTree">
-        <button
-          w-5 h-5 rounded hover:bg-active flex="~ items-center justify-center"
-          :class="pkg.flatDependents.size !== pkg.dependents.size ? '' : 'op0'"
-        >
-          <div i-ph-caret-down transition :class="settings.deepDependentsTree ? '' : 'rotate--90'" />
-        </button>
-        Used by
-        <span font-mono text-sm>
-          ({{ settings.deepDependentsTree ? pkg.flatDependents.size : pkg.dependents.size }})
-        </span>
-      </SubTitle>
-      <PackageDependentTree
-        v-if="pkg.flatDependents.size"
-        px4 of-auto
-        :currents="Array.from(pkg.flatDependents).map(getPackageFromSpec).filter(x => !!x).filter(i => i?.nestedLevels.has(1))"
-        :list="Array.from(pkg.flatDependents).map(getPackageFromSpec).filter(x => !!x)"
-        :max-depth="settings.deepDependentsTree ? 10 : 1"
-        type="dependents"
-      />
-      <div v-else op25 italic pl7>
-        No dependents
+      <div flex="~ gap-2 wrap items-center">
+        <span>{{ pkg.resolved.license }}</span>
+        <template v-if="pkg.resolved.author">
+          <span op50>·</span>
+          <span>
+            {{ pkg.resolved.author?.replace(/\<.*\>/, '').replace(/\(.*\)/, '') }}
+          </span>
+        </template>
       </div>
     </div>
 
-    <div mb5 flex="~ col gap-1">
-      <SubTitle px1 select-none @click="settings.deepDependenciesTree = !settings.deepDependenciesTree">
+    <div flex="~">
+      <div border="b base" w-2 />
+      <button
+        flex-1 border border-base rounded-t-lg p1 flex="~ items-center justify-center gap-1" transition-margin
+        :class="settings.packageDetailsTab === 'dependents' ? 'text-primary border-b-transparent' : 'saturate-0 hover:bg-active mt-5px'"
+        @click="settings.packageDetailsTab = 'dependents'"
+      >
+        <span :class="settings.packageDetailsTab === 'dependents' ? '' : 'op50'">Used by</span>
+        <span bg-primary:10 rounded px1 text-sm text-primary>{{ settings.deepDependenciesTree ? pkg.flatDependents.size : pkg.dependents.size }}</span>
+      </button>
+      <div border="b base" w-2 />
+      <button
+        flex-1 border border-base rounded-t-lg p1 flex="~ items-center justify-center gap-1" transition-margin
+        :class="settings.packageDetailsTab === 'dependencies' ? 'text-primary border-b-transparent' : 'saturate-0 hover:bg-active mt-5px'"
+        @click="settings.packageDetailsTab = 'dependencies'"
+      >
+        <span :class="settings.packageDetailsTab === 'dependencies' ? '' : 'op50'">Deps on</span>
+        <span bg-primary:10 rounded px1 text-sm text-primary>{{ settings.deepDependenciesTree ? pkg.flatDependencies.size : pkg.dependencies.size }}</span>
+      </button>
+      <div border="b base" py1 px2>
         <button
-          w-5 h-5 rounded hover:bg-active flex="~ items-center justify-center"
-          :class="pkg.flatDependencies.size === pkg.dependencies.size ? 'op0' : ''"
+          p1 rounded-full hover:bg-active
+          title="Toggle deep dependencies tree"
+          @click="settings.deepDependenciesTree = !settings.deepDependenciesTree"
         >
-          <div i-ph-caret-down transition :class="settings.deepDependenciesTree ? '' : 'rotate--90'" />
+          <div op75 :class="settings.deepDependenciesTree ? 'i-ph-text-align-right-duotone' : 'i-ph-text-align-justify-duotone'" />
         </button>
-        Dependencies
-        <span font-mono text-sm>
-          ({{ settings.deepDependenciesTree ? pkg.flatDependencies.size : pkg.dependencies.size }})
-        </span>
-      </SubTitle>
-      <PackageDependentTree
-        v-if="pkg.flatDependencies.size"
-        px4 of-auto
-        :currents="Array.from(pkg.dependencies).map(getPackageFromSpec).filter(x => !!x)"
-        :list="Array.from(pkg.flatDependencies).map(getPackageFromSpec).filter(x => !!x)"
-        :max-depth="settings.deepDependenciesTree ? 10 : 1"
-        type="dependencies"
-      />
-      <div v-else op25 italic pl7>
-        No dependencies
       </div>
+    </div>
+
+    <div flex="~ col gap-1" py5 px4 flex-auto of-auto>
+      <template v-if="settings.packageDetailsTab === 'dependents'">
+        <PackageDependentTree
+          v-if="pkg.flatDependents.size"
+          :currents="Array.from(pkg.flatDependents).map(getPackageFromSpec).filter(x => !!x).filter(i => i?.nestedLevels.has(1))"
+          :list="Array.from(pkg.flatDependents).map(getPackageFromSpec).filter(x => !!x)"
+          :max-depth="settings.deepDependenciesTree ? 10 : 1"
+          type="dependents"
+        />
+        <div v-else op25 italic pl2>
+          No dependents
+        </div>
+      </template>
+      <template v-else-if="settings.packageDetailsTab === 'dependencies'">
+        <PackageDependentTree
+          v-if="pkg.flatDependencies.size"
+          :currents="Array.from(pkg.dependencies).map(getPackageFromSpec).filter(x => !!x)"
+          :list="Array.from(pkg.flatDependencies).map(getPackageFromSpec).filter(x => !!x)"
+          :max-depth="settings.deepDependenciesTree ? 10 : 1"
+          type="dependencies"
+        />
+        <div v-else op25 italic pl2>
+          No dependencies
+        </div>
+      </template>
     </div>
   </div>
 </template>

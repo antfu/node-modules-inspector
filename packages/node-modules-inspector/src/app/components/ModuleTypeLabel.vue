@@ -13,11 +13,11 @@ const props = withDefaults(defineProps<{
 const type = computed(() => getModuleType(props.pkg))
 
 const colors = {
-  esm: 'bg-primary:10 text-primary-300',
-  dual: 'bg-teal:10 text-teal',
-  cjs: 'bg-yellow:10 text-yellow',
-  faux: 'bg-lime:10 text-lime',
-  dts: 'bg-blue:10 text-blue',
+  esm: 'bg-primary:10 text-primary-400 dark:text-primary-300',
+  dual: 'bg-teal:10 text-teal-600 dark:text-teal-300',
+  cjs: 'bg-yellow:10 text-yellow-600 dark:text-yellow-300',
+  faux: 'bg-lime:10 text-lime-600 dark:text-lime-300',
+  dts: 'bg-blue:10 text-blue-600 dark:text-blue-300',
 }
 </script>
 

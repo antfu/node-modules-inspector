@@ -4,7 +4,7 @@ export interface Settings {
   moduleTypeSimple: boolean
   moduleTypeHide: boolean
   deepDependenciesTree: boolean
-  deepDependentsTree: boolean
+  packageDetailsTab: 'dependencies' | 'dependents'
 }
 
 export const settings = useLocalStorage<Settings>(
@@ -13,7 +13,7 @@ export const settings = useLocalStorage<Settings>(
     moduleTypeSimple: false,
     moduleTypeHide: false,
     deepDependenciesTree: true,
-    deepDependentsTree: true,
+    packageDetailsTab: 'dependents',
   },
   {
     deep: true,
