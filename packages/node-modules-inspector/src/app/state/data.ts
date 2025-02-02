@@ -8,8 +8,13 @@ export const packageVersionsMap = shallowReactive(new Map<string, ResolvedPackag
 
 export function fetchListDependenciesData() {
   const { state } = useAsyncState(async () => {
-    packageData.value = await rpc.listDependencies()
+    const data = await rpc.listDependencies()
 
+    Object.freeze(data)
+    for (const pkg of data.packages.values())
+      Object.freeze(pkg)
+
+    packageData.value = data
     packageVersionsMap.clear()
     for (const pkg of packageData.value?.packages.values() || []) {
       if (!packageVersionsMap.has(pkg.name))

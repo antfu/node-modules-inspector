@@ -22,13 +22,27 @@ export async function listPackageDependenciesRaw(
   else
     throw new Error(`Package manager ${manager.name} is not yet supported`)
 
+  for (const pkg of result.packages.values()) {
+    for (const dep of pkg.dependencies) {
+      result.packages.get(dep)
+        ?.dependents
+        .add(pkg.spec)
+    }
+  }
+
   function resloveFlatDependencies(pkg: PackageNode) {
+    const postTasks: (() => void)[] = []
+
     function traverseDependencies(node: PackageNode) {
       for (const dep of node.dependencies) {
         if (pkg.flatDependencies.has(dep))
           continue
         pkg.flatDependencies.add(dep)
-        traverseDependencies(result.packages.get(dep)!)
+        const depNode = result.packages.get(dep)!
+        postTasks.push(() => {
+          depNode.flatDependents.add(pkg.spec)
+        })
+        traverseDependencies(depNode)
       }
     }
 
@@ -37,12 +51,19 @@ export async function listPackageDependenciesRaw(
         if (pkg.flatDependents.has(dep))
           continue
         pkg.flatDependents.add(dep)
-        traverseDependents(result.packages.get(dep)!)
+        const depNode = result.packages.get(dep)!
+        postTasks.push(() => {
+          depNode.flatDependencies.add(pkg.spec)
+        })
+        traverseDependents(depNode)
       }
     }
 
     traverseDependencies(pkg)
     traverseDependents(pkg)
+
+    for (const task of postTasks)
+      task()
   }
 
   for (const pkg of result.packages.values())

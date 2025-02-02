@@ -7,10 +7,10 @@ defineProps<{
   selectionMode: 'none' | 'faded' | 'selected'
 }>()
 
-const classesBorder = {
-  none: '',
-  faded: '',
-  selected: 'border-primary!',
+const classOuter = {
+  none: 'z-graph-node',
+  faded: 'z-graph-node',
+  selected: 'z-graph-node-active border-primary!',
 }
 const classesInner = {
   none: '',
@@ -22,7 +22,7 @@ const classesInner = {
 <template>
   <div
     class="graph-node"
-    :class="classesBorder[selectionMode]"
+    :class="classOuter[selectionMode]"
   >
     <button
       v-if="pkg"
@@ -39,7 +39,7 @@ const classesInner = {
 
 <style>
 .graph-node {
-  --uno: absolute bg-base border border-base rounded-xl font-mono ws-nowrap z-10;
+  --uno: absolute bg-base border border-base rounded-xl font-mono ws-nowrap;
   transform: translate(-50%, -50%);
 }
 

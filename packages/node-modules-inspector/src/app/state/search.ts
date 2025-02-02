@@ -9,11 +9,15 @@ export interface FilterOptions {
   license: null | string
 }
 
+export const FILTER_KEYS = ['module', 'license'] as (keyof FilterOptions)[]
+
 export const filters = reactive<FilterOptions>({
   search: '',
   module: null,
   license: null,
 })
+
+export const activatedFilters = computed(() => FILTER_KEYS.filter(i => !!filters[i]))
 
 const debouncedSearch = useDebounce(computed(() => filters.search), 200)
 

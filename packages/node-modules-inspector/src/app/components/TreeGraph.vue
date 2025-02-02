@@ -2,30 +2,36 @@
 import type { HierarchyLink, HierarchyNode } from 'd3-hierarchy'
 import type { ResolvedPackageNode } from 'node-modules-tools'
 import { hierarchy, tree } from 'd3-hierarchy'
-import { linkHorizontal } from 'd3-shape'
-import { nextTick, onMounted, ref, shallowRef, useTemplateRef, watch } from 'vue'
+import { linkHorizontal, linkVertical } from 'd3-shape'
+import { computed, nextTick, onMounted, ref, shallowReactive, shallowRef, useTemplateRef, watch } from 'vue'
+import { packageData } from '~/state/data'
 import { query } from '~/state/query'
 
-const props = defineProps<{
-  packages: ResolvedPackageNode[]
-}>()
+interface Link extends HierarchyLink<ResolvedPackageNode> {
+  id: string
+}
 
-const svg = useTemplateRef<SVGSVGElement>('svg')
+const svgLinks = useTemplateRef<SVGSVGElement>('svgLinks')
+const svgLinksActive = useTemplateRef<SVGSVGElement>('svgLinksActive')
+
 const el = useTemplateRef<HTMLDivElement>('el')
 const width = ref(window.innerWidth)
 const height = ref(window.innerHeight)
 
 const nodes = shallowRef<HierarchyNode<ResolvedPackageNode>[]>([])
-const links = shallowRef<HierarchyLink<ResolvedPackageNode>[]>([])
-const nodesMap = new Map<string, HierarchyNode<ResolvedPackageNode>>()
-const nodesRefMap = new Map<string, any>()
+const links = shallowRef<Link[]>([])
+const nodesMap = shallowReactive(new Map<string, HierarchyNode<ResolvedPackageNode>>())
+const linksMap = shallowReactive(new Map<string, Link>())
+const nodesRefMap = new Map<string, HTMLDivElement>()
 
 const NODE_WIDTH = 400
 const NODE_HEIGHT = 30
 const NODE_MARGIN = 30
 
-onMounted(() => {
-  const topLevel = props.packages.filter(pkg => !pkg.flatDependents.size)
+function calculateGraph() {
+  const topLevel = Array.from(packageData.value?.packages.values() || [])
+    .filter(pkg => !pkg.flatDependents.size)
+    .sort((a, b) => a.flatDependencies.size - b.flatDependencies.size)
 
   const seen = new Set<ResolvedPackageNode>()
   const root = hierarchy<ResolvedPackageNode>(
@@ -36,9 +42,10 @@ onMounted(() => {
         return topLevel
       }
       const children = Array.from(d.dependencies)
-        .map(i => props.packages.find(x => x.spec === i))
+        .map(i => packageData.value?.packages.get(i))
         .filter(x => !!x)
         .filter(x => !seen.has(x))
+        .sort((a, b) => a.flatDependencies.size - b.flatDependencies.size)
       children.forEach(x => seen.add(x))
       return children
     },
@@ -70,18 +77,27 @@ onMounted(() => {
   }
 
   nodes.value = _nodes
+  nodesMap.clear()
   for (const node of _nodes) {
     nodesMap.set(node.data.spec, node)
   }
-  links.value = root.links()
-  // links.value = _nodes
-  //   .slice(1)
-  //   .flatMap((node) => {
-  //     return Array.from(node.data.dependencies)
-  //       .map((spec) => {
-  //         return { source: node, target: nodesMap.get(spec)! }
-  //       })
-  //   })
+  const _links = root.links()
+    .filter(x => x.source.data.name !== '~root')
+    .map((x) => {
+      return {
+        ...x,
+        id: `${x.source.data.spec}|${x.target.data.spec}`,
+      }
+    })
+  linksMap.clear()
+  for (const link of _links) {
+    linksMap.set(link.id, link)
+  }
+  links.value = _links
+}
+
+onMounted(() => {
+  calculateGraph()
 
   nextTick(() => {
     width.value = el.value!.scrollWidth
@@ -98,12 +114,48 @@ onMounted(() => {
   })
 })
 
-function focusOn(spec: string) {
-  const el = nodesRefMap.get(spec)?.$el as HTMLDivElement
-  if (!el)
-    return
+const additionalLinks = computed(() => {
+  if (!query.selected)
+    return []
+  const selected = nodesMap.get(query.selected)
+  if (!selected)
+    return []
+  const links: Link[] = []
 
-  el.scrollIntoView({
+  for (const dep of selected.data.dependencies) {
+    const id = `${selected.data.spec}|${dep}`
+    if (linksMap.has(id))
+      continue
+    const target = nodesMap.get(dep)
+    if (target)
+      links.push({ id, source: selected, target })
+  }
+
+  for (const dep of selected.data.dependents) {
+    const id = `${dep}|${selected.data.spec}`
+    if (linksMap.has(id))
+      continue
+    const source = nodesMap.get(dep)
+    if (source)
+      links.push({ id, source, target: selected })
+  }
+  return links
+})
+
+const activeLinks = computed(() => {
+  if (!query.selected || query.selected.startsWith('~'))
+    return []
+  return [
+    ...links.value.filter((link) => {
+      return getSelectionMode(link.source.data) === 'selected' && getSelectionMode(link.target.data) === 'selected'
+    }),
+    ...additionalLinks.value,
+  ]
+})
+
+function focusOn(spec: string) {
+  const el = nodesRefMap.get(spec)
+  el?.scrollIntoView({
     block: 'center',
     inline: 'center',
     behavior: 'smooth',
@@ -118,34 +170,50 @@ function getSelectionMode(node: ResolvedPackageNode) {
   return 'faded'
 }
 
-const createLink = linkHorizontal()
+const createLinkHorizontal = linkHorizontal()
+  .x(d => d[0])
+  .y(d => d[1])
+
+const createLinkVertical = linkVertical()
   .x(d => d[0])
   .y(d => d[1])
 
 function generateLink(link: HierarchyLink<ResolvedPackageNode>) {
-  const [source, target] = [link.source, link.target].sort((a, b) => a.x! - b.x!)
-  return createLink({
-    source: [source.x! + NODE_WIDTH / 2 - 40, source.y!],
-    target: [target.x! - NODE_WIDTH / 2 + 40, target.y!],
+  if (link.target.x! <= link.source.x!) {
+    return createLinkVertical({
+      source: [link.source.x! + NODE_WIDTH / 2 - 20, link.source.y!],
+      target: [link.target.x! - NODE_WIDTH / 2 + 20, link.target.y!],
+    })
+  }
+  return createLinkHorizontal({
+    source: [link.source.x! + NODE_WIDTH / 2 - 20, link.source.y!],
+    target: [link.target.x! - NODE_WIDTH / 2 + 20, link.target.y!],
   })
 }
 </script>
 
 <template>
   <div ref="el" w-screen h-screen of-scroll absolute inset-0 relative flex="~ items-center justify-center">
-    <svg ref="svg" absolute left-0 top-0 :width="width" :height="height">
+    <svg ref="svgLinks" pointer-events-none absolute left-0 top-0 z-graph-link :width="width" :height="height">
       <g>
-        <template
-          v-for="(link, index) in links"
-          :key="index"
-        >
-          <path
-            v-if="link.source.data.spec !== '~root' && link.source.x !== link.target.x"
-            :d="generateLink(link)!"
-            fill="none"
-            :stroke="getSelectionMode(link.source.data) === 'selected' && getSelectionMode(link.target.data) === 'selected' ? 'rgb(66,187,215)' : '#8883'"
-          />
-        </template>
+        <path
+          v-for="link of [...links, ...additionalLinks]"
+          :key="link.id"
+          :d="generateLink(link)!"
+          fill="none"
+          stroke="#8883"
+        />
+      </g>
+    </svg>
+    <svg ref="svgLinksActive" pointer-events-none absolute left-0 top-0 z-graph-link-active :width="width" :height="height">
+      <g>
+        <path
+          v-for="link of activeLinks"
+          :key="link.id"
+          :d="generateLink(link)!"
+          fill="none"
+          class="stroke-primary:75"
+        />
       </g>
     </svg>
     <template
@@ -154,7 +222,7 @@ function generateLink(link: HierarchyLink<ResolvedPackageNode>) {
     >
       <template v-if="node.data.spec !== '~root'">
         <PackageInfoNode
-          :ref="(el) => nodesRefMap.set(node.data.spec, el)"
+          :ref="(el: any) => nodesRefMap.set(node.data.spec, el?.$el)"
           :selection-mode="getSelectionMode(node.data)"
           :pkg="node.data"
           :style="{
