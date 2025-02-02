@@ -28,6 +28,20 @@ summary::-webkit-details-marker {
   display: none;
 }
 
+/* Animations */
+@keyframes spin-reverse {
+  from {
+    transform: rotate(1080deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+.animate-spin-reverse,
+.hover\:animate-spin-reverse:hover {
+  animation: spin-reverse 2.5s cubic-bezier(0.37, 0, 0.63, 1) infinite;
+}
+
 /* Overrides Floating Vue */
 .v-popper--theme-dropdown .v-popper__inner,
 .v-popper--theme-tooltip .v-popper__inner {

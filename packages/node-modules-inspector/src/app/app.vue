@@ -22,7 +22,7 @@ fetchListDependenciesData()
     <div flex="~ col gap-2 items-center justify-center" flex-auto animate-pulse>
       <h1 p5 flex="~ col gap-1 items-center">
         <div>
-          <Logo w-20 h-20 alt="Logo" animate-spin />
+          <Logo w-25 h-25 alt="Logo" class="animate-spin-reverse" />
         </div>
         <div flex="~ gap-1" leading-none text-2xl mt-5>
           <span font-700 text-primary>Node Modules</span>

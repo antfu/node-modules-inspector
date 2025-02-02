@@ -45,6 +45,7 @@
     "@vueuse/nuxt": "catalog:",
     "d3": "catalog:",
     "d3-hierarchy": "catalog:",
+    "d3-shape": "catalog:",
     "floating-vue": "catalog:",
     "fuse.js": "catalog:",
     "shiki": "catalog:",
