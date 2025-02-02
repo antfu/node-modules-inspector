@@ -261,7 +261,7 @@ function generateLink(link: HierarchyLink<PackageNode>) {
       :key="node.data.spec"
     >
       <template v-if="node.data.spec !== '~root'">
-        <PackageGraphNode
+        <GraphNode
           :ref="(el: any) => nodesRefMap.set(node.data.spec, el?.$el)"
           :selection-mode="getSelectionMode(node.data)"
           :pkg="node.data"

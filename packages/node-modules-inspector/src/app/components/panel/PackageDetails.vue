@@ -125,28 +125,33 @@ const duplicated = computed(() => {
       </div>
     </div>
 
-    <div flex="~ col gap-1" py5 px4 flex-auto of-auto>
+    <div flex="~ col gap-1" flex-auto of-auto>
       <template v-if="settings.packageDetailsTab === 'dependents'">
-        <PackageDependentTree
-          v-if="pkg.flatDependents.size"
-          :currents="Array.from(pkg.flatDependents).map(getPackageFromSpec).filter(x => !!x).filter(i => i?.nestedLevels.has(1))"
-          :list="Array.from(pkg.flatDependents).map(getPackageFromSpec).filter(x => !!x)"
-          :max-depth="settings.deepDependenciesTree ? 10 : 1"
-          type="dependents"
-        />
-        <div v-else op25 italic pl2>
+        <template v-if="pkg.flatDependents.size">
+          <PackageDependentTree
+            py5 px4
+            :currents="Array.from(pkg.flatDependents).map(getPackageFromSpec).filter(x => !!x).filter(i => i?.nestedLevels.has(1))"
+            :list="Array.from(pkg.flatDependents).map(getPackageFromSpec).filter(x => !!x)"
+            :max-depth="settings.deepDependenciesTree ? 10 : 1"
+            type="dependents"
+          />
+        </template>
+        <div v-else op25 italic text-center py3>
           No dependents
         </div>
       </template>
       <template v-else-if="settings.packageDetailsTab === 'dependencies'">
-        <PackageDependentTree
-          v-if="pkg.flatDependencies.size"
-          :currents="Array.from(pkg.dependencies).map(getPackageFromSpec).filter(x => !!x)"
-          :list="Array.from(pkg.flatDependencies).map(getPackageFromSpec).filter(x => !!x)"
-          :max-depth="settings.deepDependenciesTree ? 10 : 1"
-          type="dependencies"
-        />
-        <div v-else op25 italic pl2>
+        <ModuleTypePercentage :pkg="pkg" p2 pt3 />
+        <template v-if="pkg.flatDependencies.size">
+          <PackageDependentTree
+            py5 pt2 px4
+            :currents="Array.from(pkg.dependencies).map(getPackageFromSpec).filter(x => !!x)"
+            :list="Array.from(pkg.flatDependencies).map(getPackageFromSpec).filter(x => !!x)"
+            :max-depth="settings.deepDependenciesTree ? 10 : 1"
+            type="dependencies"
+          />
+        </template>
+        <div v-else op25 italic text-center pb4>
           No dependencies
         </div>
       </template>

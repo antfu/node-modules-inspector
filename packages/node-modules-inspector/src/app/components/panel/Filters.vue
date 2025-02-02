@@ -4,12 +4,12 @@ import type { WritableComputedRef } from 'vue'
 import { computed } from 'vue'
 import { settings } from '~/state/settings'
 import { filters } from '../../state/filters'
+import { MODULE_TYPES_FULL, MODULE_TYPES_SIMPLE } from '../../utils/module-type'
 
-const FULL_MODULE_TYPES = ['cjs', 'faux', 'esm', 'dual', 'dts'] as PackageModuleType[]
-
-const moduleTypesAvailable = computed<PackageModuleType[]>(() => settings.value.moduleTypeSimple
-  ? ['cjs', 'esm', 'dts']
-  : FULL_MODULE_TYPES,
+const moduleTypesAvailable = computed<PackageModuleType[]>(() =>
+  settings.value.moduleTypeSimple
+    ? MODULE_TYPES_SIMPLE
+    : MODULE_TYPES_FULL,
 )
 
 function createModuleTypeRef(name: PackageModuleType) {
@@ -34,7 +34,9 @@ function createModuleTypeRef(name: PackageModuleType) {
   })
 }
 
-const moduleTypes = Object.fromEntries(FULL_MODULE_TYPES.map(x => [x, createModuleTypeRef(x)] as const)) as Record<PackageModuleType, WritableComputedRef<boolean>>
+const moduleTypes = Object.fromEntries(
+  MODULE_TYPES_FULL.map(x => [x, createModuleTypeRef(x)] as const),
+) as Record<PackageModuleType, WritableComputedRef<boolean>>
 </script>
 
 <template>
@@ -49,7 +51,7 @@ const moduleTypes = Object.fromEntries(FULL_MODULE_TYPES.map(x => [x, createModu
       </OptionItem>
     </div>
     <div flex="~ col gap-2" p4 border="t base">
-      <div flex="~ gap-4">
+      <div flex="~ gap-4 wrap">
         <label
           v-for="type of moduleTypesAvailable"
           :key="type"
