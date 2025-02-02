@@ -17,20 +17,20 @@ export interface ListPackageDependenciesOptions {
   /**
    * Filter if a package should be included and continue traversing
    */
-  traverseFilter?: (node: PackageNode) => boolean
+  traverseFilter?: (node: PackageNodeBase) => boolean
 }
 
 export interface ListPackageDependenciesRawResult {
   cwd: string
   packageManager: string
-  packages: Map<string, PackageNode>
+  packages: Map<string, PackageNodeBase>
 }
 
 export interface ListPackageDependenciesResult extends ListPackageDependenciesRawResult {
-  packages: Map<string, ResolvedPackageNode>
+  packages: Map<string, PackageNode>
 }
 
-export interface PackageNode {
+export interface PackageNodeBase {
   /** Package Name */
   name: string
   /** Version */
@@ -57,7 +57,7 @@ export interface PackageNode {
   optional: boolean
 }
 
-export interface ResolvedPackageNode extends PackageNode {
+export interface PackageNode extends PackageNodeBase {
   resolved: {
     module: PackageModuleType
     license?: string

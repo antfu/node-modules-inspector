@@ -1,12 +1,16 @@
 <script setup lang="ts">
-import type { PackageModuleType } from 'node-modules-tools'
+import type { PackageModuleType, PackageNode } from 'node-modules-tools'
+import { computed } from 'vue'
+import { getModuleType } from '~/utils/module-type'
 
-withDefaults(defineProps<{
-  type: PackageModuleType
+const props = withDefaults(defineProps<{
+  pkg: PackageNode | PackageModuleType
   badge?: boolean
 }>(), {
   badge: true,
 })
+
+const type = computed(() => getModuleType(props.pkg))
 
 const colors = {
   esm: 'bg-green:10 text-green',
@@ -18,7 +22,7 @@ const colors = {
 </script>
 
 <template>
-  <div :class="[colors[type], badge ? 'w-11 flex-none text-center px1 rounded text-sm' : 'bg-transparent! w-auto!']">
+  <div select-none :class="[colors[type], badge ? 'w-11 flex-none text-center px1 rounded text-sm' : 'bg-transparent! w-auto!']">
     {{ type.toUpperCase() }}
   </div>
 </template>

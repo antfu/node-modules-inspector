@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ResolvedPackageNode } from 'node-modules-tools'
+import type { PackageNode } from 'node-modules-tools'
 import { Menu as VMenu } from 'floating-vue'
 import { computed } from 'vue'
 import { getPackageFromSpec, packageVersionsMap } from '~/state/data'
@@ -7,7 +7,7 @@ import { query } from '~/state/query'
 import { settings } from '~/state/settings'
 
 const props = defineProps<{
-  pkg: ResolvedPackageNode
+  pkg: PackageNode
 }>()
 
 const duplicated = computed(() => {
@@ -34,7 +34,7 @@ const duplicated = computed(() => {
     <div flex="~ col gap-2" p5>
       <div font-mono text-2xl flex="~ wrap items-center gap-2" pr6>
         <span>{{ pkg.name }}</span>
-        <ModuleTypeLabel text-sm :type="pkg.resolved.module" />
+        <ModuleTypeLabel text-sm :pkg />
       </div>
       <div flex="~ items-center gap-2">
         <div font-mono op75>
@@ -47,14 +47,14 @@ const duplicated = computed(() => {
           </div>
           <template #popper>
             <div>
-              <div v-for="pkg of duplicated" :key="pkg.version" flex="~ items-center gap-1">
+              <div v-for="versionNode of duplicated" :key="versionNode.version" flex="~ items-center gap-1">
                 <button
                   py1 px2 rounded flex="~ items-center gap-1"
                   font-mono hover="bg-active"
-                  @click="query.selected = pkg.spec"
+                  @click="query.selected = versionNode.spec"
                 >
-                  <span op75>v{{ pkg.version }}</span>
-                  <ModuleTypeLabel :type="pkg.resolved.module" />
+                  <span op75>v{{ versionNode.version }}</span>
+                  <ModuleTypeLabel :pkg="versionNode" />
                 </button>
               </div>
             </div>

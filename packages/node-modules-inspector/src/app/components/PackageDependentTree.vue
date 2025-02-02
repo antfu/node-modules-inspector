@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import type { ResolvedPackageNode } from 'node-modules-tools'
+import type { PackageNode } from 'node-modules-tools'
 import { computed } from 'vue'
 
 const props = withDefaults(defineProps<{
-  currents?: ResolvedPackageNode[]
-  list?: ResolvedPackageNode[]
+  currents?: PackageNode[]
+  list?: PackageNode[]
   type: 'dependencies' | 'dependents'
   seen?: string[]
   depth?: number

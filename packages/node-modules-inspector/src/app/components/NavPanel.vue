@@ -20,8 +20,8 @@ const isSettingOpen = computed({
 
 const tabsMeta = [
   {
-    name: 'Tree View',
-    path: '/tree',
+    name: 'Graph View',
+    path: '/graph',
     icon: 'i-ph-tree-structure-duotone',
   },
   {

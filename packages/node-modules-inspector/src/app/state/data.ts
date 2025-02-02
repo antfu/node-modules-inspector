@@ -1,10 +1,10 @@
-import type { ListPackageDependenciesResult, ResolvedPackageNode } from 'node-modules-tools'
+import type { ListPackageDependenciesResult, PackageNode } from 'node-modules-tools'
 import { useAsyncState } from '@vueuse/core'
 import { shallowReactive, shallowRef } from 'vue'
 import { rpc } from '../composables/rpc'
 
 export const packageData = shallowRef<ListPackageDependenciesResult | null>(null)
-export const packageVersionsMap = shallowReactive(new Map<string, ResolvedPackageNode[]>())
+export const packageVersionsMap = shallowReactive(new Map<string, PackageNode[]>())
 
 export function fetchListDependenciesData() {
   const { state } = useAsyncState(async () => {
@@ -27,6 +27,6 @@ export function fetchListDependenciesData() {
   return state
 }
 
-export function getPackageFromSpec(spec: string): ResolvedPackageNode | undefined {
+export function getPackageFromSpec(spec: string): PackageNode | undefined {
   return packageData.value?.packages.get(spec)
 }

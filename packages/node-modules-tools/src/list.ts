@@ -1,4 +1,4 @@
-import type { ListPackageDependenciesOptions, ListPackageDependenciesRawResult, ListPackageDependenciesResult, PackageNode } from './types'
+import type { ListPackageDependenciesOptions, ListPackageDependenciesRawResult, ListPackageDependenciesResult, PackageNodeBase } from './types'
 import { detect } from 'package-manager-detector'
 import { resolvePackage } from './resolve'
 
@@ -30,10 +30,10 @@ export async function listPackageDependenciesRaw(
     }
   }
 
-  function resloveFlatDependencies(pkg: PackageNode) {
+  function resloveFlatDependencies(pkg: PackageNodeBase) {
     const postTasks: (() => void)[] = []
 
-    function traverseDependencies(node: PackageNode) {
+    function traverseDependencies(node: PackageNodeBase) {
       for (const dep of node.dependencies) {
         if (pkg.flatDependencies.has(dep))
           continue
@@ -46,7 +46,7 @@ export async function listPackageDependenciesRaw(
       }
     }
 
-    function traverseDependents(node: PackageNode) {
+    function traverseDependents(node: PackageNodeBase) {
       for (const dep of node.dependents) {
         if (pkg.flatDependents.has(dep))
           continue

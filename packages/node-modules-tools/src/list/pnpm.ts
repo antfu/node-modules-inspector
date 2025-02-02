@@ -1,6 +1,6 @@
 import type { PackageDependencyHierarchy } from '@pnpm/list'
 import type { ProjectManifest } from '@pnpm/types'
-import type { ListPackageDependenciesOptions, ListPackageDependenciesRawResult, PackageNode } from '../types'
+import type { ListPackageDependenciesOptions, ListPackageDependenciesRawResult, PackageNodeBase } from '../types'
 import { x } from 'tinyexec'
 
 type RawPackageNode = Pick<ProjectManifest, 'description' | 'license' | 'author' | 'homepage'> & {
@@ -35,10 +35,10 @@ export async function listPackageDependencies(
   options: ListPackageDependenciesOptions,
 ): Promise<ListPackageDependenciesRawResult> {
   const tree = await getDependenciesTree(options)
-  const packages = new Map<string, PackageNode>()
+  const packages = new Map<string, PackageNodeBase>()
 
-  const mapNormalize = new WeakMap<RawPackageNode, PackageNode>()
-  function normalize(raw: RawPackageNode): PackageNode {
+  const mapNormalize = new WeakMap<RawPackageNode, PackageNodeBase>()
+  function normalize(raw: RawPackageNode): PackageNodeBase {
     let node = mapNormalize.get(raw)
     if (node)
       return node
@@ -65,7 +65,7 @@ export async function listPackageDependencies(
     level: number,
     mode: 'dev' | 'prod' | 'optional',
     directImporter: string | undefined,
-  ): PackageNode {
+  ): PackageNodeBase {
     const node = normalize(raw)
 
     // Update note information

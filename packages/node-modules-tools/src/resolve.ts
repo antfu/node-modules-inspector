@@ -1,5 +1,5 @@
 import type { PackageJson } from 'pkg-types'
-import type { PackageNode, ResolvedPackageNode } from './types'
+import type { PackageNode, PackageNodeBase } from './types'
 import fs from 'node:fs/promises'
 import { join } from 'node:path'
 import { analyzePackageModuleType } from './analyze-esm'
@@ -11,8 +11,8 @@ import { stripBomTag } from './utils'
  *
  * - Set `module` to the resolved module type (cjs, esm, dual, faux, none).
  */
-export async function resolvePackage(pkg: PackageNode): Promise<ResolvedPackageNode> {
-  const _pkg = pkg as unknown as ResolvedPackageNode
+export async function resolvePackage(pkg: PackageNodeBase): Promise<PackageNode> {
+  const _pkg = pkg as unknown as PackageNode
   if (_pkg.resolved)
     return _pkg
   const content = await fs.readFile(join(pkg.path, 'package.json'), 'utf-8')

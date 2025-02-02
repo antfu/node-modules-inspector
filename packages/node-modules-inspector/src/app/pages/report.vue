@@ -32,7 +32,7 @@ duplicated.forEach((packages) => {
             @click="selectedNode = pkg"
           >
             <span op75>v{{ pkg.version }}</span>
-            <ModuleTypeLabel :type="pkg.resolved.module" />
+            <ModuleTypeLabel :pkg />
           </button>
         </div>
       </div>

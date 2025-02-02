@@ -1,20 +1,20 @@
 <script setup lang="ts">
-import type { ResolvedPackageNode } from 'node-modules-tools'
+import type { PackageNode } from 'node-modules-tools'
 import { selectedNode } from '../state/current'
 
 defineProps<{
-  pkg?: ResolvedPackageNode
+  pkg?: PackageNode
   selectionMode: 'none' | 'faded' | 'selected'
 }>()
 
 const classOuter = {
-  none: 'z-graph-node',
-  faded: 'z-graph-node',
-  selected: 'z-graph-node-active border-primary!',
+  none: 'z-graph-node border-base',
+  faded: 'z-graph-node border-base',
+  selected: 'z-graph-node-active border-primary',
 }
 const classesInner = {
   none: '',
-  faded: 'op75',
+  faded: 'op65',
   selected: 'bg-primary:10',
 }
 </script>
@@ -22,7 +22,7 @@ const classesInner = {
 <template>
   <div
     class="graph-node"
-    :class="classOuter[selectionMode]"
+    :class="[classOuter[selectionMode], selectedNode === pkg ? 'ring-3 ring-primary:25! text-primary' : '']"
   >
     <button
       v-if="pkg"
@@ -32,14 +32,14 @@ const classesInner = {
     >
       <span>{{ pkg.name }}</span>
       <span font-mono op50>@{{ pkg.version }}</span>
-      <ModuleTypeLabel ml2 text-xs text-right flex-auto :type="pkg.resolved.module" :badge="false" />
+      <ModuleTypeLabel ml2 text-xs text-right flex-auto :pkg :badge="false" />
     </button>
   </div>
 </template>
 
 <style>
 .graph-node {
-  --uno: absolute bg-base border border-base rounded-xl font-mono ws-nowrap;
+  --uno: absolute bg-base border rounded-xl font-mono ws-nowrap;
   transform: translate(-50%, -50%);
 }
 

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type { ResolvedPackageNode } from 'node-modules-tools'
+import type { PackageNode } from 'node-modules-tools'
 import { selectedNode } from '../state/current'
 
 defineProps<{
-  pkg?: ResolvedPackageNode
+  pkg?: PackageNode
 }>()
 </script>
 
@@ -15,7 +15,7 @@ defineProps<{
     hover="bg-active"
     @click="selectedNode = pkg"
   >
-    <ModuleTypeLabel :type="pkg.resolved.module" />
+    <ModuleTypeLabel :pkg />
     <div font-mono>
       {{ pkg.name }}<span op50>@{{ pkg.version }}</span>
     </div>

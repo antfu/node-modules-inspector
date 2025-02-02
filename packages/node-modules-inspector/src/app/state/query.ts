@@ -1,3 +1,4 @@
+import type { LocationQuery } from 'vue-router'
 import type { FilterOptions } from './filters'
 import { useRoute, useRouter } from '#app/composables/router'
 import { debouncedWatch, ignorableWatch } from '@vueuse/core'
@@ -10,9 +11,44 @@ export interface QueryOptions extends FilterOptions {
 
 export const query = reactive<QueryOptions>({} as any)
 
+const arrayFields: (keyof QueryOptions)[] = [
+  'modules',
+  'licenses',
+  'excludes',
+]
+
+// function stringifyQuery(object: QueryOptions): string {
+//   const entries = Object.entries(object)
+//     .map(i => [i[0], Array.isArray(i[1]) ? i[1].join(',') : i[1]])
+//     .filter(x => !!x[1]) as [string, string][]
+//   const query = new URLSearchParams(entries)
+//   return query.toString()
+// }
+
+function parseQuery(query: string): QueryOptions {
+  return Object.fromEntries(
+    Array.from(new URLSearchParams(query).entries())
+      .map(([key, value]) => [key, (arrayFields.includes(key as any) && typeof value === 'string') ? value.split(',') : value]),
+  ) as any as QueryOptions
+}
+
+function toVueRouterQuery(query: QueryOptions): Record<string, string> {
+  return Object.fromEntries(
+    Object.entries(query)
+      .map(([key, value]) => [key, Array.isArray(value) ? value.join(',') : value])
+      .filter(x => !!x[1]),
+  )
+}
+
+function fromVueRouterQuery(query: LocationQuery): QueryOptions {
+  return Object.fromEntries(
+    Object.entries(query)
+      .map(([key, value]) => [key, (arrayFields.includes(key as any) && typeof value === 'string') ? value.split(',') : value]),
+  ) as any as QueryOptions
+}
+
 export function setupQuery() {
-  const initialQuery = new URLSearchParams(location.search)
-  Object.assign(query, Object.fromEntries(initialQuery.entries()) as any as QueryOptions)
+  Object.assign(query, parseQuery(location.search))
   Object.assign(filters, query)
 
   const router = useRouter()
@@ -21,8 +57,7 @@ export function setupQuery() {
   const { ignoreUpdates } = ignorableWatch(
     query,
     () => {
-      const entries = Object.entries(query).filter(([, value]) => value)
-      router.push({ path: route.path, query: Object.fromEntries(entries) })
+      router.push({ path: route.path, query: toVueRouterQuery(query) })
     },
     { deep: true, flush: 'post' },
   )
@@ -31,7 +66,8 @@ export function setupQuery() {
     () => route.query,
     (after) => {
       ignoreUpdates(() => {
-        for (const [key, value] of Object.entries(after)) {
+        const target = fromVueRouterQuery(after)
+        for (const [key, value] of Object.entries(target)) {
           if ((query as any)[key] !== value) {
             (query as any)[key] = value
           }

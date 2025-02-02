@@ -1,14 +1,17 @@
 <script setup lang="ts">
 import type { HierarchyLink, HierarchyNode } from 'd3-hierarchy'
-import type { ResolvedPackageNode } from 'node-modules-tools'
+import type { PackageNode } from 'node-modules-tools'
 import { useEventListener } from '@vueuse/core'
 import { hierarchy, tree } from 'd3-hierarchy'
 import { linkHorizontal, linkVertical } from 'd3-shape'
 import { computed, nextTick, onMounted, ref, shallowReactive, shallowRef, useTemplateRef, watch } from 'vue'
-import { packageData } from '~/state/data'
 import { query } from '~/state/query'
 
-interface Link extends HierarchyLink<ResolvedPackageNode> {
+const props = defineProps<{
+  packages: PackageNode[]
+}>()
+
+interface Link extends HierarchyLink<PackageNode> {
   id: string
 }
 
@@ -19,10 +22,11 @@ const el = useTemplateRef<HTMLDivElement>('el')
 const width = ref(window.innerWidth)
 const height = ref(window.innerHeight)
 
-const nodes = shallowRef<HierarchyNode<ResolvedPackageNode>[]>([])
+const nodes = shallowRef<HierarchyNode<PackageNode>[]>([])
 const links = shallowRef<Link[]>([])
-const nodesMap = shallowReactive(new Map<string, HierarchyNode<ResolvedPackageNode>>())
+const nodesMap = shallowReactive(new Map<string, HierarchyNode<PackageNode>>())
 const linksMap = shallowReactive(new Map<string, Link>())
+
 const nodesRefMap = new Map<string, HTMLDivElement>()
 
 const NODE_WIDTH = 400
@@ -30,12 +34,13 @@ const NODE_HEIGHT = 30
 const NODE_MARGIN = 30
 
 function calculateGraph() {
-  const topLevel = Array.from(packageData.value?.packages.values() || [])
+  const packageMap = new Map<string, PackageNode>(props.packages.map(x => [x.spec, x]))
+  const topLevel = Array.from(props.packages.values() || [])
     .filter(pkg => !pkg.flatDependents.size)
     .sort((a, b) => a.flatDependencies.size - b.flatDependencies.size)
 
-  const seen = new Set<ResolvedPackageNode>()
-  const root = hierarchy<ResolvedPackageNode>(
+  const seen = new Set<PackageNode>()
+  const root = hierarchy<PackageNode>(
     { name: '~root', spec: '~root' } as any,
     (d) => {
       if (d.name === '~root') {
@@ -43,7 +48,7 @@ function calculateGraph() {
         return topLevel
       }
       const children = Array.from(d.dependencies)
-        .map(i => packageData.value?.packages.get(i))
+        .map(i => packageMap.get(i))
         .filter(x => !!x)
         .filter(x => !seen.has(x))
         .sort((a, b) => a.flatDependencies.size - b.flatDependencies.size)
@@ -53,7 +58,7 @@ function calculateGraph() {
   )
 
   // Calculate the layout
-  const layout = tree<ResolvedPackageNode>()
+  const layout = tree<PackageNode>()
     .nodeSize([NODE_HEIGHT, NODE_WIDTH + 200])
   layout(root)
 
@@ -120,8 +125,9 @@ function handleDragingScroll() {
 }
 
 onMounted(() => {
-  calculateGraph()
   handleDragingScroll()
+
+  watch(() => props.packages, calculateGraph, { immediate: true })
 
   nextTick(() => {
     width.value = el.value!.scrollWidth
@@ -186,7 +192,7 @@ function focusOn(spec: string) {
   })
 }
 
-function getSelectionMode(node: ResolvedPackageNode) {
+function getSelectionMode(node: PackageNode) {
   if (!query.selected || query.selected.startsWith('~'))
     return 'none'
   if (node.spec === query.selected || node.flatDependencies.has(query.selected) || node.flatDependents.has(query.selected))
@@ -202,7 +208,7 @@ const createLinkVertical = linkVertical()
   .x(d => d[0])
   .y(d => d[1])
 
-function generateLink(link: HierarchyLink<ResolvedPackageNode>) {
+function generateLink(link: HierarchyLink<PackageNode>) {
   if (link.target.x! <= link.source.x!) {
     return createLinkVertical({
       source: [link.source.x! + NODE_WIDTH / 2 - 20, link.source.y!],
