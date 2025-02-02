@@ -13,7 +13,7 @@ duplicated.forEach((packages) => {
 </script>
 
 <template>
-  <div pt-14 pl-100>
+  <div pt-14 pl-120 pr-10>
     <SubTitle>Packages with multiple versions</SubTitle>
     <div grid="~ cols-minmax-250px gap-2">
       <div

@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import type { PackageModuleType } from 'node-modules-tools'
 
-defineProps<{
+withDefaults(defineProps<{
   type: PackageModuleType
-}>()
+  badge?: boolean
+}>(), {
+  badge: true,
+})
 
 const colors = {
   esm: 'bg-green:10 text-green',
@@ -15,7 +18,7 @@ const colors = {
 </script>
 
 <template>
-  <div :class="colors[type]" px1 rounded w-11 text-sm flex-none text-center>
+  <div :class="[colors[type], badge ? 'w-11 flex-none text-center px1 rounded text-sm' : 'bg-transparent! w-auto!']">
     {{ type.toUpperCase() }}
   </div>
 </template>

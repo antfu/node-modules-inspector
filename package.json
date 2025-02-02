@@ -32,6 +32,7 @@
     "@types/ws": "catalog:",
     "@typescript-eslint/utils": "catalog:",
     "@unocss/eslint-config": "catalog:",
+    "d3-shape": "^3.2.0",
     "eslint": "catalog:",
     "lint-staged": "catalog:",
     "nuxt": "catalog:",

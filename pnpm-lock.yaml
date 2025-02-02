@@ -230,6 +230,9 @@ importers:
       '@unocss/eslint-config':
         specifier: 'catalog:'
         version: 65.4.3(eslint@9.19.0(jiti@2.4.2))(typescript@5.7.3)
+      d3-shape:
+        specifier: ^3.2.0
+        version: 3.2.0
       eslint:
         specifier: 'catalog:'
         version: 9.19.0(jiti@2.4.2)

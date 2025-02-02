@@ -23,7 +23,7 @@ fetchListDependenciesData()
       Loading...
     </div>
   </div>
-  <div v-else px4 py6 lg:px14 lg:py10>
+  <div v-else>
     <NavPanel />
     <SearchPanel />
     <NuxtPage />
