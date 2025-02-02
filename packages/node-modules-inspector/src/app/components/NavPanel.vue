@@ -75,14 +75,18 @@ const tabsMeta = [
       </button>
     </div>
     <div
-      v-if="selectedNode || isSettingOpen"
       bg-glass rounded-1em border border-base shadow of-y-auto
       h-max max-h-full
     >
-      <SettingsPanel v-if="isSettingOpen" />
+      <SettingsPanel
+        v-if="isSettingOpen"
+      />
       <PackageInfoDetailed
         v-else-if="selectedNode"
         :pkg="selectedNode"
+      />
+      <OverviewPanel
+        v-else
       />
     </div>
   </div>

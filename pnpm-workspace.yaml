@@ -4,6 +4,7 @@ catalog:
   '@antfu/eslint-config': ^4.1.1
   '@eslint/config-array': ^0.19.2
   '@iconify-json/carbon': ^1.2.6
+  '@iconify-json/catppuccin': ^1.2.8
   '@iconify-json/file-icons': ^1.2.1
   '@iconify-json/logos': ^1.2.4
   '@iconify-json/ph': ^1.2.2
@@ -30,6 +31,7 @@ catalog:
   chokidar: ^4.0.3
   d3: ^7.9.0
   d3-hierarchy: ^3.1.2
+  d3-shape: ^3.2.0
   debug: ^4.4.0
   esbuild: ^0.24.2
   eslint: ^9.19.0
@@ -40,6 +42,7 @@ catalog:
   fuse.js: ^7.0.0
   get-port-please: ^3.1.2
   h3: ^1.14.0
+  launch-editor: ^2.9.1
   lint-staged: ^15.4.3
   mlly: ^1.7.4
   mrmime: ^2.0.0

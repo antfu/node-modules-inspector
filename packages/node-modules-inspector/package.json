@@ -32,6 +32,7 @@
     "flatted": "catalog:",
     "get-port-please": "catalog:",
     "h3": "catalog:",
+    "launch-editor": "catalog:",
     "mlly": "catalog:",
     "mrmime": "catalog:",
     "node-modules-tools": "workspace:*",

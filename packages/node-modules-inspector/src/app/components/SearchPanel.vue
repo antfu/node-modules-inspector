@@ -100,7 +100,7 @@ const moduleTypes = Object.fromEntries(FULL_MODULE_TYPES.map(x => [x, createModu
           </div>
         </template>
       </VMenu>
-      <div v-if="activatedFilters.length" absolute top-0 right-0 w-4 h-4 bg-primary shadow text-white rounded-full flex text-xs>
+      <div v-if="activatedFilters.length" absolute top--1.2 right--1.2 w-4 h-4 bg-primary-600 shadow text-white rounded-full flex text-0.6rem>
         <span ma>{{ activatedFilters.length }}</span>
       </div>
     </div>

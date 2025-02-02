@@ -31,7 +31,7 @@ const nodesRefMap = new Map<string, HTMLDivElement>()
 
 const NODE_WIDTH = 400
 const NODE_HEIGHT = 30
-const NODE_MARGIN = 30
+const NODE_MARGIN = 100
 
 function calculateGraph() {
   const packageMap = new Map<string, PackageNode>(props.packages.map(x => [x.spec, x]))

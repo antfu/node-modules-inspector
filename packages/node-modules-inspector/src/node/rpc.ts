@@ -13,5 +13,12 @@ export async function createServerFunctions(): Promise<ServerFunctions> {
       })
       return result
     },
+    async openInEditor(filename: string) {
+      // @ts-expect-error missing types
+      await import('launch-editor').then(r => (r.default || r)(filename))
+    },
+    async openInFinder(filename: string) {
+      await import('open').then(r => r.default(filename))
+    },
   }
 }

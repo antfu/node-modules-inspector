@@ -15,7 +15,7 @@
   "devDependencies": {
     "@antfu/eslint-config": "catalog:",
     "@iconify-json/carbon": "catalog:",
-    "@iconify-json/catppuccin": "^1.2.8",
+    "@iconify-json/catppuccin": "catalog:",
     "@iconify-json/file-icons": "catalog:",
     "@iconify-json/logos": "catalog:",
     "@iconify-json/ph": "catalog:",
@@ -32,7 +32,7 @@
     "@types/ws": "catalog:",
     "@typescript-eslint/utils": "catalog:",
     "@unocss/eslint-config": "catalog:",
-    "d3-shape": "^3.2.0",
+    "d3-shape": "catalog:",
     "eslint": "catalog:",
     "lint-staged": "catalog:",
     "nuxt": "catalog:",

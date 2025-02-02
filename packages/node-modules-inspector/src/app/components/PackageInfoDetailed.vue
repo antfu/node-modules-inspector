@@ -70,13 +70,30 @@ const duplicated = computed(() => {
           </span>
           <span op50>·</span>
         </template>
-        <NuxtLink
-          :to="`https://www.npmjs.com/package/${pkg.name}/v/${pkg.version}`"
-          title="Open on NPM"
-          w-7 h-7 rounded-full hover:bg-hover flex
-        >
-          <div i-catppuccin-npm light="filter-invert-100 filter-hue-rotate-180 filter-brightness-80" ma />
-        </NuxtLink>
+        <div flex="~ gap-0 items-center">
+          <NuxtLink
+            :to="`https://www.npmjs.com/package/${pkg.name}/v/${pkg.version}`"
+            title="Open on NPM"
+            target="_blank"
+            w-8 h-8 rounded-full hover:bg-hover flex
+          >
+            <div i-catppuccin-npm icon-catppuccin ma />
+          </NuxtLink>
+          <button
+            title="Open package folder in editor"
+            w-8 h-8 rounded-full hover:bg-hover flex
+            @click="rpc.openInEditor(pkg.path)"
+          >
+            <div i-catppuccin-folder-vscode-open icon-catppuccin ma />
+          </button>
+          <button
+            title="Open package folder in finder"
+            w-8 h-8 rounded-full hover:bg-hover flex
+            @click="rpc.openInFinder(pkg.path)"
+          >
+            <div i-catppuccin-folder-command-open icon-catppuccin ma />
+          </button>
+        </div>
       </div>
     </div>
 

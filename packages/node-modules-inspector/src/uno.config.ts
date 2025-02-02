@@ -35,6 +35,8 @@ export default defineConfig({
     'badge-active': 'badge border-amber:50 text-amber bg-amber:5',
     'btn-badge': 'badge hover:bg-active',
 
+    'icon-catppuccin': 'light:filter-invert-100 light:filter-hue-rotate-180 light:filter-brightness-80',
+
     'z-graph-bg': 'z-5',
     'z-graph-link': 'z-10',
     'z-graph-node': 'z-11',
@@ -44,18 +46,18 @@ export default defineConfig({
   theme: {
     colors: {
       primary: {
-        50: '#E6F6FA',
-        100: '#D1EEF5',
-        200: '#9EDCEA',
-        300: '#70CCE1',
-        400: '#42BBD7',
-        DEFAULT: '#42BBD7',
-        500: '#279DB7',
-        600: '#1F7E93',
-        700: '#175E6D',
-        800: '#0F3D47',
-        900: '#082026',
-        950: '#040E11',
+        50: '#E9F4E7',
+        100: '#D2E8CF',
+        200: '#A9D3A2',
+        300: '#7CBC71',
+        400: '#579E4B',
+        DEFAULT: '#579E4B',
+        500: '#49833E',
+        600: '#396831',
+        700: '#2C5026',
+        800: '#1D3419',
+        900: '#0F1C0D',
+        950: '#080E07',
       },
     },
   },
@@ -68,7 +70,7 @@ export default defineConfig({
     presetTypography(),
     presetWebFonts({
       fonts: {
-        sans: 'DM Sans',
+        sans: 'DM Sans:200,400,700',
         mono: 'DM Mono',
       },
       processors: createLocalFontProcessor({
