@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { HierarchyLink, HierarchyNode } from 'd3-hierarchy'
 import type { ResolvedPackageNode } from 'node-modules-tools'
+import { useEventListener } from '@vueuse/core'
 import { hierarchy, tree } from 'd3-hierarchy'
 import { linkHorizontal, linkVertical } from 'd3-shape'
 import { computed, nextTick, onMounted, ref, shallowReactive, shallowRef, useTemplateRef, watch } from 'vue'
@@ -96,8 +97,31 @@ function calculateGraph() {
   links.value = _links
 }
 
+function handleDragingScroll() {
+  let isDown = false
+  let x = 0
+  let y = 0
+  useEventListener(el, 'mousedown', (e) => {
+    if (Array.from(e.composedPath()).some(x => (x as HTMLDivElement).tagName?.toLowerCase() === 'button'))
+      return
+    isDown = true
+    x = el.value!.scrollLeft + e.offsetX
+    y = el.value!.scrollTop + e.offsetY
+  })
+  useEventListener(el, 'mouseleave', () => isDown = false)
+  useEventListener(el, 'mouseup', () => isDown = false)
+  useEventListener(el, 'mousemove', (e) => {
+    if (!isDown)
+      return
+    e.preventDefault()
+    el.value!.scrollLeft = x - e.offsetX
+    el.value!.scrollTop = y - e.offsetY
+  })
+}
+
 onMounted(() => {
   calculateGraph()
+  handleDragingScroll()
 
   nextTick(() => {
     width.value = el.value!.scrollWidth
@@ -193,7 +217,7 @@ function generateLink(link: HierarchyLink<ResolvedPackageNode>) {
 </script>
 
 <template>
-  <div ref="el" w-screen h-screen of-scroll absolute inset-0 relative flex="~ items-center justify-center">
+  <div ref="el" w-screen h-screen of-scroll absolute inset-0 relative select-none flex="~ items-center justify-center">
     <svg ref="svgLinks" pointer-events-none absolute left-0 top-0 z-graph-link :width="width" :height="height">
       <g>
         <path
