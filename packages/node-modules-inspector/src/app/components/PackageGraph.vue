@@ -117,17 +117,17 @@ function handleDragingScroll() {
     if (Array.from(e.composedPath()).some(x => (x as HTMLDivElement).tagName?.toLowerCase() === 'button'))
       return
     isDown = true
-    x = el.value!.scrollLeft + e.offsetX
-    y = el.value!.scrollTop + e.offsetY
+    x = el.value!.scrollLeft + e.pageX
+    y = el.value!.scrollTop + e.pageY
   })
-  useEventListener(el, 'mouseleave', () => isDown = false)
-  useEventListener(el, 'mouseup', () => isDown = false)
-  useEventListener(el, 'mousemove', (e) => {
+  useEventListener('mouseleave', () => isDown = false)
+  useEventListener('mouseup', () => isDown = false)
+  useEventListener('mousemove', (e) => {
     if (!isDown)
       return
     e.preventDefault()
-    el.value!.scrollLeft = x - e.offsetX
-    el.value!.scrollTop = y - e.offsetY
+    el.value!.scrollLeft = x - e.pageX
+    el.value!.scrollTop = y - e.pageY
   })
 }
 

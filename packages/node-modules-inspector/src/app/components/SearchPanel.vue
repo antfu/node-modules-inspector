@@ -40,24 +40,31 @@ const moduleTypes = Object.fromEntries(FULL_MODULE_TYPES.map(x => [x, createModu
 
 <template>
   <div fixed right-4 top-4 z-100 flex="~ gap-2 items-center">
-    <label
-      bg-glass rounded-full border border-base shadow pl4 pr3 py2 flex-none
-      flex="~ items-center gap-1.5"
+    <div
+      bg-glass rounded-full border border-base shadow
+      focus-within="ring-4 ring-primary:20"
+      :class="filters.search ? 'border-primary' : ''"
     >
-      <div i-ph-magnifying-glass-duotone />
-      <input
-        v-model="filters.search"
-        placeholder="Search to filter"
-        w-50 bg-transparent outline-none
+      <label
+        pl4 pr3 py2 flex-none rounded-full
+        flex="~ items-center gap-1.5"
       >
-      <button
-        w-6 h-6 rounded-full hover:bg-active flex
-        :class="filters.search ? '' : 'op0'"
-        @click="filters.search = ''"
-      >
-        <div i-ph-x ma />
-      </button>
-    </label>
+        <div i-ph-magnifying-glass-duotone :class="filters.search ? 'text-primary' : 'op50'" />
+        <input
+          v-model="filters.search"
+          placeholder="Search to filter"
+          w-50 bg-transparent outline-none
+        >
+        <button
+          w-6 h-6 rounded-full hover:bg-active flex
+          :class="filters.search ? '' : 'op0'"
+          @click="filters.search = ''"
+        >
+          <div i-ph-x ma op50 />
+        </button>
+      </label>
+    </div>
+
     <div
       bg-glass rounded-full border border-base shadow flex-none
       flex="~ items-center gap-1" w-max relative
