@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { filteredPackages } from '~/state/search'
+import { filteredPackages } from '~/state/filters'
 </script>
 
 <template>

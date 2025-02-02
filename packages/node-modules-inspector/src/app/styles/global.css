@@ -4,14 +4,14 @@ html, body , #__nuxt{
   padding: 0;
 }
 
-
-html {
+.bg-dots {
   background-image: url('/dot-grid-light.png');
   background-size: 50px;
   background-repeat: repeat;
 }
 
-html.dark {
+.dark .bg-dots,
+.bg-dots.dark {
   color-scheme: dark;
   background-color: black;
   background-image: url('/dot-grid-dark.png');

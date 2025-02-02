@@ -64,6 +64,9 @@ export default defineNuxtConfig({
       link: [
         { rel: 'icon', type: 'image/svg+xml', href: `/favicon.svg` },
       ],
+      htmlAttrs: {
+        class: 'bg-dots',
+      },
     },
   },
 

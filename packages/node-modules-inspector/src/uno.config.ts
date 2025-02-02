@@ -35,6 +35,7 @@ export default defineConfig({
     'badge-active': 'badge border-amber:50 text-amber bg-amber:5',
     'btn-badge': 'badge hover:bg-active',
 
+    'z-graph-bg': 'z-5',
     'z-graph-link': 'z-10',
     'z-graph-node': 'z-11',
     'z-graph-link-active': 'z-12',

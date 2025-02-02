@@ -1,8 +1,8 @@
-import type { FilterOptions } from './search'
+import type { FilterOptions } from './filters'
 import { useRoute, useRouter } from '#app/composables/router'
 import { debouncedWatch, ignorableWatch } from '@vueuse/core'
 import { reactive, watch } from 'vue'
-import { filters } from './search'
+import { filters } from './filters'
 
 export interface QueryOptions extends FilterOptions {
   selected?: string
