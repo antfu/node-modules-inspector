@@ -3,7 +3,7 @@ import type { FilterOptions } from './filters'
 import { useRoute, useRouter } from '#app/composables/router'
 import { debouncedWatch, ignorableWatch } from '@vueuse/core'
 import { reactive, watch } from 'vue'
-import { filters } from './filters'
+import { FILTER_KEYS, filters } from './filters'
 
 export interface QueryOptions extends FilterOptions {
   selected?: string
@@ -11,7 +11,7 @@ export interface QueryOptions extends FilterOptions {
 
 export const query = reactive<QueryOptions>({} as any)
 
-const arrayFields: (keyof QueryOptions)[] = [
+const FIELDS_ARRAY: (keyof QueryOptions)[] = [
   'modules',
   'licenses',
   'excludes',
@@ -28,7 +28,7 @@ const arrayFields: (keyof QueryOptions)[] = [
 function parseQuery(query: string): QueryOptions {
   return Object.fromEntries(
     Array.from(new URLSearchParams(query).entries())
-      .map(([key, value]) => [key, (arrayFields.includes(key as any) && typeof value === 'string') ? value.split(',') : value]),
+      .map(([key, value]) => [key, (FIELDS_ARRAY.includes(key as any) && typeof value === 'string') ? value.split(',') : value]),
   ) as any as QueryOptions
 }
 
@@ -43,7 +43,7 @@ function toVueRouterQuery(query: QueryOptions): Record<string, string> {
 function fromVueRouterQuery(query: LocationQuery): QueryOptions {
   return Object.fromEntries(
     Object.entries(query)
-      .map(([key, value]) => [key, (arrayFields.includes(key as any) && typeof value === 'string') ? value.split(',') : value]),
+      .map(([key, value]) => [key, (FIELDS_ARRAY.includes(key as any) && typeof value === 'string') ? value.split(',') : value]),
   ) as any as QueryOptions
 }
 
@@ -80,7 +80,10 @@ export function setupQuery() {
   debouncedWatch(
     filters,
     () => {
-      Object.assign(query, filters)
+      for (const key of FILTER_KEYS) {
+        if (query[key] !== filters[key])
+          (query as any)[key] = filters[key]
+      }
     },
     { deep: true, debounce: 500 },
   )

@@ -22,7 +22,7 @@ const top20 = computed(() => {
       <div font-mono text-right>
         {{ pkg.flatDependencies.size }}
       </div>
-      <ModuleTypePercentage :pkg="pkg" />
+      <ModuleTypePercentage :pkg="pkg" :flat="true" />
     </template>
   </div>
 </template>

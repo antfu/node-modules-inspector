@@ -6,13 +6,12 @@ import { getModuleTypeCounts } from '../utils/module-type'
 
 const props = defineProps<{
   pkg: PackageNode
-  label?: boolean
-  inline?: boolean
+  flat?: boolean
 }>()
 
 const nodes = computed(() => [
   props.pkg,
-  ...Array.from(props.pkg.dependencies)
+  ...Array.from(props.flat ? props.pkg.flatDependencies : props.pkg.dependencies)
     .map(i => packageData.value?.packages.get(i))
     .filter(x => !!x),
 ])

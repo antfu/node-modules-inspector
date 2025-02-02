@@ -19,6 +19,11 @@ export const FILTER_KEYS = [
   'sourceType',
 ] satisfies (keyof FilterOptions)[]
 
+export const FILTER_KEYS_FULL = [
+  'search',
+  ...FILTER_KEYS,
+]
+
 export const filters = reactive<FilterOptions>({
   search: '',
   modules: null,

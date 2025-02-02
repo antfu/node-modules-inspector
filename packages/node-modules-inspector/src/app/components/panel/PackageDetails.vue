@@ -141,7 +141,11 @@ const duplicated = computed(() => {
         </div>
       </template>
       <template v-else-if="settings.packageDetailsTab === 'dependencies'">
-        <ModuleTypePercentage :pkg="pkg" p2 pt3 />
+        <ModuleTypePercentage
+          p2 pt3
+          :pkg="pkg"
+          :flat="settings.deepDependenciesTree"
+        />
         <template v-if="pkg.flatDependencies.size">
           <PackageDependentTree
             py5 pt2 px4
