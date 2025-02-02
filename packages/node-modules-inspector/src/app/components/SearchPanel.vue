@@ -9,7 +9,7 @@ import { activatedFilters, filters } from '../state/filters'
 const FULL_MODULE_TYPES = ['cjs', 'faux', 'esm', 'dual', 'dts'] as PackageModuleType[]
 
 const moduleTypesAvailable = computed<PackageModuleType[]>(() => settings.value.moduleTypeSimple
-  ? ['cjs', 'esm']
+  ? ['cjs', 'esm', 'dts']
   : FULL_MODULE_TYPES,
 )
 

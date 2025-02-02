@@ -102,7 +102,7 @@ const duplicated = computed(() => {
         :class="settings.packageDetailsTab === 'dependents' ? 'text-primary border-b-transparent' : 'saturate-0 hover:bg-active mt-5px'"
         @click="settings.packageDetailsTab = 'dependents'"
       >
-        <span :class="settings.packageDetailsTab === 'dependents' ? '' : 'op50'">Used by</span>
+        <span :class="settings.packageDetailsTab === 'dependents' ? '' : 'op30'">Used by</span>
         <span bg-primary:10 rounded px1 text-sm text-primary>{{ settings.deepDependenciesTree ? pkg.flatDependents.size : pkg.dependents.size }}</span>
       </button>
       <div border="b base" w-2 />
@@ -111,10 +111,10 @@ const duplicated = computed(() => {
         :class="settings.packageDetailsTab === 'dependencies' ? 'text-primary border-b-transparent' : 'saturate-0 hover:bg-active mt-5px'"
         @click="settings.packageDetailsTab = 'dependencies'"
       >
-        <span :class="settings.packageDetailsTab === 'dependencies' ? '' : 'op50'">Deps on</span>
+        <span :class="settings.packageDetailsTab === 'dependencies' ? '' : 'op30'">Deps on</span>
         <span bg-primary:10 rounded px1 text-sm text-primary>{{ settings.deepDependenciesTree ? pkg.flatDependencies.size : pkg.dependencies.size }}</span>
       </button>
-      <div border="b base" py1 px2>
+      <div border="b base" pt2 px2>
         <button
           p1 rounded-full hover:bg-active
           title="Toggle deep dependencies tree"

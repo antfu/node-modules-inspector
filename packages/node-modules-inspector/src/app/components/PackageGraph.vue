@@ -17,8 +17,8 @@ interface Link extends HierarchyLink<PackageNode> {
 
 const svgLinks = useTemplateRef<SVGSVGElement>('svgLinks')
 const svgLinksActive = useTemplateRef<SVGSVGElement>('svgLinksActive')
-
 const el = useTemplateRef<HTMLDivElement>('el')
+
 const width = ref(window.innerWidth)
 const height = ref(window.innerHeight)
 
@@ -35,8 +35,10 @@ const NODE_MARGIN = 100
 
 function calculateGraph() {
   const packageMap = new Map<string, PackageNode>(props.packages.map(x => [x.spec, x]))
+
+  // Top-level packages are those that are not dependents of any other filtered package
   const topLevel = Array.from(props.packages.values() || [])
-    .filter(pkg => !pkg.flatDependents.size)
+    .filter(pkg => !Array.from(pkg.dependents).some(dep => packageMap.has(dep)))
     .sort((a, b) => a.flatDependencies.size - b.flatDependencies.size)
 
   const seen = new Set<PackageNode>()

@@ -7,6 +7,8 @@ export function getModuleType(node: PackageNode | PackageModuleType) {
   if (!settings.value.moduleTypeSimple)
     return type
 
+  if (type === 'dts')
+    return 'dts'
   if (['cjs', 'faux'].includes(type))
     return 'cjs'
   return 'esm'
