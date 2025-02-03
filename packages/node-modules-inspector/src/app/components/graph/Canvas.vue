@@ -140,17 +140,23 @@ function calculateGraph() {
   })
 }
 
+const isGrabbing = shallowRef(false)
+
 function handleDragingScroll() {
   let isDown = false
   let x = 0
   let y = 0
   useEventListener(el, 'mousedown', (e) => {
+    isGrabbing.value = true
     isDown = true
     x = el.value!.scrollLeft + e.pageX
     y = el.value!.scrollTop + e.pageY
   })
   useEventListener('mouseleave', () => isDown = false)
-  useEventListener('mouseup', () => isDown = false)
+  useEventListener('mouseup', () => {
+    isGrabbing.value = false
+    isDown = false
+  })
   useEventListener('mousemove', (e) => {
     if (!isDown)
       return
@@ -258,6 +264,7 @@ function generateLink(link: HierarchyLink<PackageNode>) {
     ref="el"
     w-screen h-screen of-scroll absolute inset-0 relative select-none
     flex="~ items-center justify-center"
+    :class="isGrabbing ? 'cursor-grabbing' : 'cursor-grab'"
   >
     <div class="bg-dots" pointer-events-none z-graph-bg absolute left-0 top-0 :style="{ width: `${width}px`, height: `${height}px` }" />
     <svg ref="svgLinks" pointer-events-none absolute left-0 top-0 z-graph-link :width="width" :height="height">
