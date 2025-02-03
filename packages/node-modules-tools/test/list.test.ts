@@ -15,6 +15,7 @@ it('runs', async () => {
   expect({
     ...item,
     filepath: undefined,
+    flatDependents: undefined,
   }).toMatchInlineSnapshot(`
     {
       "dependencies": Set {
@@ -30,15 +31,7 @@ it('runs', async () => {
       "flatDependencies": Set {
         "ms@2.1.3",
       },
-      "flatDependents": Set {
-        "node-modules-tools@0.0.2",
-        "unbuild@3.3.1",
-        "untyped@1.5.2",
-        "@babel/core@7.26.0",
-        "@babel/traverse@7.25.9",
-        "@babel/helper-module-transforms@7.26.0",
-        "@babel/helper-module-imports@7.25.9",
-      },
+      "flatDependents": undefined,
       "name": "debug",
       "resolved": {
         "author": "Josh Junon (https://github.com/qix-)",
@@ -53,5 +46,10 @@ it('runs', async () => {
       "spec": "debug@4.4.0",
       "version": "4.4.0",
     }
+  `)
+  expect(Array.from(item.flatDependents).filter(d => d.startsWith('node-modules-tools@'))).toMatchInlineSnapshot(`
+    [
+      "node-modules-tools@0.0.5",
+    ]
   `)
 })
