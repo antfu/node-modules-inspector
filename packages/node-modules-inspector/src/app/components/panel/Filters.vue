@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { PackageModuleType } from 'node-modules-tools'
 import type { WritableComputedRef } from 'vue'
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { excludesActivated, FILTER_KEYS_EXCLUDES, FILTER_KEYS_FILTERS, filters, FILTERS_DEFAULT, filtersActivated } from '~/state/filters'
 import { payloads } from '~/state/payload'
 import { settings } from '~/state/settings'
@@ -73,6 +73,23 @@ function resetExcludes() {
 const moduleTypes = Object.fromEntries(
   MODULE_TYPES_FULL_SELECT.map(x => [x, createModuleTypeRef(x)] as const),
 ) as Record<PackageModuleType, WritableComputedRef<boolean>>
+
+const searchText = ref('')
+
+watch(searchText, (v) => {
+  const authorMatches = [...v.matchAll(/author\s*:\s*"([^"]*)"/gi)].map(m => m[1])
+  const licenseMatches = [...v.matchAll(/license\s*:\s*"([^"]*)"/gi)].map(m => m[1])
+  const remaining = v
+    .replace(/author\s*:\s*"[^"]*"\s*/gi, '')
+    .replace(/license\s*:\s*"[^"]*"\s*/gi, '')
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+
+  filters.licenses = licenseMatches.length ? licenseMatches : null
+  filters.authors = authorMatches.length ? authorMatches : null
+  filters.search = remaining.join(' ')
+})
 </script>
 
 <template>
@@ -101,7 +118,7 @@ const moduleTypes = Object.fromEntries(
       >
         <div i-ph-text-t-duotone text-lg :class="filters.search ? 'text-primary' : 'op50'" flex-none />
         <input
-          v-model="filters.search"
+          v-model="searchText"
           placeholder="Filter by text"
           w-full bg-transparent outline-none
         >
