@@ -11,12 +11,17 @@
 Interactive UI for local node modules inspection.
 
 > [!IMPORTANT]
-> Working in progress, not usable (at all) yet. If you want to have a look or contribute to it, you can clone the repo and run it locally with `pnpm dev` for now.
+> Working in progress, expect incomplete features and bugs.
+
+For now, you may try it by running following command under your **pnpm** project.
+
+```bash
+npx node-modules-inspector
+```
 
 ## Screenshots
 
-> [!NOTE]
-> This project is still in active development, and the screenshots may not reflect the current state of the project.
+> Screenshots may not reflect the current state
 
 ![Image](https://github.com/user-attachments/assets/80ce6f9d-26fb-4fcf-8c51-e3d2b6f9f24c)
 ![Image](https://github.com/user-attachments/assets/6de8614c-2663-4c69-bd1e-96e8e66673a7)
