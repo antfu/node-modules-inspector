@@ -7,6 +7,6 @@
       <div i-ph-lightbulb-duotone flex-none />
       <span>Run <code color-base>`pnpm dedupe`</code> to de-duplicate packages that satisfies with the ranges</span>
     </div>
-    <ReportMutlipleVersions />
+    <ReportMultipleVersions />
   </CanvasContainer>
 </template>
