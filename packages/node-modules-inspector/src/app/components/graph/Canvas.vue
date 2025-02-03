@@ -143,22 +143,17 @@ function calculateGraph() {
 const isGrabbing = shallowRef(false)
 
 function handleDragingScroll() {
-  let isDown = false
   let x = 0
   let y = 0
   useEventListener(el, 'mousedown', (e) => {
     isGrabbing.value = true
-    isDown = true
     x = el.value!.scrollLeft + e.pageX
     y = el.value!.scrollTop + e.pageY
   })
-  useEventListener('mouseleave', () => isDown = false)
-  useEventListener('mouseup', () => {
-    isGrabbing.value = false
-    isDown = false
-  })
+  useEventListener('mouseleave', () => isGrabbing.value = false)
+  useEventListener('mouseup', () => isGrabbing.value = false)
   useEventListener('mousemove', (e) => {
-    if (!isDown)
+    if (!isGrabbing.value)
       return
     e.preventDefault()
     el.value!.scrollLeft = x - e.pageX
