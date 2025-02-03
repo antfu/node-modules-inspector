@@ -4,7 +4,7 @@ import { computed } from 'vue'
 import { version } from '../../package.json'
 import { getBackend } from './backends'
 
-import { fetchListDependenciesData, packageData } from './state/data'
+import { fetchListDependenciesData, rawData } from './state/data'
 import { setupQuery } from './state/query'
 import 'floating-vue/dist/style.css'
 import './styles/global.css'
@@ -31,7 +31,7 @@ fetchListDependenciesData()
 
 <template>
   <div
-    v-if="backend.status.value !== 'connected' || error || !packageData"
+    v-if="backend.status.value !== 'connected' || error || !rawData"
     flex="~ col" h-full w-full items-center justify-center p4
   >
     <div

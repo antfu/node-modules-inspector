@@ -2,12 +2,15 @@ import pm from 'picomatch'
 import { computed, reactive } from 'vue'
 import { buildVersionToPackagesMap } from '../utils/maps'
 import { getModuleType } from '../utils/module-type'
-import { packageData } from './data'
+import { rawData } from './data'
 import { filters, filterSearchDebounced } from './filters'
+
+const _all_packages = computed(() => Array.from(rawData.value?.packages.values() || []))
+const _all_packages_map = computed(() => new Map(_all_packages.value.map(i => [i.spec, i])))
 
 const _avaliable_packages = computed(() => {
   // TODO: exclude packages
-  let pkgs = Array.from(packageData.value?.packages.values() || [])
+  let pkgs = _all_packages.value
     .filter((pkg) => {
       if (filters.excludes && filters.excludes.some(i => pkg.name.includes(i)))
         return false
@@ -65,9 +68,6 @@ const _filtered_packages = computed(() => Array.from((function *() {
 })()))
 
 const _filtered_packages_versions = computed(() => buildVersionToPackagesMap(_filtered_packages.value))
-
-const _all_packages = computed(() => Array.from(packageData.value?.packages.values() || []))
-const _all_packages_map = computed(() => new Map(_all_packages.value.map(i => [i.spec, i])))
 
 export const payload = reactive({
   all: {

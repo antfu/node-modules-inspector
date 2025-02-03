@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { getBackend } from '~/backends'
-import { packageData } from '~/state/data'
+import { rawData } from '~/state/data'
 import { payload } from '~/state/payload'
 import { version } from '../../../../package.json'
 
@@ -21,18 +21,18 @@ const backend = getBackend()
         <span op50>v{{ version }}</span>
       </span>
     </h1>
-    <div v-if="packageData" border="t base" flex="~ col gap-3" p5>
+    <div v-if="rawData" border="t base" flex="~ col gap-3" p5>
       <button
         flex="~ gap-2 items-center"
-        @click="backend.functions.openInFinder?.(packageData.root)"
+        @click="backend.functions.openInFinder?.(rawData.root)"
       >
         <div i-catppuccin-folder-node-open icon-catppuccin flex-none />
-        <span font-mono break-after-all text-left leading-none>{{ packageData.root }}</span>
+        <span font-mono break-after-all text-left leading-none>{{ rawData.root }}</span>
       </button>
       <div flex="~ gap-2 items-center">
         <div i-catppuccin-pnpm icon-catppuccin flex-none />
-        <span>{{ packageData.packageManager }}</span>
-        <DisplayVersion :version="packageData.packageManagerVersion" prefix="@" op75 />
+        <span>{{ rawData.packageManager }}</span>
+        <DisplayVersion :version="rawData.packageManagerVersion" prefix="@" op75 />
       </div>
       <div flex="~ gap-2 items-center">
         <div i-catppuccin-folder-packages-open icon-catppuccin flex-none />

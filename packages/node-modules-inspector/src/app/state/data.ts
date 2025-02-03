@@ -3,7 +3,7 @@ import { useAsyncState } from '@vueuse/core'
 import { shallowRef } from 'vue'
 import { getBackend } from '~/backends'
 
-export const packageData = shallowRef<ListPackageDependenciesResult | null>(null)
+export const rawData = shallowRef<ListPackageDependenciesResult | null>(null)
 
 export function fetchListDependenciesData() {
   const backend = getBackend()
@@ -14,9 +14,9 @@ export function fetchListDependenciesData() {
     for (const pkg of data.packages.values())
       Object.freeze(pkg)
 
-    packageData.value = data
+    rawData.value = data
 
-    return packageData.value
+    return rawData.value
   }, null)
   return state
 }
