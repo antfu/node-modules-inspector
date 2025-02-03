@@ -24,13 +24,36 @@ type PnpmDependencyHierarchy = Pick<PackageDependencyHierarchy, 'name' | 'versio
   }
 
 async function resolveRoot(options: ListPackageDependenciesOptions) {
-  const raw = await x('pnpm', ['root', '-w'], { throwOnError: true, nodeOptions: { cwd: options.cwd } })
-  return dirname(raw.stdout.trim())
+  let raw: string | undefined
+  try {
+    raw = (await x('pnpm', ['root', '-w'], { throwOnError: true, nodeOptions: { cwd: options.cwd } }))
+      .stdout
+      .trim()
+  }
+  catch {
+    try {
+      raw = (await x('pnpm', ['root'], { throwOnError: true, nodeOptions: { cwd: options.cwd } }))
+        .stdout
+        .trim()
+    }
+    catch (err) {
+      console.error('Failed to resolve root directory')
+      console.error(err)
+    }
+  }
+  return raw ? dirname(raw) : options.cwd
 }
 
 async function getPnpmVersion(options: ListPackageDependenciesOptions) {
-  const raw = await x('pnpm', ['--version'], { throwOnError: true, nodeOptions: { cwd: options.cwd } })
-  return raw.stdout.trim()
+  try {
+    const raw = await x('pnpm', ['--version'], { throwOnError: true, nodeOptions: { cwd: options.cwd } })
+    return raw.stdout.trim()
+  }
+  catch (err) {
+    console.error('Failed to get pnpm version')
+    console.error(err)
+    return undefined
+  }
 }
 
 async function getDependenciesTree(options: ListPackageDependenciesOptions): Promise<PnpmDependencyHierarchy[]> {

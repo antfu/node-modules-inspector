@@ -40,6 +40,7 @@
     "open": "catalog:",
     "pathe": "catalog:",
     "picocolors": "catalog:",
+    "structured-clone-es": "catalog:",
     "ws": "catalog:"
   },
   "devDependencies": {
@@ -51,7 +52,6 @@
     "floating-vue": "catalog:",
     "fuse.js": "catalog:",
     "shiki": "catalog:",
-    "structured-clone-es": "catalog:",
     "vite-hot-client": "catalog:"
   }
 }

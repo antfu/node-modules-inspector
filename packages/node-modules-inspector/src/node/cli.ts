@@ -68,12 +68,12 @@ cli
   .option('--root <root>', 'Root directory', { default: process.cwd() })
   // Dev specific options
   .option('--host <host>', 'Host', { default: process.env.HOST || '127.0.0.1' })
-  .option('--port <port>', 'Port', { default: process.env.PORT || 7777 })
+  .option('--port <port>', 'Port', { default: process.env.PORT || 6666 })
   .option('--open', 'Open browser', { default: true })
   // Action
   .action(async (options) => {
     const host = options.host
-    const port = await getPort({ port: options.port, portRange: [7777, 9000], host })
+    const port = await getPort({ port: options.port, portRange: [6666, 9000], host })
 
     console.log(MARK_INFO, `Starting Node Modules Inspector at`, c.green(`http://${host === '127.0.0.1' ? 'localhost' : host}:${port}`), '\n')
 
