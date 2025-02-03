@@ -18,7 +18,7 @@ export const filters = reactive<FilterOptions>({
   'modules': null,
   'licenses': null,
   'excludes': null,
-  'exclude-dts': true,
+  'exclude-dts': false,
   'source-type': null,
 })
 
@@ -34,7 +34,7 @@ export const FILTER_KEYS_FULL = [
   'excludes',
   'exclude-dts',
   ...FILTER_KEYS,
-]
+] satisfies (keyof FilterOptions)[]
 
 export const filterSearchDebounced = useDebounce(computed(() => filters.search), 200)
 export const filtersActivated = computed(() => FILTER_KEYS.filter(i => !!filters[i]))

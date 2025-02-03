@@ -3,7 +3,7 @@ import type { FilterOptions } from './filters'
 import { useRoute, useRouter } from '#app/composables/router'
 import { debouncedWatch, ignorableWatch } from '@vueuse/core'
 import { reactive, watch } from 'vue'
-import { FILTER_KEYS, filters } from './filters'
+import { FILTER_KEYS_FULL, filters } from './filters'
 
 export interface QueryOptions extends FilterOptions {
   selected?: string
@@ -58,6 +58,9 @@ export function setupQuery() {
   const { ignoreUpdates } = ignorableWatch(
     query,
     () => {
+      // TODO: store the filters in the localStorge
+      // Do soft .replace instead of pushing to history
+      // Navigation should only be recording when changing `selected` or route
       router.push({ path: route.path, query: toVueRouterQuery(query) })
     },
     { deep: true, flush: 'post' },
@@ -81,7 +84,7 @@ export function setupQuery() {
   debouncedWatch(
     filters,
     () => {
-      for (const key of FILTER_KEYS) {
+      for (const key of FILTER_KEYS_FULL) {
         if (query[key] !== filters[key])
           (query as any)[key] = filters[key]
       }

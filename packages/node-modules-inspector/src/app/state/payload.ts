@@ -8,19 +8,43 @@ import { filters, filterSearchDebounced } from './filters'
 const _all_packages = computed(() => Array.from(rawData.value?.packages.values() || []))
 const _all_packages_map = computed(() => new Map(_all_packages.value.map(i => [i.spec, i])))
 
-const _avaliable_packages = computed(() => {
-  // TODO: exclude packages
-  let pkgs = _all_packages.value
+const _excluded_packages = computed(() => {
+  const excluded = new Set(_all_packages.value
     .filter((pkg) => {
-      if (filters.excludes && filters.excludes.some(i => pkg.name.includes(i)))
-        return false
-      return true
-    })
+      if (filters['exclude-dts'] && pkg.resolved.module === 'dts')
+        return true
+      if (filters.excludes && filters.excludes.includes(pkg.spec))
+        return true
+      return false
+    }))
 
-  if (filters['exclude-dts'])
-    pkgs = pkgs.filter(i => i.resolved.module !== 'dts')
+  let changed = true
+  while (changed) {
+    changed = false
+    for (const pkg of _all_packages.value) {
+      if (excluded.has(pkg) || !pkg.dependents.size)
+        continue
+      let shouldExclude = true
+      for (const parentSpec of pkg.dependents) {
+        const parent = _all_packages_map.value.get(parentSpec)
+        if (!parent || !excluded.has(parent)) {
+          shouldExclude = false
+          break
+        }
+      }
+      if (!shouldExclude)
+        continue
+      excluded.add(pkg)
+      changed = true
+    }
+  }
 
-  return pkgs
+  return excluded
+})
+
+const _avaliable_packages = computed(() => {
+  return _all_packages.value
+    .filter(pkg => !_excluded_packages.value.has(pkg))
 })
 const _avaliable_packages_map = computed(() => new Map(_avaliable_packages.value.map(i => [i.spec, i])))
 const _avaliable_packages_versions = computed(() => buildVersionToPackagesMap(_avaliable_packages.value))
@@ -74,6 +98,9 @@ export const payload = reactive({
     packages: _all_packages,
     map: _all_packages_map,
     get: (spec: string) => _all_packages_map.value.get(spec),
+  },
+  excluded: {
+    packages: _excluded_packages,
   },
   workspace: {
     packages: _workspace_packages,

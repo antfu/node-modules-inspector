@@ -170,9 +170,9 @@ const moduleTypes = Object.fromEntries(
           <DisplayNumberBadge :number="payload.avaliable.packages.length" rounded-full />
           <span op50>packages filtered</span>
         </div>
-        <div v-if="payload.all.packages.length > payload.avaliable.packages.length" flex="~ items-center gap-1" text-0.85rem>
+        <div v-if="payload.excluded.packages.size" flex="~ items-center gap-1" text-0.85rem>
           <span op25>(</span>
-          <DisplayNumberBadge :number="payload.all.packages.length - payload.avaliable.packages.length" rounded-full />
+          <DisplayNumberBadge :number="payload.excluded.packages.size" rounded-full />
           <span op50>packages excluded</span>
           <span op25>)</span>
         </div>

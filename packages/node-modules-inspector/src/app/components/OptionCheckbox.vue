@@ -1,6 +1,6 @@
 <script setup lang="ts">
-const value = defineModel<boolean>('modelValue', {
-  type: Boolean,
+const value = defineModel<boolean | string>('modelValue', {
+  type: [Boolean, String],
 })
 </script>
 
