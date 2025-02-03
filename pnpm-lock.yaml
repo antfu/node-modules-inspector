@@ -342,6 +342,9 @@ importers:
       package-manager-detector:
         specifier: 'catalog:'
         version: 0.2.9
+      pathe:
+        specifier: 'catalog:'
+        version: 2.0.2
       tinyexec:
         specifier: 'catalog:'
         version: 0.3.2

@@ -41,6 +41,7 @@
   },
   "dependencies": {
     "package-manager-detector": "catalog:",
+    "pathe": "catalog:",
     "tinyexec": "catalog:"
   },
   "devDependencies": {
