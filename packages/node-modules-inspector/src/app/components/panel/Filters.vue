@@ -41,7 +41,28 @@ const moduleTypes = Object.fromEntries(
 
 <template>
   <div>
-    <div flex="~ col gap-4" p4>
+    <div flex="~ col gap-4">
+      <label
+        p4 flex-none h-full
+        flex="~ items-center gap-1.5"
+        hover:bg-active
+      >
+        <div i-ph-funnel-duotone text-lg :class="filters.search ? 'text-primary' : 'op50'" flex-none />
+        <input
+          v-model="filters.search"
+          placeholder="Filter by text"
+          w-full bg-transparent outline-none
+        >
+        <button
+          w-6 h-6 rounded-full hover:bg-active flex
+          :class="filters.search ? '' : 'op0'"
+          @click="filters.search = ''"
+        >
+          <div i-ph-x ma op50 />
+        </button>
+      </label>
+    </div>
+    <div flex="~ col gap-4" p4 border="t base">
       <OptionItem title="Dependency Source" description="Filter by source type of the dependency">
         <OptionSelectGroup
           v-model="filters.sourceType"

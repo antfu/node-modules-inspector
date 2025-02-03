@@ -4,7 +4,7 @@ import { computed } from 'vue'
 import { query } from '~/state/query'
 import { toggleDark } from '../../composables/dark'
 import { selectedNode } from '../../state/current'
-import { activatedFilters, filters } from '../../state/filters'
+import { activatedFilters } from '../../state/filters'
 
 const route = useRoute()
 const isSettingOpen = computed({
@@ -56,7 +56,7 @@ function resetPanelState() {
 
 <template>
   <div
-    fixed right-4 top-4 z-100 flex="~ gap-4 items-center"
+    fixed right-4 top-4 z-panel-nav flex="~ gap-4 items-center"
     bg-glass rounded-full border border-base shadow
   >
     <button
@@ -69,7 +69,31 @@ function resetPanelState() {
     </button>
   </div>
 
-  <div fixed left-4 top-4 z-100 flex="~ gap-3 items-center">
+  <div
+    fixed left-4 top-22 w-100 z-panel-content flex="~ gap-4 col" of-hidden
+    style="max-height: calc(100vh - 6.5rem);"
+  >
+    <div
+      bg-glass rounded-1em border border-base shadow of-y-auto
+      h-max max-h-full
+    >
+      <PanelSettings
+        v-if="isSettingOpen"
+      />
+      <PanelFilters
+        v-else-if="isFiltersOpen"
+      />
+      <PanelPackageDetails
+        v-else-if="selectedNode"
+        :pkg="selectedNode"
+      />
+      <PanelOverview
+        v-else
+      />
+    </div>
+  </div>
+
+  <div fixed left-4 top-4 flex="~ gap-3 items-center" z-panel-nav>
     <div
       bg-glass rounded-full border border-base shadow px3 py2 flex-none
       flex="~ items-center gap-1" w-max
@@ -113,54 +137,6 @@ function resetPanelState() {
         <div i-ph-gear-six-duotone text-xl />
       </button>
     </div>
-    <div
-      bg-glass rounded-full border border-base shadow transition-all duration-300
-      h-12
-      focus-within="ring-4 ring-primary:20 w-60"
-      :class="filters.search ? 'border-primary w-60' : 'w-12'"
-    >
-      <label
-        p3 flex-none rounded-full h-full
-        flex="~ items-center gap-1.5"
-        hover:bg-active
-      >
-        <div i-ph-magnifying-glass-duotone text-lg :class="filters.search ? 'text-primary' : 'op50'" flex-none />
-        <input
-          v-model="filters.search"
-          placeholder="Search to filter"
-          w-full bg-transparent outline-none
-        >
-        <button
-          w-6 h-6 rounded-full hover:bg-active flex
-          :class="filters.search ? '' : 'op0'"
-          @click="filters.search = ''"
-        >
-          <div i-ph-x ma op50 />
-        </button>
-      </label>
-    </div>
-  </div>
-  <div
-    fixed left-4 top-22 w-100 z-100 flex="~ gap-4 col" of-hidden
-    style="max-height: calc(100vh - 6.5rem);"
-  >
-    <div
-      bg-glass rounded-1em border border-base shadow of-y-auto
-      h-max max-h-full
-    >
-      <PanelSettings
-        v-if="isSettingOpen"
-      />
-      <PanelFilters
-        v-else-if="isFiltersOpen"
-      />
-      <PanelPackageDetails
-        v-else-if="selectedNode"
-        :pkg="selectedNode"
-      />
-      <PanelOverview
-        v-else
-      />
-    </div>
+    <PanelGoto />
   </div>
 </template>

@@ -44,6 +44,7 @@
     "ws": "catalog:"
   },
   "devDependencies": {
+    "@types/picomatch": "^3.0.2",
     "@unocss/nuxt": "catalog:",
     "@vueuse/nuxt": "catalog:",
     "d3": "catalog:",
@@ -51,6 +52,7 @@
     "d3-shape": "catalog:",
     "floating-vue": "catalog:",
     "fuse.js": "catalog:",
+    "picomatch": "^4.0.2",
     "shiki": "catalog:",
     "vite-hot-client": "catalog:"
   }

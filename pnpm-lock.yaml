@@ -309,6 +309,9 @@ importers:
         specifier: 'catalog:'
         version: 8.18.0
     devDependencies:
+      '@types/picomatch':
+        specifier: ^3.0.2
+        version: 3.0.2
       '@unocss/nuxt':
         specifier: 'catalog:'
         version: 65.4.3(magicast@0.3.5)(postcss@8.5.1)(rollup@4.30.1)(vite@6.0.11(@types/node@22.10.7)(jiti@2.4.2)(terser@5.31.0)(tsx@4.19.2)(yaml@2.7.0))(vue@3.5.13(typescript@5.7.3))(webpack@5.88.2(esbuild@0.24.2))
@@ -330,6 +333,9 @@ importers:
       fuse.js:
         specifier: 'catalog:'
         version: 7.1.0
+      picomatch:
+        specifier: ^4.0.2
+        version: 4.0.2
       shiki:
         specifier: 'catalog:'
         version: 2.2.0
@@ -1877,6 +1883,9 @@ packages:
 
   '@types/parse-path@7.0.3':
     resolution: {integrity: sha512-LriObC2+KYZD3FzCrgWGv/qufdUy4eXrxcLgQMfYXgPbLIecKIsVBaQgUPmxSSLcjmYbDTQbMgr6qr6l/eb7Bg==}
+
+  '@types/picomatch@3.0.2':
+    resolution: {integrity: sha512-n0i8TD3UDB7paoMMxA3Y65vUncFJXjcUf7lQY7YyKGl6031FNjfsLs6pdLFCy2GNFxItPJG8GvvpbZc2skH7WA==}
 
   '@types/resolve@1.20.2':
     resolution: {integrity: sha512-60BCwRFOZCQhDncwQdxxeOEEkbc5dIMccYLwbxsS4TUNeVECQ/pBJ0j09mrHOl/JJvpRPGwO9SvE4nR2Nb/a4Q==}
@@ -7521,6 +7530,8 @@ snapshots:
   '@types/normalize-package-data@2.4.4': {}
 
   '@types/parse-path@7.0.3': {}
+
+  '@types/picomatch@3.0.2': {}
 
   '@types/resolve@1.20.2': {}
 

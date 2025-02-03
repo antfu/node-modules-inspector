@@ -1,5 +1,6 @@
 import type { PackageModuleType } from 'node-modules-tools'
 import { useDebounce } from '@vueuse/core'
+import pm from 'picomatch'
 import { computed, reactive } from 'vue'
 import { getModuleType } from '../utils/module-type'
 import { packageData } from './data'
@@ -13,6 +14,7 @@ export interface FilterOptions {
 }
 
 export const FILTER_KEYS = [
+  'search',
   'excludes',
   'modules',
   'licenses',
@@ -34,9 +36,14 @@ export const filters = reactive<FilterOptions>({
 
 export const activatedFilters = computed(() => FILTER_KEYS.filter(i => !!filters[i]))
 
-export const workspacePackages = computed(() => Array.from(packageData.value?.packages.values() || []).filter(i => i.workspace))
-
 const debouncedSearch = useDebounce(computed(() => filters.search), 200)
+
+export const avaliablePackages = computed(() => {
+  // TODO: exclude packages
+  return Array.from(packageData.value?.packages.values() || [])
+})
+
+export const workspacePackages = computed(() => avaliablePackages.value.filter(i => i.workspace))
 
 export const filteredPackages = computed(() => Array.from((function *() {
   for (const pkg of packageData.value?.packages.values() || []) {
@@ -44,8 +51,17 @@ export const filteredPackages = computed(() => Array.from((function *() {
       continue
     if (filters.licenses && !filters.licenses.includes(pkg.resolved.license || ''))
       continue
-    if (debouncedSearch.value && !pkg.name.includes(debouncedSearch.value))
-      continue
+    if (debouncedSearch.value) {
+      if (debouncedSearch.value.match(/[*[\]]/)) {
+        if (!pm.isMatch(pkg.name, debouncedSearch.value))
+          continue
+      }
+      else {
+        if (!pkg.name.includes(debouncedSearch.value))
+          continue
+      }
+    }
+
     // TODO: better excludes
     if (filters.excludes && filters.excludes.some(i => pkg.name.includes(i)))
       continue

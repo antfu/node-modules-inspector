@@ -146,8 +146,13 @@ onMounted(() => {
         if (query.selected)
           focusOn(query.selected)
       },
-      { immediate: true, flush: 'post' },
+      { flush: 'post' },
     )
+
+    if (query.selected)
+      focusOn(query.selected, false)
+    else if (props.packages[0])
+      focusOn(props.packages[0].spec, false)
   })
 })
 
@@ -190,12 +195,12 @@ const activeLinks = computed(() => {
   ]
 })
 
-function focusOn(spec: string) {
+function focusOn(spec: string, animated = true) {
   const el = nodesRefMap.get(spec)
   el?.scrollIntoView({
     block: 'center',
     inline: 'center',
-    behavior: 'smooth',
+    behavior: animated ? 'smooth' : 'instant',
   })
 }
 

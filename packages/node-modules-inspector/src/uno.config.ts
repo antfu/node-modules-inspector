@@ -39,6 +39,10 @@ export default defineConfig({
       'z-graph-node': 'z-11',
       'z-graph-link-active': 'z-12',
       'z-graph-node-active': 'z-13',
+
+      'z-panel-content': 'z-50',
+      'z-panel-nav': 'z-60',
+      'z-panel-goto': 'z-70',
     },
     [/^badge-color-(\w+)$/, ([, color]) => `bg-${color}-400:20 dark:bg-${color}-400:10 text-${color}-700 dark:text-${color}-300 border-${color}-600:10 dark:border-${color}-300:10`],
   ],
