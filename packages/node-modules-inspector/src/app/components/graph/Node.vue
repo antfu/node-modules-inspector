@@ -42,7 +42,7 @@ const classesOuter = computed(() => {
       @click="selectedNode = pkg === selectedNode ? null : pkg"
     >
       <DisplayPackageSpec :pkg />
-      <DisplayModuleType ml2 text-xs text-right flex-auto :pkg :badge="false" />
+      <DisplayModuleType ml2 text-xs text-right flex-auto justify-end :pkg :badge="false" />
     </button>
   </div>
 </template>
