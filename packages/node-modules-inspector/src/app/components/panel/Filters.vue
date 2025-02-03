@@ -3,7 +3,7 @@ import type { PackageModuleType } from 'node-modules-tools'
 import type { WritableComputedRef } from 'vue'
 import { computed } from 'vue'
 import { settings } from '~/state/settings'
-import { filters } from '../../state/filters'
+import { avaliablePackages, filteredPackages, filters } from '../../state/filters'
 import { MODULE_TYPES_FULL, MODULE_TYPES_SIMPLE } from '../../utils/module-type'
 
 const moduleTypesAvailable = computed<PackageModuleType[]>(() =>
@@ -89,6 +89,15 @@ const moduleTypes = Object.fromEntries(
         </label>
       </div>
     </div>
-    <PanelSettings border="t base" />
+    <div>
+      <ModuleTypePercentage :packages="filteredPackages" :rounded="false" />
+      <div p3 flex="~ items-center gap-2">
+        <DisplayNumberBadge :number="filteredPackages.length" rounded-full color="badge-color-primary" />
+        <span op50>of</span>
+        <DisplayNumberBadge :number="avaliablePackages.length" rounded-full />
+        <span op50>packages filtered</span>
+      </div>
+    </div>
+    <!-- <PanelSettings border="t base" /> -->
   </div>
 </template>

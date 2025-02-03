@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { packageData } from '~/state/data'
-import { filteredPackages, workspacePackages } from '~/state/filters'
+import { avaliablePackages, workspacePackages } from '~/state/filters'
 import { version } from '../../../../package.json'
 </script>
 
@@ -35,12 +35,12 @@ import { version } from '../../../../package.json'
       </div>
       <div flex="~ gap-2 items-center">
         <div i-catppuccin-java-class icon-catppuccin flex-none />
-        <DisplayNumberBadge :number="packageData.packages.size" rounded-full text-sm mx--0.2 mt-3px />
+        <DisplayNumberBadge :number="avaliablePackages.length" rounded-full text-sm mx--0.2 mt-3px />
         <span ml--0.5>packages</span>
       </div>
     </div>
     <div>
-      <ModuleTypePercentage :packages="filteredPackages" :rounded="false" />
+      <ModuleTypePercentage :packages="avaliablePackages" :rounded="false" />
     </div>
     <div border="t base" flex="~ gap-1.1 items-center" p3 pl5 pr4 text-hex-888e>
       Made with
