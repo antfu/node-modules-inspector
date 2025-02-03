@@ -76,8 +76,10 @@ export async function listPackageDependencies(
         version = workspaceMapping.node.version
     }
 
-    node = {
-      spec: `${raw.from}@${version}`,
+    const spec = `${raw.from}@${version}`
+
+    node = packages.get(spec) || {
+      spec,
       name: raw.from,
       version,
       filepath: raw.path,
@@ -94,12 +96,14 @@ export async function listPackageDependencies(
   ): PackageNodeRaw {
     const node = normalize(raw)
 
-    if (mode === 'dev')
-      node.dev = true
-    if (mode === 'prod')
-      node.prod = true
-    if (mode === 'optional')
-      node.optional = true
+    if (!node.workspace) {
+      if (mode === 'dev')
+        node.dev = true
+      if (mode === 'prod')
+        node.prod = true
+      if (mode === 'optional')
+        node.optional = true
+    }
 
     // Filter out node
     if (options.traverseFilter?.(node) === false)

@@ -54,30 +54,38 @@ function populateRawResult(input: ListPackageDependenciesRawResult): ListPackage
   function resloveFlatDependencies(pkg: PackageNodeBase) {
     const postTasks: (() => void)[] = []
 
-    function traverseDependencies(node: PackageNodeBase, root: PackageNodeBase = node) {
+    function traverseDependencies(
+      node: PackageNodeBase,
+      seen: Set<PackageNodeBase> = new Set(),
+    ) {
       for (const dep of node.dependencies) {
         const level = node.depth + 1
         const depNode = result.packages.get(dep)!
-        if (root.dev)
-          depNode.dev = true
-        if (root.prod)
-          depNode.prod = true
-        if (root.optional)
-          depNode.optional = true
+
+        if (!node.workspace) {
+          if (node.dev)
+            depNode.dev = true
+          if (node.prod)
+            depNode.prod = true
+          if (node.optional)
+            depNode.optional = true
+        }
         if (depNode.depth > level)
           depNode.depth = level
 
-        if (pkg.flatDependencies.has(dep))
+        if (seen.has(depNode))
           continue
+
         pkg.flatDependencies.add(dep)
+        seen.add(depNode)
         postTasks.push(() => {
           depNode.flatDependents.add(pkg.spec)
         })
-        traverseDependencies(depNode, root)
+        traverseDependencies(depNode, seen)
       }
     }
 
-    function traverseDependents(node: PackageNodeBase, root: PackageNodeBase = node) {
+    function traverseDependents(node: PackageNodeBase) {
       for (const dep of node.dependents) {
         if (pkg.flatDependents.has(dep))
           continue
@@ -86,7 +94,7 @@ function populateRawResult(input: ListPackageDependenciesRawResult): ListPackage
         postTasks.push(() => {
           parentNode.flatDependencies.add(pkg.spec)
         })
-        traverseDependents(parentNode, root)
+        traverseDependents(parentNode)
       }
     }
 

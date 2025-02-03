@@ -24,7 +24,7 @@ it('runs', async () => {
         "@babel/core@7.26.0",
         "@babel/traverse@7.25.9",
       },
-      "depth": 2,
+      "depth": 4,
       "dev": true,
       "filepath": "/Users/antfu/i/node-modules-inspector/node_modules/.pnpm/debug@4.4.0/node_modules/debug",
       "flatDependencies": Set {

@@ -41,7 +41,7 @@ function calculateGraph() {
 
   // Top-level packages are those that are not dependents of any other filtered package
   const topLevel = Array.from(props.packages.values() || [])
-    .filter(pkg => !Array.from(pkg.dependents).some(dep => packageMap.has(dep)))
+    .filter(pkg => pkg.workspace || !Array.from(pkg.dependents).some(dep => packageMap.has(dep)))
     .sort((a, b) => a.flatDependencies.size - b.flatDependencies.size)
 
   const seen = new Set<PackageNode>()
