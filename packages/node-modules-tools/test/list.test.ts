@@ -31,7 +31,7 @@ it('runs', async () => {
         "ms@2.1.3",
       },
       "flatDependents": Set {
-        "node-modules-tools@0.0.2",
+        "node-modules-tools@0.0.4",
         "unbuild@3.3.1",
         "untyped@1.5.2",
         "@babel/core@7.26.0",
