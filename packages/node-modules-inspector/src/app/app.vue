@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useHead } from '@unhead/vue'
+import { computed } from 'vue'
 import { version } from '../../package.json'
 import { getBackend } from './backends'
 
@@ -16,37 +17,59 @@ useHead({
 const backend = getBackend()
 backend.connect()
 
+const error = computed(() => {
+  if (backend.connectionError.value)
+    return backend.connectionError.value
+  if (backend.status.value === 'error')
+    return 'Connection failed'
+  return null
+})
+
 setupQuery()
 fetchListDependenciesData()
 </script>
 
 <template>
-  <div v-if="backend.status.value !== 'connected' || !packageData" flex="~ col" h-full w-full items-center justify-center p4>
-    <div flex="~ col gap-2 items-center justify-center" flex-auto animate-pulse>
+  <div
+    v-if="backend.status.value !== 'connected' || error || !packageData"
+    flex="~ col" h-full w-full items-center justify-center p4
+  >
+    <div
+      flex="~ col gap-2 items-center justify-center" flex-auto
+      :class="error ? '' : 'animate-pulse'"
+    >
       <h1 p5 flex="~ col gap-1 items-center">
-        <div>
-          <Logo w-25 h-25 alt="Logo" class="animate-spin-reverse" />
+        <div relative>
+          <Logo
+            w-25 h-25 alt="Logo" transition-all duration-300
+            :class="error ? 'hue-rotate--105' : 'animate-spin-reverse'"
+          />
+          <div absolute top-0 right--2 text-orange transition-all duration-300 :class="error ? 'op100' : 'op0'">
+            <div i-ph-warning-fill text-3xl />
+          </div>
         </div>
         <div flex="~ gap-1" leading-none text-2xl mt-5>
-          <span font-700 text-primary>Node Modules</span>
+          <span font-700 text-primary transition-all duration-300 :class="error ? 'hue-rotate--105' : ''">Node Modules</span>
           <span op75>Inspector</span>
         </div>
         <span font-mono op50>v{{ version }}</span>
       </h1>
-      <div flex="~ gap-2 items-center" text-lg op50>
-        <template v-if="backend.status.value === 'error' || backend.connectionError.value">
-          <div badge-color-rose rounded px2>
-            <div i-ph-warning-duotone text-rose text-2xl />
-            <span>Failed to connect to backend</span>
-            <span>{{ backend.connectionError.value }}</span>
+
+      <div h-20>
+        <div v-if="error" text-red rounded p2 flex="~ col items-center">
+          <div font-bold>
+            Failed to Connect to the Backend
           </div>
-        </template>
-        <template v-else-if="backend.status.value === 'connecting'">
-          Connecting...
-        </template>
-        <template v-else-if="backend.status.value === 'connected'">
+          <div text-red5 dark:text-red3>
+            {{ error }}
+          </div>
+        </div>
+        <div v-else-if="backend.status.value === 'connected'" flex="~ gap-2 items-center" text-lg op50>
           Fetching data...
-        </template>
+        </div>
+        <div v-else flex="~ gap-2 items-center" text-lg op50>
+          Connecting...
+        </div>
       </div>
     </div>
   </div>
