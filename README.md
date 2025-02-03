@@ -24,9 +24,10 @@ Interactive UI for local node modules inspection.
 
 ## Credits
 
-- This project is heavily inspired by [https://npmgraph.js.org/](https://npmgraph.js.org/)
-- Thanks [@wooorm](https://github.com/wooorm) for the module type detection algorithm in [wooorm/npm-esm-vs-cjs](https://github.com/wooorm/npm-esm-vs-cjs)
-- The logo is derivated from the `black-hole-line-duotone` icon from the [Solar Icon Sets](https://www.figma.com/community/file/1166831539721848736/solar-icons-set) by [480 Design](https://www.figma.com/@480design) and [R4IN80W](https://www.figma.com/@voidrainbow) under the [CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/) license.
+- This project is heavily inspired by [npmgraph](https://npmgraph.js.org/)
+- Thanks to [@wooorm](https://github.com/wooorm) for the module type detection algorithm in [wooorm/npm-esm-vs-cjs](https://github.com/wooorm/npm-esm-vs-cjs)
+- The logo is derivated from the `black-hole-line-duotone` icon (yeah it's a black hole!) from the [Solar Icon Sets](https://www.figma.com/community/file/1166831539721848736/solar-icons-set) by [480 Design](https://www.figma.com/@480design) and [R4IN80W](https://www.figma.com/@voidrainbow) under the [CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/) license.
+- Thanks to [@privatenumber](https://github.com/privatenumber) for [pkg-size.dev](https://pkg-size.dev/) for running analysis with installations in WebConainter.
 
 ## Sponsors
 

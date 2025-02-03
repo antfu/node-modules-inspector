@@ -12,21 +12,24 @@ const top20 = computed(() => {
 </script>
 
 <template>
-  <div grid="~ cols-[max-content_max-content_1fr] gap-x-4 gap-y-1" border="~ rounded-xl base" p4 bg-glass>
-    <template v-for="pkg of top20" :key="pkg.spec">
-      <button
-        font-mono text-left hover:bg-active px2 ml--2 rounded
-        @click="selectedNode = pkg"
-      >
-        <DisplayPackageSpec :pkg />
-      </button>
-      <div flex="~ justify-end items-center">
-        <DisplayNumberBadge
-          :number="pkg.flatDependencies.size"
-          rounded-full text-sm h-max
-        />
-      </div>
-      <ModuleTypePercentage :pkg="pkg" :flat="true" />
-    </template>
+  <div v-if="top20.length">
+    <SubTitle>Packages with the Most of Transitive Dependencies</SubTitle>
+    <div grid="~ cols-[max-content_max-content_1fr] gap-x-4 gap-y-1" border="~ rounded-xl base" p4 bg-glass>
+      <template v-for="pkg of top20" :key="pkg.spec">
+        <button
+          font-mono text-left hover:bg-active px2 ml--2 rounded
+          @click="selectedNode = pkg"
+        >
+          <DisplayPackageSpec :pkg />
+        </button>
+        <div flex="~ justify-end items-center">
+          <DisplayNumberBadge
+            :number="pkg.flatDependencies.size"
+            rounded-full text-sm h-max
+          />
+        </div>
+        <ModuleTypePercentage :pkg="pkg" :flat="true" />
+      </template>
+    </div>
   </div>
 </template>
