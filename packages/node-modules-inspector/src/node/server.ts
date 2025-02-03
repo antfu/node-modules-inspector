@@ -1,3 +1,4 @@
+import type { Buffer } from 'node:buffer'
 import type { CreateWsServerOptions } from './ws'
 import { readFile, stat } from 'node:fs/promises'
 import { createServer } from 'node:http'
@@ -12,10 +13,10 @@ export async function createHostServer(options: CreateWsServerOptions) {
 
   const ws = await createWsServer(options)
 
-  const fileMap = new Map<string, Promise<string | undefined>>()
+  const fileMap = new Map<string, Promise<string | Buffer<ArrayBufferLike> | undefined>>()
   const readCachedFile = (id: string) => {
     if (!fileMap.has(id))
-      fileMap.set(id, readFile(id, 'utf-8').catch(() => undefined))
+      fileMap.set(id, readFile(id).catch(() => undefined))
     return fileMap.get(id)
   }
 
