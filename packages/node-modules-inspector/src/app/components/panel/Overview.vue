@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { packageData } from '~/state/data'
-import { filteredPackages } from '~/state/filters'
+import { filteredPackages, workspacePackages } from '~/state/filters'
 import { version } from '../../../../package.json'
 </script>
 
@@ -25,8 +25,14 @@ import { version } from '../../../../package.json'
         <span>{{ packageData.packageManager }}</span>
       </div>
       <div flex="~ gap-2 items-center">
+        <div i-catppuccin-folder-packages-open icon-catppuccin flex-none />
+        <DisplayNumberBadge :number="workspacePackages.length" rounded-full text-sm mx--0.2 mt-3px />
+        <span ml--0.5>workspace packages</span>
+      </div>
+      <div flex="~ gap-2 items-center">
         <div i-catppuccin-java-class icon-catppuccin flex-none />
-        <span>{{ packageData.packages.size }} packages</span>
+        <DisplayNumberBadge :number="packageData.packages.size" rounded-full text-sm mx--0.2 mt-3px />
+        <span ml--0.5>packages</span>
       </div>
     </div>
     <div>

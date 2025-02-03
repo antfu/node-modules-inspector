@@ -46,7 +46,7 @@ const tree = computed(() => {
       <template v-if="children?.length">
         <RenderNextTick v-if="props.depth < props.maxDepth">
           <PackageDependentTree
-            ml3
+            ml4
             :currents="children"
             :list="props.list"
             :type="props.type"
@@ -55,7 +55,7 @@ const tree = computed(() => {
             :max-depth="props.maxDepth"
           />
         </RenderNextTick>
-        <div v-else-if="props.maxDepth > 1" ml6>
+        <div v-else-if="props.maxDepth > 2" ml6>
           <span op50 px2 bg-active rounded text-sm>
             {{ children?.length }} more ···
           </span>

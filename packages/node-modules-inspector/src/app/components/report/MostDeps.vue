@@ -12,7 +12,7 @@ const top20 = computed(() => {
 </script>
 
 <template>
-  <div grid="~ cols-[max-content_max-content_1fr] gap-x-4 gap-y-1">
+  <div grid="~ cols-[max-content_max-content_1fr] gap-x-4 gap-y-1" border="~ rounded-xl base" p4 bg-glass>
     <template v-for="pkg of top20" :key="pkg.spec">
       <button
         font-mono text-left hover:bg-active px2 ml--2 rounded
@@ -20,8 +20,11 @@ const top20 = computed(() => {
       >
         <DisplayPackageSpec :pkg />
       </button>
-      <div font-mono text-right>
-        {{ pkg.flatDependencies.size }}
+      <div flex="~ justify-end items-center">
+        <DisplayNumberBadge
+          :number="pkg.flatDependencies.size"
+          rounded-full text-sm h-max
+        />
       </div>
       <ModuleTypePercentage :pkg="pkg" :flat="true" />
     </template>

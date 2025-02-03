@@ -3,11 +3,15 @@ import type { PackageNode } from 'node-modules-tools'
 import { computed } from 'vue'
 import { filteredPackages } from '~/state/filters'
 
+const MAX_DEPTH = 5
+
 const depthMap = computed(() => {
   const map = new Map<number, PackageNode[]>()
 
   for (const pkg of filteredPackages.value) {
-    const depth = pkg.depth
+    let depth = pkg.depth
+    if (depth >= MAX_DEPTH)
+      depth = MAX_DEPTH
     if (!map.has(depth))
       map.set(depth, [])
     map.get(depth)?.push(pkg)
@@ -24,13 +28,12 @@ const depthMap = computed(() => {
       <GridExpand
         v-for="([depth, packages]) of depthMap" :key="depth"
         :packages="packages"
+        :module-value="depth >= 4 ? false : true"
       >
         <template #title>
-          <span v-if="depth">Depth {{ depth }}</span>
-          <span v-else>Workspace Packages</span>
-          <div font-mono bg-active px1 ml2 rounded text-base op50>
-            {{ packages.length }}
-          </div>
+          <span v-if="depth" op75>Depth {{ depth }}{{ depth === MAX_DEPTH ? '+' : '' }}</span>
+          <span v-else op75>Workspace Packages</span>
+          <DisplayNumberBadge :number="packages.length" rounded-full ml2 text-base />
         </template>
       </GridExpand>
     </div>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
+import { DisplayNumberBadge } from '#components'
 import { Menu as VMenu } from 'floating-vue'
 import { computed } from 'vue'
 import { getPackageFromSpec, packageVersionsMap } from '~/state/data'
@@ -17,9 +18,9 @@ const duplicated = computed(() => {
   return undefined
 })
 
-function getDepth(amount: number) {
+function getDepth(amount: number, min = 1) {
   if (!settings.value.deepDependenciesTree)
-    return 1
+    return min
   if (amount > 200)
     return 3
   if (amount > 100)
@@ -103,7 +104,7 @@ function getDepth(amount: number) {
       </div>
     </div>
 
-    <div flex="~">
+    <div flex="~" select-none>
       <div border="b base" w-2 />
       <button
         flex-1 border border-base rounded-t-lg p1 flex="~ items-center justify-center gap-1" transition-margin
@@ -111,7 +112,10 @@ function getDepth(amount: number) {
         @click="settings.packageDetailsTab = 'dependents'"
       >
         <span :class="settings.packageDetailsTab === 'dependents' ? '' : 'op30'">Used by</span>
-        <span bg-primary:10 rounded px1 text-sm text-primary>{{ settings.deepDependenciesTree ? pkg.flatDependents.size : pkg.dependents.size }}</span>
+        <DisplayNumberBadge
+          text-xs rounded-full
+          :number="settings.deepDependenciesTree ? pkg.flatDependents.size : pkg.dependents.size"
+        />
       </button>
       <div border="b base" w-2 />
       <button
@@ -120,7 +124,10 @@ function getDepth(amount: number) {
         @click="settings.packageDetailsTab = 'dependencies'"
       >
         <span :class="settings.packageDetailsTab === 'dependencies' ? '' : 'op30'">Deps on</span>
-        <span bg-primary:10 rounded px1 text-sm text-primary>{{ settings.deepDependenciesTree ? pkg.flatDependencies.size : pkg.dependencies.size }}</span>
+        <DisplayNumberBadge
+          text-xs rounded-full
+          :number="settings.deepDependenciesTree ? pkg.flatDependencies.size : pkg.dependencies.size"
+        />
       </button>
       <div border="b base" pt2 px2>
         <button
@@ -140,7 +147,7 @@ function getDepth(amount: number) {
             py5 px4
             :currents="Array.from(pkg.flatDependents).map(getPackageFromSpec).filter(x => !!x).filter(i => i?.workspace)"
             :list="Array.from(pkg.flatDependents).map(getPackageFromSpec).filter(x => !!x)"
-            :max-depth="getDepth(pkg.flatDependents.size)"
+            :max-depth="getDepth(pkg.flatDependents.size, 2)"
             type="dependents"
           />
         </template>

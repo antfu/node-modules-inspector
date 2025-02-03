@@ -21,23 +21,18 @@ defineProps<{
       <template v-if="pkg.flatDependents.size">
         <div flex="~ items-center gap-1">
           <div i-ph-arrow-elbow-down-right-duotone />
-          <div op75>
-            {{ pkg.flatDependents.size }}
-          </div>
+          <DisplayNumberBadge :number="pkg.flatDependents.size" rounded-full text-sm />
         </div>
-        <span op25>·</span>
       </template>
 
       <template v-if="pkg.flatDependencies.size">
         <div flex="~ items-center gap-1">
           <div i-ph-lego-duotone />
-          <div op75>
-            {{ pkg.flatDependencies.size }}
-          </div>
+          <DisplayNumberBadge :number="pkg.flatDependencies.size" rounded-full text-sm />
         </div>
-        <span op25>·</span>
       </template>
 
+      <span op25>·</span>
       <div op75>
         {{ pkg.resolved.license }}
       </div>

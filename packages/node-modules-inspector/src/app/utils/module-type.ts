@@ -6,11 +6,11 @@ export const MODULE_TYPES_SIMPLE = ['esm', 'cjs', 'dts'] as PackageModuleType[]
 
 // @unocss-include
 export const MODULE_TYPES_COLOR_BADGE = {
-  esm: 'bg-green:20 dark:bg-green:10 text-green-700 dark:text-green-300 border-green:10',
-  dual: 'bg-teal:20 dark:bg-teal:10 text-teal-700 dark:text-teal-300 border-teal:10',
-  cjs: 'bg-yellow:20 dark:bg-yellow:10 text-yellow-700 dark:text-yellow-300 border-yellow:10',
-  faux: 'bg-lime:20 dark:bg-lime:10 text-lime-700 dark:text-lime-300 border-lime:10',
-  dts: 'bg-gray:10 dark:bg-gray:8 text-gray-700:50 dark:text-gray-300:50 border-gray:10',
+  esm: 'badge-color-green',
+  dual: 'badge-color-teal',
+  cjs: 'badge-color-yellow',
+  faux: 'badge-color-lime',
+  dts: 'badge-color-gray',
 }
 
 export function getModuleType(node: PackageNode | PackageModuleType) {

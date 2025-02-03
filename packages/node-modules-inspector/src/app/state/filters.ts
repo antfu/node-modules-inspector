@@ -34,6 +34,8 @@ export const filters = reactive<FilterOptions>({
 
 export const activatedFilters = computed(() => FILTER_KEYS.filter(i => !!filters[i]))
 
+export const workspacePackages = computed(() => Array.from(packageData.value?.packages.values() || []).filter(i => i.workspace))
+
 const debouncedSearch = useDebounce(computed(() => filters.search), 200)
 
 export const filteredPackages = computed(() => Array.from((function *() {
