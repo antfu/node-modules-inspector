@@ -1,5 +1,5 @@
 import { computed } from 'vue'
-import { getPackageFromSpec } from './data'
+import { getPackageFromSpec } from './filters'
 import { query } from './query'
 
 export const selectedNode = computed({

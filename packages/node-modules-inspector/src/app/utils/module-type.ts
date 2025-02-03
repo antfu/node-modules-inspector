@@ -4,6 +4,9 @@ import { settings } from '~/state/settings'
 export const MODULE_TYPES_FULL = ['dual', 'esm', 'faux', 'cjs', 'dts'] as PackageModuleType[]
 export const MODULE_TYPES_SIMPLE = ['esm', 'cjs', 'dts'] as PackageModuleType[]
 
+export const MODULE_TYPES_FULL_SELECT = ['dual', 'esm', 'faux', 'cjs'] as PackageModuleType[]
+export const MODULE_TYPES_SIMPLE_SELECT = ['esm', 'cjs'] as PackageModuleType[]
+
 // @unocss-include
 export const MODULE_TYPES_COLOR_BADGE = {
   esm: 'badge-color-green',

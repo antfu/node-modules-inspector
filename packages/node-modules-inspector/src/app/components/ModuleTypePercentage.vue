@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { PackageModuleType, PackageNode } from 'node-modules-tools'
 import { computed } from 'vue'
-import { getPackageFromSpec } from '~/state/data'
-import { getModuleTypeCounts } from '../utils/module-type'
+import { getPackageFromSpec } from '~/state/filters'
+import { getModuleTypeCounts } from '~/utils/module-type'
 
 const props = withDefaults(
   defineProps<{

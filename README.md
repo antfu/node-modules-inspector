@@ -16,7 +16,7 @@ Interactive UI for local node modules inspection.
 For now, you may try it by running following command under your **pnpm** project.
 
 ```bash
-npx node-modules-inspector
+pnpx node-modules-inspector
 ```
 
 ## Screenshots

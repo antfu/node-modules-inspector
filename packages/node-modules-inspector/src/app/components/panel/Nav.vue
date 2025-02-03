@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { useRoute } from '#app/composables/router'
 import { computed } from 'vue'
+import { toggleDark } from '~/composables/dark'
+import { selectedNode } from '~/state/current'
+import { activatedFilters } from '~/state/filters'
 import { query } from '~/state/query'
-import { toggleDark } from '../../composables/dark'
-import { selectedNode } from '../../state/current'
-import { activatedFilters } from '../../state/filters'
 
 const route = useRoute()
 const isSettingOpen = computed({

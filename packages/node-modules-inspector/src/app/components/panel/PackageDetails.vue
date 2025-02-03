@@ -4,8 +4,7 @@ import { DisplayNumberBadge } from '#components'
 import { Menu as VMenu } from 'floating-vue'
 import { computed } from 'vue'
 import { getBackend } from '~/backends'
-import { getPackageFromSpec } from '~/state/data'
-import { filters, packageVersionsMap } from '~/state/filters'
+import { filters, getPackageFromSpec, packageVersionsMap } from '~/state/filters'
 import { query } from '~/state/query'
 import { settings } from '~/state/settings'
 
@@ -38,11 +37,16 @@ function toggleFocus() {
     current = current.filter(x => x !== props.pkg.spec)
   else
     current = [...current, props.pkg.spec]
+  filters.focus = current.length === 0 ? null : current
+}
 
-  if (current.length === 0)
-    filters.focus = null
+function toggleExclude() {
+  let current = filters.excludes || []
+  if (current.includes(props.pkg.spec))
+    current = current.filter(x => x !== props.pkg.spec)
   else
-    filters.focus = current
+    current = [...current, props.pkg.spec]
+  filters.excludes = current.length === 0 ? null : current
 }
 </script>
 
@@ -65,8 +69,16 @@ function toggleFocus() {
               :class="filters.focus?.includes(pkg.spec) ? 'text-primary' : 'op50'"
               @click="toggleFocus()"
             >
-              <div i-ph-binoculars-duotone flex-none />
+              <div i-ph-arrows-in-cardinal-duotone flex-none />
               <span class="ml-2">{{ filters.focus?.includes(pkg.spec) ? 'Unfocus' : 'Focus' }} on this package</span>
+            </button>
+            <button
+              px2 py1 rounded hover:bg-active flex="~ items-center gap-2"
+              :class="filters.excludes?.includes(pkg.spec) ? 'text-purple' : 'op50'"
+              @click="toggleExclude()"
+            >
+              <div i-ph-network-slash-duotone flex-none />
+              <span class="ml-2">{{ filters.focus?.includes(pkg.spec) ? 'Un-exclude' : 'Exclude' }} this package</span>
             </button>
           </div>
         </template>

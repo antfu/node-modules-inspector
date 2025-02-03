@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
 import { computed } from 'vue'
-import { selectedNode } from '../../state/current'
+import { selectedNode } from '~/state/current'
 
 const props = defineProps<{
   pkg?: PackageNode
