@@ -32,7 +32,7 @@ const nodesRefMap = new Map<string, HTMLDivElement>()
 const NODE_WIDTH = 300
 const NODE_HEIGHT = 30
 const NODE_LINK_OFFSET = 20
-const NODE_MARGIN = 100
+const NODE_MARGIN = 200
 const NODE_GAP = 150
 
 function calculateGraph() {

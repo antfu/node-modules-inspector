@@ -41,7 +41,6 @@ export async function createWsServer(options: CreateWsServerOptions) {
       post: d => ws.send(d),
       on: (fn) => {
         ws.on('message', (data) => {
-          console.log(data)
           fn(data)
         })
       },

@@ -1,13 +1,13 @@
 import type { ServerFunctionsDump } from '~~/shared/types'
 import { existsSync } from 'node:fs'
 import fs from 'node:fs/promises'
-import { relative, resolve } from 'node:path'
-
 import process from 'node:process'
+
 import cac from 'cac'
 import fg from 'fast-glob'
 import { getPort } from 'get-port-please'
 import open from 'open'
+import { relative, resolve } from 'pathe'
 import c from 'picocolors'
 import { MARK_CHECK, MARK_INFO } from './constants'
 import { distDir } from './dirs'

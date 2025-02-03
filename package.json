@@ -6,6 +6,7 @@
   "scripts": {
     "build": "pnpm -r run build",
     "dev": "nuxt dev packages/node-modules-inspector/src",
+    "start": "pnpm -C packages/node-modules-inspector run start",
     "prepare": "nuxt prepare packages/node-modules-inspector/src && npx simple-git-hooks",
     "lint": "nuxi prepare && eslint .",
     "test": "vitest",

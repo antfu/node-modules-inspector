@@ -21,6 +21,7 @@
   ],
   "scripts": {
     "build": "nuxi build src && unbuild",
+    "start": "node ./bin.mjs",
     "dev": "pnpm run -r stub && nuxi dev src",
     "prepack": "pnpm build"
   },
@@ -37,6 +38,7 @@
     "mrmime": "catalog:",
     "node-modules-tools": "workspace:*",
     "open": "catalog:",
+    "pathe": "^2.0.2",
     "picocolors": "catalog:",
     "ws": "catalog:"
   },

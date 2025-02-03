@@ -1,7 +1,7 @@
 import type { PackageDependencyHierarchy } from '@pnpm/list'
 import type { ProjectManifest } from '@pnpm/types'
 import type { ListPackageDependenciesOptions, ListPackageDependenciesRawResult, PackageNodeRaw } from '../types'
-import { relative } from 'node:path'
+import { dirname, relative } from 'pathe'
 import { x } from 'tinyexec'
 
 type PnpmPackageNode = Pick<ProjectManifest, 'description' | 'license' | 'author' | 'homepage'> & {
@@ -23,6 +23,16 @@ type PnpmDependencyHierarchy = Pick<PackageDependencyHierarchy, 'name' | 'versio
     unsavedDependencies?: Record<string, PnpmPackageNode>
   }
 
+async function resolveRoot(options: ListPackageDependenciesOptions) {
+  const raw = await x('pnpm', ['root', '-w'], { throwOnError: true, nodeOptions: { cwd: options.cwd } })
+  return dirname(raw.stdout.trim())
+}
+
+async function getPnpmVersion(options: ListPackageDependenciesOptions) {
+  const raw = await x('pnpm', ['--version'], { throwOnError: true, nodeOptions: { cwd: options.cwd } })
+  return raw.stdout.trim()
+}
+
 async function getDependenciesTree(options: ListPackageDependenciesOptions): Promise<PnpmDependencyHierarchy[]> {
   const args = ['ls', '--json', '--no-optional', '--depth', String(options.depth)]
   if (options.monorepo)
@@ -35,14 +45,18 @@ async function getDependenciesTree(options: ListPackageDependenciesOptions): Pro
 export async function listPackageDependencies(
   options: ListPackageDependenciesOptions,
 ): Promise<ListPackageDependenciesRawResult> {
+  const root = await resolveRoot(options) || options.cwd
   const tree = await getDependenciesTree(options)
   const packages = new Map<string, PackageNodeRaw>()
 
   const workspacePackages = tree.map((pkg) => {
     let name = pkg.name
     if (!name) {
-      const path = relative(options.cwd, pkg.path).toLowerCase().replace(/[^a-z0-9-]+/g, '_').slice(0, 20)
-      name = path ? `#workspace-${path}` : '#workspace-root'
+      let path = relative(root, pkg.path)
+      if (path === '.')
+        path = ''
+      const suffix = path.toLowerCase().replace(/[^a-z0-9-]+/g, '_').slice(0, 20)
+      name = suffix ? `#workspace-${suffix}` : '#workspace-root'
     }
     const version = pkg.version || '0.0.0'
     const node: PackageNodeRaw = {
@@ -134,8 +148,9 @@ export async function listPackageDependencies(
   }
 
   return {
-    cwd: options.cwd,
+    root,
     packageManager: 'pnpm',
+    packageManagerVersion: await getPnpmVersion(options),
     packages,
   }
 }

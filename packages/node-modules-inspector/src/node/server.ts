@@ -1,9 +1,9 @@
 import type { CreateWsServerOptions } from './ws'
 import { readFile, stat } from 'node:fs/promises'
 import { createServer } from 'node:http'
-import { join } from 'node:path'
 import { createApp, eventHandler, serveStatic, toNodeListener } from 'h3'
 import { lookup } from 'mrmime'
+import { join } from 'pathe'
 import { distDir } from './dirs'
 import { createWsServer } from './ws'
 
