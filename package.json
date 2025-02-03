@@ -30,6 +30,7 @@
     "@types/ws": "catalog:",
     "@typescript-eslint/utils": "catalog:",
     "@unocss/eslint-config": "catalog:",
+    "bumpp": "catalog:",
     "eslint": "catalog:",
     "lint-staged": "catalog:",
     "nuxt": "catalog:",

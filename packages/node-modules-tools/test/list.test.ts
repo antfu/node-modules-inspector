@@ -14,7 +14,7 @@ it('runs', async () => {
   expect(item).toBeDefined()
   expect({
     ...item,
-    path: undefined,
+    filepath: undefined,
   }).toMatchInlineSnapshot(`
     {
       "dependencies": Set {
@@ -26,12 +26,12 @@ it('runs', async () => {
       },
       "depth": 4,
       "dev": true,
-      "filepath": "/Users/antfu/i/node-modules-inspector/node_modules/.pnpm/debug@4.4.0/node_modules/debug",
+      "filepath": undefined,
       "flatDependencies": Set {
         "ms@2.1.3",
       },
       "flatDependents": Set {
-        "node-modules-tools@0.0.1",
+        "node-modules-tools@0.0.2",
         "unbuild@3.3.1",
         "untyped@1.5.2",
         "@babel/core@7.26.0",
@@ -40,15 +40,15 @@ it('runs', async () => {
         "@babel/helper-module-imports@7.25.9",
       },
       "name": "debug",
-      "path": undefined,
       "resolved": {
         "author": "Josh Junon (https://github.com/qix-)",
         "engines": {
           "node": ">=6.0",
         },
+        "homepage": undefined,
         "license": "MIT",
         "module": "cjs",
-        "repository": "git://github.com/debug-js/debug.git",
+        "repository": "https://github.com/debug-js/debug",
       },
       "spec": "debug@4.4.0",
       "version": "4.4.0",
