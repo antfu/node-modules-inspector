@@ -29,9 +29,11 @@ const linksMap = shallowReactive(new Map<string, Link>())
 
 const nodesRefMap = new Map<string, HTMLDivElement>()
 
-const NODE_WIDTH = 400
+const NODE_WIDTH = 300
 const NODE_HEIGHT = 30
+const NODE_LINK_OFFSET = 20
 const NODE_MARGIN = 100
+const NODE_GAP = 150
 
 function calculateGraph() {
   width.value = window.innerWidth
@@ -64,7 +66,7 @@ function calculateGraph() {
 
   // Calculate the layout
   const layout = tree<PackageNode>()
-    .nodeSize([NODE_HEIGHT, NODE_WIDTH + 200])
+    .nodeSize([NODE_HEIGHT, NODE_WIDTH + NODE_GAP])
   layout(root)
 
   const _nodes = root.descendants()
@@ -216,13 +218,13 @@ const createLinkVertical = linkVertical()
 function generateLink(link: HierarchyLink<PackageNode>) {
   if (link.target.x! <= link.source.x!) {
     return createLinkVertical({
-      source: [link.source.x! + NODE_WIDTH / 2 - 20, link.source.y!],
-      target: [link.target.x! - NODE_WIDTH / 2 + 20, link.target.y!],
+      source: [link.source.x! + NODE_WIDTH / 2 - NODE_LINK_OFFSET, link.source.y!],
+      target: [link.target.x! - NODE_WIDTH / 2 + NODE_LINK_OFFSET, link.target.y!],
     })
   }
   return createLinkHorizontal({
-    source: [link.source.x! + NODE_WIDTH / 2 - 20, link.source.y!],
-    target: [link.target.x! - NODE_WIDTH / 2 + 20, link.target.y!],
+    source: [link.source.x! + NODE_WIDTH / 2 - NODE_LINK_OFFSET, link.source.y!],
+    target: [link.target.x! - NODE_WIDTH / 2 + NODE_LINK_OFFSET, link.target.y!],
   })
 }
 </script>
