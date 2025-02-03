@@ -34,6 +34,16 @@ function createModuleTypeRef(name: PackageModuleType) {
   })
 }
 
+function removeFocus(spec: string) {
+  if (filters.focus) {
+    const arr = filters.focus.filter(x => x !== spec)
+    if (arr.length === 0)
+      filters.focus = null
+    else
+      filters.focus = arr
+  }
+}
+
 const moduleTypes = Object.fromEntries(
   MODULE_TYPES_FULL.map(x => [x, createModuleTypeRef(x)] as const),
 ) as Record<PackageModuleType, WritableComputedRef<boolean>>
@@ -70,6 +80,24 @@ const moduleTypes = Object.fromEntries(
           :titles="['All', 'Prod', 'Dev']"
         />
       </OptionItem>
+    </div>
+    <div v-if="filters.focus" flex="~ col gap-2" p4 border="t base">
+      <div>Focusing On</div>
+      <div flex="~ gap-2 wrap">
+        <div
+          v-for="spec of filters.focus"
+          :key="spec"
+          badge-color-primary rounded-full px2 pl3 py0.5
+          flex="~ gap-1 items-center"
+        >
+          <div font-mono text-sm>
+            {{ spec }}
+          </div>
+          <button op50 hover:op100 @click="removeFocus(spec)">
+            <div i-ph-x op50 />
+          </button>
+        </div>
+      </div>
     </div>
     <div flex="~ col gap-2" p4 border="t base">
       <div flex="~ gap-4 wrap">

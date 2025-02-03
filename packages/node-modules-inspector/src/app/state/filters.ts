@@ -9,6 +9,7 @@ import { packageData } from './data'
 export interface FilterOptions {
   search: string
   modules: null | PackageModuleType[]
+  focus: null | string[]
   licenses: null | string[]
   excludes: null | string[]
   sourceType: null | 'prod' | 'dev'
@@ -16,6 +17,7 @@ export interface FilterOptions {
 
 export const FILTER_KEYS = [
   'search',
+  'focus',
   'excludes',
   'modules',
   'licenses',
@@ -23,12 +25,12 @@ export const FILTER_KEYS = [
 ] satisfies (keyof FilterOptions)[]
 
 export const FILTER_KEYS_FULL = [
-  'search',
   ...FILTER_KEYS,
 ]
 
 export const filters = reactive<FilterOptions>({
   search: '',
+  focus: null,
   modules: null,
   licenses: null,
   excludes: null,
@@ -53,6 +55,12 @@ export const workspacePackages = computed(() => avaliablePackages.value.filter(i
 
 export const filteredPackages = computed(() => Array.from((function *() {
   for (const pkg of avaliablePackages.value) {
+    if (filters.focus) {
+      const shouldTake = filters.focus.includes(pkg.spec) || filters.focus.some(f => pkg.flatDependents.has(f))
+      if (!shouldTake)
+        continue
+    }
+
     if (filters.modules && !filters.modules.includes(getModuleType(pkg)))
       continue
     if (filters.licenses && !filters.licenses.includes(pkg.resolved.license || ''))

@@ -13,6 +13,7 @@ export const query = reactive<QueryOptions>({} as any)
 
 const FIELDS_ARRAY: (keyof QueryOptions)[] = [
   'modules',
+  'focus',
   'licenses',
   'excludes',
 ]

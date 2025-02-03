@@ -5,7 +5,7 @@ import { Menu as VMenu } from 'floating-vue'
 import { computed } from 'vue'
 import { getBackend } from '~/backends'
 import { getPackageFromSpec } from '~/state/data'
-import { packageVersionsMap } from '~/state/filters'
+import { filters, packageVersionsMap } from '~/state/filters'
 import { query } from '~/state/query'
 import { settings } from '~/state/settings'
 
@@ -31,23 +31,59 @@ function getDepth(amount: number, min = 1) {
     return 7
   return 10
 }
+
+function toggleFocus() {
+  let current = filters.focus || []
+  if (current.includes(props.pkg.spec))
+    current = current.filter(x => x !== props.pkg.spec)
+  else
+    current = [...current, props.pkg.spec]
+
+  if (current.length === 0)
+    filters.focus = null
+  else
+    filters.focus = current
+}
 </script>
 
 <template>
   <div v-if="pkg" of-hidden h-full flex="~ col gap-0">
-    <button
-      absolute top-2 right-2
-      w-10 h-10 rounded-full
-      op30
-      hover="op100 bg-active"
-      flex="~ items-center justify-center"
-      @click="query.selected = undefined"
-    >
-      <div i-ph-x />
-    </button>
+    <div absolute top-2 right-2 flex="~ items-center gap-0">
+      <VMenu placement="bottom-start" :triggers="['click', 'touch']">
+        <button
+          w-10 h-10 rounded-full
+          op30
+          hover="op100 bg-active"
+          flex="~ items-center justify-center"
+        >
+          <div i-ph-dots-three-vertical-bold />
+        </button>
+        <template #popper>
+          <div p1 flex="~ col">
+            <button
+              px2 py1 rounded hover:bg-active flex="~ items-center gap-2"
+              :class="filters.focus?.includes(pkg.spec) ? 'text-primary' : 'op50'"
+              @click="toggleFocus()"
+            >
+              <div i-ph-binoculars-duotone flex-none />
+              <span class="ml-2">{{ filters.focus?.includes(pkg.spec) ? 'Unfocus' : 'Focus' }} on this package</span>
+            </button>
+          </div>
+        </template>
+      </VMenu>
+      <button
+        w-10 h-10 rounded-full
+        op30
+        hover="op100 bg-active"
+        flex="~ items-center justify-center"
+        @click="query.selected = undefined"
+      >
+        <div i-ph-x />
+      </button>
+    </div>
 
     <div flex="~ col gap-2" p5>
-      <div font-mono text-2xl flex="~ wrap items-center gap-2" pr6>
+      <div font-mono text-2xl flex="~ wrap items-center gap-2" pr10>
         <span>{{ pkg.name }}</span>
         <DisplayModuleType text-sm :pkg :force="true" />
       </div>
@@ -83,7 +119,7 @@ function getDepth(amount: number, min = 1) {
             <div i-catppuccin-npm icon-catppuccin ma />
           </NuxtLink>
           <NuxtLink
-            v-if="pkg.resolved.repository"
+            v-if="pkg.resolved.repository?.match(/https?:\/\//)"
             :to="pkg.resolved.repository"
             title="Open Repository"
             target="_blank"
@@ -129,7 +165,7 @@ function getDepth(amount: number, min = 1) {
       </div>
     </div>
 
-    <div flex="~" select-none>
+    <div flex="~" select-none h-10>
       <div border="b base" w-2 />
       <button
         flex-1 border border-base rounded-t-lg p1 flex="~ items-center justify-center gap-1" transition-margin

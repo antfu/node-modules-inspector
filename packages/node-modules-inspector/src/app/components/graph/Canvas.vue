@@ -5,6 +5,7 @@ import { useEventListener } from '@vueuse/core'
 import { hierarchy, tree } from 'd3-hierarchy'
 import { linkHorizontal, linkVertical } from 'd3-shape'
 import { computed, nextTick, onMounted, ref, shallowReactive, shallowRef, useTemplateRef, watch } from 'vue'
+import { filters } from '~/state/filters'
 import { query } from '~/state/query'
 
 const props = defineProps<{
@@ -41,18 +42,38 @@ function calculateGraph() {
 
   const packageMap = new Map<string, PackageNode>(props.packages.map(x => [x.spec, x]))
 
-  // Top-level packages are those that are not dependents of any other filtered package
-  const topLevel = Array.from(props.packages.values() || [])
-    .filter(pkg => pkg.workspace || !Array.from(pkg.dependents).some(dep => packageMap.has(dep)))
-    .sort((a, b) => a.flatDependencies.size - b.flatDependencies.size)
+  const sortedByDepth = [...props.packages].sort((a, b) => b.depth - a.depth)
+
+  const rootMap = new Map<string, PackageNode>(props.packages.map(x => [x.spec, x]))
+  let changed = true
+  while (changed) {
+    changed = false
+    for (const pkg of sortedByDepth) {
+      if (pkg.workspace)
+        continue
+      if (filters.focus?.includes(pkg.spec))
+        continue
+      if (!rootMap.has(pkg.spec))
+        continue
+      for (const parent of pkg.dependents) {
+        if (rootMap.has(parent)) {
+          rootMap.delete(pkg.spec)
+          changed = true
+        }
+      }
+    }
+  }
+
+  const rootPackages = Array.from(rootMap.values())
+    .sort((a, b) => a.depth - b.depth || a.flatDependencies.size - b.flatDependencies.size)
 
   const seen = new Set<PackageNode>()
   const root = hierarchy<PackageNode>(
     { name: '~root', spec: '~root' } as any,
     (d) => {
       if (d.name === '~root') {
-        topLevel.forEach(x => seen.add(x))
-        return topLevel
+        rootPackages.forEach(x => seen.add(x))
+        return rootPackages
       }
       const children = Array.from(d.dependencies)
         .map(i => packageMap.get(i))
@@ -111,6 +132,11 @@ function calculateGraph() {
   nextTick(() => {
     width.value = el.value!.scrollWidth
     height.value = el.value!.scrollHeight
+
+    if (query.selected)
+      focusOn(query.selected, false)
+    else if (props.packages[0])
+      focusOn(props.packages[0].spec, false)
   })
 }
 
@@ -139,21 +165,14 @@ onMounted(() => {
 
   watch(() => props.packages, calculateGraph, { immediate: true })
 
-  nextTick(() => {
-    watch(
-      () => query.selected,
-      () => {
-        if (query.selected)
-          focusOn(query.selected)
-      },
-      { flush: 'post' },
-    )
-
-    if (query.selected)
-      focusOn(query.selected, false)
-    else if (props.packages[0])
-      focusOn(props.packages[0].spec, false)
-  })
+  watch(
+    () => query.selected,
+    () => {
+      if (query.selected)
+        focusOn(query.selected)
+    },
+    { flush: 'post' },
+  )
 })
 
 const additionalLinks = computed(() => {
