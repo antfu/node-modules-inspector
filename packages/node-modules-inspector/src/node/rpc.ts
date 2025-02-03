@@ -5,7 +5,6 @@ import { listPackageDependencies } from 'node-modules-tools'
 export async function createServerFunctions(): Promise<ServerFunctions> {
   return {
     async listDependencies() {
-      // TODO: pass in options
       const result = await listPackageDependencies({
         cwd: process.cwd(),
         depth: 25,

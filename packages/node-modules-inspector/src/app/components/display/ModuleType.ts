@@ -10,7 +10,7 @@ export default defineComponent({
   name: 'DisplayModuleType',
   props: {
     pkg: {
-      type: Object as PropType<PackageNode | PackageModuleType>,
+      type: [Object, String] as PropType<PackageNode | PackageModuleType>,
       required: true,
     },
     badge: {

@@ -1,7 +1,10 @@
 <script setup lang="ts">
+import { getBackend } from '~/backends'
 import { packageData } from '~/state/data'
 import { avaliablePackages, workspacePackages } from '~/state/filters'
 import { version } from '../../../../package.json'
+
+const backend = getBackend()
 </script>
 
 <template>
@@ -19,7 +22,10 @@ import { version } from '../../../../package.json'
       </span>
     </h1>
     <div v-if="packageData" border="t base" flex="~ col gap-3" p5>
-      <button flex="~ gap-2 items-center" @click="rpc.openInFinder(packageData.root)">
+      <button
+        flex="~ gap-2 items-center"
+        @click="backend.functions.openInFinder?.(packageData.root)"
+      >
         <div i-catppuccin-folder-node-open icon-catppuccin flex-none />
         <span font-mono break-after-all text-left leading-none>{{ packageData.root }}</span>
       </button>
