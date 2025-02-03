@@ -43,16 +43,24 @@ const tree = computed(() => {
   <div flex="~ col gap-1">
     <template v-for="{ pkg, children } of tree" :key="pkg.spec">
       <PackageInfoList :pkg="pkg" />
-      <PackageDependentTree
-        v-if="children?.length && props.depth < props.maxDepth"
-        ml3
-        :currents="children"
-        :list="props.list"
-        :type="props.type"
-        :seen="seen"
-        :depth="props.depth + 1"
-        :max-depth="props.maxDepth"
-      />
+      <template v-if="children?.length">
+        <RenderNextTick v-if="props.depth < props.maxDepth">
+          <PackageDependentTree
+            ml3
+            :currents="children"
+            :list="props.list"
+            :type="props.type"
+            :seen="seen"
+            :depth="props.depth + 1"
+            :max-depth="props.maxDepth"
+          />
+        </RenderNextTick>
+        <div v-else-if="props.maxDepth > 1" ml6>
+          <span op50 px2 bg-active rounded text-sm>
+            {{ children?.length }} more ···
+          </span>
+        </div>
+      </template>
     </template>
   </div>
 </template>

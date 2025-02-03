@@ -16,6 +16,16 @@ const duplicated = computed(() => {
     return value
   return undefined
 })
+
+function getDepth(amount: number) {
+  if (!settings.value.deepDependenciesTree)
+    return 1
+  if (amount > 200)
+    return 3
+  if (amount > 100)
+    return 7
+  return 10
+}
 </script>
 
 <template>
@@ -130,7 +140,7 @@ const duplicated = computed(() => {
             py5 px4
             :currents="Array.from(pkg.flatDependents).map(getPackageFromSpec).filter(x => !!x).filter(i => i?.workspace)"
             :list="Array.from(pkg.flatDependents).map(getPackageFromSpec).filter(x => !!x)"
-            :max-depth="settings.deepDependenciesTree ? 10 : 1"
+            :max-depth="getDepth(pkg.flatDependents.size)"
             type="dependents"
           />
         </template>
@@ -149,7 +159,7 @@ const duplicated = computed(() => {
             py5 pt2 px4
             :currents="Array.from(pkg.dependencies).map(getPackageFromSpec).filter(x => !!x)"
             :list="Array.from(pkg.flatDependencies).map(getPackageFromSpec).filter(x => !!x)"
-            :max-depth="settings.deepDependenciesTree ? 10 : 1"
+            :max-depth="getDepth(pkg.flatDependencies.size)"
             type="dependencies"
           />
         </template>
