@@ -1,21 +1,24 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { compareSemver } from '~~/shared/utils'
 import { selectedNode } from '~/state/current'
-import { packageVersionsMap } from '~/state/data'
+import { filteredPackages } from '~/state/filters'
+import { buildVersionToPackagesMap } from '~/utils/maps'
 
-const duplicated = Array.from(packageVersionsMap.values())
+const versionMap = computed(() => buildVersionToPackagesMap(filteredPackages.value))
+const duplicated = computed(() => Array.from(versionMap.value.values())
   .filter(packages => packages.length > 1)
-  .sort((a, b) => b.length - a.length)
+  .sort((a, b) => b.length - a.length))
 
-duplicated.forEach((packages) => {
-  packages.sort((a, b) => compareSemver(a.version, b.version))
-})
+const sorted = computed(() => duplicated.value.map((packages) => {
+  return packages.sort((a, b) => compareSemver(a.version, b.version))
+}))
 </script>
 
 <template>
   <div grid="~ cols-minmax-200px gap-4">
     <div
-      v-for="pkgs of duplicated" :key="pkgs[0].spec"
+      v-for="pkgs of sorted" :key="pkgs[0].spec"
       border="~ base rounded-lg" bg-glass
       flex="~ col"
       :class="selectedNode && pkgs.includes(selectedNode) ? 'border-primary ring-4 ring-primary:20' : ''"

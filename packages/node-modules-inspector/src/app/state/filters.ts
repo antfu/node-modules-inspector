@@ -2,6 +2,7 @@ import type { PackageModuleType } from 'node-modules-tools'
 import { useDebounce } from '@vueuse/core'
 import pm from 'picomatch'
 import { computed, reactive } from 'vue'
+import { buildVersionToPackagesMap } from '~/utils/maps'
 import { getModuleType } from '../utils/module-type'
 import { packageData } from './data'
 
@@ -41,16 +42,22 @@ const debouncedSearch = useDebounce(computed(() => filters.search), 200)
 export const avaliablePackages = computed(() => {
   // TODO: exclude packages
   return Array.from(packageData.value?.packages.values() || [])
+    .filter((pkg) => {
+      if (filters.excludes && filters.excludes.some(i => pkg.name.includes(i)))
+        return false
+      return true
+    })
 })
 
 export const workspacePackages = computed(() => avaliablePackages.value.filter(i => i.workspace))
 
 export const filteredPackages = computed(() => Array.from((function *() {
-  for (const pkg of packageData.value?.packages.values() || []) {
+  for (const pkg of avaliablePackages.value) {
     if (filters.modules && !filters.modules.includes(getModuleType(pkg)))
       continue
     if (filters.licenses && !filters.licenses.includes(pkg.resolved.license || ''))
       continue
+
     if (debouncedSearch.value) {
       if (debouncedSearch.value.match(/[*[\]]/)) {
         if (!pm.isMatch(pkg.name, debouncedSearch.value))
@@ -63,8 +70,7 @@ export const filteredPackages = computed(() => Array.from((function *() {
     }
 
     // TODO: better excludes
-    if (filters.excludes && filters.excludes.some(i => pkg.name.includes(i)))
-      continue
+
     if (filters.sourceType) {
       if (filters.sourceType === 'prod' && !pkg.prod && !pkg.workspace)
         continue
@@ -74,3 +80,6 @@ export const filteredPackages = computed(() => Array.from((function *() {
     yield pkg
   }
 })()))
+
+export const packageVersionsMap = computed(() => buildVersionToPackagesMap(avaliablePackages.value))
+export const filteredPackageVersionsMap = computed(() => buildVersionToPackagesMap(filteredPackages.value))

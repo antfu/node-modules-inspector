@@ -3,7 +3,8 @@ import type { PackageNode } from 'node-modules-tools'
 import { DisplayNumberBadge } from '#components'
 import { Menu as VMenu } from 'floating-vue'
 import { computed } from 'vue'
-import { getPackageFromSpec, packageVersionsMap } from '~/state/data'
+import { getPackageFromSpec } from '~/state/data'
+import { packageVersionsMap } from '~/state/filters'
 import { query } from '~/state/query'
 import { settings } from '~/state/settings'
 
@@ -12,7 +13,7 @@ const props = defineProps<{
 }>()
 
 const duplicated = computed(() => {
-  const value = packageVersionsMap.get(props.pkg.name)
+  const value = packageVersionsMap.value.get(props.pkg.name)
   if (value && value?.length > 1)
     return value
   return undefined
