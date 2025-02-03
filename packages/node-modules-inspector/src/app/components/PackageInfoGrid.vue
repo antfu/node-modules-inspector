@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
 import { selectedNode } from '../state/current'
-import { settings } from '../state/settings'
 
 defineProps<{
   pkg: PackageNode
@@ -16,14 +15,9 @@ defineProps<{
     :class="selectedNode === pkg ? 'border-primary ring-3 ring-primary:15' : 'border-base'"
     @click="selectedNode = pkg"
   >
-    <div font-mono text-left>
-      {{ pkg.name }}<span op50>@{{ pkg.version }}</span>
-    </div>
+    <DisplayPackageSpec :pkg text-left />
     <div flex="~ wrap gap-2 items-center" text-sm>
-      <ModuleTypeLabel
-        v-if="!settings.moduleTypeHide"
-        :pkg
-      />
+      <DisplayModuleType :pkg />
       <template v-if="pkg.flatDependents.size">
         <div flex="~ items-center gap-1">
           <div i-ph-arrow-elbow-down-right-duotone />

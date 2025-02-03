@@ -1,33 +1,34 @@
 import type { PackageDependencyHierarchy } from '@pnpm/list'
 import type { ProjectManifest } from '@pnpm/types'
-import type { ListPackageDependenciesOptions, ListPackageDependenciesRawResult, PackageNodeBase } from '../types'
+import type { ListPackageDependenciesOptions, ListPackageDependenciesRawResult, PackageNodeRaw } from '../types'
+import { relative } from 'node:path'
 import { x } from 'tinyexec'
 
-type RawPackageNode = Pick<ProjectManifest, 'description' | 'license' | 'author' | 'homepage'> & {
+type PnpmPackageNode = Pick<ProjectManifest, 'description' | 'license' | 'author' | 'homepage'> & {
   alias: string | undefined
   version: string
   path: string
   resolved?: string
   from: string
   repository?: string
-  dependencies?: Record<string, RawPackageNode>
+  dependencies?: Record<string, PnpmPackageNode>
 }
 
-type DependencyHierarchy = Pick<PackageDependencyHierarchy, 'name' | 'version' | 'path'> &
+type PnpmDependencyHierarchy = Pick<PackageDependencyHierarchy, 'name' | 'version' | 'path'> &
   Required<Pick<PackageDependencyHierarchy, 'private'>> &
   {
-    dependencies?: Record<string, RawPackageNode>
-    devDependencies?: Record<string, RawPackageNode>
-    optionalDependencies?: Record<string, RawPackageNode>
-    unsavedDependencies?: Record<string, RawPackageNode>
+    dependencies?: Record<string, PnpmPackageNode>
+    devDependencies?: Record<string, PnpmPackageNode>
+    optionalDependencies?: Record<string, PnpmPackageNode>
+    unsavedDependencies?: Record<string, PnpmPackageNode>
   }
 
-async function getDependenciesTree(options: ListPackageDependenciesOptions): Promise<DependencyHierarchy[]> {
+async function getDependenciesTree(options: ListPackageDependenciesOptions): Promise<PnpmDependencyHierarchy[]> {
   const args = ['ls', '--json', '--no-optional', '--depth', String(options.depth)]
   if (options.monorepo)
     args.push('--recursive')
   const raw = await x('pnpm', args, { throwOnError: true, nodeOptions: { cwd: options.cwd } })
-  const tree = JSON.parse(raw.stdout) as DependencyHierarchy[]
+  const tree = JSON.parse(raw.stdout) as PnpmDependencyHierarchy[]
   return tree
 }
 
@@ -35,44 +36,64 @@ export async function listPackageDependencies(
   options: ListPackageDependenciesOptions,
 ): Promise<ListPackageDependenciesRawResult> {
   const tree = await getDependenciesTree(options)
-  const packages = new Map<string, PackageNodeBase>()
+  const packages = new Map<string, PackageNodeRaw>()
 
-  const mapNormalize = new WeakMap<RawPackageNode, PackageNodeBase>()
-  function normalize(raw: RawPackageNode): PackageNodeBase {
+  const workspacePackages = tree.map((pkg) => {
+    let name = pkg.name
+    if (!name) {
+      const path = relative(options.cwd, pkg.path).toLowerCase().replace(/[^a-z0-9-]+/g, '_').slice(0, 20)
+      name = path ? `#workspace-${path}` : '#workspace-root'
+    }
+    const version = pkg.version || '0.0.0'
+    const node: PackageNodeRaw = {
+      spec: `${name}@${version}`,
+      name,
+      version,
+      filepath: pkg.path,
+      dependencies: new Set(),
+      workspace: true,
+    }
+    if (pkg.private)
+      node.private = true
+    packages.set(node.spec, node)
+    return {
+      pkg,
+      node,
+    }
+  })
+
+  const mapNormalize = new WeakMap<PnpmPackageNode, PackageNodeRaw>()
+  function normalize(raw: PnpmPackageNode): PackageNodeRaw {
     let node = mapNormalize.get(raw)
     if (node)
       return node
+
+    // Resolve workspace package version
+    let version = raw.version
+    if (version.includes(':')) {
+      const workspaceMapping = workspacePackages.find(i => i.pkg.path === raw.path)
+      if (workspaceMapping)
+        version = workspaceMapping.node.version
+    }
+
     node = {
-      spec: `${raw.from}@${raw.version}`,
+      spec: `${raw.from}@${version}`,
       name: raw.from,
-      version: raw.version,
-      path: raw.path,
+      version,
+      filepath: raw.path,
       dependencies: new Set(),
-      dependents: new Set(),
-      flatDependents: new Set(),
-      flatDependencies: new Set(),
-      nestedLevels: new Set(),
-      dev: false,
-      prod: false,
-      optional: false,
     }
     mapNormalize.set(raw, node)
     return node
   }
 
   function traverse(
-    raw: RawPackageNode,
+    raw: PnpmPackageNode,
     level: number,
     mode: 'dev' | 'prod' | 'optional',
-    directImporter: string | undefined,
-  ): PackageNodeBase {
+  ): PackageNodeRaw {
     const node = normalize(raw)
 
-    // Update note information
-    if (directImporter) {
-      node.dependents.add(directImporter)
-    }
-    node.nestedLevels.add(level)
     if (mode === 'dev')
       node.dev = true
     if (mode === 'prod')
@@ -89,19 +110,22 @@ export async function listPackageDependencies(
 
     packages.set(node.spec, node)
     for (const dep of Object.values(raw.dependencies || {})) {
-      const resolvedDep = traverse(dep, level + 1, mode, node.spec)
+      const resolvedDep = traverse(dep, level + 1, mode)
       node.dependencies.add(resolvedDep.spec)
     }
 
     return node
   }
 
-  for (const pkg of tree) {
+  // Traverse deps
+  for (const { pkg, node } of workspacePackages) {
     for (const dep of Object.values(pkg.dependencies || {})) {
-      traverse(dep, 1, 'prod', undefined)
+      const result = traverse(dep, 1, 'prod')
+      node.dependencies.add(result.spec)
     }
     for (const dep of Object.values(pkg.devDependencies || {})) {
-      traverse(dep, 1, 'dev', undefined)
+      const result = traverse(dep, 1, 'dev')
+      node.dependencies.add(result.spec)
     }
   }
 

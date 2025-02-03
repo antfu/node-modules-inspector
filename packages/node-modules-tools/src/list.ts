@@ -1,4 +1,4 @@
-import type { ListPackageDependenciesOptions, ListPackageDependenciesRawResult, ListPackageDependenciesResult, PackageNodeBase } from './types'
+import type { ListPackageDependenciesBaseResult, ListPackageDependenciesOptions, ListPackageDependenciesRawResult, ListPackageDependenciesResult, PackageNodeBase } from './types'
 import { detect } from 'package-manager-detector'
 import { resolvePackage } from './resolve'
 
@@ -22,6 +22,27 @@ export async function listPackageDependenciesRaw(
   else
     throw new Error(`Package manager ${manager.name} is not yet supported`)
 
+  return populateRawResult(result)
+}
+
+function populateRawResult(input: ListPackageDependenciesRawResult): ListPackageDependenciesBaseResult {
+  const result: ListPackageDependenciesBaseResult = {
+    ...input,
+    packages: new Map(),
+  }
+
+  // Create fields for each package
+  for (const [spec, pkg] of input.packages) {
+    const node = Object.assign(pkg, {
+      dependents: new Set(),
+      flatDependencies: new Set(),
+      flatDependents: new Set(),
+      depth: pkg.workspace ? 0 : Infinity,
+    }) as PackageNodeBase
+    result.packages.set(spec, node)
+  }
+
+  // Populate back `dependents`
   for (const pkg of result.packages.values()) {
     for (const dep of pkg.dependencies) {
       result.packages.get(dep)
@@ -33,29 +54,41 @@ export async function listPackageDependenciesRaw(
   function resloveFlatDependencies(pkg: PackageNodeBase) {
     const postTasks: (() => void)[] = []
 
-    function traverseDependencies(node: PackageNodeBase) {
+    function traverseDependencies(node: PackageNodeBase, root: PackageNodeBase = node) {
       for (const dep of node.dependencies) {
+        const level = node.depth + 1
+        const depNode = result.packages.get(dep)!
+        if (root.dev)
+          depNode.dev = true
+        if (root.prod)
+          depNode.prod = true
+        if (root.optional)
+          depNode.optional = true
+        if (depNode.depth > level)
+          depNode.depth = level
+
         if (pkg.flatDependencies.has(dep))
           continue
         pkg.flatDependencies.add(dep)
-        const depNode = result.packages.get(dep)!
         postTasks.push(() => {
           depNode.flatDependents.add(pkg.spec)
         })
-        traverseDependencies(depNode)
+        traverseDependencies(depNode, root)
       }
     }
 
-    function traverseDependents(node: PackageNodeBase) {
+    function traverseDependents(node: PackageNodeBase, root: PackageNodeBase = node) {
       for (const dep of node.dependents) {
         if (pkg.flatDependents.has(dep))
           continue
         pkg.flatDependents.add(dep)
-        const depNode = result.packages.get(dep)!
+        const parentNode = result.packages.get(dep)!
+        if (node.depth > parentNode.depth - 1)
+          parentNode.depth = node.depth - 1
         postTasks.push(() => {
-          depNode.flatDependencies.add(pkg.spec)
+          parentNode.flatDependencies.add(pkg.spec)
         })
-        traverseDependents(depNode)
+        traverseDependents(parentNode, root)
       }
     }
 

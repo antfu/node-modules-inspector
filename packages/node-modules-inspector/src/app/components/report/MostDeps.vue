@@ -5,6 +5,7 @@ import { filteredPackages } from '~/state/filters'
 
 const top20 = computed(() => {
   return Array.from(filteredPackages.value)
+    .filter(x => !x.workspace)
     .sort((a, b) => b.flatDependencies.size - a.flatDependencies.size)
     .slice(0, 20)
 })
@@ -17,7 +18,7 @@ const top20 = computed(() => {
         font-mono text-left hover:bg-active px2 ml--2 rounded
         @click="selectedNode = pkg"
       >
-        {{ pkg.name }}<span op50>@{{ pkg.version }}</span>
+        <DisplayPackageSpec :pkg />
       </button>
       <div font-mono text-right>
         {{ pkg.flatDependencies.size }}

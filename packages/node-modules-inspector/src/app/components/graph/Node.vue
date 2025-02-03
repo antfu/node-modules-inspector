@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
+import { computed } from 'vue'
 import { selectedNode } from '../../state/current'
-import { settings } from '../../state/settings'
 
-defineProps<{
+const props = defineProps<{
   pkg?: PackageNode
   selectionMode: 'none' | 'faded' | 'selected'
 }>()
@@ -18,12 +18,22 @@ const classesInner = {
   faded: 'op65',
   selected: 'bg-primary:10',
 }
+
+const classesOuter = computed(() => {
+  return [
+    classOuter[props.selectionMode],
+    selectedNode.value === props.pkg
+      ? 'ring-3 ring-primary:25! text-primary-600 dark:text-primary-300'
+      : '',
+    props.pkg?.private ? 'border-dashed!' : '',
+  ]
+})
 </script>
 
 <template>
   <div
     class="graph-node"
-    :class="[classOuter[selectionMode], selectedNode === pkg ? 'ring-3 ring-primary:25! text-primary-600 dark:text-primary-300' : '']"
+    :class="classesOuter"
   >
     <button
       v-if="pkg"
@@ -31,12 +41,8 @@ const classesInner = {
       :class="classesInner[selectionMode]"
       @click="selectedNode = pkg === selectedNode ? null : pkg"
     >
-      <span>{{ pkg.name }}</span>
-      <span font-mono op50>@{{ pkg.version }}</span>
-      <ModuleTypeLabel
-        v-if="!settings.moduleTypeHide"
-        ml2 text-xs text-right flex-auto :pkg :badge="false"
-      />
+      <DisplayPackageSpec :pkg />
+      <DisplayModuleType ml2 text-xs text-right flex-auto :pkg :badge="false" />
     </button>
   </div>
 </template>

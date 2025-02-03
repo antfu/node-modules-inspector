@@ -48,9 +48,9 @@ export const filteredPackages = computed(() => Array.from((function *() {
     if (filters.excludes && filters.excludes.some(i => pkg.name.includes(i)))
       continue
     if (filters.sourceType) {
-      if (filters.sourceType === 'prod' && !pkg.prod)
+      if (filters.sourceType === 'prod' && !pkg.prod && !pkg.workspace)
         continue
-      if (filters.sourceType === 'dev' && !pkg.dev)
+      if (filters.sourceType === 'dev' && !pkg.dev && !pkg.workspace)
         continue
     }
     yield pkg

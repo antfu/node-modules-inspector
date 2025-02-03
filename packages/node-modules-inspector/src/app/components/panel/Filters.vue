@@ -61,8 +61,9 @@ const moduleTypes = Object.fromEntries(
           <OptionCheckbox
             v-model="moduleTypes[type].value"
           />
-          <ModuleTypeLabel
+          <DisplayModuleType
             :pkg="type"
+            :force="true"
             :class="moduleTypes[type].value ? '' : 'saturate-0 op75'"
           />
         </label>

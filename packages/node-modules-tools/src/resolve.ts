@@ -15,7 +15,7 @@ export async function resolvePackage(pkg: PackageNodeBase): Promise<PackageNode>
   const _pkg = pkg as unknown as PackageNode
   if (_pkg.resolved)
     return _pkg
-  const content = await fs.readFile(join(pkg.path, 'package.json'), 'utf-8')
+  const content = await fs.readFile(join(pkg.filepath, 'package.json'), 'utf-8')
   const json = JSON.parse(stripBomTag(content)) as PackageJson
   _pkg.resolved = {
     module: analyzePackageModuleType(json),

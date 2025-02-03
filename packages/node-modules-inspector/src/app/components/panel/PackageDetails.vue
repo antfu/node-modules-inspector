@@ -34,12 +34,10 @@ const duplicated = computed(() => {
     <div flex="~ col gap-2" p5>
       <div font-mono text-2xl flex="~ wrap items-center gap-2" pr6>
         <span>{{ pkg.name }}</span>
-        <ModuleTypeLabel text-sm :pkg />
+        <DisplayModuleType text-sm :pkg :force="true" />
       </div>
-      <div flex="~ items-center gap-2">
-        <div font-mono op75>
-          v{{ pkg.version }}
-        </div>
+      <div flex="~ items-center wrap gap-2">
+        <DisplayVersion :version="pkg.version" op75 />
         <VMenu v-if="duplicated" font-mono>
           <div pl2 pr1 rounded bg-rose:10 text-rose text-sm flex="~ items-center gap-1">
             {{ duplicated.length }} versions
@@ -53,8 +51,8 @@ const duplicated = computed(() => {
                 font-mono hover="bg-active"
                 @click="query.selected = versionNode.spec"
               >
-                <span op75 flex-auto text-left>v{{ versionNode.version }}</span>
-                <ModuleTypeLabel :pkg="versionNode" :badge="false" text-xs />
+                <DisplayVersion op75 flex-auto text-left :version="versionNode.version" />
+                <DisplayModuleType :force="true" :pkg="versionNode" :badge="false" text-xs />
               </button>
             </div>
           </template>
@@ -71,14 +69,14 @@ const duplicated = computed(() => {
           <button
             title="Open package folder in editor"
             w-8 h-8 rounded-full hover:bg-hover flex
-            @click="rpc.openInEditor(pkg.path)"
+            @click="rpc.openInEditor(pkg.filepath)"
           >
             <div i-catppuccin-folder-vscode-open icon-catppuccin ma />
           </button>
           <button
             title="Open package folder in finder"
             w-8 h-8 rounded-full hover:bg-hover flex
-            @click="rpc.openInFinder(pkg.path)"
+            @click="rpc.openInFinder(pkg.filepath)"
           >
             <div i-catppuccin-folder-command-open icon-catppuccin ma />
           </button>
@@ -130,7 +128,7 @@ const duplicated = computed(() => {
         <template v-if="pkg.flatDependents.size">
           <PackageDependentTree
             py5 px4
-            :currents="Array.from(pkg.flatDependents).map(getPackageFromSpec).filter(x => !!x).filter(i => i?.nestedLevels.has(1))"
+            :currents="Array.from(pkg.flatDependents).map(getPackageFromSpec).filter(x => !!x).filter(i => i?.workspace)"
             :list="Array.from(pkg.flatDependents).map(getPackageFromSpec).filter(x => !!x)"
             :max-depth="settings.deepDependenciesTree ? 10 : 1"
             type="dependents"
