@@ -2,8 +2,7 @@ import { useLocalStorage } from '@vueuse/core'
 
 export interface Settings {
   moduleTypeSimple: boolean
-  moduleTypeHide: boolean
-  moduleTypeDot: boolean
+  moduleTypeRender: 'badge' | 'circle' | 'none'
   deepDependenciesTree: boolean
   packageDetailsTab: 'dependencies' | 'dependents'
 }
@@ -12,8 +11,7 @@ export const settings = useLocalStorage<Settings>(
   'node-modules-inspector-settings',
   {
     moduleTypeSimple: false,
-    moduleTypeHide: false,
-    moduleTypeDot: true,
+    moduleTypeRender: 'badge',
     deepDependenciesTree: true,
     packageDetailsTab: 'dependents',
   },

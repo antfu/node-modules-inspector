@@ -26,10 +26,10 @@ export default defineComponent({
     const type = computed(() => getModuleType(props.pkg))
 
     return () => {
-      if (settings.value.moduleTypeHide && !props.force)
+      if (settings.value.moduleTypeRender === 'none' && !props.force)
         return null
 
-      if (settings.value.moduleTypeDot && !props.force) {
+      if (settings.value.moduleTypeRender === 'circle' && !props.force) {
         return h('div', {
           class: 'flex',
           title: type.value.toUpperCase(),

@@ -4,14 +4,15 @@ import { settings } from '~/state/settings'
 
 <template>
   <div flex="~ col gap-4" p4>
-    <OptionItem title="Simplify module types" description="Show only ESM/CJS">
+    <OptionItem title="Simplify Module Types" description="Show only ESM/CJS">
       <OptionCheckbox v-model="settings.moduleTypeSimple" />
     </OptionItem>
-    <OptionItem title="Module type as dots" description="Render module type as dots without text">
-      <OptionCheckbox v-model="settings.moduleTypeDot" />
-    </OptionItem>
-    <OptionItem title="Hide module type badges" description="Hide the module type badges">
-      <OptionCheckbox v-model="settings.moduleTypeHide" />
+    <OptionItem title="Module Type Indicator" description="Rendering mode of module type indicator">
+      <OptionSelectGroup
+        v-model="settings.moduleTypeRender"
+        :options="['badge', 'circle', 'none']"
+        :titles="['Badge', 'Circle', 'None']"
+      />
     </OptionItem>
   </div>
 </template>
