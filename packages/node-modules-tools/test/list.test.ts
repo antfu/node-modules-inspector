@@ -47,7 +47,7 @@ it('runs', async () => {
       "version": "4.4.0",
     }
   `)
-  expect(Array.from(item.flatDependents).filter(d => !d.startsWith('node-modules-tools@'))).toMatchInlineSnapshot(`
+  expect(Array.from(item?.flatDependents ?? []).filter(d => !d.startsWith('node-modules-tools@'))).toMatchInlineSnapshot(`
     [
       "unbuild@3.3.1",
       "untyped@1.5.2",
