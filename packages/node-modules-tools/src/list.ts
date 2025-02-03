@@ -83,8 +83,6 @@ function populateRawResult(input: ListPackageDependenciesRawResult): ListPackage
           continue
         pkg.flatDependents.add(dep)
         const parentNode = result.packages.get(dep)!
-        if (node.depth > parentNode.depth - 1)
-          parentNode.depth = node.depth - 1
         postTasks.push(() => {
           parentNode.flatDependencies.add(pkg.spec)
         })
