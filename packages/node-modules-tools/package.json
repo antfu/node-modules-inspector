@@ -1,7 +1,7 @@
 {
   "name": "node-modules-tools",
   "type": "module",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Tools for inspecting node_modules",
   "author": "Anthony Fu <anthonyfu117@hotmail.com>",
   "license": "MIT",
