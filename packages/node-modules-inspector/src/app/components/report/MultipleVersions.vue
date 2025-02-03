@@ -2,11 +2,9 @@
 import { computed } from 'vue'
 import { compareSemver } from '~~/shared/utils'
 import { selectedNode } from '~/state/current'
-import { filteredPackages } from '~/state/filters'
-import { buildVersionToPackagesMap } from '~/utils/maps'
+import { payload } from '~/state/payload'
 
-const versionMap = computed(() => buildVersionToPackagesMap(filteredPackages.value))
-const duplicated = computed(() => Array.from(versionMap.value.values())
+const duplicated = computed(() => Array.from(payload.filtered.versions.values())
   .filter(packages => packages.length > 1)
   .sort((a, b) => b.length - a.length))
 

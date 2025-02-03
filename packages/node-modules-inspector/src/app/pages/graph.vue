@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { filteredPackages } from '~/state/filters'
+import { payload } from '~/state/payload'
 </script>
 
 <template>
-  <GraphCanvas :packages="filteredPackages" />
+  <GraphCanvas :packages="payload.filtered.packages" />
 </template>

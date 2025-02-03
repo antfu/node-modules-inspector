@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { PackageModuleType, PackageNode } from 'node-modules-tools'
 import { computed } from 'vue'
-import { getPackageFromSpec } from '~/state/filters'
+import { payload } from '~/state/payload'
 import { getModuleTypeCounts } from '~/utils/module-type'
 
 const props = withDefaults(
@@ -22,7 +22,7 @@ const nodes = computed(() =>
     ? [
         props.pkg,
         ...Array.from(props.flat ? props.pkg.flatDependencies : props.pkg.dependencies)
-          .map(getPackageFromSpec)
+          .map(payload.avaliable.get)
           .filter(x => !!x),
       ]
     : props.packages ?? [],

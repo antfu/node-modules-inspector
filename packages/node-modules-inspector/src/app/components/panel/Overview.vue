@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { getBackend } from '~/backends'
 import { packageData } from '~/state/data'
-import { avaliablePackages, workspacePackages } from '~/state/filters'
+import { payload } from '~/state/payload'
 import { version } from '../../../../package.json'
 
 const backend = getBackend()
@@ -36,17 +36,17 @@ const backend = getBackend()
       </div>
       <div flex="~ gap-2 items-center">
         <div i-catppuccin-folder-packages-open icon-catppuccin flex-none />
-        <DisplayNumberBadge :number="workspacePackages.length" rounded-full text-sm mx--0.2 mt-3px />
+        <DisplayNumberBadge :number="payload.workspace.packages.length" rounded-full text-sm mx--0.2 mt-3px />
         <span ml--0.5>workspace packages</span>
       </div>
       <div flex="~ gap-2 items-center">
         <div i-catppuccin-java-class icon-catppuccin flex-none />
-        <DisplayNumberBadge :number="avaliablePackages.length" rounded-full text-sm mx--0.2 mt-3px />
+        <DisplayNumberBadge :number="payload.avaliable.packages.length" rounded-full text-sm mx--0.2 mt-3px />
         <span ml--0.5>packages</span>
       </div>
     </div>
     <div>
-      <ModuleTypePercentage :packages="avaliablePackages" :rounded="false" />
+      <ModuleTypePercentage :packages="payload.avaliable.packages" :rounded="false" />
     </div>
     <div border="t base" flex="~ gap-1.1 items-center" p3 pl5 pr4 text-hex-888e>
       Made with

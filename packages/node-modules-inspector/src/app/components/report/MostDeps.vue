@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { selectedNode } from '~/state/current'
-import { filteredPackages } from '~/state/filters'
+import { payload } from '~/state/payload'
 
 const top20 = computed(() => {
-  return Array.from(filteredPackages.value)
+  return Array.from(payload.filtered.packages)
     .filter(x => !x.workspace)
     .sort((a, b) => b.flatDependencies.size - a.flatDependencies.size)
     .slice(0, 20)

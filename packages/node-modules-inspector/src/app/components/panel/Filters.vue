@@ -2,7 +2,8 @@
 import type { PackageModuleType } from 'node-modules-tools'
 import type { WritableComputedRef } from 'vue'
 import { computed } from 'vue'
-import { avaliablePackages, filteredPackages, filters } from '~/state/filters'
+import { filters } from '~/state/filters'
+import { payload } from '~/state/payload'
 import { settings } from '~/state/settings'
 import { MODULE_TYPES_FULL_SELECT, MODULE_TYPES_SIMPLE_SELECT } from '../../utils/module-type'
 
@@ -162,13 +163,21 @@ const moduleTypes = Object.fromEntries(
         <div i-ph-chart-bar-duotone flex-none />
         Filter Results
       </div>
-      <div p3 flex="~ items-center gap-2">
-        <DisplayNumberBadge :number="filteredPackages.length" rounded-full color="badge-color-primary" />
-        <span op50>of</span>
-        <DisplayNumberBadge :number="avaliablePackages.length" rounded-full />
-        <span op50>packages filtered</span>
+      <div p3 flex="~ col gap-2 ">
+        <div flex="~ items-center gap-2">
+          <DisplayNumberBadge :number="payload.filtered.packages.length" rounded-full color="badge-color-primary" />
+          <span op50>of</span>
+          <DisplayNumberBadge :number="payload.avaliable.packages.length" rounded-full />
+          <span op50>packages filtered</span>
+        </div>
+        <div v-if="payload.all.packages.length > payload.avaliable.packages.length" flex="~ items-center gap-1" text-0.85rem>
+          <span op25>(</span>
+          <DisplayNumberBadge :number="payload.all.packages.length - payload.avaliable.packages.length" rounded-full />
+          <span op50>packages excluded</span>
+          <span op25>)</span>
+        </div>
       </div>
-      <ModuleTypePercentage :packages="filteredPackages" :rounded="false" />
+      <ModuleTypePercentage :packages="payload.filtered.packages" :rounded="false" />
     </div>
     <!-- <PanelSettings border="t base" /> -->
   </div>

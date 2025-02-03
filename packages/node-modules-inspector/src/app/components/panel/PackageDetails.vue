@@ -4,7 +4,8 @@ import { DisplayNumberBadge } from '#components'
 import { Menu as VMenu } from 'floating-vue'
 import { computed } from 'vue'
 import { getBackend } from '~/backends'
-import { filters, getPackageFromSpec, packageVersionsMap } from '~/state/filters'
+import { filters } from '~/state/filters'
+import { payload } from '~/state/payload'
 import { query } from '~/state/query'
 import { settings } from '~/state/settings'
 
@@ -15,7 +16,7 @@ const props = defineProps<{
 const backend = getBackend()
 
 const duplicated = computed(() => {
-  const value = packageVersionsMap.value.get(props.pkg.name)
+  const value = payload.filtered.versions.get(props.pkg.name)
   if (value && value?.length > 1)
     return value
   return undefined
@@ -218,8 +219,8 @@ function toggleExclude() {
         <template v-if="pkg.flatDependents.size">
           <PackageDependentTree
             py5 px4
-            :currents="Array.from(pkg.flatDependents).map(getPackageFromSpec).filter(x => !!x).filter(i => i?.workspace)"
-            :list="Array.from(pkg.flatDependents).map(getPackageFromSpec).filter(x => !!x)"
+            :currents="Array.from(pkg.flatDependents).map(payload.avaliable.get).filter(x => !!x).filter(i => i?.workspace)"
+            :list="Array.from(pkg.flatDependents).map(payload.avaliable.get).filter(x => !!x)"
             :max-depth="getDepth(pkg.flatDependents.size, 2)"
             type="dependents"
           />
@@ -237,8 +238,8 @@ function toggleExclude() {
         <template v-if="pkg.flatDependencies.size">
           <PackageDependentTree
             py5 pt2 px4
-            :currents="Array.from(pkg.dependencies).map(getPackageFromSpec).filter(x => !!x)"
-            :list="Array.from(pkg.flatDependencies).map(getPackageFromSpec).filter(x => !!x)"
+            :currents="Array.from(pkg.dependencies).map(payload.avaliable.get).filter(x => !!x)"
+            :list="Array.from(pkg.flatDependencies).map(payload.avaliable.get).filter(x => !!x)"
             :max-depth="getDepth(pkg.flatDependencies.size)"
             type="dependencies"
           />
