@@ -21,7 +21,7 @@ export interface ListPackageDependenciesOptions {
 }
 
 export interface ListPackageDependenciesRawResult {
-  cwd: string
+  root: string
   packageManager: string
   packageManagerVersion?: string
   packages: Map<string, PackageNodeRaw>
@@ -76,6 +76,7 @@ export interface PackageNode extends PackageNodeBase {
     license?: string
     author?: string
     repository?: string
+    homepage?: string
     engines?: Record<string, string>
   }
 }

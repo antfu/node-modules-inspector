@@ -2,8 +2,16 @@ import { defineBuildConfig } from 'unbuild'
 
 export default defineBuildConfig({
   entries: [
-    'src/node/cli.ts',
-    'src/node/dirs.ts',
+    {
+      input: 'src/node/cli.ts',
+      name: 'cli',
+      outDir: 'dist',
+    },
+    {
+      input: 'src/node/dirs.ts',
+      name: 'dirs',
+      outDir: 'dist',
+    },
   ],
   clean: false,
   rollup: {

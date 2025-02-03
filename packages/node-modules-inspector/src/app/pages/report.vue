@@ -1,8 +1,12 @@
 <template>
   <CanvasContainer>
-    <SubTitle>Most Transitive Dependencies</SubTitle>
+    <SubTitle>Packages with the Most of Transitive Dependencies</SubTitle>
     <ReportMostDeps />
-    <SubTitle>Multiple Versions</SubTitle>
+    <SubTitle>Multi-Versions Packages</SubTitle>
+    <div badge-color-primary flex="~ gap-2 items-center" rounded-lg p2 my2>
+      <div i-ph-lightbulb-duotone flex-none />
+      <span>Run <code color-base>`pnpm dedupe`</code> to de-duplicate packages that satisfies with the ranges</span>
+    </div>
     <ReportMutlipleVersions />
   </CanvasContainer>
 </template>

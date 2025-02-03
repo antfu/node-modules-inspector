@@ -13,16 +13,20 @@ import { version } from '../../../../package.json'
         <span op75>Inspector</span>
       </div>
       <div flex-auto />
-      <span font-mono op50 text-sm>v{{ version }}</span>
+      <span font-mono text-sm flex="~ col items-end">
+        <div badge-color-lime rounded px2 mr--2 text-xs py0.5>Preview</div>
+        <span op50>v{{ version }}</span>
+      </span>
     </h1>
     <div v-if="packageData" border="t base" flex="~ col gap-3" p5>
-      <button flex="~ gap-2 items-center" @click="rpc.openInFinder(packageData.cwd)">
+      <button flex="~ gap-2 items-center" @click="rpc.openInFinder(packageData.root)">
         <div i-catppuccin-folder-node-open icon-catppuccin flex-none />
-        <span font-mono break-after-all text-left leading-none>{{ packageData.cwd }}</span>
+        <span font-mono break-after-all text-left leading-none>{{ packageData.root }}</span>
       </button>
       <div flex="~ gap-2 items-center">
         <div i-catppuccin-pnpm icon-catppuccin flex-none />
         <span>{{ packageData.packageManager }}</span>
+        <DisplayVersion :version="packageData.packageManagerVersion" prefix="@" op75 />
       </div>
       <div flex="~ gap-2 items-center">
         <div i-catppuccin-folder-packages-open icon-catppuccin flex-none />

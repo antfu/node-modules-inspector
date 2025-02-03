@@ -1,7 +1,7 @@
 import type { PackageJson } from 'pkg-types'
 import type { PackageNode, PackageNodeBase } from './types'
 import fs from 'node:fs/promises'
-import { join } from 'node:path'
+import { join } from 'pathe'
 import { analyzePackageModuleType } from './analyze-esm'
 import { stripBomTag } from './utils'
 
@@ -17,12 +17,24 @@ export async function resolvePackage(pkg: PackageNodeBase): Promise<PackageNode>
     return _pkg
   const content = await fs.readFile(join(pkg.filepath, 'package.json'), 'utf-8')
   const json = JSON.parse(stripBomTag(content)) as PackageJson
+
+  let repository = (typeof json.repository === 'string' ? json.repository : json.repository?.url)
+  if (repository?.startsWith('git+'))
+    repository = repository.slice(4)
+  if (repository?.endsWith('.git'))
+    repository = repository.slice(0, -4)
+  if (repository?.startsWith('git://'))
+    repository = `https://${repository.slice(6)}`
+  if (json.repository && typeof json.repository !== 'string' && json.repository.directory)
+    repository += `/tree/HEAD/${json.repository.directory}`
+
   _pkg.resolved = {
     module: analyzePackageModuleType(json),
     engines: json.engines,
     license: json.license,
     author: typeof json.author === 'string' ? json.author : json.author?.url,
-    repository: typeof json.repository === 'string' ? json.repository : json.repository?.url,
+    repository,
+    homepage: json.homepage,
   }
   return _pkg
 }

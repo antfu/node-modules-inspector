@@ -22,7 +22,7 @@ catalogs:
       specifier: ^1.2.2
       version: 1.2.2
     '@iconify-json/ri':
-      specifier: ^1.0.0
+      specifier: ^1.2.5
       version: 1.2.5
     '@iconify-json/simple-icons':
       specifier: ^1.2.23
@@ -69,6 +69,9 @@ catalogs:
     birpc:
       specifier: ^2.0.19
       version: 2.0.19
+    bumpp:
+      specifier: ^10.0.1
+      version: 10.0.1
     cac:
       specifier: ^6.7.14
       version: 6.7.14
@@ -97,8 +100,8 @@ catalogs:
       specifier: ^5.2.2
       version: 5.2.2
     fuse.js:
-      specifier: ^7.0.0
-      version: 7.0.0
+      specifier: ^7.1.0
+      version: 7.1.0
     get-port-please:
       specifier: ^3.1.2
       version: 3.1.2
@@ -129,6 +132,9 @@ catalogs:
     package-manager-detector:
       specifier: ^0.2.9
       version: 0.2.9
+    pathe:
+      specifier: ^2.0.2
+      version: 2.0.2
     picocolors:
       specifier: ^1.1.1
       version: 1.1.1
@@ -221,6 +227,9 @@ importers:
       '@unocss/eslint-config':
         specifier: 'catalog:'
         version: 65.4.3(eslint@9.19.0(jiti@2.4.2))(typescript@5.7.3)
+      bumpp:
+        specifier: 'catalog:'
+        version: 10.0.1(magicast@0.3.5)
       eslint:
         specifier: 'catalog:'
         version: 9.19.0(jiti@2.4.2)
@@ -287,13 +296,22 @@ importers:
       open:
         specifier: 'catalog:'
         version: 10.1.0
+      pathe:
+        specifier: 'catalog:'
+        version: 2.0.2
       picocolors:
         specifier: 'catalog:'
         version: 1.1.1
+      structured-clone-es:
+        specifier: 'catalog:'
+        version: 1.0.0
       ws:
         specifier: 'catalog:'
         version: 8.18.0
     devDependencies:
+      '@types/picomatch':
+        specifier: ^3.0.2
+        version: 3.0.2
       '@unocss/nuxt':
         specifier: 'catalog:'
         version: 65.4.3(magicast@0.3.5)(postcss@8.5.1)(rollup@4.30.1)(vite@6.0.11(@types/node@22.10.7)(jiti@2.4.2)(terser@5.31.0)(tsx@4.19.2)(yaml@2.7.0))(vue@3.5.13(typescript@5.7.3))(webpack@5.88.2(esbuild@0.24.2))
@@ -314,13 +332,13 @@ importers:
         version: 5.2.2(@nuxt/kit@3.15.4(magicast@0.3.5)(rollup@4.30.1))(vue@3.5.13(typescript@5.7.3))
       fuse.js:
         specifier: 'catalog:'
-        version: 7.0.0
+        version: 7.1.0
+      picomatch:
+        specifier: ^4.0.2
+        version: 4.0.2
       shiki:
         specifier: 'catalog:'
         version: 2.2.0
-      structured-clone-es:
-        specifier: 'catalog:'
-        version: 1.0.0
       vite-hot-client:
         specifier: 'catalog:'
         version: 2.0.4(vite@6.0.11(@types/node@22.10.7)(jiti@2.4.2)(terser@5.31.0)(tsx@4.19.2)(yaml@2.7.0))
@@ -330,6 +348,9 @@ importers:
       package-manager-detector:
         specifier: 'catalog:'
         version: 0.2.9
+      pathe:
+        specifier: 'catalog:'
+        version: 2.0.2
       tinyexec:
         specifier: 'catalog:'
         version: 0.3.2
@@ -1863,6 +1884,9 @@ packages:
   '@types/parse-path@7.0.3':
     resolution: {integrity: sha512-LriObC2+KYZD3FzCrgWGv/qufdUy4eXrxcLgQMfYXgPbLIecKIsVBaQgUPmxSSLcjmYbDTQbMgr6qr6l/eb7Bg==}
 
+  '@types/picomatch@3.0.2':
+    resolution: {integrity: sha512-n0i8TD3UDB7paoMMxA3Y65vUncFJXjcUf7lQY7YyKGl6031FNjfsLs6pdLFCy2GNFxItPJG8GvvpbZc2skH7WA==}
+
   '@types/resolve@1.20.2':
     resolution: {integrity: sha512-60BCwRFOZCQhDncwQdxxeOEEkbc5dIMccYLwbxsS4TUNeVECQ/pBJ0j09mrHOl/JJvpRPGwO9SvE4nR2Nb/a4Q==}
 
@@ -2437,6 +2461,11 @@ packages:
 
   builtins@5.1.0:
     resolution: {integrity: sha512-SW9lzGTLvWTP1AY8xeAMZimqDrIaSdLQUcVr9DMef51niJ022Ri87SwRRKYm4A6iHfkPaiVUu/Duw2Wc4J7kKg==}
+
+  bumpp@10.0.1:
+    resolution: {integrity: sha512-TBCR4FjNiubf+t6QFncNHJzCDwcz6SM2PPt/UoIGwGoe5ZTbSqu37nNJFlxBngWCUb1rYbf43ocNT1pPaNu5CQ==}
+    engines: {node: '>=18'}
+    hasBin: true
 
   bundle-name@4.1.0:
     resolution: {integrity: sha512-tjwM5exMg6BGRI+kNmTntNsvdZS1X8BFYS6tnJ2hdH0kVxM6/eVZ2xy+FqStSWvYmtfFMDLIxurorHwDKfDz5Q==}
@@ -3418,6 +3447,10 @@ packages:
     resolution: {integrity: sha512-14F4hBIxqKvD4Zz/XjDc3y94mNZN6pRv3U13Udo0lNLCWRBUsrMv2xwcF/y/Z5sV6+FQW+/ow68cHpm4sunt8Q==}
     engines: {node: '>=10'}
 
+  fuse.js@7.1.0:
+    resolution: {integrity: sha512-trLf4SzuuUxfusZADLINj+dE8clK1frKdmqiJNb1Es75fmI5oY6X2mxLVUciLLjxqw/xr72Dhy+lER6dGd02FQ==}
+    engines: {node: '>=10'}
+
   gauge@3.0.2:
     resolution: {integrity: sha512-+5J6MS/5XksCuXq++uFRsnUd7Ovu1XenbeuIuNRJxYWjgQbPuFhT14lAvsWfqfAmnwluf1OwMjz39HjfLPci0Q==}
     engines: {node: '>=10'}
@@ -3831,6 +3864,9 @@ packages:
   jsonc-eslint-parser@2.4.0:
     resolution: {integrity: sha512-WYDyuc/uFcGp6YtM2H0uKmUwieOuzeE/5YocFJLnLfclZ4inf3mRn8ZVy1s7Hxji7Jxm6Ss8gqpexD/GlKoGgg==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+
+  jsonc-parser@3.3.1:
+    resolution: {integrity: sha512-HUgH65KyejrUFPvHFPbqOY0rsFip3Bo5wb4ngvdi1EpCYWUQDC5V+Y7mZws+DLkr4M//zQJoanu1SP+87Dv1oQ==}
 
   jsonfile@6.1.0:
     resolution: {integrity: sha512-5dgndWOriYSm5cnYaJNhalLNDKOqFwyDB/rr1E9ZsGciGvKPs8R2xYGCacuf3z6K1YKDz182fd+fY3cn3pMqXQ==}
@@ -7495,6 +7531,8 @@ snapshots:
 
   '@types/parse-path@7.0.3': {}
 
+  '@types/picomatch@3.0.2': {}
+
   '@types/resolve@1.20.2': {}
 
   '@types/unist@3.0.3': {}
@@ -8347,6 +8385,21 @@ snapshots:
   builtins@5.1.0:
     dependencies:
       semver: 7.6.3
+
+  bumpp@10.0.1(magicast@0.3.5):
+    dependencies:
+      c12: 2.0.1(magicast@0.3.5)
+      cac: 6.7.14
+      escalade: 3.2.0
+      js-yaml: 4.1.0
+      jsonc-parser: 3.3.1
+      package-manager-detector: 0.2.9
+      prompts: 2.4.2
+      semver: 7.6.3
+      tinyexec: 0.3.2
+      tinyglobby: 0.2.10
+    transitivePeerDependencies:
+      - magicast
 
   bundle-name@4.1.0:
     dependencies:
@@ -9486,6 +9539,8 @@ snapshots:
 
   fuse.js@7.0.0: {}
 
+  fuse.js@7.1.0: {}
+
   gauge@3.0.2:
     dependencies:
       aproba: 2.0.0
@@ -9884,6 +9939,8 @@ snapshots:
       eslint-visitor-keys: 3.4.3
       espree: 9.6.1
       semver: 7.6.3
+
+  jsonc-parser@3.3.1: {}
 
   jsonfile@6.1.0:
     dependencies:

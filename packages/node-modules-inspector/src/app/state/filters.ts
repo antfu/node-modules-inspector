@@ -1,8 +1,10 @@
 import type { PackageModuleType } from 'node-modules-tools'
 import { useDebounce } from '@vueuse/core'
+import pm from 'picomatch'
 import { computed, reactive } from 'vue'
+import { buildVersionToPackagesMap } from '~/utils/maps'
 import { getModuleType } from '../utils/module-type'
-import { packageData, packageVersionsMap } from './data'
+import { packageData } from './data'
 
 export interface FilterOptions {
   search: string
@@ -13,6 +15,7 @@ export interface FilterOptions {
 }
 
 export const FILTER_KEYS = [
+  'search',
   'excludes',
   'modules',
   'licenses',
@@ -34,20 +37,40 @@ export const filters = reactive<FilterOptions>({
 
 export const activatedFilters = computed(() => FILTER_KEYS.filter(i => !!filters[i]))
 
-export const workspacePackages = computed(() => Array.from(packageData.value?.packages.values() || []).filter(i => i.workspace))
-
 const debouncedSearch = useDebounce(computed(() => filters.search), 200)
 
-function* packageFilterGenerator(packages, filters, searchValue) {
-  for (const pkg of packages) {
+export const avaliablePackages = computed(() => {
+  // TODO: exclude packages
+  return Array.from(packageData.value?.packages.values() || [])
+    .filter((pkg) => {
+      if (filters.excludes && filters.excludes.some(i => pkg.name.includes(i)))
+        return false
+      return true
+    })
+})
+
+export const workspacePackages = computed(() => avaliablePackages.value.filter(i => i.workspace))
+
+export const filteredPackages = computed(() => Array.from((function *() {
+  for (const pkg of avaliablePackages.value) {
     if (filters.modules && !filters.modules.includes(getModuleType(pkg)))
       continue
     if (filters.licenses && !filters.licenses.includes(pkg.resolved.license || ''))
       continue
-    if (searchValue && !pkg.name.includes(searchValue))
-      continue
-    if (filters.excludes && filters.excludes.some(i => pkg.name.includes(i)))
-      continue
+
+    if (debouncedSearch.value) {
+      if (debouncedSearch.value.match(/[*[\]]/)) {
+        if (!pm.isMatch(pkg.name, debouncedSearch.value))
+          continue
+      }
+      else {
+        if (!pkg.name.includes(debouncedSearch.value))
+          continue
+      }
+    }
+
+    // TODO: better excludes
+
     if (filters.sourceType) {
       if (filters.sourceType === 'prod' && !pkg.prod && !pkg.workspace)
         continue
@@ -56,19 +79,7 @@ function* packageFilterGenerator(packages, filters, searchValue) {
     }
     yield pkg
   }
-}
+})()))
 
-export const filteredPackageVersionsMap = computed(() => {
-  return new Map<string, PackageNode[]>(
-    Array.from(packageVersionsMap.entries()).map(([name, versions]) => {
-      const filteredVersions = Array.from(packageFilterGenerator(versions, filters, debouncedSearch.value))
-      return [name, filteredVersions]
-    }),
-  )
-})
-
-export const filteredPackages = computed(() => Array.from(packageFilterGenerator(
-  packageData.value?.packages.values() || [],
-  filters,
-  debouncedSearch.value,
-)))
+export const packageVersionsMap = computed(() => buildVersionToPackagesMap(avaliablePackages.value))
+export const filteredPackageVersionsMap = computed(() => buildVersionToPackagesMap(filteredPackages.value))

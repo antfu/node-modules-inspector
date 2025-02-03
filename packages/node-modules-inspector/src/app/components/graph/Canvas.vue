@@ -32,7 +32,7 @@ const nodesRefMap = new Map<string, HTMLDivElement>()
 const NODE_WIDTH = 300
 const NODE_HEIGHT = 30
 const NODE_LINK_OFFSET = 20
-const NODE_MARGIN = 100
+const NODE_MARGIN = 200
 const NODE_GAP = 150
 
 function calculateGraph() {
@@ -146,8 +146,13 @@ onMounted(() => {
         if (query.selected)
           focusOn(query.selected)
       },
-      { immediate: true, flush: 'post' },
+      { flush: 'post' },
     )
+
+    if (query.selected)
+      focusOn(query.selected, false)
+    else if (props.packages[0])
+      focusOn(props.packages[0].spec, false)
   })
 })
 
@@ -190,12 +195,12 @@ const activeLinks = computed(() => {
   ]
 })
 
-function focusOn(spec: string) {
+function focusOn(spec: string, animated = true) {
   const el = nodesRefMap.get(spec)
   el?.scrollIntoView({
     block: 'center',
     inline: 'center',
-    behavior: 'smooth',
+    behavior: animated ? 'smooth' : 'instant',
   })
 }
 

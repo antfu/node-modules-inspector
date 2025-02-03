@@ -1,11 +1,12 @@
 {
   "type": "module",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "private": true,
   "packageManager": "pnpm@9.15.4",
   "scripts": {
     "build": "pnpm -r run build",
     "dev": "nuxt dev packages/node-modules-inspector/src",
+    "start": "pnpm -C packages/node-modules-inspector run start",
     "prepare": "nuxt prepare packages/node-modules-inspector/src && npx simple-git-hooks",
     "lint": "nuxi prepare && eslint .",
     "test": "vitest",
@@ -29,6 +30,7 @@
     "@types/ws": "catalog:",
     "@typescript-eslint/utils": "catalog:",
     "@unocss/eslint-config": "catalog:",
+    "bumpp": "catalog:",
     "eslint": "catalog:",
     "lint-staged": "catalog:",
     "nuxt": "catalog:",

@@ -26,10 +26,8 @@ export async function createWsServer(options: CreateWsServerOptions) {
     [],
     {
       onError(error, name) {
-        console.error(
-          c.yellow(`[node-modules-inspector] RPC error on executing "${c.bold(name)}":\n`)
-          + c.red(error?.message || ''),
-        )
+        console.error(c.yellow(`[node-modules-inspector] RPC error on executing "${c.bold(name)}":`))
+        console.error(error)
       },
       timeout: 120_000,
     },
@@ -41,7 +39,6 @@ export async function createWsServer(options: CreateWsServerOptions) {
       post: d => ws.send(d),
       on: (fn) => {
         ws.on('message', (data) => {
-          console.log(data)
           fn(data)
         })
       },

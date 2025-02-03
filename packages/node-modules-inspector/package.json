@@ -1,7 +1,7 @@
 {
   "name": "node-modules-inspector",
   "type": "module",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "A Node Modules Inspector",
   "author": "Anthony Fu <anthonyfu117@hotmail.com>",
   "license": "MIT",
@@ -21,6 +21,7 @@
   ],
   "scripts": {
     "build": "nuxi build src && unbuild",
+    "start": "node ./bin.mjs",
     "dev": "pnpm run -r stub && nuxi dev src",
     "prepack": "pnpm build"
   },
@@ -37,10 +38,13 @@
     "mrmime": "catalog:",
     "node-modules-tools": "workspace:*",
     "open": "catalog:",
+    "pathe": "catalog:",
     "picocolors": "catalog:",
+    "structured-clone-es": "catalog:",
     "ws": "catalog:"
   },
   "devDependencies": {
+    "@types/picomatch": "^3.0.2",
     "@unocss/nuxt": "catalog:",
     "@vueuse/nuxt": "catalog:",
     "d3": "catalog:",
@@ -48,8 +52,8 @@
     "d3-shape": "catalog:",
     "floating-vue": "catalog:",
     "fuse.js": "catalog:",
+    "picomatch": "^4.0.2",
     "shiki": "catalog:",
-    "structured-clone-es": "catalog:",
     "vite-hot-client": "catalog:"
   }
 }

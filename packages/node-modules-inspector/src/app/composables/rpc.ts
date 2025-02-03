@@ -23,7 +23,8 @@ export const rpc = createBirpc<ServerFunctions, ClientFunctions>(clientFunctions
   serialize: stringify,
   deserialize: parse,
   onError(error, name) {
-    console.error(`[node-modules-inspector] RPC error on executing "${name}":`, error)
+    console.error(`[node-modules-inspector] RPC error on executing "${name}":`)
+    console.error(error)
   },
   timeout: 120_000,
 })
