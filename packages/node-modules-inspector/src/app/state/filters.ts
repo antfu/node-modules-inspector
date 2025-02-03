@@ -2,7 +2,7 @@ import type { PackageModuleType } from 'node-modules-tools'
 import { useDebounce } from '@vueuse/core'
 import { computed, reactive } from 'vue'
 import { getModuleType } from '../utils/module-type'
-import { packageData } from './data'
+import { packageData, packageVersionsMap } from './data'
 
 export interface FilterOptions {
   search: string
@@ -38,15 +38,14 @@ export const workspacePackages = computed(() => Array.from(packageData.value?.pa
 
 const debouncedSearch = useDebounce(computed(() => filters.search), 200)
 
-export const filteredPackages = computed(() => Array.from((function *() {
-  for (const pkg of packageData.value?.packages.values() || []) {
+function* packageFilterGenerator(packages, filters, searchValue) {
+  for (const pkg of packages) {
     if (filters.modules && !filters.modules.includes(getModuleType(pkg)))
       continue
     if (filters.licenses && !filters.licenses.includes(pkg.resolved.license || ''))
       continue
-    if (debouncedSearch.value && !pkg.name.includes(debouncedSearch.value))
+    if (searchValue && !pkg.name.includes(searchValue))
       continue
-    // TODO: better excludes
     if (filters.excludes && filters.excludes.some(i => pkg.name.includes(i)))
       continue
     if (filters.sourceType) {
@@ -57,4 +56,19 @@ export const filteredPackages = computed(() => Array.from((function *() {
     }
     yield pkg
   }
-})()))
+}
+
+export const filteredPackageVersionsMap = computed(() => {
+  return new Map<string, PackageNode[]>(
+    Array.from(packageVersionsMap.entries()).map(([name, versions]) => {
+      const filteredVersions = Array.from(packageFilterGenerator(versions, filters, debouncedSearch.value))
+      return [name, filteredVersions]
+    }),
+  )
+})
+
+export const filteredPackages = computed(() => Array.from(packageFilterGenerator(
+  packageData.value?.packages.values() || [],
+  filters,
+  debouncedSearch.value,
+)))
