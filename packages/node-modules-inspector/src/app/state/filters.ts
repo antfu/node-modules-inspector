@@ -9,6 +9,7 @@ export interface FilterOptions {
   'licenses': null | string[]
   'excludes': null | string[]
   'exclude-dts': boolean
+  'exclude-private': boolean
   'source-type': null | 'prod' | 'dev'
 }
 
@@ -19,6 +20,7 @@ export const filters = reactive<FilterOptions>({
   'licenses': null,
   'excludes': null,
   'exclude-dts': false,
+  'exclude-private': false,
   'source-type': null,
 })
 
@@ -33,6 +35,7 @@ export const FILTER_KEYS = [
 export const FILTER_KEYS_FULL = [
   'excludes',
   'exclude-dts',
+  'exclude-private',
   ...FILTER_KEYS,
 ] satisfies (keyof FilterOptions)[]
 

@@ -13,6 +13,8 @@ const _excluded_packages = computed(() => {
     .filter((pkg) => {
       if (filters['exclude-dts'] && pkg.resolved.module === 'dts')
         return true
+      if (filters['exclude-private'] && pkg.private)
+        return true
       if (filters.excludes && filters.excludes.includes(pkg.spec))
         return true
       return false

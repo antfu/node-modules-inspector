@@ -155,6 +155,9 @@ const moduleTypes = Object.fromEntries(
         <OptionItem title="Exclude DTS Packages" description="Exclude TypeScript declaration packages">
           <OptionCheckbox v-model="filters['exclude-dts']" />
         </OptionItem>
+        <OptionItem title="Exclude Private Packages" description="Exclude private workspace packages">
+          <OptionCheckbox v-model="filters['exclude-private']" />
+        </OptionItem>
       </div>
     </div>
 

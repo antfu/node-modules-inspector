@@ -12,7 +12,10 @@ defineProps<{
     border="~ rounded-lg" px3 py2 flex="~ col gap-2"
     bg-glass
     hover="bg-active"
-    :class="selectedNode === pkg ? 'border-primary ring-3 ring-primary:15' : 'border-base'"
+    :class="[
+      selectedNode === pkg ? 'border-primary ring-3 ring-primary:15' : 'border-base',
+      pkg.private ? 'border-dashed' : '',
+    ]"
     @click="selectedNode = pkg"
   >
     <DisplayPackageSpec :pkg text-left />
