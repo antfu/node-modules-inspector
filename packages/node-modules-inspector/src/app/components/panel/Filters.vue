@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { PackageModuleType } from 'node-modules-tools'
 import type { WritableComputedRef } from 'vue'
-import { computed, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { excludesActivated, FILTER_KEYS_EXCLUDES, FILTER_KEYS_FILTERS, filters, FILTERS_DEFAULT, filtersActivated } from '~/state/filters'
 import { payloads } from '~/state/payload'
 import { settings } from '~/state/settings'
@@ -89,6 +89,17 @@ watch(searchText, (v) => {
   filters.licenses = licenseMatches.length ? licenseMatches : null
   filters.authors = authorMatches.length ? authorMatches : null
   filters.search = remaining.join(' ')
+})
+
+onMounted(() => {
+  const parts = []
+  if (filters.licenses)
+    parts.push(...filters.licenses.map(l => `license:"${l}"`))
+  if (filters.authors)
+    parts.push(...filters.authors.map(a => `author:"${a}"`))
+  if (filters.search)
+    parts.push(filters.search)
+  searchText.value = parts.join(' ')
 })
 </script>
 
