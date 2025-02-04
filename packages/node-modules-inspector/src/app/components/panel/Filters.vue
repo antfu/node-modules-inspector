@@ -2,7 +2,7 @@
 import type { PackageModuleType } from 'node-modules-tools'
 import type { WritableComputedRef } from 'vue'
 import { computed } from 'vue'
-import { filters } from '~/state/filters'
+import { filters, filtersActivated } from '~/state/filters'
 import { payload } from '~/state/payload'
 import { settings } from '~/state/settings'
 import { MODULE_TYPES_FULL_SELECT, MODULE_TYPES_SIMPLE_SELECT } from '../../utils/module-type'
@@ -47,6 +47,19 @@ function removeExclude(spec: string) {
     return
   const arr = filters.excludes.filter(x => x !== spec)
   filters.excludes = arr.length === 0 ? null : arr
+}
+
+function resetFilters() {
+  filters.search = ''
+  filters['source-type'] = null
+  filters.modules = null
+  filters.focus = null
+}
+
+function resetExcludes() {
+  filters.excludes = null
+  filters['exclude-dts'] = false
+  filters['exclude-private'] = false
 }
 
 const moduleTypes = Object.fromEntries(
@@ -159,6 +172,23 @@ const moduleTypes = Object.fromEntries(
           <OptionCheckbox v-model="filters['exclude-private']" />
         </OptionItem>
       </div>
+    </div>
+
+    <div border="t base" p4 flex="~ gap-2 items-center">
+      <button
+        btn-action :disabled="filtersActivated.length === 0"
+        @click="resetFilters()"
+      >
+        <div i-ph-funnel-x-duotone />
+        Reset Filters
+      </button>
+      <button
+        btn-action :disabled="!payload.excluded.packages.size"
+        @click="resetExcludes()"
+      >
+        <div i-ph-trash-simple-duotone />
+        Clear Excludes
+      </button>
     </div>
 
     <div border="t base">

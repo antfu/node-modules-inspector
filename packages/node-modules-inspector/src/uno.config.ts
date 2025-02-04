@@ -22,13 +22,12 @@ export default defineConfig({
       'bg-tooltip': 'bg-white:75 dark:bg-#111:75 backdrop-blur-8',
       'bg-glass': 'bg-white:75 dark:bg-#111:75 backdrop-blur-5',
       'bg-code': 'bg-gray5:5',
-      'bg-hover': 'bg-primary-400:5',
 
       'color-active': 'color-primary-600 dark:color-primary-400',
       'border-active': 'border-primary-600/25 dark:border-primary-400/25',
       'bg-active': 'bg-#8881',
 
-      'btn-action': 'border border-base rounded flex gap-2 items-center px2 py1 op75 hover:op100 hover:bg-hover',
+      'btn-action': 'border border-base rounded flex gap-2 items-center px2 py1 op75 hover:op100 hover:bg-active disabled:pointer-events-none disabled:op30!',
       'btn-action-sm': 'btn-action text-sm',
       'btn-action-active': 'color-active border-active! bg-active op100!',
 

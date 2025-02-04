@@ -135,7 +135,7 @@ function toggleExclude() {
             :to="`https://www.npmjs.com/package/${pkg.name}/v/${pkg.version}`"
             title="Open on NPM"
             target="_blank"
-            w-8 h-8 rounded-full hover:bg-hover flex
+            w-8 h-8 rounded-full hover:bg-active flex
           >
             <div i-catppuccin-npm icon-catppuccin ma />
           </NuxtLink>
@@ -144,7 +144,7 @@ function toggleExclude() {
             :to="pkg.resolved.repository"
             title="Open Repository"
             target="_blank"
-            ml--1 w-8 h-8 rounded-full hover:bg-hover flex
+            ml--1 w-8 h-8 rounded-full hover:bg-active flex
           >
             <div i-catppuccin-git icon-catppuccin ma />
           </NuxtLink>
@@ -153,14 +153,14 @@ function toggleExclude() {
             :to="pkg.resolved.homepage"
             title="Open Homepage"
             target="_blank"
-            ml--1 w-8 h-8 rounded-full hover:bg-hover flex
+            ml--1 w-8 h-8 rounded-full hover:bg-active flex
           >
             <div i-catppuccin-http icon-catppuccin ma />
           </NuxtLink>
           <button
             v-if="backend.functions.openInEditor"
             title="Open Package Folder in Editor"
-            ml--1 w-8 h-8 rounded-full hover:bg-hover flex
+            ml--1 w-8 h-8 rounded-full hover:bg-active flex
             @click="backend.functions.openInEditor(pkg.filepath)"
           >
             <div i-catppuccin-folder-vscode hover:i-catppuccin-folder-vscode-open icon-catppuccin ma />
@@ -168,7 +168,7 @@ function toggleExclude() {
           <button
             v-if="backend.functions.openInFinder"
             title="Open Package Folder in Finder"
-            ml--1 w-8 h-8 rounded-full hover:bg-hover flex
+            ml--1 w-8 h-8 rounded-full hover:bg-active flex
             @click="backend.functions.openInFinder(pkg.filepath)"
           >
             <div i-catppuccin-folder-command hover:i-catppuccin-folder-command-open icon-catppuccin ma />
