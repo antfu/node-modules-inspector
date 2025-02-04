@@ -105,15 +105,33 @@ watch(searchText, (v) => {
   }
 })
 
-onMounted(() => {
+function setupSearchText() {
   const parts = []
-  if (filters.licenses)
-    parts.push(...filters.licenses.map(l => `license:"${l}"`))
-  if (filters.authors)
-    parts.push(...filters.authors.map(a => `author:"${a}"`))
-  if (filters.search)
-    parts.push(filters.search)
-  searchText.value = parts.join(' ')
+
+  switch (filters.mode) {
+    case 'text':
+      if (filters.licenses)
+        parts.push(...filters.licenses.map(l => `license:"${l}"`))
+      if (filters.authors)
+        parts.push(...filters.authors.map(a => `author:"${a}"`))
+      if (filters.search)
+        parts.push(filters.search)
+      break
+    case 'license':
+      if (filters.licenses)
+        parts.push(...filters.licenses)
+      break
+    case 'author':
+      if (filters.authors)
+        parts.push(...filters.authors)
+      break
+  }
+
+  return parts.join(' ')
+}
+
+onMounted(() => {
+  searchText.value = setupSearchText()
 })
 </script>
 
