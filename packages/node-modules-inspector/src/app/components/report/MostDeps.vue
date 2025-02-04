@@ -5,10 +5,20 @@ import { payload } from '~/state/payload'
 
 const count = ref(15)
 
+const depsCountMap = computed(() => {
+  return new Map(Array.from(payload.filtered.packages)
+    .map(x => [
+      x,
+      Array.from(x.flatDependencies)
+        .filter(dep => payload.avaliable.map.has(dep))
+        .length,
+    ] as const))
+})
+
 const transitiveDeps = computed(() =>
   Array.from(payload.filtered.packages)
-    .filter(x => !x.workspace && x.flatDependencies.size > 0)
-    .sort((a, b) => b.flatDependencies.size - a.flatDependencies.size),
+    .filter(x => !x.workspace && depsCountMap.value.get(x))
+    .sort((a, b) => depsCountMap.value.get(b)! - depsCountMap.value.get(a)!),
 )
 
 const top = computed(() => transitiveDeps.value.slice(0, count.value))
@@ -31,7 +41,7 @@ const top = computed(() => transitiveDeps.value.slice(0, count.value))
           </button>
           <div flex="~ justify-end items-center">
             <DisplayNumberBadge
-              :number="pkg.flatDependencies.size"
+              :number="depsCountMap.get(pkg)!"
               rounded-full text-sm h-max
             />
           </div>
