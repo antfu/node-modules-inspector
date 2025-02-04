@@ -1,14 +1,16 @@
+import type { ListPackageDependenciesOptions } from 'node-modules-tools'
 import type { ServerFunctions } from '../shared/types'
 import process from 'node:process'
 import { listPackageDependencies } from 'node-modules-tools'
 
-export function createServerFunctions(): ServerFunctions {
+export function createServerFunctions(options: Partial<ListPackageDependenciesOptions>): ServerFunctions {
   return {
     async listDependencies() {
       const result = await listPackageDependencies({
         cwd: process.cwd(),
         depth: 25,
         monorepo: true,
+        ...options,
       })
       return result
     },

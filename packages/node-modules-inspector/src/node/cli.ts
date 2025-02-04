@@ -66,6 +66,7 @@ cli
 cli
   .command('', 'Start dev inspector')
   .option('--root <root>', 'Root directory', { default: process.cwd() })
+  .option('--depth <depth>', 'Max depth to list dependencies', { default: 25 })
   // Dev specific options
   .option('--host <host>', 'Host', { default: process.env.HOST || '127.0.0.1' })
   .option('--port <port>', 'Port', { default: process.env.PORT || 9999 })
@@ -79,6 +80,7 @@ cli
 
     const server = await createHostServer({
       root: options.root,
+      depth: options.depth,
     })
 
     server.listen(port, host, async () => {

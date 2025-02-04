@@ -1,4 +1,5 @@
 import type { ChannelOptions } from 'birpc'
+import type { ListPackageDependenciesOptions } from 'node-modules-tools'
 import type { WebSocket } from 'ws'
 import type { Metadata } from '../shared/types'
 import { createBirpcGroup } from 'birpc'
@@ -9,7 +10,7 @@ import { WebSocketServer } from 'ws'
 import { MARK_CHECK } from './constants'
 import { createServerFunctions } from './rpc'
 
-export interface CreateWsServerOptions {
+export interface CreateWsServerOptions extends Partial<ListPackageDependenciesOptions> {
   root: string
 }
 
@@ -20,7 +21,7 @@ export async function createWsServer(options: CreateWsServerOptions) {
   })
   const wsClients = new Set<WebSocket>()
 
-  const serverFunctions = createServerFunctions()
+  const serverFunctions = createServerFunctions(options)
   const rpc = createBirpcGroup(
     serverFunctions,
     [],
