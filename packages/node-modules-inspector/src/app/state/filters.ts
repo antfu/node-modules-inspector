@@ -32,6 +32,13 @@ export const FILTER_KEYS = [
   'source-type',
 ] satisfies (keyof FilterOptions)[]
 
+export const FILTER_KEYS_ARRAY = [
+  'modules',
+  'focus',
+  'licenses',
+  'excludes',
+] satisfies (keyof FilterOptions)[]
+
 export const FILTER_KEYS_FULL = [
   'excludes',
   'exclude-dts',

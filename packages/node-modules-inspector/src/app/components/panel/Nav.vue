@@ -30,6 +30,8 @@ const isFiltersOpen = computed({
   },
 })
 
+const location = window.location
+
 const tabsMeta = [
   {
     name: 'Graph View',
@@ -104,7 +106,7 @@ function resetPanelState() {
           flex="~ items-center justify-center"
           :title="tab.name"
           :class="route.path.startsWith(tab.path) ? 'text-primary' : 'op50'"
-          :to="{ path: tab.path, query: route.query }"
+          :to="{ path: tab.path, hash: location.hash }"
           @click="resetPanelState()"
         >
           <div :class="tab.icon" text-xl />

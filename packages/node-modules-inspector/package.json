@@ -22,7 +22,7 @@
   "scripts": {
     "build": "nuxi build src && unbuild",
     "start": "node ./bin.mjs",
-    "dev": "pnpm run -r stub && nuxi dev src",
+    "dev": "pnpm run -r stub && cd src && nuxi dev",
     "prepack": "pnpm build"
   },
   "dependencies": {

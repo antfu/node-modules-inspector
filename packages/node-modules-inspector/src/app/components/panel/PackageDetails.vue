@@ -75,7 +75,9 @@ function toggleExclude() {
           <div p1 flex="~ col">
             <button
               px2 py1 rounded hover:bg-active flex="~ items-center gap-2"
-              :class="filters.focus?.includes(pkg.spec) ? 'text-primary' : 'op50'"
+              :class="filters.focus?.includes(pkg.spec) ? 'text-primary' : 'op75'"
+              :disabled="filters.excludes?.includes(pkg.spec)"
+              class="disabled:op25! disabled:pointer-events-none"
               @click="toggleFocus()"
             >
               <div i-ph-arrows-in-cardinal-duotone flex-none />
@@ -83,11 +85,11 @@ function toggleExclude() {
             </button>
             <button
               px2 py1 rounded hover:bg-active flex="~ items-center gap-2"
-              :class="filters.excludes?.includes(pkg.spec) ? 'text-purple' : 'op50'"
+              :class="filters.excludes?.includes(pkg.spec) ? 'text-purple' : 'op75'"
               @click="toggleExclude()"
             >
               <div i-ph-network-slash-duotone flex-none />
-              <span class="ml-2">{{ filters.focus?.includes(pkg.spec) ? 'Un-exclude' : 'Exclude' }} this package</span>
+              <span class="ml-2">{{ filters.excludes?.includes(pkg.spec) ? 'Un-exclude' : 'Exclude' }} this package</span>
             </button>
           </div>
         </template>
@@ -104,7 +106,7 @@ function toggleExclude() {
     </div>
 
     <div flex="~ col gap-2" p5>
-      <div font-mono text-2xl flex="~ wrap items-center gap-2" pr10>
+      <div font-mono text-2xl flex="~ wrap items-center gap-2" pr20>
         <span>{{ pkg.name }}</span>
         <DisplayModuleType text-sm :pkg :force="true" />
       </div>
