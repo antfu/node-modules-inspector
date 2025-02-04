@@ -13,18 +13,20 @@ export interface FilterOptions {
   'source-type': null | 'prod' | 'dev'
 }
 
-export const filters = reactive<FilterOptions>({
+export const FILTERS_DEFAULT: FilterOptions = Object.freeze({
   'search': '',
   'focus': null,
   'modules': null,
   'licenses': null,
   'excludes': null,
-  'exclude-dts': false,
+  'exclude-dts': true,
   'exclude-private': false,
   'source-type': null,
 })
 
-export const FILTER_KEYS = [
+export const filters = reactive<FilterOptions>({ ...FILTERS_DEFAULT })
+
+export const FILTER_KEYS_INDACTORS = [
   'search',
   'focus',
   'modules',
@@ -32,19 +34,25 @@ export const FILTER_KEYS = [
   'source-type',
 ] satisfies (keyof FilterOptions)[]
 
-export const FILTER_KEYS_ARRAY = [
-  'modules',
-  'focus',
-  'licenses',
-  'excludes',
-] satisfies (keyof FilterOptions)[]
-
-export const FILTER_KEYS_FULL = [
+export const FILTER_KEYS_EXCLUDES = [
   'excludes',
   'exclude-dts',
   'exclude-private',
-  ...FILTER_KEYS,
 ] satisfies (keyof FilterOptions)[]
 
+export const FILTERS_SCHEMA: Record<keyof FilterOptions, StringConstructor | ArrayConstructor | BooleanConstructor> = {
+  'search': String,
+  'modules': Array,
+  'focus': Array,
+  'licenses': Array,
+  'excludes': Array,
+  'exclude-dts': Boolean,
+  'exclude-private': Boolean,
+  'source-type': String,
+}
+
+export const FILTER_KEYS_FULL = Object.keys(FILTERS_DEFAULT) as (keyof FilterOptions)[]
+
 export const filterSearchDebounced = useDebounce(computed(() => filters.search), 200)
-export const filtersActivated = computed(() => FILTER_KEYS.filter(i => !!filters[i]))
+export const filtersActivated = computed(() => FILTER_KEYS_INDACTORS.filter(i => filters[i] !== FILTERS_DEFAULT[i]))
+export const filtersExcludesActivated = computed(() => FILTER_KEYS_EXCLUDES.filter(i => filters[i] !== FILTERS_DEFAULT[i]))

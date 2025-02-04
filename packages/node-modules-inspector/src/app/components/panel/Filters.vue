@@ -2,7 +2,7 @@
 import type { PackageModuleType } from 'node-modules-tools'
 import type { WritableComputedRef } from 'vue'
 import { computed } from 'vue'
-import { filters, filtersActivated } from '~/state/filters'
+import { FILTER_KEYS_EXCLUDES, FILTER_KEYS_INDACTORS, filters, FILTERS_DEFAULT, filtersActivated, filtersExcludesActivated } from '~/state/filters'
 import { payload } from '~/state/payload'
 import { settings } from '~/state/settings'
 import { MODULE_TYPES_FULL_SELECT, MODULE_TYPES_SIMPLE_SELECT } from '../../utils/module-type'
@@ -50,16 +50,17 @@ function removeExclude(spec: string) {
 }
 
 function resetFilters() {
-  filters.search = ''
-  filters['source-type'] = null
-  filters.modules = null
-  filters.focus = null
+  for (const key of FILTER_KEYS_INDACTORS) {
+    // @ts-expect-error any
+    filters[key] = FILTERS_DEFAULT[key]
+  }
 }
 
 function resetExcludes() {
-  filters.excludes = null
-  filters['exclude-dts'] = false
-  filters['exclude-private'] = false
+  for (const key of FILTER_KEYS_EXCLUDES) {
+    // @ts-expect-error any
+    filters[key] = FILTERS_DEFAULT[key]
+  }
 }
 
 const moduleTypes = Object.fromEntries(
@@ -183,7 +184,7 @@ const moduleTypes = Object.fromEntries(
         Reset Filters
       </button>
       <button
-        btn-action :disabled="!payload.excluded.packages.size"
+        btn-action :disabled="filtersExcludesActivated.length === 0"
         @click="resetExcludes()"
       >
         <div i-ph-trash-simple-duotone />

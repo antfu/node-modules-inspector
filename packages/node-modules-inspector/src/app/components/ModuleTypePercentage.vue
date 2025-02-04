@@ -44,7 +44,6 @@ const counts = computed(() =>
         props.rounded && idx === 0 ? 'rounded-l' : '',
         props.rounded && idx === counts.length - 1 ? 'rounded-r' : '',
         idx !== 0 ? 'border-l' : '',
-        counts.length === 1 ? 'justify-center' : '',
       ]"
       :style="{ flex: c }"
       text-center text-xs px1.5 py1 flex gap-x-0.5
