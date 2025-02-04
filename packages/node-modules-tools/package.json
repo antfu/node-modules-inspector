@@ -42,14 +42,14 @@
   "dependencies": {
     "package-manager-detector": "catalog:",
     "pathe": "catalog:",
-    "stream-json": "^1.9.1",
     "tinyexec": "catalog:"
   },
   "devDependencies": {
     "@pnpm/list": "catalog:",
     "@pnpm/types": "catalog:",
-    "@types/stream-json": "^1.7.8",
+    "@types/stream-json": "catalog:",
     "pkg-types": "catalog:",
+    "stream-json": "catalog:",
     "unbuild": "catalog:"
   }
 }

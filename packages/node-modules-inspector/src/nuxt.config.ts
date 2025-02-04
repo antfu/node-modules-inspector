@@ -14,6 +14,7 @@ export default defineNuxtConfig({
     'node-modules-tools': fileURLToPath(new URL('../../node-modules-tools/src/index.ts', import.meta.url)),
   },
 
+  logLevel: 'verbose',
   srcDir: 'app',
 
   eslint: {

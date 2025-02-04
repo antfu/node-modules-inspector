@@ -1,6 +1,6 @@
 import type { ChannelOptions } from 'birpc'
 import type { WebSocket } from 'ws'
-import type { Metadata } from '~~/shared/types'
+import type { Metadata } from '../shared/types'
 import { createBirpcGroup } from 'birpc'
 import { getPort } from 'get-port-please'
 import c from 'picocolors'
@@ -14,13 +14,13 @@ export interface CreateWsServerOptions {
 }
 
 export async function createWsServer(options: CreateWsServerOptions) {
-  const port = await getPort({ port: 7811, random: true })
+  const port = await getPort({ port: 7812, random: true })
   const wss = new WebSocketServer({
     port,
   })
   const wsClients = new Set<WebSocket>()
 
-  const serverFunctions = await createServerFunctions()
+  const serverFunctions = createServerFunctions()
   const rpc = createBirpcGroup(
     serverFunctions,
     [],
@@ -28,6 +28,7 @@ export async function createWsServer(options: CreateWsServerOptions) {
       onError(error, name) {
         console.error(c.yellow(`[node-modules-inspector] RPC error on executing "${c.bold(name)}":`))
         console.error(error)
+        throw error
       },
       timeout: 120_000,
     },

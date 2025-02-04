@@ -1,8 +1,8 @@
-import type { ServerFunctions } from '~~/shared/types'
+import type { ServerFunctions } from '../shared/types'
 import process from 'node:process'
 import { listPackageDependencies } from 'node-modules-tools'
 
-export async function createServerFunctions(): Promise<ServerFunctions> {
+export function createServerFunctions(): ServerFunctions {
   return {
     async listDependencies() {
       const result = await listPackageDependencies({

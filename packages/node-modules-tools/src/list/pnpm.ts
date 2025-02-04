@@ -67,24 +67,9 @@ async function getDependenciesTree(options: ListPackageDependenciesOptions): Pro
       cwd: options.cwd,
     },
   })
-  const createParser = await import('stream-json').then(r => r.parser)
-  const Assembler = await import('stream-json/Assembler').then(r => r.default)
 
-  const assembler = new Assembler()
-  const parser = createParser()
-
-  return await new Promise<PnpmDependencyHierarchy[]>((resolve) => {
-    parser.on('data', (chunk) => {
-      // @ts-expect-error casting
-      assembler[chunk.name]?.(chunk.value)
-    })
-
-    process.process!.stdout!.pipe(parser)
-
-    parser.on('end', () => {
-      resolve(assembler.current)
-    })
-  })
+  return await import('../json-parse-stream')
+    .then(r => r.parseJsonStream<PnpmDependencyHierarchy[]>(process.process!.stdout!))
 }
 
 export async function listPackageDependencies(
