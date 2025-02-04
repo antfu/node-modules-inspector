@@ -29,10 +29,13 @@ function showGraph(pkgs: PackageNode[]) {
 
 <template>
   <template v-if="sorted.length">
-    <SubTitle>Multi-Versions Packages</SubTitle>
-    <div badge-color-primary flex="~ gap-2 items-center" rounded-lg p2 my2>
+    <SubTitle>
+      Multi-Versions Packages
+      <DisplayNumberBadge :number="sorted.length" rounded-full text-sm />
+    </SubTitle>
+    <div badge-color-primary flex="~ gap-2 items-center" rounded-lg p2 my2 px3>
       <div i-ph-lightbulb-duotone flex-none />
-      <span>Run <code color-base>`pnpm dedupe`</code> to de-duplicate packages that satisfies with the ranges</span>
+      <span>Run <code color-green>`pnpm dedupe`</code> to de-duplicate packages that satisfies with the ranges</span>
     </div>
     <div grid="~ cols-minmax-200px gap-4">
       <div

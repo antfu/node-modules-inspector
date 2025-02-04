@@ -1,10 +1,15 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { getBackend } from '~/backends'
 import { rawData } from '~/state/data'
 import { payload } from '~/state/payload'
 import { version } from '../../../../package.json'
 
 const backend = getBackend()
+
+const multipleVersionsCount = computed(() => {
+  return Array.from(payload.avaliable.versions.values()).filter(v => v.length > 1).length
+})
 </script>
 
 <template>
@@ -36,13 +41,18 @@ const backend = getBackend()
       </div>
       <div flex="~ gap-2 items-center">
         <div i-catppuccin-folder-packages-open icon-catppuccin flex-none />
-        <DisplayNumberBadge :number="payload.workspace.packages.length" rounded-full text-sm mx--0.2 mt-3px />
+        <DisplayNumberBadge :number="payload.workspace.packages.length" rounded-full text-sm mx--0.2 mt-3px color="badge-color-yellow" />
         <span ml--0.5>workspace packages</span>
       </div>
       <div flex="~ gap-2 items-center">
         <div i-catppuccin-java-class icon-catppuccin flex-none />
-        <DisplayNumberBadge :number="payload.avaliable.packages.length" rounded-full text-sm mx--0.2 mt-3px />
-        <span ml--0.5>packages</span>
+        <DisplayNumberBadge :number="payload.avaliable.packages.length" rounded-full text-sm mx--0.2 mt-3px color="badge-color-primary" />
+        <span ml--0.5>total packages</span>
+      </div>
+      <div flex="~ gap-2 items-center">
+        <div i-catppuccin-java-enum icon-catppuccin flex-none />
+        <DisplayNumberBadge :number="multipleVersionsCount" rounded-full text-sm mx--0.2 mt-3px color="badge-color-orange" />
+        <span ml--0.5>libraries with multiple versions</span>
       </div>
     </div>
     <div>

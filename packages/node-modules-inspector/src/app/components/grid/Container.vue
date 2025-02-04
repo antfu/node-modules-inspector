@@ -7,7 +7,7 @@ defineProps<{
 </script>
 
 <template>
-  <div grid="~ cols-minmax-400px gap-2">
+  <div grid="~ cols-minmax-320px gap-2">
     <GridItem
       v-for="pkg of packages"
       :key="pkg.spec"

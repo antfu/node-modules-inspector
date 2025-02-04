@@ -3,13 +3,14 @@ import { computed, ref } from 'vue'
 import { selectedNode } from '~/state/current'
 import { payload } from '~/state/payload'
 
-const count = ref(20)
+const count = ref(15)
 
 const transitiveDeps = computed(() =>
   Array.from(payload.filtered.packages)
     .filter(x => !x.workspace && x.flatDependencies.size > 0)
     .sort((a, b) => b.flatDependencies.size - a.flatDependencies.size),
 )
+
 const top = computed(() => transitiveDeps.value.slice(0, count.value))
 </script>
 
@@ -38,7 +39,11 @@ const top = computed(() => transitiveDeps.value.slice(0, count.value))
         </template>
       </div>
 
-      <button v-if="transitiveDeps.length > count" flex gap1 items-center self-end hover:bg-active px4 py2 rounded-full @click="count *= 1.5">
+      <button
+        v-if="transitiveDeps.length > count"
+        flex gap1 items-center self-end op50 hover:bg-active hover:op100 px4 py2 rounded-full
+        @click="count = Math.round(count * 1.5)"
+      >
         <div class="i-ri:arrow-down-double-line" />
         More
       </button>

@@ -39,12 +39,12 @@ defineProps<{
       <div op75>
         {{ pkg.resolved.license }}
       </div>
-      <template v-if="pkg.resolved.author">
+      <!-- <template v-if="pkg.resolved.author">
         <span op25>·</span>
         <div op75>
           {{ pkg.resolved.author?.replace(/\<.*\>/, '').replace(/\(.*\)/, '') }}
         </div>
-      </template>
+      </template> -->
     </div>
   </button>
 </template>
