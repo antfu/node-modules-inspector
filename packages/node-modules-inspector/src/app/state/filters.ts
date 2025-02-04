@@ -4,6 +4,7 @@ import { objectEntries, useDebounce } from '@vueuse/core'
 import { computed, reactive } from 'vue'
 
 export interface FilterOptions {
+  'mode': 'text' | 'license' | 'author'
   'search': string
   'modules': null | PackageModuleType[]
   'focus': null | string[]
