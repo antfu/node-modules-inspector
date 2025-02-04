@@ -80,11 +80,11 @@ const moduleTypes = Object.fromEntries(
 
 watch(searchText, (v) => {
   if (filters.mode === 'text') {
-    const authorMatches = [...v.matchAll(/author\s*:\s*"([^"]*)"/gi)].map(m => m[1])
-    const licenseMatches = [...v.matchAll(/license\s*:\s*"([^"]*)"/gi)].map(m => m[1])
+    const authorMatches = [...v.matchAll(FILTER_AUTHOR_REGEX)].map(m => m[1])
+    const licenseMatches = [...v.matchAll(FILTER_LICENSE_REGEX)].map(m => m[1])
     const remaining = v
-      .replace(/author\s*:\s*"[^"]*"\s*/gi, '')
-      .replace(/license\s*:\s*"[^"]*"\s*/gi, '')
+      .replace(FILTER_AUTHOR_REGEX, '')
+      .replace(FILTER_LICENSE_REGEX, '')
       .trim()
       .split(/\s+/)
       .filter(Boolean)

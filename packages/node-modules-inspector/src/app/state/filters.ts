@@ -3,6 +3,9 @@ import { objectMap } from '@antfu/utils'
 import { objectEntries, useDebounce } from '@vueuse/core'
 import { computed, reactive } from 'vue'
 
+export const FILTER_AUTHOR_REGEX = /author\s*:\s*"([^"]*)"/gi
+export const FILTER_LICENSE_REGEX = /license\s*:\s*"([^"]*)"/gi
+
 export interface FilterOptions {
   'mode': 'text' | 'license' | 'author'
   'search': string
