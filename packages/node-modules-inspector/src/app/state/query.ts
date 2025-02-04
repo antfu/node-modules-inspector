@@ -76,7 +76,7 @@ export function setupQuery() {
       if (n[1] !== o[1])
         router.push({ path: route.path, hash })
       else
-        history.replaceState(null, '', hash)
+        history.replaceState(history.state, '', hash)
     },
     { deep: true, flush: 'post' },
   )

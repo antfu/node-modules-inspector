@@ -61,15 +61,18 @@ const _filtered_packages = computed(() => Array.from((function *() {
         continue
     }
 
+    if (filters.why) {
+      const shouldTake = filters.why.includes(pkg.spec) || filters.why.some(f => pkg.flatDependencies.has(f))
+      if (!shouldTake)
+        continue
+    }
+
     if (filters.modules) {
       const type = getModuleType(pkg)
       // dts is always included here, as it's controlled by the exclude-dts option
       if (!filters.modules.includes(type) && type !== 'dts')
         continue
     }
-
-    if (filters.licenses && !filters.licenses.includes(pkg.resolved.license || ''))
-      continue
 
     if (filterSearchDebounced.value) {
       if (filterSearchDebounced.value.match(/[*[\]]/)) {
@@ -82,13 +85,13 @@ const _filtered_packages = computed(() => Array.from((function *() {
       }
     }
 
-    // TODO: better excludes
     if (filters['source-type']) {
       if (filters['source-type'] === 'prod' && !pkg.prod && !pkg.workspace)
         continue
       if (filters['source-type'] === 'dev' && !pkg.dev && !pkg.workspace)
         continue
     }
+
     yield pkg
   }
 })()))

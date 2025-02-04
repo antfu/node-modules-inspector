@@ -49,6 +49,15 @@ function toggleFocus() {
   filters.focus = current.length === 0 ? null : current
 }
 
+function toggleWhy() {
+  let current = filters.why || []
+  if (current.includes(props.pkg.spec))
+    current = current.filter(x => x !== props.pkg.spec)
+  else
+    current = [...current, props.pkg.spec]
+  filters.why = current.length === 0 ? null : current
+}
+
 function toggleExclude() {
   let current = filters.excludes || []
   if (current.includes(props.pkg.spec))
@@ -82,6 +91,16 @@ function toggleExclude() {
             >
               <div i-ph-arrows-in-cardinal-duotone flex-none />
               <span class="ml-2">{{ filters.focus?.includes(pkg.spec) ? 'Unfocus' : 'Focus' }} on this package</span>
+            </button>
+            <button
+              px2 py1 rounded hover:bg-active flex="~ items-center gap-2"
+              :class="filters.why?.includes(pkg.spec) ? 'text-orange' : 'op75'"
+              :disabled="filters.excludes?.includes(pkg.spec)"
+              class="disabled:op25! disabled:pointer-events-none"
+              @click="toggleWhy()"
+            >
+              <div i-ph-seal-question-duotone flex-none />
+              <span class="ml-2">Check why this package is here</span>
             </button>
             <button
               px2 py1 rounded hover:bg-active flex="~ items-center gap-2"

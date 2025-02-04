@@ -6,6 +6,7 @@ export interface FilterOptions {
   'search': string
   'modules': null | PackageModuleType[]
   'focus': null | string[]
+  'why': null | string[]
   'excludes': null | string[]
   'exclude-dts': boolean
   'exclude-private': boolean
@@ -15,6 +16,7 @@ export interface FilterOptions {
 export const FILTERS_DEFAULT: FilterOptions = Object.freeze({
   'search': '',
   'focus': null,
+  'why': null,
   'modules': null,
   'excludes': null,
   'exclude-dts': true,
@@ -27,6 +29,7 @@ export const filters = reactive<FilterOptions>({ ...FILTERS_DEFAULT })
 export const FILTER_KEYS_INDACTORS = [
   'search',
   'focus',
+  'why',
   'modules',
   'source-type',
 ] satisfies (keyof FilterOptions)[]
@@ -41,6 +44,7 @@ export const FILTERS_SCHEMA: Record<keyof FilterOptions, StringConstructor | Arr
   'search': String,
   'modules': Array,
   'focus': Array,
+  'why': Array,
   'excludes': Array,
   'exclude-dts': Boolean,
   'exclude-private': Boolean,

@@ -49,6 +49,13 @@ function removeExclude(spec: string) {
   filters.excludes = arr.length === 0 ? null : arr
 }
 
+function removeWhy(spec: string) {
+  if (!filters.why)
+    return
+  const arr = filters.why.filter(x => x !== spec)
+  filters.why = arr.length === 0 ? null : arr
+}
+
 function resetFilters() {
   for (const key of FILTER_KEYS_INDACTORS) {
     // @ts-expect-error any
@@ -70,13 +77,29 @@ const moduleTypes = Object.fromEntries(
 
 <template>
   <div>
-    <div flex="~ col gap-4">
+    <div p4 flex="~ gap-2 items-center">
+      <button
+        btn-action :disabled="filtersActivated.length === 0"
+        @click="resetFilters()"
+      >
+        <div i-ph-funnel-x-duotone />
+        Reset Filters
+      </button>
+      <button
+        btn-action :disabled="filtersExcludesActivated.length === 0"
+        @click="resetExcludes()"
+      >
+        <div i-ph-trash-simple-duotone />
+        Reset Excludes
+      </button>
+    </div>
+    <div flex="~ col gap-4" border="t base">
       <label
         p4 flex-none h-full
         flex="~ items-center gap-1.5"
         hover:bg-active
       >
-        <div i-ph-funnel-duotone text-lg :class="filters.search ? 'text-primary' : 'op50'" flex-none />
+        <div i-ph-text-t-duotone text-lg :class="filters.search ? 'text-primary' : 'op50'" flex-none />
         <input
           v-model="filters.search"
           placeholder="Filter by text"
@@ -118,12 +141,17 @@ const moduleTypes = Object.fromEntries(
         </label>
       </div>
     </div>
-    <div flex="~ col gap-2" p4 border="t base">
+    <div v-if="filters.focus" flex="~ col gap-2" p4 border="t base">
       <div flex="~ gap-2 items-center">
         <div i-ph-arrows-in-cardinal-duotone flex-none />
-        Focus On
+        <div>
+          <div>Focus On</div>
+          <div op50 text-sm mt--0.5>
+            Filter specific packages and their dependencies
+          </div>
+        </div>
       </div>
-      <div v-if="filters.focus" flex="~ gap-2 wrap">
+      <div flex="~ gap-2 wrap">
         <div
           v-for="spec of filters.focus"
           :key="spec"
@@ -138,8 +166,31 @@ const moduleTypes = Object.fromEntries(
           </button>
         </div>
       </div>
-      <div v-else op50 text-sm italic>
-        To focus on a specific package, select from its menu
+    </div>
+    <div v-if="filters.why" flex="~ col gap-2" p4 border="t base">
+      <div flex="~ gap-2 items-center">
+        <div i-ph-seal-question-duotone flex-none />
+        <div>
+          <div>Why</div>
+          <div op50 text-sm mt--0.5>
+            Filter dependents to see why packages are used
+          </div>
+        </div>
+      </div>
+      <div flex="~ gap-2 wrap">
+        <div
+          v-for="spec of filters.why"
+          :key="spec"
+          badge-color-yellow rounded-full px2 pl3 py0.5
+          flex="~ gap-1 items-center"
+        >
+          <div font-mono text-sm>
+            {{ spec }}
+          </div>
+          <button op50 hover:op100 @click="removeWhy(spec)">
+            <div i-ph-x op50 />
+          </button>
+        </div>
       </div>
     </div>
     <div flex="~ col gap-2" p4 border="t base">
@@ -173,23 +224,6 @@ const moduleTypes = Object.fromEntries(
           <OptionCheckbox v-model="filters['exclude-private']" />
         </OptionItem>
       </div>
-    </div>
-
-    <div border="t base" p4 flex="~ gap-2 items-center">
-      <button
-        btn-action :disabled="filtersActivated.length === 0"
-        @click="resetFilters()"
-      >
-        <div i-ph-funnel-x-duotone />
-        Reset Filters
-      </button>
-      <button
-        btn-action :disabled="filtersExcludesActivated.length === 0"
-        @click="resetExcludes()"
-      >
-        <div i-ph-trash-simple-duotone />
-        Reset Excludes
-      </button>
     </div>
 
     <div border="t base">

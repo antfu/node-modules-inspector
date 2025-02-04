@@ -61,7 +61,7 @@ const rootPackages = computed(() => {
   }
 
   const rootPackages = Array.from(rootMap.values())
-    .sort((a, b) => a.depth - b.depth || a.flatDependencies.size - b.flatDependencies.size)
+    .sort((a, b) => a.depth - b.depth || b.flatDependencies.size - a.flatDependencies.size)
 
   return rootPackages
 })
@@ -83,7 +83,7 @@ function calculateGraph() {
         .map(i => packageMap.get(i))
         .filter(x => !!x)
         .filter(x => !seen.has(x))
-        .sort((a, b) => a.flatDependencies.size - b.flatDependencies.size)
+        .sort((a, b) => a.depth - b.depth || b.flatDependencies.size - a.flatDependencies.size)
       children.forEach(x => seen.add(x))
       return children
     },
@@ -134,8 +134,8 @@ function calculateGraph() {
   links.value = _links
 
   nextTick(() => {
-    width.value = el.value!.scrollWidth
-    height.value = el.value!.scrollHeight
+    width.value = el.value!.scrollWidth + NODE_MARGIN
+    height.value = el.value!.scrollHeight + NODE_MARGIN
 
     if (query.selected)
       focusOn(query.selected, false)

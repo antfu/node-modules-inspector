@@ -1,8 +1,13 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import type { PackageNode } from 'node-modules-tools'
+import { useRouter } from '#app/composables/router'
+import { computed, nextTick } from 'vue'
 import { compareSemver } from '~~/shared/utils'
 import { selectedNode } from '~/state/current'
+import { filters } from '~/state/filters'
 import { payload } from '~/state/payload'
+
+const router = useRouter()
 
 const duplicated = computed(() => Array.from(payload.filtered.versions.values())
   .filter(packages => packages.length > 1)
@@ -11,6 +16,15 @@ const duplicated = computed(() => Array.from(payload.filtered.versions.values())
 const sorted = computed(() => duplicated.value.map((packages) => {
   return packages.sort((a, b) => compareSemver(a.version, b.version))
 }))
+
+function showGraph(pkgs: PackageNode[]) {
+  filters.focus = null
+  filters.why = pkgs.map(pkg => pkg.spec)
+  selectedNode.value = pkgs[0]
+  nextTick(() => {
+    router.push({ path: '/graph', hash: location.hash })
+  })
+}
 </script>
 
 <template>
@@ -27,9 +41,18 @@ const sorted = computed(() => duplicated.value.map((packages) => {
         flex="~ col"
         :class="selectedNode && pkgs.includes(selectedNode) ? 'border-primary ring-4 ring-primary:20' : ''"
       >
-        <h2 font-mono p2 px3 border="b base">
-          {{ pkgs[0].name }}
-        </h2>
+        <div flex="~ items-center gap-2" border="b base" px2 py1>
+          <h2 font-mono flex-auto pl2>
+            {{ pkgs[0].name }}
+          </h2>
+          <button
+            p1 rounded-full op50 hover:bg-active hover:text-primary hover:op100 flex="~ items-center"
+            title="Show Graph"
+            @click="showGraph(pkgs)"
+          >
+            <div i-ph-graph-duotone text-lg />
+          </button>
+        </div>
         <div flex="~ col gap-1" p2>
           <button
             v-for="pkg of pkgs" :key="pkg.version"
