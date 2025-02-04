@@ -68,8 +68,13 @@ async function getDependenciesTree(options: ListPackageDependenciesOptions): Pro
     },
   })
 
-  return await import('../json-parse-stream')
+  const json = await import('../json-parse-stream')
     .then(r => r.parseJsonStream<PnpmDependencyHierarchy[]>(process.process!.stdout!))
+
+  if (!Array.isArray(json))
+    throw new Error(`Failed to parse \`pnpm ls\` output, expected an array but got: ${String(json)}`)
+
+  return json
 }
 
 export async function listPackageDependencies(

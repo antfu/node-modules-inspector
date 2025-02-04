@@ -24,7 +24,7 @@ catalog:
   '@unocss/eslint-config': ^65.4.3
   '@unocss/nuxt': ^65.4.3
   '@vueuse/nuxt': ^12.5.0
-  birpc: ^2.0.19
+  birpc: ^2.2.0
   bumpp: ^10.0.1
   bundle-require: ^5.1.0
   cac: ^6.7.14
