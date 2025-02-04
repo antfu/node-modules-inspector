@@ -22,6 +22,14 @@ const duplicated = computed(() => {
   return undefined
 })
 
+const status = computed(() => {
+  return {
+    isExcluded: payload.excluded.packages.has(props.pkg),
+    isUnFocused: filters.focus ? !payload.filtered.packages.includes(props.pkg) : false,
+    isFocused: filters.focus ? payload.filtered.packages.includes(props.pkg) : false,
+  }
+})
+
 function getDepth(amount: number, min = 1) {
   if (!settings.value.deepDependenciesTree)
     return min
@@ -175,6 +183,23 @@ function toggleExclude() {
             {{ pkg.resolved.author?.replace(/\<.*\>/, '').replace(/\(.*\)/, '') }}
           </span>
         </template>
+      </div>
+      <div flex="~ gap-2 wrap items-center">
+        <div v-if="pkg.private" badge-color-gray px2 rounded text-sm border="~ base dashed">
+          Private
+        </div>
+        <div v-if="pkg.workspace" badge-color-lime px2 rounded text-sm>
+          Workspace
+        </div>
+        <div v-if="status.isExcluded" badge-color-purple px2 rounded text-sm>
+          Excluded
+        </div>
+        <div v-if="status.isUnFocused" badge-color-yellow px2 rounded text-sm>
+          Not in Focus
+        </div>
+        <div v-if="status.isFocused" badge-color-green px2 rounded text-sm>
+          In Focus
+        </div>
       </div>
     </div>
 
