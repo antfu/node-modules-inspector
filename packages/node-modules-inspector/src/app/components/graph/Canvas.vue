@@ -259,7 +259,7 @@ function generateLink(link: HierarchyLink<PackageNode>) {
     ref="el"
     w-screen h-screen of-scroll absolute inset-0 relative select-none
     flex="~ items-center justify-center"
-    :class="isGrabbing ? 'cursor-grabbing' : 'cursor-grab'"
+    :class="isGrabbing ? 'cursor-grabbing' : ''"
   >
     <div class="bg-dots" pointer-events-none z-graph-bg absolute left-0 top-0 :style="{ width: `${width}px`, height: `${height}px` }" />
     <svg ref="svgLinks" pointer-events-none absolute left-0 top-0 z-graph-link :width="width" :height="height">
