@@ -2,13 +2,13 @@
 import { computed } from 'vue'
 import { getBackend } from '~/backends'
 import { rawData } from '~/state/data'
-import { payload } from '~/state/payload'
+import { payloads } from '~/state/payload'
 import { version } from '../../../../package.json'
 
 const backend = getBackend()
 
 const multipleVersionsCount = computed(() => {
-  return Array.from(payload.avaliable.versions.values()).filter(v => v.length > 1).length
+  return Array.from(payloads.avaliable.versions.values()).filter(v => v.length > 1).length
 })
 </script>
 
@@ -41,12 +41,12 @@ const multipleVersionsCount = computed(() => {
       </div>
       <div flex="~ gap-2 items-center">
         <div i-catppuccin-folder-packages-open icon-catppuccin flex-none />
-        <DisplayNumberBadge :number="payload.workspace.packages.length" rounded-full text-sm mx--0.2 mt-3px color="badge-color-yellow" />
+        <DisplayNumberBadge :number="payloads.workspace.packages.length" rounded-full text-sm mx--0.2 mt-3px color="badge-color-yellow" />
         <span ml--0.5>workspace packages</span>
       </div>
       <div flex="~ gap-2 items-center">
         <div i-catppuccin-java-class icon-catppuccin flex-none />
-        <DisplayNumberBadge :number="payload.avaliable.packages.length" rounded-full text-sm mx--0.2 mt-3px color="badge-color-primary" />
+        <DisplayNumberBadge :number="payloads.avaliable.packages.length" rounded-full text-sm mx--0.2 mt-3px color="badge-color-primary" />
         <span ml--0.5>total packages</span>
       </div>
       <div flex="~ gap-2 items-center">
@@ -56,7 +56,7 @@ const multipleVersionsCount = computed(() => {
       </div>
     </div>
     <div>
-      <ModuleTypePercentage :packages="payload.avaliable.packages" :rounded="false" />
+      <ModuleTypePercentage :packages="payloads.avaliable.packages" :rounded="false" />
     </div>
     <div border="t base" flex="~ gap-1.1 items-center" p3 pl5 pr4 text-hex-888e>
       Made with

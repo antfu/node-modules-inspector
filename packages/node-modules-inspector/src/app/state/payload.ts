@@ -1,6 +1,6 @@
 import type { PackageNode } from 'node-modules-tools'
 import pm from 'picomatch'
-import { computed, reactive } from 'vue'
+import { computed, reactive, watch } from 'vue'
 import { buildVersionToPackagesMap } from '../utils/maps'
 import { getModuleType } from '../utils/module-type'
 import { rawData } from './data'
@@ -31,10 +31,35 @@ function createComputedPayload(getter: () => PackageNode[]) {
     }())
   }
 
-  const flatDependents = (pkg: PackageNode): PackageNode[] => getList(pkg.flatDependents)
-  const flatDependencies = (pkg: PackageNode): PackageNode[] => getList(pkg.flatDependencies)
-  const dependencies = (pkg: PackageNode): PackageNode[] => getList(pkg.dependencies)
-  const dependents = (pkg: PackageNode): PackageNode[] => getList(pkg.dependents)
+  const _cache = {
+    dependencies: new Map<string, PackageNode[]>(),
+    dependents: new Map<string, PackageNode[]>(),
+    flatDependencies: new Map<string, PackageNode[]>(),
+    flatDependents: new Map<string, PackageNode[]>(),
+  }
+
+  watch(packages, () => {
+    _cache.dependencies.clear()
+    _cache.dependents.clear()
+    _cache.flatDependencies.clear()
+    _cache.flatDependents.clear()
+  })
+
+  function cached(key: keyof typeof _cache): (pkg: PackageNode) => PackageNode[] {
+    return (pkg) => {
+      const cached = _cache[key].get(pkg.spec)
+      if (cached)
+        return cached
+      const result = getList(pkg[key])
+      _cache[key].set(pkg.spec, result)
+      return result
+    }
+  }
+
+  const flatDependents = cached('flatDependents')
+  const flatDependencies = cached('flatDependencies')
+  const dependencies = cached('dependencies')
+  const dependents = cached('dependents')
 
   return reactive({
     packages,
@@ -139,7 +164,7 @@ const _filtered = createComputedPayload(() => Array.from((function *() {
   }
 })()))
 
-export const payload = {
+export const payloads = {
   all: _all,
   excluded: _excluded,
   workspace: _workspace,

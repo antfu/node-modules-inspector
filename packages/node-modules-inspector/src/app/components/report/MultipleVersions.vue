@@ -5,11 +5,11 @@ import { computed, nextTick } from 'vue'
 import { compareSemver } from '~~/shared/utils'
 import { selectedNode } from '~/state/current'
 import { filters } from '~/state/filters'
-import { payload } from '~/state/payload'
+import { payloads } from '~/state/payload'
 
 const router = useRouter()
 
-const duplicated = computed(() => Array.from(payload.filtered.versions.values())
+const duplicated = computed(() => Array.from(payloads.filtered.versions.values())
   .filter(packages => packages.length > 1)
   .sort((a, b) => b.length - a.length))
 

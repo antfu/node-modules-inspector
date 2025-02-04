@@ -2,12 +2,12 @@
 import Fuse from 'fuse.js'
 import { computed, ref, useTemplateRef, watch } from 'vue'
 import { selectedNode } from '~/state/current'
-import { payload } from '~/state/payload'
+import { payloads } from '~/state/payload'
 
 const input = ref('')
 const selectIndex = ref(0)
 
-const fuse = computed(() => new Fuse(payload.avaliable.packages, {
+const fuse = computed(() => new Fuse(payloads.avaliable.packages, {
   keys: [
     'name',
     'spec',

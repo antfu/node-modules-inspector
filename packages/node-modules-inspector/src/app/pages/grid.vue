@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
 import { computed } from 'vue'
-import { payload } from '~/state/payload'
+import { payloads } from '~/state/payload'
 
 const MAX_DEPTH = 5
 
 const depthMap = computed(() => {
   const map = new Map<number, PackageNode[]>()
 
-  for (const pkg of payload.filtered.packages) {
+  for (const pkg of payloads.filtered.packages) {
     let depth = pkg.depth
     if (depth >= MAX_DEPTH)
       depth = MAX_DEPTH

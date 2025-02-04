@@ -73,16 +73,14 @@ function calculateGraph() {
   const seen = new Set<PackageNode>()
   const root = hierarchy<PackageNode>(
     { name: '~root', spec: '~root' } as any,
-    (d) => {
-      if (d.name === '~root') {
+    (node) => {
+      if (node.name === '~root') {
         rootPackages.value.forEach(x => seen.add(x))
         return rootPackages.value
       }
-      const children = Array.from(d.dependencies)
-        .map(i => payload.get(i))
-        .filter(x => !!x)
+      const children = payload.dependencies(node)
         .filter(x => !seen.has(x))
-        .sort((a, b) => a.depth - b.depth || b.flatDependencies.size - a.flatDependencies.size)
+        .sort((a, b) => a.depth - b.depth || payload.flatDependencies(b).length - payload.flatDependencies(a).length)
       children.forEach(x => seen.add(x))
       return children
     },

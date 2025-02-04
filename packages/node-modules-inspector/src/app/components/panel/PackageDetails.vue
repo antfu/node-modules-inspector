@@ -5,7 +5,7 @@ import { Menu as VMenu } from 'floating-vue'
 import { computed } from 'vue'
 import { getBackend } from '~/backends'
 import { filters } from '~/state/filters'
-import { payload } from '~/state/payload'
+import { payloads } from '~/state/payload'
 import { query } from '~/state/query'
 import { settings } from '~/state/settings'
 
@@ -16,7 +16,7 @@ const props = defineProps<{
 const backend = getBackend()
 
 const duplicated = computed(() => {
-  const value = payload.filtered.versions.get(props.pkg.name)
+  const value = payloads.filtered.versions.get(props.pkg.name)
   if (value && value?.length > 1)
     return value
   return undefined
@@ -24,9 +24,9 @@ const duplicated = computed(() => {
 
 const status = computed(() => {
   return {
-    isExcluded: payload.excluded.has(props.pkg),
-    isUnFocused: filters.focus ? !payload.filtered.has(props.pkg) : false,
-    isFocused: filters.focus ? payload.filtered.has(props.pkg) : false,
+    isExcluded: payloads.excluded.has(props.pkg),
+    isUnFocused: filters.focus ? !payloads.filtered.has(props.pkg) : false,
+    isFocused: filters.focus ? payloads.filtered.has(props.pkg) : false,
   }
 })
 
@@ -234,7 +234,7 @@ function toggleExclude() {
         <span :class="settings.packageDetailsTab === 'dependents' ? '' : 'op30'">Used by</span>
         <DisplayNumberBadge
           text-xs rounded-full
-          :number="settings.deepDependenciesTree ? pkg.flatDependents.size : pkg.dependents.size"
+          :number="settings.deepDependenciesTree ? payloads.avaliable.flatDependents(pkg).length : payloads.avaliable.dependents(pkg).length"
         />
       </button>
       <div border="b base" w-2 />
@@ -246,7 +246,7 @@ function toggleExclude() {
         <span :class="settings.packageDetailsTab === 'dependencies' ? '' : 'op30'">Deps on</span>
         <DisplayNumberBadge
           text-xs rounded-full
-          :number="settings.deepDependenciesTree ? pkg.flatDependencies.size : pkg.dependencies.size"
+          :number="settings.deepDependenciesTree ? payloads.avaliable.flatDependencies(pkg).length : payloads.avaliable.dependencies(pkg).length"
         />
       </button>
       <div border="b base" pt2 px2>
@@ -265,8 +265,8 @@ function toggleExclude() {
         <template v-if="pkg.flatDependents.size">
           <PackageDependentTree
             py5 px4
-            :currents="Array.from(pkg.flatDependents).map(payload.avaliable.get).filter(x => !!x).filter(i => i?.workspace)"
-            :list="Array.from(pkg.flatDependents).map(payload.avaliable.get).filter(x => !!x)"
+            :currents="payloads.avaliable.flatDependents(pkg).filter(i => i?.workspace)"
+            :list="payloads.avaliable.flatDependents(pkg)"
             :max-depth="getDepth(pkg.flatDependents.size, 2)"
             type="dependents"
           />
@@ -284,8 +284,8 @@ function toggleExclude() {
         <template v-if="pkg.flatDependencies.size">
           <PackageDependentTree
             py5 pt2 px4
-            :currents="Array.from(pkg.dependencies).map(payload.avaliable.get).filter(x => !!x)"
-            :list="Array.from(pkg.flatDependencies).map(payload.avaliable.get).filter(x => !!x)"
+            :currents="payloads.avaliable.dependencies(pkg)"
+            :list="payloads.avaliable.flatDependencies(pkg)"
             :max-depth="getDepth(pkg.flatDependencies.size)"
             type="dependencies"
           />
