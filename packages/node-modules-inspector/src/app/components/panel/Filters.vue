@@ -188,7 +188,7 @@ const moduleTypes = Object.fromEntries(
         @click="resetExcludes()"
       >
         <div i-ph-trash-simple-duotone />
-        Clear Excludes
+        Reset Excludes
       </button>
     </div>
 

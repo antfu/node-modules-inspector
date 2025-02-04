@@ -36,22 +36,18 @@ const NODE_LINK_OFFSET = 20
 const NODE_MARGIN = 200
 const NODE_GAP = 150
 
-function calculateGraph() {
-  width.value = window.innerWidth
-  height.value = window.innerHeight
-
-  const packageMap = new Map<string, PackageNode>(props.packages.map(x => [x.spec, x]))
+const rootPackages = computed(() => {
+  if (filters.focus?.length) {
+    return props.packages.filter(x => filters.focus?.includes(x.spec))
+  }
 
   const sortedByDepth = [...props.packages].sort((a, b) => b.depth - a.depth)
-
   const rootMap = new Map<string, PackageNode>(props.packages.map(x => [x.spec, x]))
   let changed = true
   while (changed) {
     changed = false
     for (const pkg of sortedByDepth) {
       if (pkg.workspace)
-        continue
-      if (filters.focus?.includes(pkg.spec))
         continue
       if (!rootMap.has(pkg.spec))
         continue
@@ -67,13 +63,21 @@ function calculateGraph() {
   const rootPackages = Array.from(rootMap.values())
     .sort((a, b) => a.depth - b.depth || a.flatDependencies.size - b.flatDependencies.size)
 
+  return rootPackages
+})
+
+function calculateGraph() {
+  width.value = window.innerWidth
+  height.value = window.innerHeight
+
+  const packageMap = new Map<string, PackageNode>(props.packages.map(x => [x.spec, x]))
   const seen = new Set<PackageNode>()
   const root = hierarchy<PackageNode>(
     { name: '~root', spec: '~root' } as any,
     (d) => {
       if (d.name === '~root') {
-        rootPackages.forEach(x => seen.add(x))
-        return rootPackages
+        rootPackages.value.forEach(x => seen.add(x))
+        return rootPackages.value
       }
       const children = Array.from(d.dependencies)
         .map(i => packageMap.get(i))
