@@ -14,5 +14,11 @@ import { settings } from '~/state/settings'
         :titles="['Badge', 'Circle', 'None']"
       />
     </OptionItem>
+    <OptionItem title="Show Install Size Badge" description="Show install size badge on package list">
+      <OptionCheckbox v-model="settings.showInstallSizeBadge" />
+    </OptionItem>
+    <OptionItem title="Colorize Package Size" description="Colorize package size badge">
+      <OptionCheckbox v-model="settings.colorizePackageSize" />
+    </OptionItem>
   </div>
 </template>

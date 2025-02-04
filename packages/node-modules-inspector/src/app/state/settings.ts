@@ -5,6 +5,8 @@ export interface Settings {
   moduleTypeRender: 'badge' | 'circle' | 'none'
   deepDependenciesTree: boolean
   packageDetailsTab: 'dependencies' | 'dependents'
+  colorizePackageSize: boolean
+  showInstallSizeBadge: boolean
 }
 
 export const settings = useLocalStorage<Settings>(
@@ -14,6 +16,8 @@ export const settings = useLocalStorage<Settings>(
     moduleTypeRender: 'badge',
     deepDependenciesTree: true,
     packageDetailsTab: 'dependents',
+    colorizePackageSize: true,
+    showInstallSizeBadge: true,
   },
   {
     deep: true,

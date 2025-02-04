@@ -3,6 +3,7 @@ import type { PackageNode } from 'node-modules-tools'
 import { computed } from 'vue'
 import { selectedNode } from '~/state/current'
 import { filters } from '~/state/filters'
+import { settings } from '~/state/settings'
 
 const props = defineProps<{
   pkg?: PackageNode
@@ -69,8 +70,12 @@ const classesInner = computed(() => {
       :class="classesInner"
       @click="selectedNode = pkg === selectedNode ? null : pkg"
     >
-      <DisplayPackageSpec :pkg />
-      <DisplayModuleType ml2 text-xs text-right flex-auto justify-end :pkg :badge="false" />
+      <DisplayPackageSpec :pkg flex-auto justify-start text-left />
+      <DisplayModuleType text-xs justify-end ml2 :pkg :badge="false" />
+      <DisplayFileSizeBadge
+        v-if="settings.showInstallSizeBadge"
+        :bytes="pkg.resolved.installSize?.bytes" :digits="0" rounded-r-full text-sm mr--2
+      />
     </button>
   </div>
 </template>
@@ -82,6 +87,6 @@ const classesInner = computed(() => {
 }
 
 .graph-node-button {
-  --uno: 'flex items-center rounded-xl w-full px2 hover:bg-active';
+  --uno: 'flex items-center rounded-xl w-full px2 hover:bg-active gap-1';
 }
 </style>

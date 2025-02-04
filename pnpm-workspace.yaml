@@ -50,6 +50,7 @@ catalog:
   nuxt: ^3.15.4
   nuxt-eslint-auto-explicit-import: ^0.1.1
   open: ^10.1.0
+  p-limit: ^6.2.0
   package-manager-detector: ^0.2.9
   pathe: ^2.0.2
   picocolors: ^1.1.1

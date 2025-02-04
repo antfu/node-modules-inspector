@@ -1,39 +1,7 @@
+import type { PackageInstallSizeInfo } from './size'
+
 export type PackageModuleTypeSimple = 'cjs' | 'esm'
 export type PackageModuleType = 'cjs' | 'esm' | 'dual' | 'faux' | 'dts'
-
-export interface ListPackageDependenciesOptions {
-  /**
-   * Current working directory
-   */
-  cwd: string
-  /**
-   * Depeth of the dependency tree
-   */
-  depth: number
-  /**
-   * Should it list dependencies of all packages in the monorepo
-   */
-  monorepo: boolean
-  /**
-   * Filter if a package should be included and continue traversing
-   */
-  traverseFilter?: (node: PackageNodeRaw) => boolean
-}
-
-export interface ListPackageDependenciesRawResult {
-  root: string
-  packageManager: string
-  packageManagerVersion?: string
-  packages: Map<string, PackageNodeRaw>
-}
-
-export interface ListPackageDependenciesBaseResult extends ListPackageDependenciesRawResult {
-  packages: Map<string, PackageNodeBase>
-}
-
-export interface ListPackageDependenciesResult extends ListPackageDependenciesBaseResult {
-  packages: Map<string, PackageNode>
-}
 
 export interface PackageNodeRaw {
   /** Package Name */
@@ -78,5 +46,6 @@ export interface PackageNode extends PackageNodeBase {
     repository?: string
     homepage?: string
     engines?: Record<string, string>
+    installSize?: PackageInstallSizeInfo
   }
 }

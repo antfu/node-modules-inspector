@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
-import { DisplayNumberBadge } from '#components'
+import { DisplayFileSizeBadge, DisplayNumberBadge } from '#components'
 import { Menu as VMenu } from 'floating-vue'
 import { computed } from 'vue'
 import { getBackend } from '~/backends'
@@ -221,6 +221,7 @@ function toggleExclude() {
         <div v-if="status.isFocused" badge-color-green px2 rounded text-sm>
           In Focus
         </div>
+        <DisplayFileSizeBadge :bytes="pkg.resolved.installSize?.bytes" />
       </div>
     </div>
 

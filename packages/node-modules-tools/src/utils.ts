@@ -8,3 +8,11 @@ export function stripBomTag(content: string): string {
 
   return content
 }
+
+const warned = new Set<string>()
+export function warnOnce(message: string) {
+  if (warned.has(message))
+    return
+  warned.add(message)
+  console.warn(message)
+}

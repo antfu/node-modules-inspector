@@ -1,6 +1,6 @@
 import type { PackageDependencyHierarchy } from '@pnpm/list'
 import type { ProjectManifest } from '@pnpm/types'
-import type { ListPackageDependenciesOptions, ListPackageDependenciesRawResult, PackageNodeRaw } from '../types'
+import type { ListPackageDependenciesOptions, ListPackageDependenciesRawResult, PackageNodeRaw } from '../../types'
 import { dirname, relative } from 'pathe'
 import { x } from 'tinyexec'
 
@@ -68,7 +68,7 @@ async function getDependenciesTree(options: ListPackageDependenciesOptions): Pro
     },
   })
 
-  const json = await import('../json-parse-stream')
+  const json = await import('../../json-parse-stream')
     .then(r => r.parseJsonStream<PnpmDependencyHierarchy[]>(process.process!.stdout!))
 
   if (!Array.isArray(json))

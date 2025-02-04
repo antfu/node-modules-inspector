@@ -1,8 +1,10 @@
+import type { AgentName } from 'package-manager-detector'
 import type { PackageJson } from 'pkg-types'
-import type { PackageNode, PackageNodeBase } from './types'
+import type { BaseOptions, PackageNode, PackageNodeBase } from './types'
 import fs from 'node:fs/promises'
 import { join } from 'pathe'
 import { analyzePackageModuleType } from './analyze-esm'
+import { getPackageInstallSize } from './size'
 import { stripBomTag } from './utils'
 
 /**
@@ -11,7 +13,11 @@ import { stripBomTag } from './utils'
  *
  * - Set `module` to the resolved module type (cjs, esm, dual, faux, none).
  */
-export async function resolvePackage(pkg: PackageNodeBase): Promise<PackageNode> {
+export async function resolvePackage(
+  _packageManager: AgentName,
+  pkg: PackageNodeBase,
+  _options: BaseOptions,
+): Promise<PackageNode> {
   const _pkg = pkg as unknown as PackageNode
   if (_pkg.resolved)
     return _pkg
@@ -35,6 +41,7 @@ export async function resolvePackage(pkg: PackageNodeBase): Promise<PackageNode>
     author: typeof json.author === 'string' ? json.author : json.author?.url,
     repository,
     homepage: json.homepage,
+    installSize: await getPackageInstallSize(_pkg),
   }
   return _pkg
 }
