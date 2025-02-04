@@ -3,7 +3,7 @@ import { useRoute, useRouter } from '#app/composables/router'
 import { objectEntries } from '@antfu/utils'
 import { debouncedWatch, ignorableWatch } from '@vueuse/core'
 import { reactive, watch } from 'vue'
-import { filters, FILTERS_DEFAULT, FILTERS_SCHEMA } from './filters'
+import { filters, FILTERS_SCHEMA } from './filters'
 
 export interface QueryOptions extends Partial<{ [x in keyof FilterOptions]?: string }> {
   selected?: string
@@ -29,14 +29,14 @@ function parseQuery(query: string): QueryOptions {
 }
 
 function queryToFilters(query: QueryOptions, filters: FilterOptions) {
-  for (const [key, type] of objectEntries(FILTERS_SCHEMA)) {
+  for (const [key, s] of objectEntries(FILTERS_SCHEMA)) {
     const raw = query[key]
 
     const resolved = !raw
-      ? FILTERS_DEFAULT[key]
-      : type === Array
+      ? s.default
+      : s.type === Array
         ? raw.split(',')
-        : type === Boolean
+        : s.type === Boolean
           ? raw === 'true'
           : raw
 
@@ -46,13 +46,13 @@ function queryToFilters(query: QueryOptions, filters: FilterOptions) {
 }
 
 function filtersToQuery(filters: FilterOptions, query: QueryOptions) {
-  for (const [key, type] of objectEntries(FILTERS_SCHEMA)) {
+  for (const [key, s] of objectEntries(FILTERS_SCHEMA)) {
     const value = filters[key]
-    const serialized = (value === FILTERS_DEFAULT[key] || value === null)
+    const serialized = (value === s.default || value === null)
       ? undefined
-      : type === Array
+      : s.type === Array
         ? (value as any)?.join(',')
-        : type === Boolean
+        : s.type === Boolean
           ? (value ? 'true' : 'false')
           : value
 

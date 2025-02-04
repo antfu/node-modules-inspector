@@ -6,6 +6,10 @@ import type { PackageJson } from 'pkg-types'
 import type { PackageModuleType } from './types'
 
 export function analyzePackageModuleType(pkgJson: PackageJson): PackageModuleType {
+  // We aggressively assume `@types/` are all type-only packages.
+  if (pkgJson.name?.startsWith('@types/'))
+    return 'dts'
+
   const { exports, main, type } = pkgJson
   let cjs: boolean | undefined
   let esm: boolean | undefined

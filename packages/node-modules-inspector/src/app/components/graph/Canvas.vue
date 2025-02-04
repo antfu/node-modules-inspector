@@ -67,6 +67,7 @@ const rootPackages = computed(() => {
 })
 
 function calculateGraph() {
+  // Unset the canvas size, and recalculate again after nodes are rendered
   width.value = window.innerWidth
   height.value = window.innerHeight
 
@@ -91,24 +92,24 @@ function calculateGraph() {
     .nodeSize([NODE_HEIGHT, NODE_WIDTH + NODE_GAP])
   layout(root)
 
+  // Rotate the graph from top-down to left-right
   const _nodes = root.descendants()
-  _nodes
-    .forEach((node) => {
-      [node.x, node.y] = [node.y! - NODE_WIDTH, node.x!]
-    })
+  for (const node of _nodes) {
+    [node.x, node.y] = [node.y! - NODE_WIDTH, node.x!]
+  }
 
-  // Offset the graph to the top left
+  // Offset the graph and adding margin
   const minX = Math.min(..._nodes.map(n => n.x!))
   const minY = Math.min(..._nodes.map(n => n.y!))
   if (minX < NODE_MARGIN) {
-    _nodes.forEach((node) => {
+    for (const node of _nodes) {
       node.x! += Math.abs(minX) + NODE_MARGIN
-    })
+    }
   }
   if (minY < NODE_MARGIN) {
-    _nodes.forEach((node) => {
+    for (const node of _nodes) {
       node.y! += Math.abs(minY) + NODE_MARGIN
-    })
+    }
   }
 
   nodes.value = _nodes

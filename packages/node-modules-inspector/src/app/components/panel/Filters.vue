@@ -2,7 +2,7 @@
 import type { PackageModuleType } from 'node-modules-tools'
 import type { WritableComputedRef } from 'vue'
 import { computed } from 'vue'
-import { FILTER_KEYS_EXCLUDES, FILTER_KEYS_INDACTORS, filters, FILTERS_DEFAULT, filtersActivated, filtersExcludesActivated } from '~/state/filters'
+import { excludesActivated, FILTER_KEYS_EXCLUDES, FILTER_KEYS_FILTERS, filters, FILTERS_DEFAULT, filtersActivated } from '~/state/filters'
 import { payloads } from '~/state/payload'
 import { settings } from '~/state/settings'
 import { MODULE_TYPES_FULL_SELECT, MODULE_TYPES_SIMPLE_SELECT } from '../../utils/module-type'
@@ -57,7 +57,7 @@ function removeWhy(spec: string) {
 }
 
 function resetFilters() {
-  for (const key of FILTER_KEYS_INDACTORS) {
+  for (const key of FILTER_KEYS_FILTERS) {
     // @ts-expect-error any
     filters[key] = FILTERS_DEFAULT[key]
   }
@@ -86,7 +86,7 @@ const moduleTypes = Object.fromEntries(
         Reset Filters
       </button>
       <button
-        btn-action :disabled="filtersExcludesActivated.length === 0"
+        btn-action :disabled="excludesActivated.length === 0"
         @click="resetExcludes()"
       >
         <div i-ph-trash-simple-duotone />
@@ -217,7 +217,7 @@ const moduleTypes = Object.fromEntries(
         To exclude a specific package, select from its menu
       </div>
       <div mt2>
-        <OptionItem title="Exclude DTS Packages" description="Exclude TypeScript declaration packages">
+        <OptionItem title="Exclude Type-only Packages" description="Exclude TypeScript declaration packages">
           <OptionCheckbox v-model="filters['exclude-dts']" />
         </OptionItem>
         <OptionItem title="Exclude Private Packages" description="Exclude private workspace packages">
