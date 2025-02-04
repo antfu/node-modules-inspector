@@ -18,6 +18,7 @@ const cli = cac('node-modules-inspector')
 cli
   .command('build', 'Build inspector with current config file for static hosting')
   .option('--root <root>', 'Root directory', { default: process.cwd() })
+  .option('--depth <depth>', 'Max depth to list dependencies', { default: 25 })
   // Build specific options
   .option('--base <baseURL>', 'Base URL for deployment', { default: '/' })
   .option('--outDir <dir>', 'Output directory', { default: '.node-modules-inspector' })
@@ -28,7 +29,10 @@ cli
     const cwd = process.cwd()
     const outDir = resolve(cwd, options.outDir)
 
-    const rpc = await import('./rpc').then(r => r.createServerFunctions())
+    const rpc = await import('./rpc').then(r => r.createServerFunctions({
+      cwd,
+      depth: options.depth,
+    }))
     const rpcDump: ServerFunctionsDump = {
       listDependencies: await rpc.listDependencies(),
     }
