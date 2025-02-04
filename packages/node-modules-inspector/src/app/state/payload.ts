@@ -1,3 +1,4 @@
+import type { PackageNode } from 'node-modules-tools'
 import pm from 'picomatch'
 import { computed, reactive } from 'vue'
 import { buildVersionToPackagesMap } from '../utils/maps'
@@ -5,11 +6,55 @@ import { getModuleType } from '../utils/module-type'
 import { rawData } from './data'
 import { filters, filterSearchDebounced } from './filters'
 
-const _all_packages = computed(() => Array.from(rawData.value?.packages.values() || []))
-const _all_packages_map = computed(() => new Map(_all_packages.value.map(i => [i.spec, i])))
+export type ComputedPayload = ReturnType<typeof createComputedPayload>
 
-const _excluded_packages = computed(() => {
-  const excluded = new Set(_all_packages.value
+function createComputedPayload(getter: () => PackageNode[]) {
+  const packages = computed(getter)
+  const map = computed(() => new Map(packages.value.map(i => [i.spec, i])))
+  const versions = computed(() => buildVersionToPackagesMap(packages.value))
+
+  const get = (spec: string): PackageNode | undefined => {
+    return map.value.get(spec)
+  }
+
+  const has = (spec: string | PackageNode): boolean => {
+    return map.value.has(typeof spec === 'string' ? spec : spec.spec)
+  }
+
+  const getList = (specs: Iterable<string>): PackageNode[] => {
+    return Array.from(function *() {
+      for (const spec of specs) {
+        const pkg = get(spec)
+        if (pkg)
+          yield pkg
+      }
+    }())
+  }
+
+  const flatDependents = (pkg: PackageNode): PackageNode[] => getList(pkg.flatDependents)
+  const flatDependencies = (pkg: PackageNode): PackageNode[] => getList(pkg.flatDependencies)
+  const dependencies = (pkg: PackageNode): PackageNode[] => getList(pkg.dependencies)
+  const dependents = (pkg: PackageNode): PackageNode[] => getList(pkg.dependents)
+
+  return reactive({
+    packages,
+    map,
+    versions,
+    has,
+    get,
+    getList,
+
+    dependencies,
+    dependents,
+    flatDependents,
+    flatDependencies,
+  })
+}
+
+const _all = createComputedPayload(() => Array.from(rawData.value?.packages.values() || []))
+
+const _excluded = createComputedPayload(() => {
+  const excluded = new Set(_all.packages
     .filter((pkg) => {
       if (filters['exclude-dts'] && pkg.resolved.module === 'dts')
         return true
@@ -23,12 +68,12 @@ const _excluded_packages = computed(() => {
   let changed = true
   while (changed) {
     changed = false
-    for (const pkg of _all_packages.value) {
+    for (const pkg of _all.packages) {
       if (excluded.has(pkg) || !pkg.dependents.size)
         continue
       let shouldExclude = true
       for (const parentSpec of pkg.dependents) {
-        const parent = _all_packages_map.value.get(parentSpec)
+        const parent = _all.map.get(parentSpec)
         if (!parent || !excluded.has(parent)) {
           shouldExclude = false
           break
@@ -41,20 +86,18 @@ const _excluded_packages = computed(() => {
     }
   }
 
-  return excluded
+  return Array.from(excluded)
 })
 
-const _avaliable_packages = computed(() => {
-  return _all_packages.value
-    .filter(pkg => !_excluded_packages.value.has(pkg))
+const _workspace = createComputedPayload(() => _all.packages.filter(pkg => pkg.workspace))
+
+const _avaliable = createComputedPayload(() => {
+  return _all.packages
+    .filter(pkg => !_excluded.map.has(pkg.spec))
 })
-const _avaliable_packages_map = computed(() => new Map(_avaliable_packages.value.map(i => [i.spec, i])))
-const _avaliable_packages_versions = computed(() => buildVersionToPackagesMap(_avaliable_packages.value))
 
-const _workspace_packages = computed(() => _avaliable_packages.value.filter(i => i.workspace))
-
-const _filtered_packages = computed(() => Array.from((function *() {
-  for (const pkg of _avaliable_packages.value) {
+const _filtered = createComputedPayload(() => Array.from((function *() {
+  for (const pkg of _avaliable.packages) {
     if (filters.focus) {
       const shouldTake = filters.focus.includes(pkg.spec) || filters.focus.some(f => pkg.flatDependents.has(f))
       if (!shouldTake)
@@ -96,28 +139,10 @@ const _filtered_packages = computed(() => Array.from((function *() {
   }
 })()))
 
-const _filtered_packages_versions = computed(() => buildVersionToPackagesMap(_filtered_packages.value))
-
-export const payload = reactive({
-  all: {
-    packages: _all_packages,
-    map: _all_packages_map,
-    get: (spec: string) => _all_packages_map.value.get(spec),
-  },
-  excluded: {
-    packages: _excluded_packages,
-  },
-  workspace: {
-    packages: _workspace_packages,
-  },
-  avaliable: {
-    packages: _avaliable_packages,
-    map: _avaliable_packages_map,
-    versions: _avaliable_packages_versions,
-    get: (spec: string) => _avaliable_packages_map.value.get(spec),
-  },
-  filtered: {
-    packages: _filtered_packages,
-    versions: _filtered_packages_versions,
-  },
-})
+export const payload = {
+  all: _all,
+  excluded: _excluded,
+  workspace: _workspace,
+  avaliable: _avaliable,
+  filtered: _filtered,
+}

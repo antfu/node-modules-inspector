@@ -24,9 +24,9 @@ const duplicated = computed(() => {
 
 const status = computed(() => {
   return {
-    isExcluded: payload.excluded.packages.has(props.pkg),
-    isUnFocused: filters.focus ? !payload.filtered.packages.includes(props.pkg) : false,
-    isFocused: filters.focus ? payload.filtered.packages.includes(props.pkg) : false,
+    isExcluded: payload.excluded.has(props.pkg),
+    isUnFocused: filters.focus ? !payload.filtered.has(props.pkg) : false,
+    isFocused: filters.focus ? payload.filtered.has(props.pkg) : false,
   }
 })
 

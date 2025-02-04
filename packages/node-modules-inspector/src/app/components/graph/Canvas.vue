@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { HierarchyLink, HierarchyNode } from 'd3-hierarchy'
 import type { PackageNode } from 'node-modules-tools'
+import type { ComputedPayload } from '~/state/payload'
 import { useEventListener } from '@vueuse/core'
 import { hierarchy, tree } from 'd3-hierarchy'
 import { linkHorizontal, linkVertical } from 'd3-shape'
@@ -8,8 +9,8 @@ import { computed, nextTick, onMounted, ref, shallowReactive, shallowRef, useTem
 import { filters } from '~/state/filters'
 import { query } from '~/state/query'
 
-const props = defineProps<{
-  packages: PackageNode[]
+const { payload } = defineProps<{
+  payload: ComputedPayload
 }>()
 
 interface Link extends HierarchyLink<PackageNode> {
@@ -37,12 +38,11 @@ const NODE_MARGIN = 200
 const NODE_GAP = 150
 
 const rootPackages = computed(() => {
-  if (filters.focus?.length) {
-    return props.packages.filter(x => filters.focus?.includes(x.spec))
-  }
+  if (filters.focus?.length)
+    return filters.focus.map(payload.get).filter(x => !!x)
 
-  const sortedByDepth = [...props.packages].sort((a, b) => b.depth - a.depth)
-  const rootMap = new Map<string, PackageNode>(props.packages.map(x => [x.spec, x]))
+  const sortedByDepth = [...payload.packages].sort((a, b) => b.depth - a.depth)
+  const rootMap = new Map<string, PackageNode>(payload.packages.map(x => [x.spec, x]))
   let changed = true
   while (changed) {
     changed = false
@@ -70,7 +70,6 @@ function calculateGraph() {
   width.value = window.innerWidth
   height.value = window.innerHeight
 
-  const packageMap = new Map<string, PackageNode>(props.packages.map(x => [x.spec, x]))
   const seen = new Set<PackageNode>()
   const root = hierarchy<PackageNode>(
     { name: '~root', spec: '~root' } as any,
@@ -80,7 +79,7 @@ function calculateGraph() {
         return rootPackages.value
       }
       const children = Array.from(d.dependencies)
-        .map(i => packageMap.get(i))
+        .map(i => payload.get(i))
         .filter(x => !!x)
         .filter(x => !seen.has(x))
         .sort((a, b) => a.depth - b.depth || b.flatDependencies.size - a.flatDependencies.size)
@@ -139,8 +138,8 @@ function calculateGraph() {
 
     if (query.selected)
       focusOn(query.selected, false)
-    else if (props.packages[0])
-      focusOn(props.packages[0].spec, false)
+    else if (payload.packages[0])
+      focusOn(payload.packages[0].spec, false)
   })
 }
 
@@ -168,7 +167,7 @@ function handleDragingScroll() {
 onMounted(() => {
   handleDragingScroll()
 
-  watch(() => props.packages, calculateGraph, { immediate: true })
+  watch(() => payload.packages, calculateGraph, { immediate: true })
 
   watch(
     () => query.selected,

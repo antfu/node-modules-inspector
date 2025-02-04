@@ -3,5 +3,5 @@ import { payload } from '~/state/payload'
 </script>
 
 <template>
-  <GraphCanvas :packages="payload.filtered.packages" />
+  <GraphCanvas :payload="payload.filtered" />
 </template>
