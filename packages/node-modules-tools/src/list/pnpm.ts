@@ -60,9 +60,31 @@ async function getDependenciesTree(options: ListPackageDependenciesOptions): Pro
   const args = ['ls', '--json', '--no-optional', '--depth', String(options.depth)]
   if (options.monorepo)
     args.push('--recursive')
-  const raw = await x('pnpm', args, { throwOnError: true, nodeOptions: { cwd: options.cwd } })
-  const tree = JSON.parse(raw.stdout) as PnpmDependencyHierarchy[]
-  return tree
+  const process = x('pnpm', args, {
+    throwOnError: true,
+    nodeOptions: {
+      stdio: 'pipe',
+      cwd: options.cwd,
+    },
+  })
+  const createParser = await import('stream-json').then(r => r.parser)
+  const Assembler = await import('stream-json/Assembler').then(r => r.default)
+
+  const assembler = new Assembler()
+  const parser = createParser()
+
+  return await new Promise<PnpmDependencyHierarchy[]>((resolve) => {
+    parser.on('data', (chunk) => {
+      // @ts-expect-error casting
+      assembler[chunk.name]?.(chunk.value)
+    })
+
+    process.process!.stdout!.pipe(parser)
+
+    parser.on('end', () => {
+      resolve(assembler.current)
+    })
+  })
 }
 
 export async function listPackageDependencies(
