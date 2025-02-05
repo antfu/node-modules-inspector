@@ -1,6 +1,6 @@
 [build]
-publish = "dist"
-command = "pnpm run build"
+publish = "packages/node-modules-inspector/dist"
+command = "pnpm run build:wc"
 
 [build.environment]
 NODE_VERSION = "22"

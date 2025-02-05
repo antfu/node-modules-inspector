@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
-import { DisplayFileSizeBadge, DisplayNumberBadge } from '#components'
 import { Menu as VMenu } from 'floating-vue'
 import { computed } from 'vue'
 import { getBackend } from '~/backends'
+import { selectedNode } from '~/state/current'
 import { filters } from '~/state/filters'
 import { payloads } from '~/state/payload'
 import { query } from '~/state/query'
@@ -39,6 +39,16 @@ function getDepth(amount: number, min = 1) {
     return 7
   return 10
 }
+
+const sizeInstall = computed(() => {
+  return props.pkg.resolved.installSize?.bytes || 0
+})
+const sizeTotal = computed(() => {
+  const deps = payloads.avaliable.flatDependencies(props.pkg)
+  if (!deps.length)
+    return 0
+  return [props.pkg, ...deps].reduce((acc, x) => acc + (x.resolved.installSize?.bytes || 0), 0)
+})
 
 function toggleFocus() {
   let current = filters.focus || []
@@ -127,10 +137,10 @@ function toggleExclude() {
     <div flex="~ col gap-2" p5>
       <div font-mono text-2xl flex="~ wrap items-center gap-2" pr20>
         <span>{{ pkg.name }}</span>
-        <DisplayModuleType text-sm :pkg :force="true" />
       </div>
       <div flex="~ items-center wrap gap-2">
         <DisplayVersion :version="pkg.version" op75 />
+        <DisplayModuleType text-sm :pkg :force="true" />
         <VMenu v-if="duplicated" font-mono>
           <div pl2 pr1 rounded bg-rose:10 text-rose text-sm flex="~ items-center gap-1">
             {{ duplicated.length }} versions
@@ -142,7 +152,8 @@ function toggleExclude() {
                 v-for="versionNode of duplicated" :key="versionNode.version"
                 py1 px2 rounded flex="~ items-center gap-1" min-w-40
                 font-mono hover="bg-active"
-                @click="query.selected = versionNode.spec"
+                :class="selectedNode === versionNode ? 'text-primary' : ''"
+                @click="selectedNode = versionNode"
               >
                 <DisplayVersion op75 flex-auto text-left :version="versionNode.version" />
                 <DisplayModuleType :force="true" :pkg="versionNode" :badge="false" text-xs />
@@ -179,7 +190,7 @@ function toggleExclude() {
             <div i-catppuccin-http icon-catppuccin ma />
           </NuxtLink>
           <button
-            v-if="backend.functions.openInEditor"
+            v-if="backend?.functions.openInEditor"
             title="Open Package Folder in Editor"
             ml--1 w-8 h-8 rounded-full hover:bg-active flex
             @click="backend.functions.openInEditor(pkg.filepath)"
@@ -187,7 +198,7 @@ function toggleExclude() {
             <div i-catppuccin-folder-vscode hover:i-catppuccin-folder-vscode-open icon-catppuccin ma />
           </button>
           <button
-            v-if="backend.functions.openInFinder"
+            v-if="backend?.functions.openInFinder"
             title="Open Package Folder in Finder"
             ml--1 w-8 h-8 rounded-full hover:bg-active flex
             @click="backend.functions.openInFinder(pkg.filepath)"
@@ -205,6 +216,20 @@ function toggleExclude() {
           </span>
         </template>
       </div>
+      <div v-if="sizeInstall || sizeTotal" flex="~ gap-3 wrap items-center">
+        <div v-if="sizeInstall" flex="~ items-center gap-1">
+          <div text-sm op50>
+            Install
+          </div>
+          <DisplayFileSizeBadge :bytes="sizeInstall" rounded-lg />
+        </div>
+        <div v-if="sizeTotal" flex="~ items-center gap-1">
+          <div text-sm op50>
+            Total
+          </div>
+          <DisplayFileSizeBadge :bytes="sizeTotal" rounded-lg />
+        </div>
+      </div>
       <div flex="~ gap-2 wrap items-center">
         <div v-if="pkg.private" badge-color-gray px2 rounded text-sm border="~ base dashed">
           Private
@@ -221,7 +246,6 @@ function toggleExclude() {
         <div v-if="status.isFocused" badge-color-green px2 rounded text-sm>
           In Focus
         </div>
-        <DisplayFileSizeBadge :bytes="pkg.resolved.installSize?.bytes" />
       </div>
     </div>
 

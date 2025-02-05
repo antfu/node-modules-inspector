@@ -21,8 +21,10 @@
   ],
   "scripts": {
     "build": "nuxi build src && unbuild",
+    "build:wc": "NMI_BACKEND=webcontainer nuxi build src && unbuild",
     "start": "node ./bin.mjs",
     "dev": "pnpm run -r stub && cd src && nuxi dev",
+    "dev:wc": "pnpm run -r stub && cd src && NMI_BACKEND=webcontainer nuxi dev",
     "prepack": "pnpm build"
   },
   "dependencies": {

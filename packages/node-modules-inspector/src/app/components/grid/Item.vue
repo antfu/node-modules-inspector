@@ -39,7 +39,7 @@ defineProps<{
 
       <template v-if="settings.showInstallSizeBadge && pkg.resolved.installSize?.bytes">
         <div flex="~ items-center gap-1">
-          <div i-ph-trolley-suitcase-duotone />
+          <div i-ph-barbell-duotone />
           <DisplayFileSizeBadge :bytes="pkg.resolved.installSize.bytes" :digits="0" rounded-full text-sm />
         </div>
       </template>

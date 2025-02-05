@@ -1,4 +1,7 @@
+import process from 'node:process'
 import { fileURLToPath } from 'node:url'
+
+const backend = process.env.NMI_BACKEND ?? 'server'
 
 export default defineNuxtConfig({
   ssr: false,
@@ -73,6 +76,9 @@ export default defineNuxtConfig({
 
   vite: {
     base: './',
+    define: {
+      'import.meta.env.BACKEND': JSON.stringify(backend),
+    },
   },
 
   devtools: {

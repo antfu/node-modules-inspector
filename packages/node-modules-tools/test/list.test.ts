@@ -39,6 +39,9 @@ it('runs', async () => {
           "node": ">=6.0",
         },
         "homepage": undefined,
+        "installSize": {
+          "bytes": 42798,
+        },
         "license": "MIT",
         "module": "cjs",
         "repository": "https://github.com/debug-js/debug",

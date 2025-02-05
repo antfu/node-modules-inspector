@@ -1,13 +1,13 @@
 import type { ListPackageDependenciesResult } from 'node-modules-tools'
 import { useAsyncState } from '@vueuse/core'
 import { shallowRef } from 'vue'
-import { getBackend } from '~/backends'
+import { ensureBackend } from '~/backends'
 
 export const rawData = shallowRef<ListPackageDependenciesResult | null>(null)
 
 export function fetchListDependenciesData() {
-  const backend = getBackend()
   const { state } = useAsyncState(async () => {
+    const backend = await ensureBackend()
     const data = await backend.functions.listDependencies()
 
     Object.freeze(data)

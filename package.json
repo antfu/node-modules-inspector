@@ -5,7 +5,9 @@
   "packageManager": "pnpm@9.15.4",
   "scripts": {
     "build": "pnpm -r run build",
+    "build:wc": "pnpm -r run build:wc",
     "dev": "pnpm -C packages/node-modules-inspector run dev",
+    "dev:wc": "pnpm -C packages/node-modules-inspector run dev:wc",
     "start": "pnpm -C packages/node-modules-inspector run start",
     "prepare": "nuxt prepare packages/node-modules-inspector/src && npx simple-git-hooks",
     "lint": "nuxi prepare && eslint .",
