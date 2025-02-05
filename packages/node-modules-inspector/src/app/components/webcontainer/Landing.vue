@@ -63,4 +63,5 @@ const isLoading = shallowRef(false)
       </div> -->
     </div>
   </div>
+  <PanelDark />
 </template>

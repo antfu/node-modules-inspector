@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import { setupQuery } from '~/state/query'
 import { version } from '../../../package.json'
 import { getBackend } from '../backends'
-import { fetchListDependenciesData, rawData } from '../state/data'
+import { fetchData, rawData } from '../state/data'
 
 const backend = getBackend()
 backend.value!.connect()
@@ -17,7 +17,7 @@ const error = computed(() => {
 })
 
 setupQuery()
-fetchListDependenciesData()
+fetchData()
 </script>
 
 <template>
@@ -68,6 +68,7 @@ fetchListDependenciesData()
     </div>
   </div>
   <div v-else>
+    <PanelDark />
     <PanelNav />
     <NuxtPage />
   </div>

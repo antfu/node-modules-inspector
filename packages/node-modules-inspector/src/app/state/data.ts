@@ -1,13 +1,13 @@
 import type { ListPackageDependenciesResult } from 'node-modules-tools'
-import { useAsyncState } from '@vueuse/core'
 import { shallowRef } from 'vue'
 import { ensureBackend } from '~/backends'
 
 export const rawData = shallowRef<ListPackageDependenciesResult | null>(null)
 
-export function fetchListDependenciesData() {
-  const { state } = useAsyncState(async () => {
-    const backend = await ensureBackend()
+export async function fetchData() {
+  rawData.value = null
+  const backend = await ensureBackend()
+  try {
     const data = await backend.functions.listDependencies()
 
     Object.freeze(data)
@@ -17,6 +17,10 @@ export function fetchListDependenciesData() {
     rawData.value = data
 
     return rawData.value
-  }, null)
-  return state
+  }
+  catch (err) {
+    backend.connectionError.value = err
+    rawData.value = null
+    return null
+  }
 }

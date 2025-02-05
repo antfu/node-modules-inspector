@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useRoute } from '#app/composables/router'
 import { computed } from 'vue'
-import { toggleDark } from '~/composables/dark'
 import { selectedNode } from '~/state/current'
 import { filtersActivated } from '~/state/filters'
 import { query } from '~/state/query'
@@ -57,20 +56,6 @@ function resetPanelState() {
 </script>
 
 <template>
-  <div
-    fixed right-4 top-4 z-panel-nav flex="~ gap-4 items-center"
-    bg-glass rounded-full border border-base shadow
-  >
-    <button
-      w-10 h-10 rounded-full hover:bg-active op50 hover:op100
-      flex="~ items-center justify-center"
-      title="Settings"
-      @click="toggleDark()"
-    >
-      <div i-ph-sun-duotone dark:i-ph-moon-duotone text-xl />
-    </button>
-  </div>
-
   <div
     fixed left-4 top-22 w-100 z-panel-content flex="~ gap-4 col" of-hidden
     style="max-height: calc(100vh - 6.5rem);"

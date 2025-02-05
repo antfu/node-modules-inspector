@@ -6,6 +6,7 @@ import { listPackageDependencies } from 'node-modules-tools'
 export function createServerFunctions(options: Partial<ListPackageDependenciesOptions>): ServerFunctions {
   return {
     async listDependencies() {
+      console.log('Reading dependencies...')
       const result = await listPackageDependencies({
         cwd: process.cwd(),
         depth: 25,
