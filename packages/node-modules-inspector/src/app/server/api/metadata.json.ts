@@ -6,7 +6,7 @@ consola.restoreAll()
 
 export default lazyEventHandler(async () => {
   const ws = await createWsServer({
-    root: process.cwd(),
+    cwd: process.cwd(),
   })
 
   return defineEventHandler(async () => {

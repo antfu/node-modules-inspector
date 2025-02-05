@@ -6,7 +6,9 @@ export function createWebContainerBackend(): Backend {
     name: 'webcontainer',
     status: ref('idle'),
     connectionError: ref(undefined),
-    connect() {},
+    connect() {
+
+    },
     functions: {
       listDependencies: () => {
         throw new Error('Not implemented')

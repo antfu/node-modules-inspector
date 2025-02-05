@@ -83,7 +83,7 @@ cli
     console.log(MARK_INFO, `Starting Node Modules Inspector at`, c.green(`http://${host === '127.0.0.1' ? 'localhost' : host}:${port}`), '\n')
 
     const server = await createHostServer({
-      root: options.root,
+      cwd: options.root,
       depth: options.depth,
     })
 

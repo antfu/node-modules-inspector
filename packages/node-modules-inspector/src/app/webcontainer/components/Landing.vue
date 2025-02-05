@@ -1,15 +1,33 @@
 <script setup lang="ts">
+import type { Terminal } from '@xterm/xterm'
 import { shallowRef } from 'vue'
 import { version } from '../../../../package.json'
+import { install } from '../container'
+import XTerm from './XTerm.vue'
 
 const input = shallowRef('')
 const error = shallowRef<any>()
 const isLoading = shallowRef(false)
+
+const terminal = shallowRef<Terminal>()
+
+async function run() {
+  isLoading.value = true
+  try {
+    await install(terminal.value!, [input.value])
+  }
+  catch (e) {
+    error.value = e
+  }
+  finally {
+    isLoading.value = false
+  }
+}
 </script>
 
 <template>
-  <div>
-    <div min-h-150 flex="~ col gap-2 items-center justify-center" flex-auto>
+  <div flex="~ col items-center gap-5" p10>
+    <div min-h-120 flex="~ col gap-2 items-center justify-center" flex-auto>
       <h1 p5 flex="~ col gap-3 items-center">
         <div relative>
           <Logo
@@ -29,7 +47,6 @@ const isLoading = shallowRef(false)
           Visualize your node_modules, inspect dependencies, and more.
         </div>
       </h1>
-
       <label
         border="~ base rounded-full" bg-glass shadow transition-all
         flex="~ gap-2 items-center" py3 px8 mt5 text-lg
@@ -44,6 +61,7 @@ const isLoading = shallowRef(false)
           w-120
           placeholder-gray:40
           outline-none bg-transparent px1 py2 font-mono
+          @keydown.enter="run"
         >
       </label>
 
@@ -51,16 +69,18 @@ const isLoading = shallowRef(false)
         This will run a pnpm install inside your browser with <a href="https://webcontainers.io/" target="_blank" hover:underline>WebContainer</a>.
       </div>
 
-      <!-- <div h-20>
-        <div v-if="error" text-red rounded p2 flex="~ col items-center">
-          <div font-bold>
-            Failed to Connect to the Backend
-          </div>
-          <div text-red5 dark:text-red3>
-            {{ error }}
-          </div>
+      <div v-if="error" h-20 text-red rounded p2 flex="~ col items-center">
+        <div font-bold>
+          Failed to Connect to the Backend
         </div>
-      </div> -->
+        <div text-red5 dark:text-red3>
+          {{ error }}
+        </div>
+      </div>
+    </div>
+
+    <div w-200 h-100 bg-glass rounded border border-base shadow of-hidden>
+      <XTerm @ready="t => terminal = t" />
     </div>
   </div>
   <PanelDark />

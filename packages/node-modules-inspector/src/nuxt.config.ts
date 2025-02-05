@@ -2,6 +2,14 @@ import process from 'node:process'
 import { fileURLToPath } from 'node:url'
 
 const backend = process.env.NMI_BACKEND ?? 'server'
+const isWebContainer = backend === 'webcontainer'
+
+const headers = isWebContainer
+  ? {
+      'Cross-Origin-Embedder-Policy': 'require-corp',
+      'Cross-Origin-Opener-Policy': 'same-origin',
+    }
+  : {}
 
 export default defineNuxtConfig({
   ssr: false,
@@ -11,6 +19,7 @@ export default defineNuxtConfig({
     '@unocss/nuxt',
     '@nuxt/eslint',
     'nuxt-eslint-auto-explicit-import',
+    ...isWebContainer ? ['./app/modules/webcontainer'] : [],
   ],
 
   alias: {
@@ -54,8 +63,12 @@ export default defineNuxtConfig({
       '/404.html': {
         prerender: true,
       },
-      '/*': {
+      '/**': {
         prerender: false,
+        headers: {
+          'Cross-Origin-Embedder-Policy': 'require-corp',
+          'Cross-Origin-Opener-Policy': 'same-origin',
+        },
       },
     },
     sourceMap: false,
@@ -78,6 +91,9 @@ export default defineNuxtConfig({
     base: './',
     define: {
       'import.meta.env.BACKEND': JSON.stringify(backend),
+    },
+    server: {
+      headers,
     },
   },
 

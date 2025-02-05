@@ -17,15 +17,17 @@
   "bin": "bin.mjs",
   "files": [
     "*.mjs",
-    "dist"
+    "dist",
+    "runtime"
   ],
   "scripts": {
-    "build": "nuxi build src && unbuild",
-    "build:wc": "NMI_BACKEND=webcontainer nuxi build src && unbuild",
-    "start": "node ./bin.mjs",
     "dev": "pnpm run -r stub && cd src && nuxi dev",
-    "dev:wc": "pnpm run -r stub && cd src && NMI_BACKEND=webcontainer nuxi dev",
-    "prepack": "pnpm build"
+    "build": "nuxi build src && unbuild",
+    "start": "node ./bin.mjs",
+    "prepack": "pnpm build",
+    "wc:prepare": "rollup -c",
+    "wc:build": "pnpm run wc:prepare && NMI_BACKEND=webcontainer nuxi build src && unbuild",
+    "wc:dev": "pnpm run -r stub && pnpm run wc:prepare && cd src && NMI_BACKEND=webcontainer nuxi dev"
   },
   "dependencies": {
     "birpc": "catalog:",
@@ -49,6 +51,8 @@
     "@types/picomatch": "catalog:",
     "@unocss/nuxt": "catalog:",
     "@vueuse/nuxt": "catalog:",
+    "@xterm/addon-fit": "catalog:",
+    "@xterm/xterm": "catalog:",
     "d3": "catalog:",
     "d3-hierarchy": "catalog:",
     "d3-shape": "catalog:",
