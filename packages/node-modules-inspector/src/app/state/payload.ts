@@ -4,7 +4,7 @@ import { computed, reactive, watch } from 'vue'
 import { buildVersionToPackagesMap } from '../utils/maps'
 import { getModuleType } from '../utils/module-type'
 import { rawData } from './data'
-import { filters, filterSearchDebounced } from './filters'
+import { FILTER_AUTHOR_REGEX, FILTER_LICENSE_REGEX, filters, filterSearchDebounced } from './filters'
 
 export type ComputedPayload = ReturnType<typeof createComputedPayload>
 
@@ -143,12 +143,31 @@ const _filtered = createComputedPayload(() => Array.from((function *() {
     }
 
     if (filterSearchDebounced.value) {
-      let search = filterSearchDebounced.value
+      const rawSearch = filterSearchDebounced.value
+      const author = [...rawSearch.matchAll(FILTER_AUTHOR_REGEX)].map(m => m[1])
+      const license = [...rawSearch.matchAll(FILTER_LICENSE_REGEX)].map(m => m[1])
+      let search = rawSearch
+        .replace(FILTER_AUTHOR_REGEX, '')
+        .replace(FILTER_LICENSE_REGEX, '')
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean)
+        .join(' ')
       let filtered = false
 
       const negative = search.startsWith('!')
       if (negative)
         search = search.slice(1)
+
+      if (author.length) {
+        if (!author.some(a => pkg.resolved.author?.includes(a)))
+          filtered = true
+      }
+
+      if (license.length) {
+        if (!license.includes(pkg.resolved.license || ''))
+          filtered = true
+      }
 
       if (search.match(/[*[\]]/)) {
         if (!pm.isMatch(pkg.name, search))

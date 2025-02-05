@@ -7,7 +7,6 @@ export const FILTER_AUTHOR_REGEX = /author\s*:\s*"([^"]*)"/gi
 export const FILTER_LICENSE_REGEX = /license\s*:\s*"([^"]*)"/gi
 
 export interface FilterOptions {
-  'mode': 'text' | 'license' | 'author'
   'search': string
   'modules': null | PackageModuleType[]
   'focus': null | string[]
@@ -50,6 +49,19 @@ export const FILTER_KEYS_FILTERS = objectEntries(FILTERS_SCHEMA)
 export const FILTER_KEYS_EXCLUDES = objectEntries(FILTERS_SCHEMA)
   .filter(([_, v]) => v.category === 'exclude')
   .map(([k]) => k) as (keyof FilterOptions)[]
+
+export function FILTER_SEARCH_TEXT(rawSearch?: string) {
+  if (rawSearch == null)
+    return ''
+
+  return rawSearch
+    .replace(FILTER_AUTHOR_REGEX, '')
+    .replace(FILTER_LICENSE_REGEX, '')
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .join(' ')
+}
 
 export const FILTER_KEYS_FULL = Object.keys(FILTERS_SCHEMA) as (keyof FilterOptions)[]
 

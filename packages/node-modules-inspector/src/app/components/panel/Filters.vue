@@ -1,14 +1,11 @@
 <script setup lang="ts">
 import type { PackageModuleType } from 'node-modules-tools'
 import type { WritableComputedRef } from 'vue'
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed } from 'vue'
 import { excludesActivated, FILTER_KEYS_EXCLUDES, FILTER_KEYS_FILTERS, filters, FILTERS_DEFAULT, filtersActivated } from '~/state/filters'
 import { payloads } from '~/state/payload'
 import { settings } from '~/state/settings'
 import { MODULE_TYPES_FULL_SELECT, MODULE_TYPES_SIMPLE_SELECT } from '../../utils/module-type'
-
-const searchText = ref('')
-const searchPlaceholder = computed(() => `Filter by ${filters.mode[0].toUpperCase()}${filters.mode.slice(1)}`)
 
 const moduleTypesAvailable = computed<PackageModuleType[]>(() =>
   settings.value.moduleTypeSimple
@@ -64,7 +61,6 @@ function resetFilters() {
     // @ts-expect-error any
     filters[key] = FILTERS_DEFAULT[key]
   }
-  searchText.value = ''
 }
 
 function resetExcludes() {
@@ -78,61 +74,32 @@ const moduleTypes = Object.fromEntries(
   MODULE_TYPES_FULL_SELECT.map(x => [x, createModuleTypeRef(x)] as const),
 ) as Record<PackageModuleType, WritableComputedRef<boolean>>
 
-watch(searchText, (v) => {
-  if (filters.mode === 'text') {
-    const authorMatches = [...v.matchAll(FILTER_AUTHOR_REGEX)].map(m => m[1])
-    const licenseMatches = [...v.matchAll(FILTER_LICENSE_REGEX)].map(m => m[1])
-    const remaining = v
-      .replace(FILTER_AUTHOR_REGEX, '')
-      .replace(FILTER_LICENSE_REGEX, '')
-      .trim()
-      .split(/\s+/)
-      .filter(Boolean)
+// watch(searchText, (v) => {
+//   if (filters.mode === 'text') {
+//     const authorMatches = [...v.matchAll(FILTER_AUTHOR_REGEX)].map(m => m[1])
+//     const licenseMatches = [...v.matchAll(FILTER_LICENSE_REGEX)].map(m => m[1])
+//     const remaining = v
+//       .replace(FILTER_AUTHOR_REGEX, '')
+//       .replace(FILTER_LICENSE_REGEX, '')
+//       .trim()
+//       .split(/\s+/)
+//       .filter(Boolean)
 
-    filters.licenses = licenseMatches.length ? licenseMatches : null
-    filters.authors = authorMatches.length ? authorMatches : null
-    filters.search = remaining.join(' ')
-  }
-  else if (filters.mode === 'license') {
-    filters.licenses = v ? [v] : null
-    filters.authors = null
-    filters.search = ''
-  }
-  else if (filters.mode === 'author') {
-    filters.authors = v ? [v] : null
-    filters.licenses = null
-    filters.search = ''
-  }
-})
-
-function setupSearchText() {
-  const parts = []
-
-  switch (filters.mode) {
-    case 'text':
-      if (filters.licenses)
-        parts.push(...filters.licenses.map(l => `license:"${l}"`))
-      if (filters.authors)
-        parts.push(...filters.authors.map(a => `author:"${a}"`))
-      if (filters.search)
-        parts.push(filters.search)
-      break
-    case 'license':
-      if (filters.licenses)
-        parts.push(...filters.licenses)
-      break
-    case 'author':
-      if (filters.authors)
-        parts.push(...filters.authors)
-      break
-  }
-
-  return parts.join(' ')
-}
-
-onMounted(() => {
-  searchText.value = setupSearchText()
-})
+//     filters.licenses = licenseMatches.length ? licenseMatches : null
+//     filters.authors = authorMatches.length ? authorMatches : null
+//     filters.search = remaining.join(' ')
+//   }
+//   else if (filters.mode === 'license') {
+//     filters.licenses = v ? [v] : null
+//     filters.authors = null
+//     filters.search = ''
+//   }
+//   else if (filters.mode === 'author') {
+//     filters.authors = v ? [v] : null
+//     filters.licenses = null
+//     filters.search = ''
+//   }
+// })
 </script>
 
 <template>
@@ -161,28 +128,18 @@ onMounted(() => {
       >
         <div i-ph-text-t-duotone text-lg :class="filters.search ? 'text-primary' : 'op50'" flex-none />
         <input
-          v-model="searchText"
-          :placeholder="searchPlaceholder"
+          v-model="filters.search"
+          placeholder="Filter by Text"
           w-full bg-transparent outline-none
         >
         <button
           w-6 h-6 rounded-full hover:bg-active flex
-          :class="searchText ? '' : 'op0'"
-          @click="searchText = ''"
+          :class="filters.search ? '' : 'op0'"
+          @click="filters.search = ''"
         >
           <div i-ph-x ma op50 />
         </button>
       </label>
-    </div>
-    <div flex="~ col gap-4" p4 border="t base">
-      <OptionItem title="Filter Mode" description="Filter by text, license or author">
-        <OptionSelectGroup
-          v-model="filters.mode"
-          :options="['text', 'license', 'author']"
-          :titles="['Text', 'License', 'Author']"
-          @update:model-value="resetFilters"
-        />
-      </OptionItem>
     </div>
     <div flex="~ col gap-4" p4 border="t base">
       <OptionItem title="Dependency Source" description="Filter by source type of the dependency">
