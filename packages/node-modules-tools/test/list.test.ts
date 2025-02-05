@@ -1,22 +1,34 @@
 import { fileURLToPath } from 'node:url'
-import { expect, it } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { listPackageDependencies } from '../src'
 
-it('runs', async () => {
-  const list = await listPackageDependencies({
-    cwd: fileURLToPath(new URL('..', import.meta.url)),
-    depth: 25,
-    monorepo: false,
+describe('listPackageDependencies', () => {
+  it('runs if there are multiple package.json files', async () => {
+    const list = await listPackageDependencies({
+      cwd: fileURLToPath(new URL('./fixtures/multiple-package-jsons', import.meta.url)),
+      depth: 25,
+      monorepo: true,
+      workspace: false,
+    })
+
+    expect(list.packages.size).toBe(2)
   })
 
-  const item = Array.from(list.packages.values()).find(i => i.name === 'debug')
+  it('runs on this repository', async () => {
+    const list = await listPackageDependencies({
+      cwd: fileURLToPath(new URL('..', import.meta.url)),
+      depth: 25,
+      monorepo: false,
+    })
 
-  expect(item).toBeDefined()
-  expect({
-    ...item,
-    filepath: undefined,
-    flatDependents: undefined,
-  }).toMatchInlineSnapshot(`
+    const item = Array.from(list.packages.values()).find(i => i.name === 'debug')
+
+    expect(item).toBeDefined()
+    expect({
+      ...item,
+      filepath: undefined,
+      flatDependents: undefined,
+    }).toMatchInlineSnapshot(`
     {
       "dependencies": Set {
         "ms@2.1.3",
@@ -68,7 +80,7 @@ it('runs', async () => {
       "version": "4.4.0",
     }
   `)
-  expect(Array.from(item?.flatDependents ?? []).filter(d => !d.startsWith('node-modules-tools@'))).toMatchInlineSnapshot(`
+    expect(Array.from(item?.flatDependents ?? []).filter(d => !d.startsWith('node-modules-tools@'))).toMatchInlineSnapshot(`
     [
       "unbuild@3.3.1",
       "untyped@1.5.2",
@@ -78,4 +90,5 @@ it('runs', async () => {
       "@babel/helper-module-imports@7.25.9",
     ]
   `)
+  })
 })

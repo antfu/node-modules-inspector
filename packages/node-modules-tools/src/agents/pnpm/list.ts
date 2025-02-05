@@ -25,12 +25,7 @@ type PnpmDependencyHierarchy = Pick<PackageDependencyHierarchy, 'name' | 'versio
 
 async function resolveRoot(options: ListPackageDependenciesOptions) {
   let raw: string | undefined
-  try {
-    raw = (await x('pnpm', ['root', '-w'], { throwOnError: true, nodeOptions: { cwd: options.cwd } }))
-      .stdout
-      .trim()
-  }
-  catch {
+  if (options.workspace === false) {
     try {
       raw = (await x('pnpm', ['root'], { throwOnError: true, nodeOptions: { cwd: options.cwd } }))
         .stdout
@@ -39,6 +34,24 @@ async function resolveRoot(options: ListPackageDependenciesOptions) {
     catch (err) {
       console.error('Failed to resolve root directory')
       console.error(err)
+    }
+  }
+  else {
+    try {
+      raw = (await x('pnpm', ['root', '-w'], { throwOnError: true, nodeOptions: { cwd: options.cwd } }))
+        .stdout
+        .trim()
+    }
+    catch {
+      try {
+        raw = (await x('pnpm', ['root'], { throwOnError: true, nodeOptions: { cwd: options.cwd } }))
+          .stdout
+          .trim()
+      }
+      catch (err) {
+        console.error('Failed to resolve root directory')
+        console.error(err)
+      }
     }
   }
   return raw ? dirname(raw) : options.cwd
@@ -60,6 +73,8 @@ async function getDependenciesTree(options: ListPackageDependenciesOptions): Pro
   const args = ['ls', '--json', '--no-optional', '--depth', String(options.depth)]
   if (options.monorepo)
     args.push('--recursive')
+  if (options.workspace === false)
+    args.push('--ignore-workspace')
   const process = x('pnpm', args, {
     throwOnError: true,
     nodeOptions: {
