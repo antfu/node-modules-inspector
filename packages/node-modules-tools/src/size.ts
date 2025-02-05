@@ -16,6 +16,19 @@ export async function getPackageInstallSize(
 
   const files: string[] = []
 
+  // TODO: Judge file types by the file name, and count them
+  // - docs (.md, .txt)
+  // - test (.test.*, .spec.*, /test/, /tests/, /__tests__/)
+  // - types (.d.ts, .d.mts)
+  // - css (.css, .scss, .sass, .less)
+  // - json (.json)
+  // - html (.html)
+  // - js (.js, .cjs, .mjs, .jsx)
+  // - ts (.ts, .tsx, .mts)
+  // - components (.vue, .svelte, .astro)
+  // - images (.png, .jpg, .jpeg, .gif, .svg)
+  // - others
+
   async function traverse(dir: string) {
     for (const n of await fs.readdir(dir, { withFileTypes: true })) {
       if (n.isFile()) {

@@ -23,6 +23,8 @@ export default defineConfig({
       'bg-glass': 'bg-white:75 dark:bg-#111:75 backdrop-blur-5',
       'bg-code': 'bg-gray5:5',
 
+      'bg-gradient-more': 'bg-gradient-to-t from-white via-white:80 to-white:0 dark:from-#111 dark:via-#111:80 dark:to-#111:0',
+
       'color-active': 'color-primary-600 dark:color-primary-400',
       'border-active': 'border-primary-600/25 dark:border-primary-400/25',
       'bg-active': 'bg-#8881',
