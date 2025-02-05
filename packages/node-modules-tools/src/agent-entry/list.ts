@@ -1,4 +1,4 @@
-import type { AgentName } from 'package-manager-detector'
+import type { Agent } from 'package-manager-detector'
 import type { ListPackageDependenciesBaseResult, ListPackageDependenciesOptions, ListPackageDependenciesRawResult, PackageNodeBase } from '../types'
 
 /**
@@ -7,18 +7,32 @@ import type { ListPackageDependenciesBaseResult, ListPackageDependenciesOptions,
  * This function will automatically detect the package manager in the current project, and list the dependencies of the packages.
  */
 export async function listPackageDependenciesRaw(
-  manager: AgentName,
+  manager: Agent,
   options: ListPackageDependenciesOptions,
 ): Promise<ListPackageDependenciesBaseResult> {
   let result: ListPackageDependenciesRawResult
-  if (manager === 'pnpm')
-    result = await import('../agents/pnpm').then(r => r.listPackageDependencies(options))
-  else if (manager === 'npm')
-    result = await import('../agents/npm').then(r => r.listPackageDependencies(options))
-  else if (manager === 'bun')
-    result = await import('../agents/bun').then(r => r.listPackageDependencies(options))
-  else
-    throw new Error(`Package manager ${manager} is not yet supported`)
+
+  switch (manager) {
+    case 'pnpm':
+    case 'pnpm@6': {
+      result = await import('../agents/pnpm').then(r => r.listPackageDependencies(options))
+      break
+    }
+    case 'npm': {
+      result = await import('../agents/npm').then(r => r.listPackageDependencies(options))
+      break
+    }
+    case 'bun': {
+      result = await import('../agents/bun').then(r => r.listPackageDependencies(options))
+      break
+    }
+    case 'deno':
+    case 'yarn':
+    case 'yarn@berry':
+      throw new Error(`Package manager ${manager} is not yet supported`)
+    default:
+      throw new Error(`Unknown package manager: ${manager satisfies never}`)
+  }
 
   return populateRawResult(result)
 }
