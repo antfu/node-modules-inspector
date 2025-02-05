@@ -34,6 +34,7 @@ const nodes = computed(() => {
       value: c,
       name: type.toUpperCase(),
       class: MODULE_TYPES_COLOR_BADGE[type],
+      title: `${c} dependencies are in ${type.toUpperCase()}`,
     }))
 })
 </script>

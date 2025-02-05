@@ -41,6 +41,24 @@ it('runs', async () => {
         "homepage": undefined,
         "installSize": {
           "bytes": 42798,
+          "categories": {
+            "data": {
+              "bytes": 1524,
+              "count": 1,
+            },
+            "doc": {
+              "bytes": 22115,
+              "count": 1,
+            },
+            "js": {
+              "bytes": 18020,
+              "count": 4,
+            },
+            "other": {
+              "bytes": 1139,
+              "count": 1,
+            },
+          },
         },
         "license": "MIT",
         "module": "cjs",

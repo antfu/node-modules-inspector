@@ -18,7 +18,7 @@ const sorted = computed(() =>
     </UiSubTitle>
     <ReportExpendableContainer :list="sorted">
       <template #default="{ items }">
-        <div grid="~ cols-[1fr_max-content] gap-x-4 gap-y-1">
+        <div grid="~ cols-[max-content_max-content_1fr] gap-x-4 gap-y-1">
           <template v-for="pkg of items" :key="pkg.spec">
             <button
               font-mono text-left hover:bg-active px2 ml--2 rounded
@@ -31,6 +31,9 @@ const sorted = computed(() =>
                 :bytes="pkg.resolved.installSize!.bytes"
                 rounded-full text-sm h-max
               />
+            </div>
+            <div>
+              <UiPercentageFileCategories :pkg="pkg" />
             </div>
           </template>
         </div>

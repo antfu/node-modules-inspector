@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { settings } from '~/state/settings'
+import { bytesToHumanSize } from '../../utils/format'
 
 const props = withDefaults(
   defineProps<{
@@ -36,15 +37,7 @@ const color = computed(() => {
   return colorScale[colorScale.length - 1][1]
 })
 
-const formatted = computed(() => {
-  // bytes to human readable
-  const bytes = props.bytes || 0
-  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB']
-  const i = Math.floor(Math.log(bytes) / Math.log(1024))
-  if (i === 0)
-    return ['<1', 'K']
-  return [(+(bytes / 1024 ** i).toFixed(props.digits)).toLocaleString(), sizes[i]]
-})
+const formatted = computed(() => bytesToHumanSize(props.bytes || 0, props.digits))
 </script>
 
 <template>

@@ -3,7 +3,7 @@ import { computed } from 'vue'
 
 const props = withDefaults(
   defineProps<{
-    nodes: { value: number, name: string, class?: string }[]
+    nodes: { value: number, name: string, class?: string, title?: string }[]
     rounded?: boolean
     percentage?: boolean
   }>(),
@@ -27,8 +27,9 @@ const total = computed(() => props.nodes.reduce((acc, { value }) => acc + value,
         props.rounded && idx === nodes.length - 1 ? 'rounded-r' : '',
         idx !== 0 ? 'border-l' : '',
       ]"
+      :title="node.title"
       :style="{ flex: node.value }"
-      text-center text-xs px1.5 py1 flex gap-x-0.5
+      text-center text-xs px1.5 py1 flex gap-x-0.5 cursor-default
     >
       <span>{{ node.name }}</span>
       <span v-if="percentage" op50>{{ `${+(node.value * 100 / total).toFixed(1)}%` }}</span>

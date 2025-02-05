@@ -7,6 +7,7 @@ export interface Settings {
   packageDetailsTab: 'dependencies' | 'dependents'
   colorizePackageSize: boolean
   showInstallSizeBadge: boolean
+  showFileComposition: boolean
 }
 
 export const settings = useLocalStorage<Settings>(
@@ -18,6 +19,7 @@ export const settings = useLocalStorage<Settings>(
     packageDetailsTab: 'dependents',
     colorizePackageSize: true,
     showInstallSizeBadge: true,
+    showFileComposition: false,
   },
   {
     deep: true,

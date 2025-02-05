@@ -134,7 +134,7 @@ function toggleExclude() {
       </button>
     </div>
 
-    <div flex="~ col gap-2" p5>
+    <div flex="~ col gap-2" p5 pb2>
       <div font-mono text-2xl flex="~ wrap items-center gap-2" pr20>
         <span>{{ pkg.name }}</span>
       </div>
@@ -216,20 +216,7 @@ function toggleExclude() {
           </span>
         </template>
       </div>
-      <div v-if="sizeInstall || sizeTotal" flex="~ gap-3 wrap items-center">
-        <div v-if="sizeInstall" flex="~ items-center gap-1">
-          <div text-sm op50>
-            Install
-          </div>
-          <DisplayFileSizeBadge :bytes="sizeInstall" rounded-lg />
-        </div>
-        <div v-if="sizeTotal" flex="~ items-center gap-1">
-          <div text-sm op50>
-            Total
-          </div>
-          <DisplayFileSizeBadge :bytes="sizeTotal" rounded-lg />
-        </div>
-      </div>
+
       <div flex="~ gap-2 wrap items-center">
         <div v-if="pkg.private" badge-color-gray px2 rounded text-sm border="~ base dashed">
           Private
@@ -249,7 +236,38 @@ function toggleExclude() {
       </div>
     </div>
 
-    <div flex="~" select-none h-10>
+    <div v-if="pkg.resolved.installSize" p4 border="t base" flex="~ col gap-1">
+      <div flex="~ gap-3 wrap items-center">
+        <div v-if="sizeInstall" flex="~ items-center gap-1">
+          <div text-sm op50>
+            Install
+          </div>
+          <DisplayFileSizeBadge :bytes="sizeInstall" rounded-lg />
+        </div>
+        <div v-if="sizeTotal" flex="~ items-center gap-1">
+          <div text-sm op50>
+            Total
+          </div>
+          <DisplayFileSizeBadge :bytes="sizeTotal" rounded-lg />
+        </div>
+        <div flex-auto />
+        <button
+          p1 rounded-full hover:bg-active mr--2
+          title="Toggle file composition"
+          @click="settings.showFileComposition = !settings.showFileComposition"
+        >
+          <div i-ph-caret-down transition duration-300 :class="settings.showFileComposition ? 'op75' : 'rotate-90 op25'" />
+        </button>
+      </div>
+      <div v-if="settings.showFileComposition" flex="~ gap-1 col">
+        <div op50 text-sm mt2>
+          File Composition
+        </div>
+        <UiPercentageFileCategories :pkg="pkg" />
+      </div>
+    </div>
+
+    <div flex="~" select-none h-10 mt-2>
       <div border="b base" w-2 />
       <button
         flex-1 border border-base rounded-t-lg p1 flex="~ items-center justify-center gap-1" transition-margin
@@ -301,11 +319,16 @@ function toggleExclude() {
         </div>
       </template>
       <template v-else-if="settings.packageDetailsTab === 'dependencies'">
-        <UiPercentageModuleType
-          p2 pt3
-          :pkg="pkg"
-          :flat="settings.deepDependenciesTree"
-        />
+        <div p4 flex="~ col gap-1">
+          <div op50 text-sm mt1>
+            Dependency Composition
+          </div>
+          <UiPercentageModuleType
+            :pkg="pkg"
+            :flat="settings.deepDependenciesTree"
+          />
+        </div>
+
         <template v-if="pkg.flatDependencies.size">
           <TreeDependencies
             py5 pt2 px4
