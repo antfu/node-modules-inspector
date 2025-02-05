@@ -6,7 +6,9 @@ import { useEventListener } from '@vueuse/core'
 import { hierarchy, tree } from 'd3-hierarchy'
 import { linkHorizontal, linkVertical } from 'd3-shape'
 import { computed, nextTick, onMounted, ref, shallowReactive, shallowRef, useTemplateRef, watch } from 'vue'
+import { selectedNode } from '~/state/current'
 import { filters } from '~/state/filters'
+import { payloads } from '~/state/payload'
 import { query } from '~/state/query'
 
 const { payload } = defineProps<{
@@ -210,9 +212,7 @@ const activeLinks = computed(() => {
   if (!query.selected || query.selected.startsWith('~'))
     return []
   return [
-    ...links.value.filter((link) => {
-      return getSelectionMode(link.source.data) === 'selected' && getSelectionMode(link.target.data) === 'selected'
-    }),
+    ...links.value.filter(link => isRelated(link.source.data) && isRelated(link.target.data)),
     ...additionalLinks.value,
   ]
 })
@@ -226,12 +226,10 @@ function focusOn(spec: string, animated = true) {
   })
 }
 
-function getSelectionMode(node: PackageNode) {
-  if (!query.selected || query.selected.startsWith('~'))
-    return 'none'
-  if (node.spec === query.selected || node.flatDependencies.has(query.selected) || node.flatDependents.has(query.selected))
-    return 'selected'
-  return 'faded'
+function isRelated(pkg: PackageNode) {
+  if (!selectedNode.value)
+    return
+  return selectedNode.value === pkg || payloads.avaliable.flatDependencies(selectedNode.value).includes(pkg) || payloads.avaliable.flatDependents(selectedNode.value).includes(pkg)
 }
 
 const createLinkHorizontal = linkHorizontal()
@@ -293,7 +291,6 @@ function generateLink(link: HierarchyLink<PackageNode>) {
       <template v-if="node.data.spec !== '~root'">
         <GraphNode
           :ref="(el: any) => nodesRefMap.set(node.data.spec, el?.$el)"
-          :selection-mode="getSelectionMode(node.data)"
           :pkg="node.data"
           :style="{
             left: `${node.x}px`,

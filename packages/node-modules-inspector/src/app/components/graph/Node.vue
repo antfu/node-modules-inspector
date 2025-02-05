@@ -1,83 +1,29 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
-import { computed } from 'vue'
 import { selectedNode } from '~/state/current'
-import { filters } from '~/state/filters'
 import { settings } from '~/state/settings'
 
-const props = defineProps<{
-  pkg?: PackageNode
-  selectionMode: 'none' | 'faded' | 'selected'
+defineProps<{
+  pkg: PackageNode
 }>()
-
-const isFocused = computed(() => {
-  if (!props.pkg)
-    return false
-  return filters.focus?.includes(props.pkg.spec) || filters.why?.includes(props.pkg.spec)
-})
-
-const classesOuter = computed(() => {
-  const list: string[] = []
-
-  if (props.selectionMode === 'selected')
-    list.push('z-graph-node-active')
-  else
-    list.push('z-graph-node')
-
-  if (isFocused.value)
-    list.push('border-orange:50')
-  else if (props.selectionMode === 'selected')
-    list.push('border-primary')
-  else
-    list.push('border-base')
-
-  if (selectedNode.value === props.pkg) {
-    if (isFocused.value)
-      list.push('ring-3 ring-yellow:25! text-orange-600 dark:text-orange-300 border-orange!')
-    else
-      list.push('ring-3 ring-primary:25! text-primary-600 dark:text-primary-300')
-  }
-
-  if (props.pkg?.private)
-    list.push('border-dashed!')
-
-  return list
-})
-
-const classesInner = computed(() => {
-  const list: string[] = []
-
-  if (isFocused.value)
-    list.push('bg-orange:10!')
-  else if (props.selectionMode === 'selected')
-    list.push('bg-primary:10!')
-
-  if (props.selectionMode === 'faded')
-    list.push('op75')
-
-  return list
-})
 </script>
 
 <template>
-  <div
-    class="graph-node"
-    :class="classesOuter"
+  <UiPackageBorder
+    :pkg
+    as="button"
+    outer="graph-node"
+    inner="graph-node-button"
+    :fade="true"
+    @click="selectedNode = pkg === selectedNode ? null : pkg"
   >
-    <button
-      v-if="pkg"
-      class="graph-node-button"
-      :class="classesInner"
-      @click="selectedNode = pkg === selectedNode ? null : pkg"
-    >
-      <DisplayPackageSpec :pkg flex-auto justify-start text-left />
-      <DisplayModuleType text-xs justify-end ml2 :pkg :badge="false" />
-      <DisplayFileSizeBadge
-        v-if="settings.showInstallSizeBadge"
-        :bytes="pkg.resolved.installSize?.bytes" :digits="0" rounded-r-full text-sm mr--2
-      />
-    </button>
-  </div>
+    <DisplayPackageSpec :pkg flex-auto justify-start text-left />
+    <DisplayModuleType text-xs justify-end ml2 :pkg :badge="false" />
+    <DisplayFileSizeBadge
+      v-if="settings.showInstallSizeBadge"
+      :bytes="pkg.resolved.installSize?.bytes" :digits="0" rounded-r-full text-sm mr--2
+    />
+  </UiPackageBorder>
 </template>
 
 <style>

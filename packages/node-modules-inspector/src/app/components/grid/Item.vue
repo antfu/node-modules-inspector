@@ -10,15 +10,12 @@ defineProps<{
 </script>
 
 <template>
-  <button
-    border="~ rounded-lg" px3 py2 flex="~ col gap-2"
-    bg-glass
-    hover="bg-active"
-    :class="[
-      selectedNode === pkg ? 'border-primary ring-3 ring-primary:15' : 'border-base',
-      pkg.private ? 'border-dashed' : '',
-    ]"
-    @click="selectedNode = pkg"
+  <UiPackageBorder
+    :pkg
+    as="button"
+    outer="border rounded-lg"
+    inner="flex flex-col gap-2 hover:bg-active p2 px3"
+    @click="selectedNode = pkg === selectedNode ? null : pkg"
   >
     <DisplayPackageSpec :pkg text-left />
     <div flex="~ wrap gap-2 items-center" text-sm>
@@ -55,5 +52,5 @@ defineProps<{
         </div>
       </template> -->
     </div>
-  </button>
+  </UiPackageBorder>
 </template>
