@@ -93,6 +93,15 @@ export function createWebSocketBackend(): Backend {
           throw err
         }
       },
+      dependenciesPublishDate: async () => {
+        try {
+          return await rpc.dependenciesPublishDate()
+        }
+        catch (err) {
+          error.value = err
+          throw err
+        }
+      },
       openInEditor: (filename: string) => rpc.openInEditor.asEvent(filename),
       openInFinder: (filename: string) => rpc.openInFinder.asEvent(filename),
     },

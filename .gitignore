@@ -8,3 +8,4 @@ dist
 .DS_Store
 .node-modules-inspector
 packages/node-modules-inspector/src/app/public/fonts
+tmp
