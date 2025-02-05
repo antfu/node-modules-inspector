@@ -23,7 +23,7 @@ const depthMap = computed(() => {
 </script>
 
 <template>
-  <CanvasContainer>
+  <UiOffsettedContainer>
     <div flex="~ col gap-2">
       <GridExpand
         v-for="([depth, packages]) of depthMap" :key="depth"
@@ -37,5 +37,5 @@ const depthMap = computed(() => {
         </template>
       </GridExpand>
     </div>
-  </CanvasContainer>
+  </UiOffsettedContainer>
 </template>

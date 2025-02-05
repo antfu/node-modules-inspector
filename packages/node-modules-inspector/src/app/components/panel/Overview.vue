@@ -56,7 +56,7 @@ const multipleVersionsCount = computed(() => {
       </div>
     </div>
     <div>
-      <ModuleTypePercentage :packages="payloads.avaliable.packages" :rounded="false" />
+      <UiPercentageModuleType :packages="payloads.avaliable.packages" :rounded="false" />
     </div>
     <div border="t base" flex="~ gap-1.1 items-center" p3 pl5 pr4 text-hex-888e>
       Made with

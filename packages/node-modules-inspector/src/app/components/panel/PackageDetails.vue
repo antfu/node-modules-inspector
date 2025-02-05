@@ -288,7 +288,7 @@ function toggleExclude() {
     <div flex="~ col gap-1" flex-auto of-auto>
       <template v-if="settings.packageDetailsTab === 'dependents'">
         <template v-if="pkg.flatDependents.size">
-          <PackageDependentTree
+          <TreeDependencies
             py5 px4
             :currents="payloads.avaliable.flatDependents(pkg).filter(i => i?.workspace)"
             :list="payloads.avaliable.flatDependents(pkg)"
@@ -301,13 +301,13 @@ function toggleExclude() {
         </div>
       </template>
       <template v-else-if="settings.packageDetailsTab === 'dependencies'">
-        <ModuleTypePercentage
+        <UiPercentageModuleType
           p2 pt3
           :pkg="pkg"
           :flat="settings.deepDependenciesTree"
         />
         <template v-if="pkg.flatDependencies.size">
-          <PackageDependentTree
+          <TreeDependencies
             py5 pt2 px4
             :currents="payloads.avaliable.dependencies(pkg)"
             :list="payloads.avaliable.flatDependencies(pkg)"

@@ -42,10 +42,10 @@ const tree = computed(() => {
 <template>
   <div flex="~ col gap-1">
     <template v-for="{ pkg, children } of tree" :key="pkg.spec">
-      <PackageInfoList :pkg="pkg" />
+      <TreeItem :pkg="pkg" />
       <template v-if="children?.length">
         <RenderNextTick v-if="props.depth < props.maxDepth">
-          <PackageDependentTree
+          <TreeDependencies
             ml4
             :currents="children"
             :list="props.list"

@@ -96,7 +96,7 @@ function onEnter(e: KeyboardEvent) {
       flex="~ col"
     >
       <template v-for="pkg, idx of result" :key="pkg.spec">
-        <PackageInfoList
+        <TreeItem
           :pkg
           p2 w-full
           :class="idx === selectIndex ? 'bg-active' : ''"

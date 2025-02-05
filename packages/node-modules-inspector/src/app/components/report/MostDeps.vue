@@ -12,10 +12,10 @@ const transitiveDeps = computed(() =>
 
 <template>
   <div v-if="transitiveDeps.length">
-    <SubTitle>
+    <UiSubTitle>
       Packages with the Most of Transitive Dependencies
       <DisplayNumberBadge :number="transitiveDeps.length" rounded-full text-sm />
-    </SubTitle>
+    </UiSubTitle>
     <ReportExpendableContainer :list="transitiveDeps">
       <template #default="{ items }">
         <div grid="~ cols-[max-content_max-content_1fr] gap-x-4 gap-y-1">
@@ -32,7 +32,7 @@ const transitiveDeps = computed(() =>
                 rounded-full text-sm h-max
               />
             </div>
-            <ModuleTypePercentage :pkg="pkg" :flat="true" />
+            <UiPercentageModuleType :pkg="pkg" :flat="true" />
           </template>
         </div>
       </template>

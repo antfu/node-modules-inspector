@@ -12,10 +12,10 @@ const sorted = computed(() =>
 
 <template>
   <div v-if="sorted.length">
-    <SubTitle>
+    <UiSubTitle>
       Largest Packages by Install Size
       <DisplayNumberBadge :number="sorted.length" rounded-full text-sm />
-    </SubTitle>
+    </UiSubTitle>
     <ReportExpendableContainer :list="sorted">
       <template #default="{ items }">
         <div grid="~ cols-[1fr_max-content] gap-x-4 gap-y-1">

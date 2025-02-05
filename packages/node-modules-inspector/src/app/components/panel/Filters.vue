@@ -245,7 +245,7 @@ const moduleTypes = Object.fromEntries(
           <span op25>)</span>
         </div>
       </div>
-      <ModuleTypePercentage :packages="payloads.filtered.packages" :rounded="false" />
+      <UiPercentageModuleType :packages="payloads.filtered.packages" :rounded="false" />
     </div>
     <!-- <PanelSettings border="t base" /> -->
   </div>

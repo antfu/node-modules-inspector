@@ -1,5 +1,5 @@
 <template>
-  <CanvasContainer>
+  <UiOffsettedContainer>
     <ReportMostDeps />
     <div grid="~ cols-2 gap-8">
       <ReportLargestSize />
@@ -7,5 +7,5 @@
       <ReportLargestSize />
     </div>
     <ReportMultipleVersions />
-  </CanvasContainer>
+  </UiOffsettedContainer>
 </template>

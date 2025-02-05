@@ -1,5 +1,5 @@
 [build]
-publish = "packages/node-modules-inspector/dist"
+publish = "packages/node-modules-inspector/dist/public"
 command = "pnpm run build:wc"
 
 [build.environment]
