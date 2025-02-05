@@ -26,9 +26,12 @@ export async function listPackageDependenciesRaw(
       result = await import('../agents/bun').then(r => r.listPackageDependencies(options))
       break
     }
+    case 'yarn@berry': {
+      result = await import('../agents/berry').then(r => r.listPackageDependencies(options))
+      break
+    }
     case 'deno':
     case 'yarn':
-    case 'yarn@berry':
       throw new Error(`Package manager ${manager} is not yet supported`)
     default:
       throw new Error(`Unknown package manager: ${manager satisfies never}`)
