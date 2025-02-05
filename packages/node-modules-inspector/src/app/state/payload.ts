@@ -143,13 +143,24 @@ const _filtered = createComputedPayload(() => Array.from((function *() {
     }
 
     if (filterSearchDebounced.value) {
-      if (filterSearchDebounced.value.match(/[*[\]]/)) {
-        if (!pm.isMatch(pkg.name, filterSearchDebounced.value))
-          continue
+      let search = filterSearchDebounced.value
+      let filtered = false
+
+      const negative = search.startsWith('!')
+      if (negative)
+        search = search.slice(1)
+
+      if (search.match(/[*[\]]/)) {
+        if (!pm.isMatch(pkg.name, search))
+          filtered = true
       }
       else {
-        if (!pkg.name.includes(filterSearchDebounced.value))
-          continue
+        if (!pkg.name.includes(search))
+          filtered = true
+      }
+
+      if (negative ? !filtered : filtered) {
+        continue
       }
     }
 
