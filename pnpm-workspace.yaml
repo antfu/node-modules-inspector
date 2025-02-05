@@ -1,6 +1,5 @@
 packages:
   - packages/*
-  - '!packages/node-modules-tools/test/packages'
 catalog:
   '@antfu/eslint-config': ^4.1.1
   '@eslint/config-array': ^0.19.2
