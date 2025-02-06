@@ -3,7 +3,7 @@ import { useRoute, useRouter } from '#app/composables/router'
 import { objectEntries } from '@antfu/utils'
 import { debouncedWatch, ignorableWatch } from '@vueuse/core'
 import { reactive, watch } from 'vue'
-import { FILTER_SEARCH_TEXT, filters, FILTERS_SCHEMA } from './filters'
+import { filters, FILTERS_SCHEMA } from './filters'
 
 export interface QueryOptions extends Partial<{ [x in keyof FilterOptions]?: string }> {
   selected?: string
@@ -56,9 +56,7 @@ function filtersToQuery(filters: FilterOptions, query: QueryOptions) {
           ? (value ? 'true' : 'false')
           : value
 
-    if (key === 'search')
-      (query as any)[key] = FILTER_SEARCH_TEXT(serialized)
-    else if (query[key] !== serialized)
+    if (query[key] !== serialized)
       (query as any)[key] = serialized
   }
 }
