@@ -4,7 +4,7 @@ import { computed } from 'vue'
 import { setupQuery } from '~/state/query'
 import { version } from '../../../package.json'
 import { backend } from '../backends'
-import { fetchData, rawData } from '../state/data'
+import { rawData } from '../state/data'
 
 const props = defineProps<{
   backend?: Backend | undefined
@@ -22,7 +22,6 @@ const error = computed(() => {
 })
 
 setupQuery()
-fetchData()
 </script>
 
 <template>

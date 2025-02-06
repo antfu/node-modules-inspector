@@ -19,7 +19,9 @@ export async function fetchData() {
     return rawData.value
   }
   catch (err) {
-    backend.connectionError.value = err
+    console.error(err)
+    if (backend)
+      backend.connectionError.value = err
     rawData.value = null
     return null
   }
