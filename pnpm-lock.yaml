@@ -227,6 +227,9 @@ importers:
       '@antfu/eslint-config':
         specifier: 'catalog:'
         version: 4.1.1(@typescript-eslint/utils@8.23.0(eslint@9.19.0(jiti@2.4.2))(typescript@5.7.3))(@unocss/eslint-plugin@65.4.3(eslint@9.19.0(jiti@2.4.2))(typescript@5.7.3))(@vue/compiler-sfc@3.5.13)(eslint@9.19.0(jiti@2.4.2))(typescript@5.7.3)(vitest@3.0.5(@types/debug@4.1.12)(@types/node@22.10.7)(jiti@2.4.2)(terser@5.31.0)(tsx@4.19.2)(yaml@2.7.0))
+      '@antfu/utils':
+        specifier: ^8.1.0
+        version: 8.1.0
       '@iconify-json/carbon':
         specifier: 'catalog:'
         version: 1.2.6

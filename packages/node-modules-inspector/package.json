@@ -22,6 +22,7 @@
   "scripts": {
     "dev": "pnpm run -r stub && cd src && nuxi dev",
     "build": "pnpm run wc:prepare && nuxi build src && unbuild",
+    "build:debug": "NUXT_DEBUG_BUILD=true pnpm run build",
     "start": "node ./bin.mjs",
     "prepack": "pnpm build",
     "prepare": "nuxi prepare src && pnpm run wc:prepare",

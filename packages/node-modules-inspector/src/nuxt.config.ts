@@ -99,13 +99,12 @@ export default defineNuxtConfig({
     },
     build: {
       minify: NUXT_DEBUG_BUILD ? false : undefined,
-      rollupOptions: NUXT_DEBUG_BUILD
-        ? {
-            output: {
-              assetFileNames: '[name].[hash][extname]',
-            },
-          }
-        : {},
+      rollupOptions: {
+        output: {
+          entryFileNames: '_nuxt/[name].[hash].js',
+          chunkFileNames: '_nuxt/chunks/[name].[hash].js',
+        },
+      },
     },
   },
 
