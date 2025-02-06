@@ -34,6 +34,7 @@
     "@unocss/eslint-config": "catalog:",
     "bumpp": "catalog:",
     "eslint": "catalog:",
+    "fast-npm-meta": "^0.3.0",
     "lint-staged": "catalog:",
     "nuxt": "catalog:",
     "nuxt-eslint-auto-explicit-import": "catalog:",

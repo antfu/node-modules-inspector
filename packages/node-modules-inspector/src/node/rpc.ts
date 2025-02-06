@@ -2,6 +2,7 @@ import type { ServerFunctions } from '#shared/types'
 import type { ListPackageDependenciesOptions, ListPackageDependenciesResult } from 'node-modules-tools'
 import type { Storage } from 'unstorage'
 import process from 'node:process'
+import { getLatestVersion } from 'fast-npm-meta'
 import { listPackageDependencies } from 'node-modules-tools'
 import { createStorage } from 'unstorage'
 import fsDriver from 'unstorage/drivers/fs'
@@ -11,7 +12,7 @@ async function getPackagePublishDate(pkg: PackageNode, options: { storage: Stora
   if (await storage.hasItem(pkg.name)) {
     return storage.getItem(pkg.name)
   }
-  const date = await fetch(`https://npm.antfu.dev/${pkg.name}`).then(r => r.json()).then(r => r.publishedAt)
+  const date = await getLatestVersion(pkg.name).then(r => r.publishedAt)
   await storage.setItem(pkg.name, date)
   return date
 }

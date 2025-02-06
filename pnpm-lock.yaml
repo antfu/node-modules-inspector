@@ -248,6 +248,9 @@ importers:
       eslint:
         specifier: 'catalog:'
         version: 9.19.0(jiti@2.4.2)
+      fast-npm-meta:
+        specifier: ^0.3.0
+        version: 0.3.0
       lint-staged:
         specifier: 'catalog:'
         version: 15.4.3
@@ -3421,6 +3424,9 @@ packages:
 
   fast-npm-meta@0.2.2:
     resolution: {integrity: sha512-E+fdxeaOQGo/CMWc9f4uHFfgUPJRAu7N3uB8GBvB3SDPAIWJK4GKyYhkAGFq+GYrcbKNfQIz5VVQyJnDuPPCrg==}
+
+  fast-npm-meta@0.3.0:
+    resolution: {integrity: sha512-/tsAcCWpUwA8jIm73Gx69xRSng2cjxU0bVLImFl/l9vZbeGHbvtiYZwmVEoCZKOrms9oBRaT3ODdezhNS83gIA==}
 
   fast-safe-stringify@2.1.1:
     resolution: {integrity: sha512-W+KJc2dmILlPplD/H4K9l9LcAHAfPtP6BY84uVLXQ6Evcz9Lcg33Y2z1IVblT6xdY54PXYVHEv+0Wpq8Io6zkA==}
@@ -9570,6 +9576,8 @@ snapshots:
   fast-levenshtein@2.0.6: {}
 
   fast-npm-meta@0.2.2: {}
+
+  fast-npm-meta@0.3.0: {}
 
   fast-safe-stringify@2.1.1: {}
 
