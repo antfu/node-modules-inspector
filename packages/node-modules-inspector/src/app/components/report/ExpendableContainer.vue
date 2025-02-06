@@ -19,12 +19,13 @@ const top = computed(() => props.list.slice(0, count.value))
 </script>
 
 <template>
-  <div flex flex-col gap2 border="~ rounded-xl base" p4 bg-glass of-auto relative>
-    <slot :items="top" />
-
+  <div relative>
+    <div flex flex-col gap2 border="~ rounded-xl base" p4 bg-glass of-auto relative>
+      <slot :items="top" />
+    </div>
     <div
       v-if="list.length > count"
-      pointer-events-none absolute left-0 right-0 bottom-0 bg-gradient-more h-30
+      pointer-events-none absolute left-0 right-0 bottom-0 bg-gradient-more h-30 mb-4
       flex="~ col"
     >
       <button
