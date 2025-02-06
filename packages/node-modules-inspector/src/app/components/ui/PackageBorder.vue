@@ -31,7 +31,7 @@ const isFaded = computed(() => selectedNode.value && !isRelated.value)
 const isFocused = computed(() => {
   if (!props.pkg)
     return false
-  return filters.focus?.includes(props.pkg.spec) || filters.why?.includes(props.pkg.spec)
+  return filters.state.focus?.includes(props.pkg.spec) || filters.state.why?.includes(props.pkg.spec)
 })
 
 const classesOuter = computed(() => {

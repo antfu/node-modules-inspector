@@ -40,8 +40,8 @@ const NODE_MARGIN = 200
 const NODE_GAP = 150
 
 const rootPackages = computed(() => {
-  if (filters.focus?.length)
-    return filters.focus.map(payload.get).filter(x => !!x)
+  if (filters.state.focus?.length)
+    return filters.state.focus.map(payload.get).filter(x => !!x)
 
   const sortedByDepth = [...payload.packages].sort((a, b) => b.depth - a.depth)
   const rootMap = new Map<string, PackageNode>(payload.packages.map(x => [x.spec, x]))

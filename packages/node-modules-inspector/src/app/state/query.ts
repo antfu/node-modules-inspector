@@ -64,7 +64,7 @@ function filtersToQuery(filters: FilterOptions, query: QueryOptions) {
 export function setupQuery() {
   Object.assign(query, parseQuery(location.hash.replace(/^#/, '')))
 
-  queryToFilters(query, filters)
+  queryToFilters(query, filters.state)
 
   const router = useRouter()
   const route = useRoute()
@@ -91,9 +91,9 @@ export function setupQuery() {
   )
 
   debouncedWatch(
-    filters,
+    () => filters.state,
     () => {
-      filtersToQuery(filters, query)
+      filtersToQuery(filters.state, query)
     },
     { deep: true, debounce: 200 },
   )
