@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
+import { fetchPublishDates } from '~/state/publishDates'
 import { setupQuery } from '~/state/query'
-import { version } from '../../../package.json'
 import { getBackend } from '../backends'
 import { fetchData, rawData } from '../state/data'
 
@@ -18,6 +18,12 @@ const error = computed(() => {
 
 setupQuery()
 fetchData()
+
+watch(() => rawData.value, async (deps) => {
+  if (deps) {
+    await fetchPublishDates(deps)
+  }
+}, { immediate: true })
 </script>
 
 <template>

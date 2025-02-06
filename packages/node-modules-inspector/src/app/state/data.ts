@@ -9,9 +9,6 @@ export async function fetchData() {
   const backend = await ensureBackend()
   try {
     const data = await backend.functions.listDependencies()
-    // const data2 = await backend.functions.dependenciesPublishDate()
-    // console.log(data2)
-    // console.log(data2.get("unstorage@1.14.4"))
 
     Object.freeze(data)
     for (const pkg of data.packages.values())

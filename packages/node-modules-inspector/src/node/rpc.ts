@@ -40,18 +40,17 @@ export interface CreateServerFunctionsOptions extends Partial<ListPackageDepende
 }
 
 export function createServerFunctions(options: CreateServerFunctionsOptions): ServerFunctions {
-  const deps = listPackageDependencies({
-    cwd: process.cwd(),
-    depth: 25,
-    monorepo: true,
-    ...options,
-  })
   return {
     async listDependencies() {
-      return deps
+      return listPackageDependencies({
+        cwd: process.cwd(),
+        depth: 25,
+        monorepo: true,
+        ...options,
+      })
     },
-    async dependenciesPublishDate() {
-      return listPackagePublishDates((await deps).packages, { storage: options.storage })
+    async getPackagesPublishDate(deps: ListPackageDependenciesResult['packages']) {
+      return listPackagePublishDates(deps.packages, { storage: options.storage })
     },
     async openInEditor(filename: string) {
       // @ts-expect-error missing types
