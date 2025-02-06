@@ -38,33 +38,6 @@ function createModuleTypeRef(name: PackageModuleType) {
 const moduleTypes = Object.fromEntries(
   MODULE_TYPES_FULL_SELECT.map(x => [x, createModuleTypeRef(x)] as const),
 ) as Record<PackageModuleType, WritableComputedRef<boolean>>
-
-// watch(searchText, (v) => {
-//   if (filters.mode === 'text') {
-//     const authorMatches = [...v.matchAll(FILTER_AUTHOR_REGEX)].map(m => m[1])
-//     const licenseMatches = [...v.matchAll(FILTER_LICENSE_REGEX)].map(m => m[1])
-//     const remaining = v
-//       .replace(FILTER_AUTHOR_REGEX, '')
-//       .replace(FILTER_LICENSE_REGEX, '')
-//       .trim()
-//       .split(/\s+/)
-//       .filter(Boolean)
-
-//     filters.licenses = licenseMatches.length ? licenseMatches : null
-//     filters.authors = authorMatches.length ? authorMatches : null
-//     filters.search = remaining.join(' ')
-//   }
-//   else if (filters.mode === 'license') {
-//     filters.licenses = v ? [v] : null
-//     filters.authors = null
-//     filters.search = ''
-//   }
-//   else if (filters.mode === 'author') {
-//     filters.authors = v ? [v] : null
-//     filters.licenses = null
-//     filters.search = ''
-//   }
-// })
 </script>
 
 <template>
@@ -133,6 +106,41 @@ const moduleTypes = Object.fromEntries(
         </label>
       </div>
     </div>
+    <div v-if="filters.search.parsed.author?.length" flex="~ col gap-2" p4 border="t base">
+      <div flex="~ gap-2 items-center">
+        <div i-ph-user-circle-duotone flex-none />
+        <div>
+          <div>Authors</div>
+        </div>
+      </div>
+      <div flex="~ gap-2 wrap">
+        <div
+          v-for="author, idx of filters.search.parsed.author" :key="idx"
+          font-mono text-sm badge-color-gray rounded-full px2 py0.5
+          flex="~ gap-1 items-center"
+        >
+          {{ author.source }}
+        </div>
+      </div>
+    </div>
+    <div v-if="filters.search.parsed.license?.length" flex="~ col gap-2" p4 border="t base">
+      <div flex="~ gap-2 items-center">
+        <div i-ph-file-text-duotone flex-none />
+        <div>
+          <div>License</div>
+        </div>
+      </div>
+      <div flex="~ gap-2 wrap">
+        <div
+          v-for="license, idx of filters.search.parsed.license" :key="idx"
+          font-mono text-sm badge-color-gray rounded-full px2 py0.5
+          flex="~ gap-1 items-center"
+        >
+          {{ license.source }}
+        </div>
+      </div>
+    </div>
+
     <div v-if="filters.state.focus" flex="~ col gap-2" p4 border="t base">
       <div flex="~ gap-2 items-center">
         <div i-ph-arrows-in-cardinal-duotone flex-none />
