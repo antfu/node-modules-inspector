@@ -73,6 +73,33 @@ function resetExcludes() {
 const moduleTypes = Object.fromEntries(
   MODULE_TYPES_FULL_SELECT.map(x => [x, createModuleTypeRef(x)] as const),
 ) as Record<PackageModuleType, WritableComputedRef<boolean>>
+
+// watch(searchText, (v) => {
+//   if (filters.mode === 'text') {
+//     const authorMatches = [...v.matchAll(FILTER_AUTHOR_REGEX)].map(m => m[1])
+//     const licenseMatches = [...v.matchAll(FILTER_LICENSE_REGEX)].map(m => m[1])
+//     const remaining = v
+//       .replace(FILTER_AUTHOR_REGEX, '')
+//       .replace(FILTER_LICENSE_REGEX, '')
+//       .trim()
+//       .split(/\s+/)
+//       .filter(Boolean)
+
+//     filters.licenses = licenseMatches.length ? licenseMatches : null
+//     filters.authors = authorMatches.length ? authorMatches : null
+//     filters.search = remaining.join(' ')
+//   }
+//   else if (filters.mode === 'license') {
+//     filters.licenses = v ? [v] : null
+//     filters.authors = null
+//     filters.search = ''
+//   }
+//   else if (filters.mode === 'author') {
+//     filters.authors = v ? [v] : null
+//     filters.licenses = null
+//     filters.search = ''
+//   }
+// })
 </script>
 
 <template>
@@ -102,7 +129,7 @@ const moduleTypes = Object.fromEntries(
         <div i-ph-text-t-duotone text-lg :class="filters.search ? 'text-primary' : 'op50'" flex-none />
         <input
           v-model="filters.search"
-          placeholder="Filter by text"
+          placeholder="Filter by Text"
           w-full bg-transparent outline-none
         >
         <button
