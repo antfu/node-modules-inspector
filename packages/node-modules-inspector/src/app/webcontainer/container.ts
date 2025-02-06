@@ -1,59 +1,49 @@
-import type { Terminal } from '@xterm/xterm'
-import type { Metadata } from '~~/shared/types'
 import { WebContainer } from '@webcontainer/api'
 import c from 'chalk'
 import { join } from 'pathe'
-import { WEBCONTAINER_STDOUT_MARKER } from '~~/shared/constants'
+import { createWebSocketBackend } from '~/backends/websocket'
+import { terminal } from '~/state/terminal'
 import { CODE_PACKAGE_JSON, CODE_SERVER } from './constants'
 
 let _promise: Promise<WebContainer> | null = null
 const ROOT = '/app'
 
-export function ready() {
+export function getContainer() {
   if (!_promise) {
-    _promise = (async () => {
-      const wc = await WebContainer.boot()
-      await wc.mount({ app: { directory: {} } })
-
-      return wc
-    })()
+    terminal.value?.writeln('')
+    terminal.value?.writeln(c.gray('> Initiating WebContainer...'))
+    _promise = WebContainer.boot()
+      .then((wc) => {
+        terminal.value?.writeln(c.gray('> WebContainer is booted.'))
+        return wc
+      })
+      .catch((err) => {
+        console.error(err)
+        terminal.value?.writeln(c.red('> WebContainer failed to boot.'))
+        throw err
+      })
   }
   return _promise
 }
 
 export async function install(
-  terminal: Terminal,
   args: string[],
 ) {
-  terminal.writeln('')
-  terminal.writeln(c.gray('> Initiating WebContainer...'))
-
-  const wc = await ready()
-
-  let metadata: Metadata | undefined
+  const wc = await getContainer()
 
   async function exec(
     cmd: string,
     args: string[],
     wait = true,
   ) {
-    terminal.writeln('')
-    terminal.writeln(c.gray(`> ${cmd} ${args.join(' ')}`))
+    terminal.value?.writeln('')
+    terminal.value?.writeln(c.gray(`> ${cmd} ${args.join(' ')}`))
     const process = await wc.spawn(cmd, args, { cwd: ROOT })
 
     process.output.pipeTo(new WritableStream({
       write(chunk) {
-        terminal.write(chunk)
-        terminal.scrollToBottom()
-
-        let str = chunk.toString().trim()
-        if (str.startsWith(WEBCONTAINER_STDOUT_MARKER)) {
-          str = str.slice(WEBCONTAINER_STDOUT_MARKER.length)
-          try {
-            metadata = JSON.parse(str)
-          }
-          catch {}
-        }
+        terminal.value?.write(chunk)
+        terminal.value?.scrollToBottom()
       },
     }))
 
@@ -73,21 +63,28 @@ export async function install(
 
   await exec('pnpm', ['install', ...args])
 
-  const _process = await exec('node', ['__server.mjs'], false)
+  const _process = exec('node', ['__server.mjs'], false)
 
-  let retries = 200
+  const { port, url } = await new Promise<{ port: number, url: string }>((resolve, reject) => {
+    wc.on('server-ready', (port, url) => {
+      resolve({ port, url })
+    })
+    wc.on('error', (e) => {
+      terminal?.value?.writeln('')
+      terminal?.value?.writeln(c.red('> Failed to start server'))
+      terminal?.value?.writeln(c.red(`> ${String(e)}`))
+      console.error(e)
+      reject(e)
+    })
+  })
 
-  // eslint-disable-next-line no-unmodified-loop-condition
-  while (!metadata && retries > 0) {
-    await new Promise(r => setTimeout(r, 200))
-    retries--
-  }
-  if (!metadata) {
-    terminal.writeln('')
-    terminal.writeln(c.red('> Failed to start server'))
-    return false
-  }
+  const websocket = `${url.replace(/^http/, 'ws')}:${port}`
 
-  // eslint-disable-next-line no-console
-  console.log(metadata)
+  terminal.value?.writeln('')
+  terminal.value?.writeln(c.gray(`> Connecting to websocket ${websocket}`))
+
+  return createWebSocketBackend({
+    name: 'webcontainer',
+    websocketUrl: websocket,
+  })
 }

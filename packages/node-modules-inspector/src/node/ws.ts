@@ -1,7 +1,7 @@
 import type { ChannelOptions } from 'birpc'
 import type { ListPackageDependenciesOptions } from 'node-modules-tools'
 import type { WebSocket } from 'ws'
-import type { Metadata } from '../shared/types'
+import type { ConnectionMeta } from '../shared/types'
 import { createBirpcGroup } from 'birpc'
 import { getPort } from 'get-port-please'
 import c from 'picocolors'
@@ -62,9 +62,8 @@ export async function createWsServer(options: CreateWsServerOptions) {
     console.log(MARK_CHECK, 'Websocket client connected')
   })
 
-  const getMetadata = async (): Promise<Metadata> => {
+  const getMetadata = async (): Promise<ConnectionMeta> => {
     return {
-      cwd: options.cwd,
       websocket: port,
     }
   }

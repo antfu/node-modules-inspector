@@ -1,14 +1,19 @@
 <script setup lang="ts">
+import type { Backend } from '~/types/backend'
 import { computed } from 'vue'
 import { setupQuery } from '~/state/query'
 import { version } from '../../../package.json'
-import { getBackend } from '../backends'
+import { backend } from '../backends'
 import { fetchData, rawData } from '../state/data'
 
-const backend = getBackend()
-backend.value!.connect()
+const props = defineProps<{
+  backend?: Backend | undefined
+  error?: unknown
+}>()
 
 const error = computed(() => {
+  if (props.error)
+    return props.error
   if (backend.value?.connectionError.value)
     return backend.value.connectionError.value
   if (backend.value?.status.value === 'error')
@@ -22,7 +27,7 @@ fetchData()
 
 <template>
   <div
-    v-if="backend.status.value !== 'connected' || error || !rawData"
+    v-if="!backend || backend.status.value !== 'connected' || error || !rawData"
     flex="~ col" h-full w-full items-center justify-center p4
   >
     <div
@@ -68,7 +73,6 @@ fetchData()
     </div>
   </div>
   <div v-else>
-    <PanelDark />
     <PanelNav />
     <NuxtPage />
   </div>

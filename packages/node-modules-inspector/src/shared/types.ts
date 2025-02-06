@@ -14,7 +14,6 @@ export type ServerFunctionsDump = RemoveVoidKeysFromObject<{
   [K in keyof ServerFunctions]: Awaited<ReturnType<ServerFunctions[K]>>
 }>
 
-export interface Metadata {
-  cwd: string
+export interface ConnectionMeta {
   websocket: number
 }
