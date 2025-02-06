@@ -1,6 +1,7 @@
 import process from 'node:process'
 import { fileURLToPath } from 'node:url'
 
+const NUXT_DEBUG_BUILD = !!process.env.NUXT_DEBUG_BUILD
 const backend = process.env.NMI_BACKEND ?? 'server'
 const isWebContainer = backend === 'webcontainer'
 
@@ -49,6 +50,7 @@ export default defineNuxtConfig({
   ],
 
   nitro: {
+    minify: NUXT_DEBUG_BUILD ? false : undefined,
     preset: 'static',
     output: {
       dir: '../dist',
@@ -94,6 +96,16 @@ export default defineNuxtConfig({
     },
     server: {
       headers,
+    },
+    build: {
+      minify: NUXT_DEBUG_BUILD ? false : undefined,
+      rollupOptions: NUXT_DEBUG_BUILD
+        ? {
+            output: {
+              assetFileNames: '[name].[hash][extname]',
+            },
+          }
+        : {},
     },
   },
 

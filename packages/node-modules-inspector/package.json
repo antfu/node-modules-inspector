@@ -17,14 +17,14 @@
   "bin": "bin.mjs",
   "files": [
     "*.mjs",
-    "dist",
-    "runtime"
+    "dist"
   ],
   "scripts": {
     "dev": "pnpm run -r stub && cd src && nuxi dev",
-    "build": "nuxi build src && unbuild",
+    "build": "pnpm run wc:prepare && nuxi build src && unbuild",
     "start": "node ./bin.mjs",
     "prepack": "pnpm build",
+    "prepare": "pnpm run wc:prepare && nuxi prepare src",
     "wc:prepare": "rollup -c",
     "wc:build": "pnpm run wc:prepare && NMI_BACKEND=webcontainer nuxi build src && unbuild",
     "wc:dev": "pnpm run -r stub && pnpm run wc:prepare && cd src && NMI_BACKEND=webcontainer nuxi dev"

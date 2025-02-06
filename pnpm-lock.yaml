@@ -99,6 +99,9 @@ catalogs:
     cac:
       specifier: ^6.7.14
       version: 6.7.14
+    chalk:
+      specifier: ^5.4.1
+      version: 5.4.1
     d3:
       specifier: ^7.9.0
       version: 7.9.0
@@ -285,7 +288,7 @@ importers:
         specifier: 'catalog:'
         version: 10.0.1(magicast@0.3.5)
       chalk:
-        specifier: ^5.4.1
+        specifier: 'catalog:'
         version: 5.4.1
       eslint:
         specifier: 'catalog:'

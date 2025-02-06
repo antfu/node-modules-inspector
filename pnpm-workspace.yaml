@@ -34,6 +34,7 @@ catalog:
   bumpp: ^10.0.1
   bundle-require: ^5.1.0
   cac: ^6.7.14
+  chalk: ^5.4.1
   chokidar: ^4.0.3
   d3: ^7.9.0
   d3-hierarchy: ^3.1.2
