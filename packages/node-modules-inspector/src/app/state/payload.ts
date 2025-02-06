@@ -125,3 +125,7 @@ export const payloads = {
   avaliable: _avaliable,
   filtered: _filtered,
 }
+
+export const totalFileSize = computed(() => {
+  return Array.from(payloads.avaliable.packages).reduce((acc, pkg) => acc + (pkg.resolved.installSize?.bytes || 0), 0)
+})

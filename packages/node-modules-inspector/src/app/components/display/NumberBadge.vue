@@ -6,13 +6,22 @@ const props = withDefaults(
     number: number | string
     color?: string
     icon?: string
+    format?: 'locale' | 'percent'
   }>(),
   {
     color: 'badge-color-gray op75',
+    format: 'locale',
   },
 )
 
 const formatted = computed(() => {
+  if (props.format === 'percent') {
+    return Number(props.number).toLocaleString(undefined, {
+      style: 'percent',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })
+  }
   return Number(props.number).toLocaleString()
 })
 </script>

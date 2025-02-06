@@ -5,7 +5,7 @@ import { computed } from 'vue'
 import { getBackend } from '~/backends'
 import { selectedNode } from '~/state/current'
 import { filters } from '~/state/filters'
-import { payloads } from '~/state/payload'
+import { payloads, totalFileSize } from '~/state/payload'
 import { query } from '~/state/query'
 import { settings } from '~/state/settings'
 
@@ -223,7 +223,11 @@ const sizeTotal = computed(() => {
           <div text-sm op50>
             Total
           </div>
-          <DisplayFileSizeBadge :bytes="sizeTotal" rounded-lg />
+          <DisplayFileSizeBadge :bytes="sizeTotal" rounded-lg>
+            <template #after>
+              <span text-xs ml1 op50 border="l base" pl1>{{ +((sizeTotal || sizeInstall) * 100 / totalFileSize).toFixed(1) }}%</span>
+            </template>
+          </DisplayFileSizeBadge>
         </div>
         <div flex-auto />
         <button
