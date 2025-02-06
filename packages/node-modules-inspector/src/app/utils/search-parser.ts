@@ -1,5 +1,6 @@
 export interface ParsedSearchResult {
   text: string
+  invert?: boolean
   not?: RegExp[]
   license?: RegExp[]
   author?: RegExp[]
@@ -9,17 +10,23 @@ const RE_COLLON_FIELDS = /\b(\w+):("[^"]*"|'[^']*'|`[^`]*`|\S*)/g
 
 function createRegExp(input: string, flags = 'gi') {
   const escaped = input.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-  return new RegExp(`^${escaped}$`, flags)
+  return new RegExp(escaped, flags)
 }
 
 export function parseSearch(input: string) {
   let text = input
+  let invert = false
   const exclude: RegExp[] = []
   const license: RegExp[] = []
   const author: RegExp[] = []
   let removal: [number, number][] = []
 
-  for (const match of input.matchAll(RE_COLLON_FIELDS) || []) {
+  if (text.startsWith('!')) {
+    invert = true
+    text = text.slice(1)
+  }
+
+  for (const match of text.matchAll(RE_COLLON_FIELDS) || []) {
     let [_, field, value] = match
 
     // de-quote
@@ -62,6 +69,8 @@ export function parseSearch(input: string) {
   const result: ParsedSearchResult = {
     text,
   }
+  if (invert)
+    result.invert = true
   if (exclude.length)
     result.not = exclude
   if (license.length)

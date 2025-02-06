@@ -27,8 +27,9 @@ it('author with quote', () => {
 })
 
 it('mixed fields', () => {
-  expect(parseSearch('Some name license:MIT author:"Anthony Fu" license:Apache-2.0 not:foo'))
+  expect(parseSearch('! Some name license:MIT author:"Anthony Fu" license:Apache-2.0 not:foo'))
     .toEqual({
+      invert: true,
       text: 'Some name',
       license: [/^MIT$/gi, /^Apache-2\.0$/gi],
       author: [/^Anthony Fu$/gi],

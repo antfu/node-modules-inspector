@@ -1,10 +1,10 @@
 import type { PackageNode } from 'node-modules-tools'
-import pm from 'picomatch'
 import { computed, reactive, watch } from 'vue'
 import { buildVersionToPackagesMap } from '../utils/maps'
 import { getModuleType } from '../utils/module-type'
+import { parseSearch } from '../utils/search-parser'
 import { rawData } from './data'
-import { FILTER_AUTHOR_REGEX, FILTER_LICENSE_REGEX, filters, filterSearchDebounced } from './filters'
+import { filters, filterSearchDebounced } from './filters'
 
 export type ComputedPayload = ReturnType<typeof createComputedPayload>
 
@@ -121,78 +121,81 @@ const _avaliable = createComputedPayload(() => {
     .filter(pkg => !_excluded.map.has(pkg.spec))
 })
 
-const _filtered = createComputedPayload(() => Array.from((function *() {
-  for (const pkg of _avaliable.packages) {
-    if (filters.focus) {
-      const shouldTake = filters.focus.includes(pkg.spec) || filters.focus.some(f => pkg.flatDependents.has(f))
-      if (!shouldTake)
-        continue
-    }
+const _filtered = createComputedPayload(() => {
+  const predicates: ((pkg: PackageNode) => boolean | undefined)[] = []
 
-    if (filters.why) {
-      const shouldTake = filters.why.includes(pkg.spec) || filters.why.some(f => pkg.flatDependencies.has(f))
-      if (!shouldTake)
-        continue
-    }
-
-    if (filters.modules) {
-      const type = getModuleType(pkg)
-      // dts is always included here, as it's controlled by the exclude-dts option
-      if (!filters.modules.includes(type) && type !== 'dts')
-        continue
-    }
-
-    if (filterSearchDebounced.value) {
-      const rawSearch = filterSearchDebounced.value
-      const author = [...rawSearch.matchAll(FILTER_AUTHOR_REGEX)].map(m => m[1])
-      const license = [...rawSearch.matchAll(FILTER_LICENSE_REGEX)].map(m => m[1])
-      let search = rawSearch
-        .replace(FILTER_AUTHOR_REGEX, '')
-        .replace(FILTER_LICENSE_REGEX, '')
-        .trim()
-        .split(/\s+/)
-        .filter(Boolean)
-        .join(' ')
-      let filtered = false
-
-      const negative = search.startsWith('!')
-      if (negative)
-        search = search.slice(1)
-
-      if (author.length) {
-        if (!author.some(a => pkg.resolved.author?.includes(a)))
-          filtered = true
-      }
-
-      if (license.length) {
-        if (!license.includes(pkg.resolved.license || ''))
-          filtered = true
-      }
-
-      if (search.match(/[*[\]]/)) {
-        if (!pm.isMatch(pkg.name, search))
-          filtered = true
-      }
-      else {
-        if (!pkg.name.includes(search))
-          filtered = true
-      }
-
-      if (negative ? !filtered : filtered) {
-        continue
-      }
-    }
-
-    if (filters['source-type']) {
-      if (filters['source-type'] === 'prod' && !pkg.prod && !pkg.workspace)
-        continue
-      if (filters['source-type'] === 'dev' && !pkg.dev && !pkg.workspace)
-        continue
-    }
-
-    yield pkg
+  if (filters.focus) {
+    predicates.push(pkg => filters.focus!.includes(pkg.spec) || filters.focus!.some(f => pkg.flatDependents.has(f)))
   }
-})()))
+
+  if (filters.why) {
+    predicates.push(pkg => filters.why!.includes(pkg.spec) || filters.why!.some(f => pkg.flatDependencies.has(f)))
+  }
+
+  predicates.push((pkg) => {
+    const type = getModuleType(pkg)
+    // dts is always included here, as it's controlled by the exclude-dts option
+    if (type === 'dts')
+      return false
+    if (filters.modules)
+      return filters.modules.includes(type)
+    return true
+  })
+
+  if (filters['source-type']) {
+    predicates.push((pkg) => {
+      if (filters['source-type'] === 'prod')
+        return pkg.prod || pkg.workspace
+      if (filters['source-type'] === 'dev')
+        return pkg.dev || pkg.workspace
+      return true
+    })
+  }
+
+  if (filterSearchDebounced.value.trim()) {
+    const parsed = parseSearch(filterSearchDebounced.value)
+    const predicate = (pkg: PackageNode) => {
+      if (parsed.not?.length) {
+        for (const re of parsed.not) {
+          if (re.test(pkg.spec))
+            return false
+        }
+      }
+      if (parsed.license?.length) {
+        if (!pkg.resolved.license)
+          return false
+        for (const re of parsed.license) {
+          if (!re.test(pkg.resolved.license))
+            return false
+        }
+      }
+      if (parsed.author?.length) {
+        if (!pkg.resolved.author)
+          return false
+        for (const re of parsed.author) {
+          if (!re.test(pkg.resolved.author))
+            return false
+        }
+      }
+      if (parsed.text) {
+        // TODO: fuzzy search
+        if (!pkg.spec.includes(parsed.text))
+          return false
+      }
+
+      return true
+    }
+
+    if (parsed.invert)
+      predicates.push(pkg => !predicate(pkg))
+    else
+      predicates.push(predicate)
+  }
+
+  if (!predicates.length)
+    return _avaliable.packages
+  return _avaliable.packages.filter(pkg => predicates.every(p => p(pkg)))
+})
 
 export const payloads = {
   all: _all,
