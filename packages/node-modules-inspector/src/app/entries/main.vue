@@ -2,6 +2,7 @@
 import { computed, watch } from 'vue'
 import { fetchPublishDates } from '~/state/publishDates'
 import { setupQuery } from '~/state/query'
+import { version } from '../../../package.json'
 import { getBackend } from '../backends'
 import { fetchData, rawData } from '../state/data'
 

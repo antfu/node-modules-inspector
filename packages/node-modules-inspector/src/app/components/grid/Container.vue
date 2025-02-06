@@ -3,6 +3,7 @@ import type { PackageNode } from 'node-modules-tools'
 
 defineProps<{
   packages: PackageNode[]
+  publishDates?: Map<string, string>
 }>()
 </script>
 
@@ -12,6 +13,7 @@ defineProps<{
       v-for="pkg of packages"
       :key="pkg.spec"
       :pkg="pkg"
+      :published-at="publishDates?.get(pkg.spec)"
     />
   </div>
 </template>

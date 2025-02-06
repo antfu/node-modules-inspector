@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { settings } from '~/state/settings'
 import { bytesToHumanSize } from '../../utils/format'
+import { colorScale as cS } from './colorScale'
 
 const props = withDefaults(
   defineProps<{
@@ -19,11 +20,11 @@ const KB = 1024
 const MB = KB ** 2
 
 const colorScale = [
-  [80 * KB, 'text-gray:75!'],
-  [500 * KB, 'text-lime:75! saturate-50'],
-  [1 * MB, 'text-amber:85! saturate-80'],
-  [10 * MB, 'text-orange!'],
-  [20 * MB, 'text-red!'],
+  [80 * KB, cS.neutral],
+  [500 * KB, cS.low],
+  [1 * MB, cS.medium],
+  [10 * MB, cS.high],
+  [20 * MB, cS.critical],
 ] as const
 
 const color = computed(() => {

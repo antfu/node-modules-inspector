@@ -6,6 +6,7 @@ import { settings } from '~/state/settings'
 
 defineProps<{
   pkg: PackageNode
+  publishedAt?: string
 }>()
 </script>
 
@@ -38,6 +39,13 @@ defineProps<{
         <div flex="~ items-center gap-1">
           <div i-ph-barbell-duotone />
           <DisplayFileSizeBadge :bytes="pkg.resolved.installSize.bytes" :digits="0" rounded-full text-sm />
+        </div>
+      </template>
+
+      <template v-if="publishedAt">
+        <div flex="~ items-center gap-1">
+          <div i-ph-calendar />
+          <DisplayDateBadge :date="publishedAt" rounded-full text-sm />
         </div>
       </template>
       <!--
