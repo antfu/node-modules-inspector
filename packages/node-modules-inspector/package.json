@@ -24,7 +24,7 @@
     "build": "pnpm run wc:prepare && nuxi build src && unbuild",
     "start": "node ./bin.mjs",
     "prepack": "pnpm build",
-    "prepare": "pnpm run wc:prepare && nuxi prepare src",
+    "prepare": "nuxi prepare src && pnpm run wc:prepare",
     "wc:prepare": "rollup -c",
     "wc:build": "pnpm run wc:prepare && NMI_BACKEND=webcontainer nuxi build src && unbuild",
     "wc:dev": "pnpm run -r stub && pnpm run wc:prepare && cd src && NMI_BACKEND=webcontainer nuxi dev"
