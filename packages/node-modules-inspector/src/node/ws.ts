@@ -11,7 +11,7 @@ import { MARK_CHECK } from './constants'
 import { createServerFunctions } from './rpc'
 
 export interface CreateWsServerOptions extends Partial<ListPackageDependenciesOptions> {
-  root: string
+  cwd: string
 }
 
 export async function createWsServer(options: CreateWsServerOptions) {
@@ -64,7 +64,7 @@ export async function createWsServer(options: CreateWsServerOptions) {
 
   const getMetadata = async (): Promise<Metadata> => {
     return {
-      cwd: options.root,
+      cwd: options.cwd,
       websocket: port,
     }
   }

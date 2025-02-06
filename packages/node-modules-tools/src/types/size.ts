@@ -17,3 +17,6 @@ export type FileCategory =
   | 'ts'
   | 'bin'
   | 'map'
+  | 'wasm'
+  | 'flow'
+  | 'font'

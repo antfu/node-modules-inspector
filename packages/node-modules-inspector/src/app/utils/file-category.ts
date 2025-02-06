@@ -16,4 +16,7 @@ export const FILE_CATEGORIES_COLOR_BADGE: Record<FileCategory, string> = {
   test: 'badge-color-orange',
   bin: 'badge-color-teal',
   map: 'badge-color-gray',
+  wasm: 'badge-color-purple',
+  flow: 'badge-color-yellow',
+  font: 'badge-color-gray',
 }

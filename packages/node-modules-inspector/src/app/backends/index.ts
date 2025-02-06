@@ -8,7 +8,7 @@ let backendPromise: Promise<Backend>
 export function createBackend() {
   if (!backendPromise) {
     backendPromise = (import.meta.env.BACKEND === 'webcontainer'
-      ? import('./webcontainer').then(m => m.createWebContainerBackend())
+      ? import('../webcontainer/backend').then(m => m.createWebContainerBackend())
       : import('./websocket').then(m => m.createWebSocketBackend()))
       .then((b) => {
         backend.value = b
