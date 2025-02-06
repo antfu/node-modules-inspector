@@ -21,7 +21,8 @@ interface Link extends HierarchyLink<PackageNode> {
 
 const svgLinks = useTemplateRef<SVGSVGElement>('svgLinks')
 const svgLinksActive = useTemplateRef<SVGSVGElement>('svgLinksActive')
-const el = useTemplateRef<HTMLDivElement>('el')
+const container = useTemplateRef<HTMLDivElement>('container')
+const screenshotTarget = useTemplateRef<HTMLDivElement>('screenshotTarget')
 
 const width = ref(window.innerWidth)
 const height = ref(window.innerHeight)
@@ -134,8 +135,8 @@ function calculateGraph() {
   links.value = _links
 
   nextTick(() => {
-    width.value = el.value!.scrollWidth + NODE_MARGIN
-    height.value = el.value!.scrollHeight + NODE_MARGIN
+    width.value = container.value!.scrollWidth + NODE_MARGIN
+    height.value = container.value!.scrollHeight + NODE_MARGIN
 
     if (query.selected)
       focusOn(query.selected, false)
@@ -145,14 +146,13 @@ function calculateGraph() {
 }
 
 const isGrabbing = shallowRef(false)
-
 function handleDragingScroll() {
   let x = 0
   let y = 0
-  useEventListener(el, 'mousedown', (e) => {
+  useEventListener(container, 'mousedown', (e) => {
     isGrabbing.value = true
-    x = el.value!.scrollLeft + e.pageX
-    y = el.value!.scrollTop + e.pageY
+    x = container.value!.scrollLeft + e.pageX
+    y = container.value!.scrollTop + e.pageY
   })
   useEventListener('mouseleave', () => isGrabbing.value = false)
   useEventListener('mouseup', () => isGrabbing.value = false)
@@ -160,25 +160,19 @@ function handleDragingScroll() {
     if (!isGrabbing.value)
       return
     e.preventDefault()
-    el.value!.scrollLeft = x - e.pageX
-    el.value!.scrollTop = y - e.pageY
+    container.value!.scrollLeft = x - e.pageX
+    container.value!.scrollTop = y - e.pageY
   })
 }
 
-onMounted(() => {
-  handleDragingScroll()
-
-  watch(() => payload.packages, calculateGraph, { immediate: true })
-
-  watch(
-    () => query.selected,
-    () => {
-      if (query.selected)
-        focusOn(query.selected)
-    },
-    { flush: 'post' },
-  )
-})
+async function takeScreenshot() {
+  const { domToPng } = await import('modern-screenshot')
+  const dataUrl = await domToPng(screenshotTarget.value!)
+  const link = document.createElement('a')
+  link.download = 'node-modules-inspector.png'
+  link.href = dataUrl
+  link.click()
+}
 
 const additionalLinks = computed(() => {
   if (!query.selected)
@@ -252,53 +246,83 @@ function generateLink(link: HierarchyLink<PackageNode>) {
     target: [link.target.x! - NODE_WIDTH / 2 + NODE_LINK_OFFSET, link.target.y!],
   })
 }
+
+onMounted(() => {
+  handleDragingScroll()
+
+  watch(() => payload.packages, calculateGraph, { immediate: true })
+
+  watch(
+    () => query.selected,
+    () => {
+      if (query.selected)
+        focusOn(query.selected)
+    },
+    { flush: 'post' },
+  )
+})
 </script>
 
 <template>
   <div
-    ref="el"
+    ref="container"
     w-screen h-screen of-scroll absolute inset-0 relative select-none
     flex="~ items-center justify-center"
     :class="isGrabbing ? 'cursor-grabbing' : ''"
   >
     <div class="bg-dots" pointer-events-none z-graph-bg absolute left-0 top-0 :style="{ width: `${width}px`, height: `${height}px` }" />
-    <svg ref="svgLinks" pointer-events-none absolute left-0 top-0 z-graph-link :width="width" :height="height">
-      <g>
-        <path
-          v-for="link of [...links, ...additionalLinks]"
-          :key="link.id"
-          :d="generateLink(link)!"
-          fill="none"
-          stroke="#8883"
-        />
-      </g>
-    </svg>
-    <svg ref="svgLinksActive" pointer-events-none absolute left-0 top-0 z-graph-link-active :width="width" :height="height">
-      <g>
-        <path
-          v-for="link of activeLinks"
-          :key="link.id"
-          :d="generateLink(link)!"
-          fill="none"
-          class="stroke-primary:75"
-        />
-      </g>
-    </svg>
-    <template
-      v-for="node of nodes"
-      :key="node.data.spec"
-    >
-      <template v-if="node.data.spec !== '~root'">
-        <GraphNode
-          :ref="(el: any) => nodesRefMap.set(node.data.spec, el?.$el)"
-          :pkg="node.data"
-          :style="{
-            left: `${node.x}px`,
-            top: `${node.y}px`,
-            minWidth: `${NODE_WIDTH}px`,
-          }"
-        />
+    <div ref="screenshotTarget" :style="{ minWidth: `${width}px`, minHeight: `${height}px` }">
+      <svg ref="svgLinks" pointer-events-none absolute left-0 top-0 z-graph-link :width="width" :height="height">
+        <g>
+          <path
+            v-for="link of [...links, ...additionalLinks]"
+            :key="link.id"
+            :d="generateLink(link)!"
+            fill="none"
+            stroke="#8883"
+          />
+        </g>
+      </svg>
+      <svg ref="svgLinksActive" pointer-events-none absolute left-0 top-0 z-graph-link-active :width="width" :height="height">
+        <g>
+          <path
+            v-for="link of activeLinks"
+            :key="link.id"
+            :d="generateLink(link)!"
+            fill="none"
+            class="stroke-primary:75"
+          />
+        </g>
+      </svg>
+      <template
+        v-for="node of nodes"
+        :key="node.data.spec"
+      >
+        <template v-if="node.data.spec !== '~root'">
+          <GraphNode
+            :ref="(el: any) => nodesRefMap.set(node.data.spec, el?.$el)"
+            :pkg="node.data"
+            :style="{
+              left: `${node.x}px`,
+              top: `${node.y}px`,
+              minWidth: `${NODE_WIDTH}px`,
+            }"
+          />
+        </template>
       </template>
-    </template>
+    </div>
+    <div
+      fixed right-4 bottom-4 z-panel-nav flex="~ gap-4 items-center"
+      bg-glass rounded-full border border-base shadow
+    >
+      <button
+        w-10 h-10 rounded-full hover:bg-active op50 hover:op100
+        flex="~ items-center justify-center"
+        title="Download Screenshot as PNG"
+        @click="takeScreenshot"
+      >
+        <div i-ph-download-duotone />
+      </button>
+    </div>
   </div>
 </template>

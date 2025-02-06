@@ -42,6 +42,7 @@
     "chalk": "catalog:",
     "eslint": "catalog:",
     "lint-staged": "catalog:",
+    "modern-screenshot": "^4.5.5",
     "nuxt": "catalog:",
     "nuxt-eslint-auto-explicit-import": "catalog:",
     "rollup": "catalog:",
