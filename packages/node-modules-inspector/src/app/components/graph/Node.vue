@@ -21,6 +21,7 @@ defineProps<{
     <DisplayModuleType text-xs justify-end ml2 :pkg :badge="false" />
     <DisplayFileSizeBadge
       v-if="settings.showInstallSizeBadge"
+      :precent="false"
       :bytes="pkg.resolved.installSize?.bytes" :digits="0" rounded-r-full text-sm mr--2
     />
   </UiPackageBorder>

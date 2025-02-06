@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { getBackend } from '~/backends'
 import { rawData } from '~/state/data'
-import { payloads, totalFileSize } from '~/state/payload'
+import { payloads, totalWorkspaceSize } from '~/state/payload'
 import { version } from '../../../../package.json'
 
 const backend = getBackend()
@@ -56,7 +56,7 @@ const multipleVersionsCount = computed(() => {
       </div>
       <div flex="~ gap-2 items-center">
         <div i-catppuccin-binary icon-catppuccin flex-none />
-        <DisplayFileSizeBadge :bytes="totalFileSize" rounded-full text-sm mx--0.2 mt-3px color="badge-color-primary" />
+        <DisplayFileSizeBadge :bytes="totalWorkspaceSize" rounded-full text-sm mx--0.2 mt-3px color="badge-color-primary" />
         <span ml--0.5>total node_modules size</span>
       </div>
     </div>
