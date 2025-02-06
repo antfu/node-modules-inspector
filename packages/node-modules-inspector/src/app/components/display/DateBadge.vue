@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { colorScale as cS } from '~/components/display/colorScale'
 import { settings } from '~/state/settings'
 
 const props = withDefaults(
@@ -14,11 +13,11 @@ const props = withDefaults(
 )
 
 const colorScale = [
-  [30, cS.neutral],
-  [180, cS.low],
-  [365, cS.medium],
-  [365 * 2, cS.high],
-  [730 * 5, cS.critical],
+  [30, 'color-scale-neutral'],
+  [180, 'color-scale-low'],
+  [365, 'color-scale-medium'],
+  [365 * 2, 'color-scale-high'],
+  [730 * 5, 'color-scale-critical'],
 ] as const
 
 const color = computed(() => {

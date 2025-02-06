@@ -44,6 +44,13 @@ export default defineConfig({
       'z-panel-content': 'z-50',
       'z-panel-nav': 'z-60',
       'z-panel-goto': 'z-70',
+
+      'color-scale-neutral': 'text-gray:75!',
+      'color-scale-low': 'text-lime:75! saturate-50',
+      'color-scale-medium': 'text-amber:85! saturate-80',
+      'color-scale-high': 'text-orange!',
+      'color-scale-critical': 'text-red!',
+
     },
     [/^badge-color-(\w+)$/, ([, color]) => `bg-${color}-400:20 dark:bg-${color}-400:10 text-${color}-700 dark:text-${color}-300 border-${color}-600:10 dark:border-${color}-300:10`],
   ],
