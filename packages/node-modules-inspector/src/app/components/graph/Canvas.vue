@@ -7,12 +7,12 @@ import { hierarchy, tree } from 'd3-hierarchy'
 import { linkHorizontal, linkVertical } from 'd3-shape'
 import { computed, nextTick, onMounted, ref, shallowReactive, shallowRef, useTemplateRef, watch } from 'vue'
 import { selectedNode } from '~/state/current'
-import { filters } from '~/state/filters'
 import { payloads } from '~/state/payload'
 import { query } from '~/state/query'
 
-const { payload } = defineProps<{
+const { payload, rootPackages } = defineProps<{
   payload: ComputedPayload
+  rootPackages: PackageNode[]
 }>()
 
 interface Link extends HierarchyLink<PackageNode> {
@@ -40,35 +40,6 @@ const NODE_LINK_OFFSET = 20
 const NODE_MARGIN = 200
 const NODE_GAP = 150
 
-const rootPackages = computed(() => {
-  if (filters.state.focus?.length)
-    return filters.state.focus.map(payload.get).filter(x => !!x)
-
-  const sortedByDepth = [...payload.packages].sort((a, b) => b.depth - a.depth)
-  const rootMap = new Map<string, PackageNode>(payload.packages.map(x => [x.spec, x]))
-  let changed = true
-  while (changed) {
-    changed = false
-    for (const pkg of sortedByDepth) {
-      if (pkg.workspace)
-        continue
-      if (!rootMap.has(pkg.spec))
-        continue
-      for (const parent of pkg.dependents) {
-        if (rootMap.has(parent)) {
-          rootMap.delete(pkg.spec)
-          changed = true
-        }
-      }
-    }
-  }
-
-  const rootPackages = Array.from(rootMap.values())
-    .sort((a, b) => a.depth - b.depth || b.flatDependencies.size - a.flatDependencies.size)
-
-  return rootPackages
-})
-
 function calculateGraph() {
   // Unset the canvas size, and recalculate again after nodes are rendered
   width.value = window.innerWidth
@@ -79,8 +50,8 @@ function calculateGraph() {
     { name: '~root', spec: '~root' } as any,
     (node) => {
       if (node.name === '~root') {
-        rootPackages.value.forEach(x => seen.add(x))
-        return rootPackages.value
+        rootPackages.forEach(x => seen.add(x))
+        return rootPackages
       }
       const children = payload.dependencies(node)
         .filter(x => !seen.has(x))
