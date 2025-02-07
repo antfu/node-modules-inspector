@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { useRouter } from '#app/composables/router'
+import { useRoute, useRouter } from '#app/composables/router'
 
 const router = useRouter()
-router.replace('/grid')
+const route = useRoute()
+router.replace({ path: '/grid', hash: route.hash, query: route.query })
 </script>
 
 <template>

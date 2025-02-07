@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { Backend } from '~/types/backend'
 import { computed } from 'vue'
-import { setupQuery } from '~/state/query'
 import { version } from '../../../package.json'
 import { backend } from '../backends'
 import { rawData } from '../state/data'
@@ -20,8 +19,6 @@ const error = computed(() => {
     return 'Connection failed'
   return null
 })
-
-setupQuery()
 </script>
 
 <template>

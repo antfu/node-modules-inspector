@@ -2,22 +2,26 @@
 import { onMounted, shallowRef } from 'vue'
 import { backend } from '~/backends'
 import { fetchData } from '~/state/data'
+import { query } from '~/state/query'
 import { openTerminal, showTerminal } from '~/state/terminal'
 import { version } from '../../../../package.json'
 import MainEntry from '../../entries/main.vue'
 import { getContainer, install } from '../container'
 
 showTerminal.value = true
-const input = shallowRef('')
+const input = shallowRef(query.install?.trim().replace(/\+/g, ' ') || '')
 const error = shallowRef<any>()
 const isLoading = shallowRef(false)
 
 onMounted(() => {
   getContainer()
+  if (input.value)
+    run()
 })
 
 async function run() {
   isLoading.value = true
+  query.install = input.value.replace(/\s+/g, '+')
   try {
     openTerminal.value = true
     backend.value = await install(input.value.split(' '))

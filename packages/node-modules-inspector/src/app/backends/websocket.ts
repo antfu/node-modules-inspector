@@ -84,6 +84,7 @@ export function createWebSocketBackend(options: WebSocketBackendOptions): Backen
         connectPromise = connect()
       await connectPromise
     },
+    isDynamic: true,
     functions: {
       listDependencies: async () => {
         try {

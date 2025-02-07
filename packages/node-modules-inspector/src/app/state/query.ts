@@ -7,10 +7,12 @@ import { filters, FILTERS_SCHEMA } from './filters'
 
 export interface QueryOptions extends Partial<{ [x in keyof FilterOptions]?: string }> {
   selected?: string
+  install?: string
 }
 
 export const query = reactive<QueryOptions>({
   selected: '',
+  install: '',
 } as any)
 
 function stringifyQuery(object: QueryOptions): string {
