@@ -220,8 +220,11 @@ const moduleTypes = Object.fromEntries(
         <OptionItem title="Exclude Type-only Packages" description="Exclude TypeScript declaration packages">
           <OptionCheckbox v-model="filters.state['exclude-dts']" />
         </OptionItem>
-        <OptionItem title="Exclude Private Packages" description="Exclude private workspace packages">
+        <OptionItem title="Exclude Private Packages" description="Exclude private workspace packages and their dependencies">
           <OptionCheckbox v-model="filters.state['exclude-private']" />
+        </OptionItem>
+        <OptionItem title="Exclude Workspace Roots" description="Exclude workspaces but NOT their dependencies">
+          <OptionCheckbox v-model="filters.state['exclude-workspace']" />
         </OptionItem>
       </div>
     </div>

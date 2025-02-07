@@ -13,6 +13,7 @@ export interface FilterOptions {
   'excludes': null | string[]
   'exclude-dts': boolean
   'exclude-private': boolean
+  'exclude-workspace': boolean
   'source-type': null | 'prod' | 'dev'
 
   'compare-a': null | string[]
@@ -42,6 +43,7 @@ export const FILTERS_SCHEMA: {
   'excludes': { type: Array, default: null, category: 'exclude' },
   'exclude-dts': { type: Boolean, default: true, category: 'exclude' },
   'exclude-private': { type: Boolean, default: false, category: 'exclude' },
+  'exclude-workspace': { type: Boolean, default: import.meta.env.BACKEND === 'webcontainer', category: 'exclude' },
 }
 
 export const FILTERS_DEFAULT: FilterOptions = Object.freeze(objectMap(FILTERS_SCHEMA, (k, v) => [k, v.default]) as FilterOptions)

@@ -7,9 +7,12 @@ import { payloads } from '~/state/payload'
 const payload = payloads.filtered
 
 const rootPackages = computed(() => {
-  const root = filters.state.focus?.length
+  let root = filters.state.focus?.length
     ? filters.state.focus.map(payload.get).filter(x => !!x)
     : payload.packages.filter(x => x.workspace)
+
+  if (!root.length)
+    root = payload.packages.filter(x => x.depth <= 1)
 
   // We traverse the dependency graph starting from the root packages
   // If see if all packages are reachable

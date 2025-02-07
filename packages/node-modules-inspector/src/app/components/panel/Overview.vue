@@ -15,7 +15,7 @@ const multipleVersionsCount = computed(() => {
 <template>
   <div flex="~ col">
     <h1 text-lg p5 flex="~ gap-3 items-center">
-      <Logo w-9 h-9 alt="Logo" class="hover:animate-spin-reverse" />
+      <UiLogo w-9 h-9 alt="Logo" class="hover:animate-spin-reverse" />
       <div flex="~ col gap-0" leading-none>
         <span font-700 text-primary>Node Modules</span>
         <span op75>Inspector</span>

@@ -100,6 +100,13 @@ const _excluded = createComputedPayload(() => {
     }
   }
 
+  if (filters.state['exclude-workspace']) {
+    for (const pkg of _all.packages) {
+      if (pkg.workspace)
+        excluded.add(pkg)
+    }
+  }
+
   return Array.from(excluded)
 })
 
