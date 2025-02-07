@@ -2,7 +2,7 @@ import type { PackageNode } from 'node-modules-tools'
 import { computed, reactive, watch } from 'vue'
 import { buildVersionToPackagesMap } from '../utils/maps'
 import { rawData } from './data'
-import { filterSelectPredicate, filtersExcludePredicate } from './filters'
+import { filters, filterSelectPredicate, filtersExcludePredicate } from './filters'
 
 export type ComputedPayload = ReturnType<typeof createComputedPayload>
 
@@ -118,12 +118,35 @@ const _filtered = createComputedPayload(() =>
     .filter(filterSelectPredicate.value),
 )
 
+const _compareA = createComputedPayload(() => {
+  if (!filters.state['compare-a']?.length)
+    return []
+  const packages = new Set(
+    _avaliable.getList(filters.state['compare-a'])
+      .flatMap(pkg => [pkg, ..._avaliable.flatDependencies(pkg)]),
+  )
+  return Array.from(packages)
+})
+
+const _compareB = createComputedPayload(() => {
+  if (!filters.state['compare-b']?.length)
+    return []
+  const packages = new Set(
+    _avaliable.getList(filters.state['compare-b'])
+      .flatMap(pkg => [pkg, ..._avaliable.flatDependencies(pkg)]),
+  )
+  return Array.from(packages)
+})
+
 export const payloads = {
   all: _all,
   excluded: _excluded,
   workspace: _workspace,
   avaliable: _avaliable,
   filtered: _filtered,
+
+  compareA: _compareA,
+  compareB: _compareB,
 }
 
 export const totalWorkspaceSize = computed(() => {

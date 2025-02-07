@@ -82,8 +82,8 @@ catalogs:
       specifier: ^12.5.0
       version: 12.5.0
     '@webcontainer/api':
-      specifier: 1.5.1-internal.8
-      version: 1.5.1-internal.8
+      specifier: ^1.5.1
+      version: 1.5.1
     '@xterm/addon-fit':
       specifier: ^0.10.0
       version: 0.10.0
@@ -286,7 +286,7 @@ importers:
         version: 65.4.3(eslint@9.19.0(jiti@2.4.2))(typescript@5.7.3)
       '@webcontainer/api':
         specifier: 'catalog:'
-        version: 1.5.1-internal.8
+        version: 1.5.1
       bumpp:
         specifier: 'catalog:'
         version: 10.0.1(magicast@0.3.5)
@@ -2391,8 +2391,8 @@ packages:
   '@webassemblyjs/wast-printer@1.12.1':
     resolution: {integrity: sha512-+X4WAlOisVWQMikjbcvY2e0rwPsKQ9F688lksZhBcPycBBuii3O7m8FACbDMWDojpAqvjIncrG8J0XHKyQfVeA==}
 
-  '@webcontainer/api@1.5.1-internal.8':
-    resolution: {integrity: sha512-EgtnRLOIFhBiTS/1nQmg3A6RtQXvp+kDK08cbEZZpnXGyaNd1y9dSCJUEn3OUCuHSEZr3LeqBtwR5mYOxFeiUQ==}
+  '@webcontainer/api@1.5.1':
+    resolution: {integrity: sha512-+ELk+TbTOUx0LawAUdB+nnxaofg/FxUXo/Ac/+CzHSP3SOc3ebBAW3fLo4UZfvJdUW+ygWZOiQMthPLQXvKZEg==}
 
   '@xterm/addon-fit@0.10.0':
     resolution: {integrity: sha512-UFYkDm4HUahf2lnEyHvio51TNGiLK66mqP2JoATy7hRZeXaGMRDr00JiSF7m63vR5WKATF605yEggJKsw0JpMQ==}
@@ -8398,7 +8398,7 @@ snapshots:
       '@webassemblyjs/ast': 1.12.1
       '@xtuc/long': 4.2.2
 
-  '@webcontainer/api@1.5.1-internal.8': {}
+  '@webcontainer/api@1.5.1': {}
 
   '@xterm/addon-fit@0.10.0(@xterm/xterm@5.5.0)':
     dependencies:

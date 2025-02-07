@@ -47,6 +47,11 @@ const tabsMeta = [
     path: '/report',
     icon: 'i-ph-projector-screen-chart-duotone',
   },
+  {
+    name: 'Compare',
+    path: '/compare',
+    icon: 'i-ph-line-vertical-duotone',
+  },
 ]
 
 function resetPanelState() {

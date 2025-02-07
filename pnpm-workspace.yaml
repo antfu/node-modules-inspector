@@ -27,7 +27,7 @@ catalog:
   '@unocss/eslint-config': ^65.4.3
   '@unocss/nuxt': ^65.4.3
   '@vueuse/nuxt': ^12.5.0
-  '@webcontainer/api': 1.5.1-internal.8
+  '@webcontainer/api': ^1.5.1
   '@xterm/addon-fit': ^0.10.0
   '@xterm/xterm': ^5.5.0
   birpc: ^2.2.0

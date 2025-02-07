@@ -14,12 +14,15 @@ export interface FilterOptions {
   'exclude-dts': boolean
   'exclude-private': boolean
   'source-type': null | 'prod' | 'dev'
+
+  'compare-a': null | string[]
+  'compare-b': null | string[]
 }
 
 export interface FilterSchema<Type> {
   type: StringConstructor | ArrayConstructor | BooleanConstructor
   default: Type
-  category: 'select' | 'exclude'
+  category: 'select' | 'exclude' | 'compare'
 }
 
 export const FILTERS_SCHEMA: {
@@ -30,6 +33,10 @@ export const FILTERS_SCHEMA: {
   'focus': { type: Array, default: null, category: 'select' },
   'why': { type: Array, default: null, category: 'select' },
   'source-type': { type: String, default: null, category: 'select' },
+
+  // Compare
+  'compare-a': { type: Array, default: [], category: 'compare' },
+  'compare-b': { type: Array, default: [], category: 'compare' },
 
   // Excludes
   'excludes': { type: Array, default: null, category: 'exclude' },

@@ -177,7 +177,7 @@ const sizeTotal = computed(() => {
         v-tooltip="'Focus on this package and the dependencies it brings'"
         flex="~ items-center gap-1 justify-center"
         px4 py1 rounded hover:bg-active
-        :class="selectionMode === 'focus' ? 'text-primary bg-primary:10!' : 'op50'"
+        :class="selectionMode === 'focus' ? 'text-teal bg-teal:10!' : 'op50'"
         @click="selectionMode = selectionMode === 'focus' ? 'none' : 'focus'"
       >
         <div i-ph-arrows-in-cardinal-duotone flex-none />

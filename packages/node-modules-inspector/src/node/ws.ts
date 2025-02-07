@@ -12,10 +12,11 @@ import { createServerFunctions } from './rpc'
 
 export interface CreateWsServerOptions extends Partial<ListPackageDependenciesOptions> {
   cwd: string
+  port?: number
 }
 
 export async function createWsServer(options: CreateWsServerOptions) {
-  const port = await getPort({ port: 7812, random: true })
+  const port = options.port ?? await getPort({ port: 7812, random: true })
   const wss = new WebSocketServer({
     port,
   })

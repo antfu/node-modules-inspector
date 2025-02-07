@@ -1,18 +1,21 @@
 <script setup lang="ts">
 import type { HierarchyLink, HierarchyNode } from 'd3-hierarchy'
 import type { PackageNode } from 'node-modules-tools'
+import type { HighlightMode } from '~/state/highlight'
 import type { ComputedPayload } from '~/state/payload'
 import { useEventListener } from '@vueuse/core'
 import { hierarchy, tree } from 'd3-hierarchy'
 import { linkHorizontal, linkVertical } from 'd3-shape'
 import { computed, nextTick, onMounted, ref, shallowReactive, shallowRef, useTemplateRef, watch } from 'vue'
 import { selectedNode } from '~/state/current'
+import { getCompareHighlight } from '~/state/highlight'
 import { payloads } from '~/state/payload'
 import { query } from '~/state/query'
 
-const { payload, rootPackages } = defineProps<{
+const { payload, rootPackages, highlightMode } = defineProps<{
   payload: ComputedPayload
   rootPackages: PackageNode[]
+  highlightMode?: HighlightMode
 }>()
 
 interface Link extends HierarchyLink<PackageNode> {
@@ -102,6 +105,18 @@ function calculateGraph() {
   linksMap.clear()
   for (const link of _links) {
     linksMap.set(link.id, link)
+  }
+  for (const pkg of rootPackages) {
+    for (const dep of payload.dependencies(pkg)) {
+      const id = `${pkg.spec}|${dep.spec}`
+      if (!linksMap.has(id)) {
+        const source = nodesMap.get(pkg.spec)!
+        const target = nodesMap.get(dep.spec)!
+        const link: Link = { id, source, target }
+        linksMap.set(id, link)
+        _links.push(link)
+      }
+    }
   }
   links.value = _links
 
@@ -218,6 +233,28 @@ function generateLink(link: HierarchyLink<PackageNode>) {
   })
 }
 
+function getLinkColor(link: Link) {
+  if (!highlightMode)
+    return 'stroke-#8882'
+
+  const source = getCompareHighlight(link.source.data)
+  const target = getCompareHighlight(link.target.data)
+
+  const set = new Set([source, target])
+  if (set.size === 2 && set.has('both'))
+    set.delete('both')
+
+  if (set.size === 1) {
+    if (set.has('a'))
+      return 'stroke-yellow5:30'
+    if (set.has('b'))
+      return 'stroke-purple5:30'
+    if (set.has('both'))
+      return 'stroke-pink5:30'
+  }
+  return 'stroke-#8882'
+}
+
 onMounted(() => {
   handleDragingScroll()
 
@@ -249,8 +286,8 @@ onMounted(() => {
             v-for="link of [...links, ...additionalLinks]"
             :key="link.id"
             :d="generateLink(link)!"
+            :class="getLinkColor(link)"
             fill="none"
-            stroke="#8883"
           />
         </g>
       </svg>
@@ -273,6 +310,7 @@ onMounted(() => {
           <GraphNode
             :ref="(el: any) => nodesRefMap.set(node.data.spec, el?.$el)"
             :pkg="node.data"
+            :highlight-mode="highlightMode"
             :style="{
               left: `${node.x}px`,
               top: `${node.y}px`,
