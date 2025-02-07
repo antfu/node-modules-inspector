@@ -17,5 +17,4 @@ setupQuery()
 <template>
   <Entry />
   <PanelDark />
-  <LazyPanelTerminal />
 </template>

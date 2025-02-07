@@ -17,7 +17,7 @@ export const query = reactive<QueryOptions>({
 
 function stringifyQuery(object: QueryOptions): string {
   const entries = Object.entries(object)
-    .map(i => [i[0], Array.isArray(i[1]) ? i[1].join(',') : i[1]])
+    .map(i => [i[0], Array.isArray(i[1]) ? i[1].join('+') : i[1]])
     .filter(x => !!x[1]) as [string, string][]
   const query = new URLSearchParams(entries)
   return query.toString()
@@ -37,7 +37,7 @@ function queryToFilters(query: QueryOptions, filters: FilterOptions) {
     const resolved = !raw
       ? s.default
       : s.type === Array
-        ? raw.split(',')
+        ? raw.split(/[,+]/)
         : s.type === Boolean
           ? raw === 'true'
           : raw
@@ -53,7 +53,7 @@ function filtersToQuery(filters: FilterOptions, query: QueryOptions) {
     const serialized = (value === s.default || value === null)
       ? undefined
       : s.type === Array
-        ? (value as any)?.join(',')
+        ? (value as any)?.join('+')
         : s.type === Boolean
           ? (value ? 'true' : 'false')
           : value

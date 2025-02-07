@@ -4,8 +4,8 @@ import { backend } from '~/backends'
 import { fetchData } from '~/state/data'
 import { query } from '~/state/query'
 import { openTerminal, showTerminal } from '~/state/terminal'
-import MainEntry from '../../entries/main.vue'
-import { getContainer, install } from '../container'
+import MainEntry from '../entries/main.vue'
+import { getContainer, install } from './container'
 
 showTerminal.value = true
 const input = shallowRef(query.install?.trim().replace(/\+/g, ' ') || '')
@@ -76,4 +76,5 @@ async function run() {
     </div>
   </template>
   <MainEntry v-else />
+  <LazyPanelTerminal />
 </template>

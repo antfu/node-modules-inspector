@@ -27,7 +27,15 @@ const multipleVersionsCount = computed(() => {
       </span>
     </h1>
     <div v-if="rawData" border="t base" flex="~ col gap-3" p5>
+      <div
+        v-if="backend.name === 'webcontainer'"
+        flex="~ gap-2 items-center"
+      >
+        <div i-catppuccin-stackblitz icon-catppuccin flex-none />
+        <a break-after-all text-left leading-none href="https://webcontainers.io/" target="_blank" hover="underline">WebContainer</a>
+      </div>
       <button
+        v-else
         flex="~ gap-2 items-center"
         @click="backend.functions.openInFinder?.(rawData.root)"
       >
