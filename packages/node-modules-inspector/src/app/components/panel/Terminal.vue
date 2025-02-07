@@ -66,9 +66,22 @@ onBeforeUnmount(() => {
     </button>
   </div>
   <div
-    ref="container"
-    flex fixed right-4 bottom-10
-    w-200 h-100 bg-glass rounded border border-base shadow of-hidden
-    :class="showTerminal && openTerminal ? '' : 'op0 pointer-events-none'"
-  />
+    flex fixed bottom-0 left="50%" translate-x="-50%" z-panel-terminal
+    max-w-screen w-300 h-100
+    bg-glass border="x t base rounded-t-lg" shadow
+    transition-all duration-300
+    :class="showTerminal && openTerminal ? '' : 'translate-y-120% pointer-events-none'"
+  >
+    <div ref="container" h-full w-full of-hidden />
+    <div absolute top-2 right-2 flex="~ items-center gap-0">
+      <button
+        w-10 h-10 rounded-full op30
+        hover="op100 bg-active"
+        flex="~ items-center justify-center"
+        @click="openTerminal = false"
+      >
+        <div i-ph-caret-down />
+      </button>
+    </div>
+  </div>
 </template>

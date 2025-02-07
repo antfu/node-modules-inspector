@@ -4,7 +4,6 @@ command = "pnpm run wc:build"
 
 [build.environment]
 NODE_VERSION = "22"
-NUXT_DEBUG_BUILD = "true"
 
 [[headers]]
 for = "/*"

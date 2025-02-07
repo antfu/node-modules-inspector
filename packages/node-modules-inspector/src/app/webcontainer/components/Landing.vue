@@ -65,9 +65,9 @@ async function run() {
           <input
             v-model="input"
             placeholder="Enter package names"
-            w-120
+            :disabled="isLoading"
+            w-120 px1 py2 font-mono bg-transparent outline-none
             placeholder-gray:40
-            outline-none bg-transparent px1 py2 font-mono
             @keydown.enter="run"
           >
         </label>
