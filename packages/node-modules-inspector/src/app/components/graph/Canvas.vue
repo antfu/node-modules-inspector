@@ -7,6 +7,7 @@ import { useEventListener } from '@vueuse/core'
 import { hierarchy, tree } from 'd3-hierarchy'
 import { linkHorizontal, linkVertical } from 'd3-shape'
 import { computed, nextTick, onMounted, ref, shallowReactive, shallowRef, useTemplateRef, watch } from 'vue'
+import { useWheelZoom } from '~/composables/wheelZoom'
 import { selectedNode } from '~/state/current'
 import { getCompareHighlight } from '~/state/highlight'
 import { payloads } from '~/state/payload'
@@ -35,12 +36,14 @@ const links = shallowRef<Link[]>([])
 const nodesMap = shallowReactive(new Map<string, HierarchyNode<PackageNode>>())
 const linksMap = shallowReactive(new Map<string, Link>())
 
+const { scale } = useWheelZoom(container)
+
 const nodesRefMap = new Map<string, HTMLDivElement>()
 
 const NODE_WIDTH = 300
 const NODE_HEIGHT = 30
 const NODE_LINK_OFFSET = 20
-const NODE_MARGIN = 200
+const NODE_MARGIN = 600
 const NODE_GAP = 150
 
 function calculateGraph() {
@@ -274,52 +277,57 @@ onMounted(() => {
 <template>
   <div
     ref="container"
-    w-screen h-screen of-scroll absolute inset-0 relative select-none
-    flex="~ items-center justify-center"
+    w-screen h-screen of-scroll relative select-none
     :class="isGrabbing ? 'cursor-grabbing' : ''"
   >
-    <div class="bg-dots" pointer-events-none z-graph-bg absolute left-0 top-0 :style="{ width: `${width}px`, height: `${height}px` }" />
-    <div ref="screenshotTarget" :style="{ minWidth: `${width}px`, minHeight: `${height}px` }">
-      <svg ref="svgLinks" pointer-events-none absolute left-0 top-0 z-graph-link :width="width" :height="height">
-        <g>
-          <path
-            v-for="link of [...links, ...additionalLinks]"
-            :key="link.id"
-            :d="generateLink(link)!"
-            :class="getLinkColor(link)"
-            fill="none"
-          />
-        </g>
-      </svg>
-      <svg ref="svgLinksActive" pointer-events-none absolute left-0 top-0 z-graph-link-active :width="width" :height="height">
-        <g>
-          <path
-            v-for="link of activeLinks"
-            :key="link.id"
-            :d="generateLink(link)!"
-            fill="none"
-            class="stroke-primary:75"
-          />
-        </g>
-      </svg>
-      <template
-        v-for="node of nodes"
-        :key="node.data.spec"
-      >
-        <template v-if="node.data.spec !== '~root'">
-          <GraphNode
-            :ref="(el: any) => nodesRefMap.set(node.data.spec, el?.$el)"
-            :pkg="node.data"
-            :highlight-mode="highlightMode"
-            :style="{
-              left: `${node.x}px`,
-              top: `${node.y}px`,
-              minWidth: `${NODE_WIDTH}px`,
-            }"
-          />
+    <div
+      flex="~ items-center justify-center"
+      :style="{ transform: `scale(${scale})`, transformOrigin: '0 0' }"
+    >
+      <div class="bg-dots" pointer-events-none z-graph-bg absolute left-0 top-0 :style="{ width: `${width}px`, height: `${height}px` }" />
+      <div ref="screenshotTarget" :style="{ minWidth: `${width}px`, minHeight: `${height}px` }">
+        <svg ref="svgLinks" pointer-events-none absolute left-0 top-0 z-graph-link :width="width" :height="height">
+          <g>
+            <path
+              v-for="link of [...links, ...additionalLinks]"
+              :key="link.id"
+              :d="generateLink(link)!"
+              :class="getLinkColor(link)"
+              fill="none"
+            />
+          </g>
+        </svg>
+        <svg ref="svgLinksActive" pointer-events-none absolute left-0 top-0 z-graph-link-active :width="width" :height="height">
+          <g>
+            <path
+              v-for="link of activeLinks"
+              :key="link.id"
+              :d="generateLink(link)!"
+              fill="none"
+              class="stroke-primary:75"
+            />
+          </g>
+        </svg>
+        <template
+          v-for="node of nodes"
+          :key="node.data.spec"
+        >
+          <template v-if="node.data.spec !== '~root'">
+            <GraphNode
+              :ref="(el: any) => nodesRefMap.set(node.data.spec, el?.$el)"
+              :pkg="node.data"
+              :highlight-mode="highlightMode"
+              :style="{
+                left: `${node.x}px`,
+                top: `${node.y}px`,
+                minWidth: `${NODE_WIDTH}px`,
+              }"
+            />
+          </template>
         </template>
-      </template>
+      </div>
     </div>
+
     <div
       fixed right-4 bottom-4 z-panel-nav flex="~ gap-4 items-center"
       bg-glass rounded-full border border-base shadow
