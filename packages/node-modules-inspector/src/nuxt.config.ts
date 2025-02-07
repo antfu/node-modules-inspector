@@ -1,8 +1,9 @@
 import process from 'node:process'
 import { fileURLToPath } from 'node:url'
+import Inspect from 'vite-plugin-inspect'
 
 const NUXT_DEBUG_BUILD = !!process.env.NUXT_DEBUG_BUILD
-const backend = process.env.NMI_BACKEND ?? 'server'
+const backend = process.env.NMI_BACKEND ?? 'dev'
 const isWebContainer = backend === 'webcontainer'
 
 const headers = isWebContainer
@@ -103,9 +104,16 @@ export default defineNuxtConfig({
         output: {
           entryFileNames: '_nuxt/[name].[hash].js',
           chunkFileNames: '_nuxt/chunks/[name].[hash].js',
+          manualChunks: (id) => {
+            if (id.includes('@webcontainer'))
+              return 'webcontainer-vendor'
+          },
         },
       },
     },
+    plugins: [
+      NUXT_DEBUG_BUILD ? Inspect({ build: true }) : null,
+    ],
   },
 
   devtools: {

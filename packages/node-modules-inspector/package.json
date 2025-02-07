@@ -52,6 +52,7 @@
     "@types/picomatch": "catalog:",
     "@unocss/nuxt": "catalog:",
     "@vueuse/nuxt": "catalog:",
+    "@webcontainer/api": "catalog:",
     "@xterm/addon-fit": "catalog:",
     "@xterm/xterm": "catalog:",
     "d3": "catalog:",
@@ -59,8 +60,10 @@
     "d3-shape": "catalog:",
     "floating-vue": "catalog:",
     "fuse.js": "catalog:",
+    "modern-screenshot": "catalog:",
     "picomatch": "catalog:",
     "shiki": "catalog:",
+    "theme-vitesse": "catalog:",
     "vite-hot-client": "catalog:"
   }
 }
