@@ -143,9 +143,9 @@ function handleDragingScroll() {
     x = container.value!.scrollLeft + e.pageX
     y = container.value!.scrollTop + e.pageY
   })
-  useEventListener('mouseleave', () => isGrabbing.value = false)
-  useEventListener('mouseup', () => isGrabbing.value = false)
-  useEventListener('mousemove', (e) => {
+  useEventListener(container, 'mouseleave', () => isGrabbing.value = false)
+  useEventListener(container, 'mouseup', () => isGrabbing.value = false)
+  useEventListener(container, 'mousemove', (e) => {
     if (!isGrabbing.value)
       return
     e.preventDefault()
