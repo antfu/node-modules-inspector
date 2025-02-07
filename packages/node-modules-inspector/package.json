@@ -50,6 +50,7 @@
   },
   "devDependencies": {
     "@types/picomatch": "catalog:",
+    "@types/semver": "^7.5.8",
     "@unocss/nuxt": "catalog:",
     "@vueuse/nuxt": "catalog:",
     "@webcontainer/api": "catalog:",
@@ -62,6 +63,7 @@
     "fuse.js": "catalog:",
     "modern-screenshot": "catalog:",
     "picomatch": "catalog:",
+    "semver": "^7.7.1",
     "shiki": "catalog:",
     "theme-vitesse": "catalog:",
     "vite-hot-client": "catalog:"

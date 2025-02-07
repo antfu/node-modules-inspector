@@ -217,7 +217,7 @@ const moduleTypes = Object.fromEntries(
         To exclude a specific package, select from its menu
       </div>
       <div mt2>
-        <OptionItem title="Exclude Type-only Packages" description="Exclude TypeScript declaration packages">
+        <OptionItem title="Exclude Types Packages" description="Exclude TypeScript declaration packages">
           <OptionCheckbox v-model="filters.state['exclude-dts']" />
         </OptionItem>
         <OptionItem title="Exclude Private Packages" description="Exclude private workspace packages and their dependencies">

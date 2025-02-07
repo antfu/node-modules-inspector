@@ -172,9 +172,7 @@ const sizeTotal = computed(() => {
         </template>
         <template v-if="pkg.resolved.engines?.node">
           <span op50>·</span>
-          <span badge-color-gray font-mono px2 rounded text-sm>
-            {{ pkg.resolved.engines?.node }}
-          </span>
+          <DisplayNodeVersionRange :range="pkg.resolved.engines?.node" />
         </template>
       </div>
     </div>

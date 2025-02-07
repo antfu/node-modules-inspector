@@ -396,6 +396,9 @@ importers:
       '@types/picomatch':
         specifier: 'catalog:'
         version: 3.0.2
+      '@types/semver':
+        specifier: ^7.5.8
+        version: 7.5.8
       '@unocss/nuxt':
         specifier: 'catalog:'
         version: 65.4.3(magicast@0.3.5)(postcss@8.5.1)(rollup@4.34.4)(vite@6.1.0(@types/node@22.10.7)(jiti@2.4.2)(terser@5.31.0)(tsx@4.19.2)(yaml@2.7.0))(vue@3.5.13(typescript@5.7.3))(webpack@5.88.2(esbuild@0.24.2))
@@ -432,6 +435,9 @@ importers:
       picomatch:
         specifier: 'catalog:'
         version: 4.0.2
+      semver:
+        specifier: ^7.7.1
+        version: 7.7.1
       shiki:
         specifier: 'catalog:'
         version: 2.3.1
@@ -2009,6 +2015,9 @@ packages:
 
   '@types/resolve@1.20.2':
     resolution: {integrity: sha512-60BCwRFOZCQhDncwQdxxeOEEkbc5dIMccYLwbxsS4TUNeVECQ/pBJ0j09mrHOl/JJvpRPGwO9SvE4nR2Nb/a4Q==}
+
+  '@types/semver@7.5.8':
+    resolution: {integrity: sha512-I8EUhyrgfLrcTkzV3TSsGyl1tSuPrEDzr0yd5m90UgNxQkyDXULk3b6MlQqTCpZpNtWe1K0hzclnZkTcLBe2UQ==}
 
   '@types/stream-chain@2.1.0':
     resolution: {integrity: sha512-guDyAl6s/CAzXUOWpGK2bHvdiopLIwpGu8v10+lb9hnQOyo4oj/ZUQFOvqFjKGsE3wJP1fpIesCcMvbXuWsqOg==}
@@ -7767,6 +7776,8 @@ snapshots:
   '@types/picomatch@3.0.2': {}
 
   '@types/resolve@1.20.2': {}
+
+  '@types/semver@7.5.8': {}
 
   '@types/stream-chain@2.1.0':
     dependencies:
