@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, shallowRef } from 'vue'
 import { backend } from '~/backends'
+import { fetchData } from '~/state/data'
 import { openTerminal, showTerminal } from '~/state/terminal'
 import { version } from '../../../../package.json'
 import MainEntry from '../../entries/main.vue'
@@ -19,7 +20,9 @@ async function run() {
   isLoading.value = true
   try {
     openTerminal.value = true
-    backend.value = await install([input.value])
+    backend.value = await install(input.value.split(' '))
+    await fetchData()
+    openTerminal.value = false
   }
   catch (e) {
     console.error(e)
