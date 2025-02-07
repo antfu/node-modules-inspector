@@ -13,6 +13,10 @@ function createRegExp(input: string, flags = 'gi') {
   return new RegExp(escaped, flags)
 }
 
+function unescapeRegExp(input: RegExp) {
+  return input.source.replace(/\\(.)/g, '$1')
+}
+
 export function parseSearch(input: string) {
   let text = input
   let invert = false
@@ -77,6 +81,29 @@ export function parseSearch(input: string) {
     result.license = license
   if (author.length)
     result.author = author
+
+  return result
+}
+
+export function serializedSearch(search: ParsedSearchResult) {
+  let result = search.text
+
+  function quote(value: string) {
+    if (value.includes(' ')) {
+      return `"${value}"`
+    }
+    return value
+  }
+
+  if (search.not?.length)
+    result += ` ${search.not.map(r => `not:${quote(unescapeRegExp(r))}`).join(' ')}`
+  if (search.author?.length)
+    result += ` ${search.author.map(r => `author:${quote(unescapeRegExp(r))}`).join(' ')}`
+  if (search.license?.length)
+    result += ` ${search.license.map(r => `license:${quote(unescapeRegExp(r))}`).join(' ')}`
+
+  if (search.invert)
+    result = `! ${result}`
 
   return result
 }
