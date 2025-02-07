@@ -170,6 +170,12 @@ const sizeTotal = computed(() => {
             {{ pkg.resolved.author?.replace(/\<.*\>/, '').replace(/\(.*\)/, '') }}
           </span>
         </template>
+        <template v-if="pkg.resolved.engines?.node">
+          <span op50>·</span>
+          <span badge-color-gray font-mono px2 rounded text-sm>
+            {{ pkg.resolved.engines?.node }}
+          </span>
+        </template>
       </div>
     </div>
     <div grid="~ cols-3 gap-2 items-center" p2>
