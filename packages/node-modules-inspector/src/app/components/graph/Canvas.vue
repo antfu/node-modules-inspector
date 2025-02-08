@@ -7,7 +7,7 @@ import { useEventListener } from '@vueuse/core'
 import { hierarchy, tree } from 'd3-hierarchy'
 import { linkHorizontal, linkVertical } from 'd3-shape'
 import { computed, nextTick, onMounted, ref, shallowReactive, shallowRef, useTemplateRef, watch } from 'vue'
-import { useWheelZoom } from '~/composables/wheelZoom'
+import { useZoomElement } from '~/composables/zoomElement'
 import { selectedNode } from '~/state/current'
 import { getCompareHighlight } from '~/state/highlight'
 import { payloads } from '~/state/payload'
@@ -36,7 +36,7 @@ const links = shallowRef<Link[]>([])
 const nodesMap = shallowReactive(new Map<string, HierarchyNode<PackageNode>>())
 const linksMap = shallowReactive(new Map<string, Link>())
 
-const { scale } = useWheelZoom(container)
+const { scale, zoom } = useZoomElement(container)
 
 const nodesRefMap = new Map<string, HTMLDivElement>()
 
@@ -339,17 +339,37 @@ onMounted(() => {
     </div>
 
     <div
-      fixed right-4 bottom-4 z-panel-nav flex="~ gap-4 items-center"
-      bg-glass rounded-full border border-base shadow
+      fixed right-4 bottom-4 z-panel-nav flex="~ col gap-4 items-center"
     >
-      <button
-        w-10 h-10 rounded-full hover:bg-active op50 hover:op100
-        flex="~ items-center justify-center"
-        title="Download Screenshot as PNG"
-        @click="takeScreenshot"
-      >
-        <div i-ph-download-duotone />
-      </button>
+      <div bg-glass rounded-full border border-base shadow>
+        <button
+          w-10 h-10 rounded-full hover:bg-active op50 hover:op100
+          flex="~ items-center justify-center"
+          title="Download Screenshot as PNG"
+          @click="zoom(0.2)"
+        >
+          <div i-ph-magnifying-glass-plus-duotone />
+        </button>
+        <button
+          w-10 h-10 rounded-full hover:bg-active op50 hover:op100
+          flex="~ items-center justify-center"
+          title="Download Screenshot as PNG"
+          @click="zoom(-0.2)"
+        >
+          <div i-ph-magnifying-glass-minus-duotone />
+        </button>
+      </div>
+
+      <div bg-glass rounded-full border border-base shadow>
+        <button
+          w-10 h-10 rounded-full hover:bg-active op50 hover:op100
+          flex="~ items-center justify-center"
+          title="Download Screenshot as PNG"
+          @click="takeScreenshot"
+        >
+          <div i-ph-download-duotone />
+        </button>
+      </div>
     </div>
   </div>
 </template>
