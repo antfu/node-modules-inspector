@@ -42,7 +42,7 @@ const transitiveDeps = computed(() =>
                 rounded-full text-sm h-max
               />
             </div>
-            <UiPercentageModuleType :pkg="pkg" :flat="true" />
+            <UiPercentageDepth :pkg="pkg" :flat="true" />
           </template>
         </div>
       </template>
