@@ -138,7 +138,17 @@ const isGrabbing = shallowRef(false)
 function handleDragingScroll() {
   let x = 0
   let y = 0
+  const SCROLLBAR_THICKNESS = 20
+
   useEventListener(container, 'mousedown', (e) => {
+    // prevent dragging when clicking on scrollbar
+    const rect = container.value!.getBoundingClientRect()
+    const distRight = rect.right - e.clientX
+    const distBottom = rect.bottom - e.clientY
+    if (distRight <= SCROLLBAR_THICKNESS || distBottom <= SCROLLBAR_THICKNESS) {
+      return
+    }
+
     isGrabbing.value = true
     x = container.value!.scrollLeft + e.pageX
     y = container.value!.scrollTop + e.pageY
