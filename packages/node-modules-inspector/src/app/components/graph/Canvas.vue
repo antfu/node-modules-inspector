@@ -358,6 +358,10 @@ onMounted(() => {
     <div
       fixed right-4 bottom-4 z-panel-nav flex="~ col gap-4 items-center"
     >
+      <div w-10 flex="~ items-center justify-center">
+        <UiTimeoutView :content="`${Math.round(scale * 100)}%`" class="text-sm" />
+      </div>
+
       <div bg-glass rounded-full border border-base shadow>
         <button
           :disabled="scale >= ZOOM_MAX"
