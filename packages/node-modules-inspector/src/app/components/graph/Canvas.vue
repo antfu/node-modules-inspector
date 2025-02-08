@@ -36,8 +36,14 @@ const links = shallowRef<Link[]>([])
 const nodesMap = shallowReactive(new Map<string, HierarchyNode<PackageNode>>())
 const linksMap = shallowReactive(new Map<string, Link>())
 
+const ZOOM_MIN = 0.5
+const ZOOM_MAX = 2
 const { control } = useMagicKeys()
-const { scale, zoomIn, zoomOut } = useZoomElement(container, control)
+const { scale, zoomIn, zoomOut } = useZoomElement(container, {
+  wheel: control,
+  minScale: ZOOM_MIN,
+  maxScale: ZOOM_MAX,
+})
 
 onKeyPressed(['-', '_'], (e) => {
   if (e.ctrlKey)
@@ -354,7 +360,9 @@ onMounted(() => {
     >
       <div bg-glass rounded-full border border-base shadow>
         <button
+          :disabled="scale >= ZOOM_MAX"
           w-10 h-10 rounded-full hover:bg-active op50 hover:op100
+          disabled:op20 disabled:bg-none disabled:cursor-not-allowed
           flex="~ items-center justify-center"
           title="Zoom In (Ctrl + =)"
           @click="zoomIn()"
@@ -362,7 +370,9 @@ onMounted(() => {
           <div i-ph-magnifying-glass-plus-duotone />
         </button>
         <button
+          :disabled="scale <= ZOOM_MIN"
           w-10 h-10 rounded-full hover:bg-active op50 hover:op100
+          disabled:op20 disabled:bg-none disabled:cursor-not-allowed
           flex="~ items-center justify-center"
           title="Zoom Out (Ctrl + -)"
           @click="zoomOut()"

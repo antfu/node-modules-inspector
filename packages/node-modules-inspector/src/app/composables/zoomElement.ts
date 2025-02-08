@@ -5,12 +5,17 @@ import { ref, toValue } from 'vue'
 
 export function useZoomElement(
   target: MaybeElementRef<HTMLElement | null>,
-  wheel: MaybeRef<boolean> = true,
+  {
+    wheel = true,
+    minScale = 0.5,
+    maxScale = 2,
+  }: {
+    wheel?: MaybeRef<boolean>
+    minScale?: number
+    maxScale?: number
+  } = {},
 ) {
   const scale = ref(1)
-
-  const minScale = 0.5
-  const maxScale = 3
 
   function zoom(factor: number, clientX?: number, clientY?: number) {
     const el = toValue(target)
