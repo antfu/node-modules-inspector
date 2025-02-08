@@ -3,7 +3,7 @@ import type { HierarchyLink, HierarchyNode } from 'd3-hierarchy'
 import type { PackageNode } from 'node-modules-tools'
 import type { HighlightMode } from '~/state/highlight'
 import type { ComputedPayload } from '~/state/payload'
-import { useEventListener } from '@vueuse/core'
+import { onKeyPressed, useEventListener, useMagicKeys } from '@vueuse/core'
 import { hierarchy, tree } from 'd3-hierarchy'
 import { linkHorizontal, linkVertical } from 'd3-shape'
 import { computed, nextTick, onMounted, ref, shallowReactive, shallowRef, useTemplateRef, watch } from 'vue'
@@ -36,7 +36,18 @@ const links = shallowRef<Link[]>([])
 const nodesMap = shallowReactive(new Map<string, HierarchyNode<PackageNode>>())
 const linksMap = shallowReactive(new Map<string, Link>())
 
-const { scale, zoom } = useZoomElement(container)
+const { control } = useMagicKeys()
+const { scale, zoomIn, zoomOut } = useZoomElement(container, control)
+
+onKeyPressed(['-', '_'], (e) => {
+  if (e.ctrlKey)
+    zoomOut()
+})
+
+onKeyPressed(['=', '+'], (e) => {
+  if (e.ctrlKey)
+    zoomIn()
+})
 
 const nodesRefMap = new Map<string, HTMLDivElement>()
 
@@ -345,16 +356,16 @@ onMounted(() => {
         <button
           w-10 h-10 rounded-full hover:bg-active op50 hover:op100
           flex="~ items-center justify-center"
-          title="Download Screenshot as PNG"
-          @click="zoom(0.2)"
+          title="Zoom In (Ctrl + =)"
+          @click="zoomIn()"
         >
           <div i-ph-magnifying-glass-plus-duotone />
         </button>
         <button
           w-10 h-10 rounded-full hover:bg-active op50 hover:op100
           flex="~ items-center justify-center"
-          title="Download Screenshot as PNG"
-          @click="zoom(-0.2)"
+          title="Zoom Out (Ctrl + -)"
+          @click="zoomOut()"
         >
           <div i-ph-magnifying-glass-minus-duotone />
         </button>

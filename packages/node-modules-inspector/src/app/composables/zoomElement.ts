@@ -46,7 +46,15 @@ export function useZoomElement(
     zoom(event.deltaY > 0 ? zoomFactor : zoomFactor * -1, event.clientX, event.clientY)
   }
 
+  function zoomIn(factor = 0.2) {
+    zoom(factor)
+  }
+
+  function zoomOut(factor = 0.2) {
+    zoom(factor * -1)
+  }
+
   useEventListener(target, 'wheel', handleWheel)
 
-  return { scale, zoom }
+  return { scale, zoom, zoomIn, zoomOut }
 }
