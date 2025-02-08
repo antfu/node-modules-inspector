@@ -1,5 +1,6 @@
 <template>
   <UiOffsettedContainer>
+    <ReportMostUse />
     <ReportMostDeps />
     <ReportLargestSize />
     <ReportHighestEngines />
