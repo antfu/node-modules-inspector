@@ -44,6 +44,7 @@ export interface PackageNode extends PackageNodeBase {
     license?: string
     author?: string
     repository?: string
+    funding?: string
     homepage?: string
     engines?: Record<string, string>
     installSize?: PackageInstallSizeInfo

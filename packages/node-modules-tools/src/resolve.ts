@@ -39,6 +39,7 @@ export async function resolvePackage(
     engines: json.engines,
     license: json.license,
     author: typeof json.author === 'string' ? json.author : json.author?.url,
+    funding: json.funding,
     repository,
     homepage: json.homepage,
     installSize: await getPackageInstallSize(_pkg),
