@@ -36,7 +36,7 @@ const links = shallowRef<Link[]>([])
 const nodesMap = shallowReactive(new Map<string, HierarchyNode<PackageNode>>())
 const linksMap = shallowReactive(new Map<string, Link>())
 
-const ZOOM_MIN = 0.5
+const ZOOM_MIN = 0.4
 const ZOOM_MAX = 2
 const { control } = useMagicKeys()
 const { scale, zoomIn, zoomOut } = useZoomElement(container, {

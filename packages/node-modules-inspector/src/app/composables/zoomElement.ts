@@ -47,7 +47,7 @@ export function useZoomElement(
 
     event.preventDefault()
 
-    const zoomFactor = 0.1
+    const zoomFactor = 0.2
     zoom(event.deltaY > 0 ? zoomFactor : zoomFactor * -1, event.clientX, event.clientY)
   }
 
