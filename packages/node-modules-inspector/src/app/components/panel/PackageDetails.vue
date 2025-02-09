@@ -144,6 +144,15 @@ const sizeTotal = computed(() => {
           >
             <div i-catppuccin-http icon-catppuccin ma />
           </NuxtLink>
+          <NuxtLink
+            v-if="pkg.resolved.funding"
+            :to="pkg.resolved.funding"
+            title="Open Funding"
+            target="_blank"
+            ml--1 w-8 h-8 rounded-full hover:bg-active flex
+          >
+            <div i-catppuccin-code-of-conduct icon-catppuccin ma />
+          </NuxtLink>
           <button
             v-if="backend?.functions.openInEditor"
             title="Open Package Folder in Editor"

@@ -38,6 +38,7 @@ it('runs', async () => {
         "engines": {
           "node": ">=6.0",
         },
+        "funding": undefined,
         "homepage": undefined,
         "installSize": {
           "bytes": 42798,
