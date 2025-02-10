@@ -34,7 +34,7 @@ const packages = computed(() =>
             <DisplayPackageSpec :pkg />
           </button>
           <div flex justify-end>
-            <DisplayDateBadge h-max :date="getPublishTime(pkg)!" />
+            <DisplayDateBadge :pkg />
           </div>
         </template>
       </div>

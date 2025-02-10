@@ -1,15 +1,12 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
-import { computed } from 'vue'
 import { selectedNode } from '~/state/current'
-import { getPublishTime, payloads } from '~/state/payload'
+import { payloads } from '~/state/payload'
 import { settings } from '~/state/settings'
 
-const props = defineProps<{
+defineProps<{
   pkg: PackageNode
 }>()
-
-const publishedAt = computed(() => getPublishTime(props.pkg))
 </script>
 
 <template>
@@ -44,8 +41,8 @@ const publishedAt = computed(() => getPublishTime(props.pkg))
       />
 
       <DisplayDateBadge
-        v-if="settings.showPublishTimeBadge && publishedAt"
-        :date="publishedAt"
+        v-if="settings.showPublishTimeBadge"
+        :pkg
         rounded-full text-sm
       />
 

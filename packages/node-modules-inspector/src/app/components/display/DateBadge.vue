@@ -1,16 +1,20 @@
 <script setup lang="ts">
+import type { PackageNode } from 'node-modules-tools'
 import { computed } from 'vue'
+import { getPublishTime } from '~/state/payload'
 import { settings } from '~/state/settings'
 
 const props = withDefaults(
   defineProps<{
-    date: string | Date
+    pkg: PackageNode
     colorize?: boolean
   }>(),
   {
     colorize: true,
   },
 )
+
+const date = computed(() => getPublishTime(props.pkg))
 
 const colorScale = [
   [180, 'color-scale-neutral'],
@@ -21,21 +25,22 @@ const colorScale = [
 ] as const
 
 const daysAgo = computed(() => {
-  const date = +new Date(props.date)
+  if (!date.value)
+    return 0
   const now = +new Date()
 
   const msPerDay = 24 * 60 * 60 * 1000
-  return Math.floor((now - date) / msPerDay)
+  return Math.floor((now - +date.value) / msPerDay)
 })
 
 const timeAgo = computed(() => {
   if (daysAgo.value < 1)
     return [0, 'today']
   if (daysAgo.value > 365)
-    return [+(daysAgo.value / 365).toFixed(1), 'years']
+    return [+(daysAgo.value / 365).toFixed(1), 'yr']
   if (daysAgo.value > 30)
-    return [Math.floor(daysAgo.value / 30), 'months']
-  return [daysAgo.value, 'days']
+    return [Math.floor(daysAgo.value / 30), 'mth']
+  return [daysAgo.value, 'd']
 })
 
 const color = computed(() => {
@@ -53,9 +58,10 @@ const color = computed(() => {
 
 <template>
   <div
+    v-if="date"
     :class="color"
     class="px-0.4em py-0.2em line-height-none bg-gray:5"
-    :title="`Published at ${String(props.date)}`"
+    :title="`Published at ${String(date)}`"
   >
     <span font-mono>{{ timeAgo[0] }}</span>
     <span op50 text-sm ml0.5>{{ timeAgo[1] }}</span>

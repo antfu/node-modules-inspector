@@ -193,7 +193,7 @@ function getShallowestDependents(pkg: PackageNode) {
         </template>
         <template v-if="getPublishTime(pkg)">
           <span op50>·</span>
-          <DisplayDateBadge :date="getPublishTime(pkg)!" rounded-full text-sm />
+          <DisplayDateBadge :pkg rounded-full text-sm />
         </template>
       </div>
     </div>
