@@ -20,6 +20,11 @@ const transitiveDeps = computed(() =>
   >
     <template #default="{ items }">
       <div grid="~ cols-[1fr_max-content] gap-x-4 gap-y-1">
+        <div />
+        <div text-sm op50 text-right>
+          Engines
+        </div>
+
         <template v-for="pkg of items" :key="pkg.spec">
           <button
             font-mono text-left hover:bg-active px2 ml--2 rounded
