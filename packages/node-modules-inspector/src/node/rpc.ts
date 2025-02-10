@@ -12,6 +12,7 @@ export interface CreateServerFunctionsOptions
 export function createServerFunctions(options: CreateServerFunctionsOptions): ServerFunctions {
   return {
     async listDependencies() {
+      console.log('[Node Modules Inspector] Reading dependencies...')
       return listPackageDependencies({
         cwd: process.cwd(),
         depth: 25,
@@ -20,6 +21,7 @@ export function createServerFunctions(options: CreateServerFunctionsOptions): Se
       })
     },
     async getPackagesPublishDate(deps: string[]) {
+      console.log('[Node Modules Inspector] Fetching publish dates...')
       return getPackagesPublishDate(deps, { storage: options.storage })
     },
     async openInEditor(filename: string) {

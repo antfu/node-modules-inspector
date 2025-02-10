@@ -39,7 +39,7 @@ const timeAgo = computed(() => {
   if (daysAgo.value > 365)
     return [+(daysAgo.value / 365).toFixed(1), 'yr']
   if (daysAgo.value > 30)
-    return [Math.floor(daysAgo.value / 30), 'mth']
+    return [Math.round(daysAgo.value / 30), 'mo']
   return [daysAgo.value, 'd']
 })
 
