@@ -1,9 +1,11 @@
 <template>
   <UiOffsettedContainer>
-    <ReportUsedBy />
     <ReportMostDeps />
     <ReportLargestSize />
-    <ReportHighestEngines />
+    <div grid="~ cols-2 gap-5">
+      <ReportHighestEngines />
+      <ReportUsedBy />
+    </div>
     <ReportMultipleVersions />
   </UiOffsettedContainer>
 </template>

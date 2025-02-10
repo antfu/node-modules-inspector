@@ -13,27 +13,27 @@ const transitiveDeps = computed(() =>
 </script>
 
 <template>
-  <div v-if="transitiveDeps.length">
-    <UiSubTitle>
-      Newest Node.js Requirements
-      <DisplayNumberBadge :number="transitiveDeps.length" rounded-full text-sm />
-    </UiSubTitle>
-    <ReportExpendableContainer :list="transitiveDeps">
-      <template #default="{ items }">
-        <div grid="~ cols-[1fr_max-content] gap-x-4 gap-y-1">
-          <template v-for="pkg of items" :key="pkg.spec">
-            <button
-              font-mono text-left hover:bg-active px2 ml--2 rounded
-              @click="selectedNode = pkg"
-            >
-              <DisplayPackageSpec :pkg />
-            </button>
-            <div flex justify-end>
-              <DisplayNodeVersionRange h-max :range="pkg.resolved.engines?.node" />
-            </div>
-          </template>
-        </div>
-      </template>
-    </ReportExpendableContainer>
-  </div>
+  <ReportExpendableContainer
+    v-if="transitiveDeps.length"
+    :list="transitiveDeps"
+    :title="['Newest Node.js Requirements', 'Oldest Node.js Requirements']"
+  >
+    <template #default="{ items }">
+      <div grid="~ cols-[1fr_max-content] gap-x-4 gap-y-1">
+        <template v-for="pkg of items" :key="pkg.spec">
+          <button
+            font-mono text-left hover:bg-active px2 ml--2 rounded
+            flex="~ gap-2 items-center"
+            @click="selectedNode = pkg"
+          >
+            <DisplayModuleType :pkg />
+            <DisplayPackageSpec :pkg />
+          </button>
+          <div flex justify-end>
+            <DisplayNodeVersionRange h-max :range="pkg.resolved.engines?.node" />
+          </div>
+        </template>
+      </div>
+    </template>
+  </ReportExpendableContainer>
 </template>
