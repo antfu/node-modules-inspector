@@ -43,19 +43,12 @@ const publishedAt = computed(() => getPublishTime(props.pkg))
         rounded-full text-sm
       />
 
-      <template v-if="settings.showInstallSizeBadge && pkg.resolved.installSize?.bytes">
-        <div flex="~ items-center gap-1">
-          <div i-ph-barbell-duotone />
-          <DisplayFileSizeBadge :bytes="pkg.resolved.installSize.bytes" :digits="0" rounded-full text-sm />
-        </div>
-      </template>
+      <DisplayDateBadge
+        v-if="settings.showPublishTimeBadge && publishedAt"
+        :date="publishedAt"
+        rounded-full text-sm
+      />
 
-      <template v-if="publishedAt">
-        <div flex="~ items-center gap-1">
-          <div i-ph-calendar />
-          <DisplayDateBadge :date="publishedAt" rounded-full text-sm />
-        </div>
-      </template>
       <!--
       <span op25>·</span>
       <div op75>

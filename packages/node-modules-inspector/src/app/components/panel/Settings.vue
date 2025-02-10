@@ -22,6 +22,9 @@ const backend = getBackend()
       <OptionItem title="Show size badge" description="Show install size badge on package list">
         <OptionCheckbox v-model="settings.showInstallSizeBadge" />
       </OptionItem>
+      <OptionItem title="Show publish time badge" description="Show publish time badge on package list">
+        <OptionCheckbox v-model="settings.showPublishTimeBadge" />
+      </OptionItem>
       <OptionItem title="Colorize size badge" description="Colorize package size badge">
         <OptionCheckbox v-model="settings.colorizePackageSize" />
       </OptionItem>
