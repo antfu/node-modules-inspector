@@ -67,6 +67,14 @@ const sizeTotal = computed(() => {
     return 0
   return [props.pkg, ...deps].reduce((acc, x) => acc + (x.resolved.installSize?.bytes || 0), 0)
 })
+
+function getShallowestDependents(pkg: PackageNode) {
+  const dependents = payloads.avaliable.dependents(pkg)
+  if (!dependents.length)
+    return []
+  const minDepth = Math.min(...dependents.map(x => x.depth))
+  return dependents.filter(x => x.depth === minDepth)
+}
 </script>
 
 <template>
@@ -300,7 +308,7 @@ const sizeTotal = computed(() => {
         <template v-if="pkg.flatDependents.size">
           <TreeDependencies
             py5 px4
-            :currents="payloads.avaliable.flatDependents(pkg).filter(i => i?.workspace)"
+            :currents="getShallowestDependents(pkg)"
             :list="payloads.avaliable.flatDependents(pkg)"
             :max-depth="getDepth(pkg.flatDependents.size, 2)"
             type="dependents"
