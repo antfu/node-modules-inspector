@@ -6,7 +6,7 @@ export interface ListPackagePublishDatesOptions {
   storage: Storage<string>
 }
 
-export async function listPackagePublishDates(
+export async function getPackagesPublishDate(
   packages: string[],
   options: ListPackagePublishDatesOptions,
 ) {

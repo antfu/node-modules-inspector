@@ -17,7 +17,11 @@ export async function fetchData() {
 
     rawData.value = data
 
-    const publishDate = await backend.functions.getPackagesPublishDate?.([...data.packages.keys()])
+    const publishDate = await backend.functions.getPackagesPublishDate?.(
+      [...data.packages.entries()]
+        .filter(x => !x[1].private && !x[1].workspace)
+        .map(x => x[0]),
+    )
     if (publishDate) {
       Object.freeze(publishDate)
       rawPublishDates.value = publishDate

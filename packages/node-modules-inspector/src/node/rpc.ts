@@ -1,9 +1,9 @@
 import type { ServerFunctions } from '#shared/types'
 import type { ListPackageDependenciesOptions } from 'node-modules-tools'
-import type { ListPackagePublishDatesOptions } from './date'
+import type { ListPackagePublishDatesOptions } from '../shared/publish-date'
 import process from 'node:process'
 import { listPackageDependencies } from 'node-modules-tools'
-import { listPackagePublishDates } from './date'
+import { getPackagesPublishDate } from '../shared/publish-date'
 
 export interface CreateServerFunctionsOptions
   extends Partial<ListPackageDependenciesOptions>, ListPackagePublishDatesOptions {
@@ -20,7 +20,7 @@ export function createServerFunctions(options: CreateServerFunctionsOptions): Se
       })
     },
     async getPackagesPublishDate(deps: string[]) {
-      return listPackagePublishDates(deps, { storage: options.storage })
+      return getPackagesPublishDate(deps, { storage: options.storage })
     },
     async openInEditor(filename: string) {
       // @ts-expect-error missing types

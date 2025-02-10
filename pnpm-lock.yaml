@@ -313,7 +313,7 @@ importers:
         version: 15.4.3
       nuxt:
         specifier: 'catalog:'
-        version: 3.15.4(@parcel/watcher@2.4.1)(@types/node@22.10.7)(db0@0.2.1)(encoding@0.1.13)(eslint@9.20.0(jiti@2.4.2))(ioredis@5.4.2)(magicast@0.3.5)(optionator@0.9.4)(rollup@4.34.6)(terser@5.31.0)(tsx@4.19.2)(typescript@5.7.3)(vite@6.1.0(@types/node@22.10.7)(jiti@2.4.2)(terser@5.31.0)(tsx@4.19.2)(yaml@2.7.0))(vue-tsc@2.2.0(typescript@5.7.3))(yaml@2.7.0)
+        version: 3.15.4(@parcel/watcher@2.4.1)(@types/node@22.10.7)(db0@0.2.1)(encoding@0.1.13)(eslint@9.20.0(jiti@2.4.2))(idb-keyval@6.2.1)(ioredis@5.4.2)(magicast@0.3.5)(optionator@0.9.4)(rollup@4.34.6)(terser@5.31.0)(tsx@4.19.2)(typescript@5.7.3)(vite@6.1.0(@types/node@22.10.7)(jiti@2.4.2)(terser@5.31.0)(tsx@4.19.2)(yaml@2.7.0))(vue-tsc@2.2.0(typescript@5.7.3))(yaml@2.7.0)
       nuxt-eslint-auto-explicit-import:
         specifier: 'catalog:'
         version: 0.1.1(eslint@9.20.0(jiti@2.4.2))(magicast@0.3.5)(rollup@4.34.6)(typescript@5.7.3)
@@ -334,7 +334,7 @@ importers:
         version: 3.3.1(typescript@5.7.3)(vue-tsc@2.2.0(typescript@5.7.3))(vue@3.5.13(typescript@5.7.3))
       unstorage:
         specifier: ^1.14.4
-        version: 1.14.4(db0@0.2.1)(ioredis@5.4.2)
+        version: 1.14.4(db0@0.2.1)(idb-keyval@6.2.1)(ioredis@5.4.2)
       vite:
         specifier: ^6.1.0
         version: 6.1.0(@types/node@22.10.7)(jiti@2.4.2)(terser@5.31.0)(tsx@4.19.2)(yaml@2.7.0)
@@ -362,6 +362,9 @@ importers:
       fast-glob:
         specifier: 'catalog:'
         version: 3.3.3
+      fast-npm-meta:
+        specifier: ^0.3.0
+        version: 0.3.0
       flatted:
         specifier: 'catalog:'
         version: 3.3.2
@@ -410,7 +413,7 @@ importers:
         version: 65.4.3(magicast@0.3.5)(postcss@8.5.1)(rollup@4.34.6)(vite@6.1.0(@types/node@22.10.7)(jiti@2.4.2)(terser@5.31.0)(tsx@4.19.2)(yaml@2.7.0))(vue@3.5.13(typescript@5.7.3))(webpack@5.88.2(esbuild@0.24.2))
       '@vueuse/nuxt':
         specifier: 'catalog:'
-        version: 12.5.0(magicast@0.3.5)(nuxt@3.15.4(@parcel/watcher@2.4.1)(@types/node@22.10.7)(db0@0.2.1)(encoding@0.1.13)(eslint@9.20.0(jiti@2.4.2))(ioredis@5.4.2)(magicast@0.3.5)(optionator@0.9.4)(rollup@4.34.6)(terser@5.31.0)(tsx@4.19.2)(typescript@5.7.3)(vite@6.1.0(@types/node@22.10.7)(jiti@2.4.2)(terser@5.31.0)(tsx@4.19.2)(yaml@2.7.0))(vue-tsc@2.2.0(typescript@5.7.3))(yaml@2.7.0))(rollup@4.34.6)(typescript@5.7.3)
+        version: 12.5.0(magicast@0.3.5)(nuxt@3.15.4(@parcel/watcher@2.4.1)(@types/node@22.10.7)(db0@0.2.1)(encoding@0.1.13)(eslint@9.20.0(jiti@2.4.2))(idb-keyval@6.2.1)(ioredis@5.4.2)(magicast@0.3.5)(optionator@0.9.4)(rollup@4.34.6)(terser@5.31.0)(tsx@4.19.2)(typescript@5.7.3)(vite@6.1.0(@types/node@22.10.7)(jiti@2.4.2)(terser@5.31.0)(tsx@4.19.2)(yaml@2.7.0))(vue-tsc@2.2.0(typescript@5.7.3))(yaml@2.7.0))(rollup@4.34.6)(typescript@5.7.3)
       '@webcontainer/api':
         specifier: 'catalog:'
         version: 1.5.1
@@ -435,6 +438,9 @@ importers:
       fuse.js:
         specifier: 'catalog:'
         version: 7.1.0
+      idb-keyval:
+        specifier: ^6.2.1
+        version: 6.2.1
       modern-screenshot:
         specifier: 'catalog:'
         version: 4.5.5
@@ -3853,6 +3859,9 @@ packages:
   iconv-lite@0.6.3:
     resolution: {integrity: sha512-4fCk79wshMdzMp2rH06qWrJE4iolqLhCUH+OiuIgU++RB0+94NlDL81atO7GX55uUKueo0txHNtvEyI6D7WdMw==}
     engines: {node: '>=0.10.0'}
+
+  idb-keyval@6.2.1:
+    resolution: {integrity: sha512-8Sb3veuYCyrZL+VBt9LJfZjLUPWVvqn8tG28VqYNFCo43KHcKuq+b4EiXGeuaLAQWL2YmyDgMp2aSpH9JHsEQg==}
 
   ignore@5.3.2:
     resolution: {integrity: sha512-hsBTNUqQTDwkWtcdYI2i06Y/nUBEsNEDJKjWdigLvegy8kDuJAS8uRlpkkcQpyEXL0Z/pjDy5HBmMjRCJ2gq+g==}
@@ -8494,13 +8503,13 @@ snapshots:
 
   '@vueuse/metadata@12.5.0': {}
 
-  '@vueuse/nuxt@12.5.0(magicast@0.3.5)(nuxt@3.15.4(@parcel/watcher@2.4.1)(@types/node@22.10.7)(db0@0.2.1)(encoding@0.1.13)(eslint@9.20.0(jiti@2.4.2))(ioredis@5.4.2)(magicast@0.3.5)(optionator@0.9.4)(rollup@4.34.6)(terser@5.31.0)(tsx@4.19.2)(typescript@5.7.3)(vite@6.1.0(@types/node@22.10.7)(jiti@2.4.2)(terser@5.31.0)(tsx@4.19.2)(yaml@2.7.0))(vue-tsc@2.2.0(typescript@5.7.3))(yaml@2.7.0))(rollup@4.34.6)(typescript@5.7.3)':
+  '@vueuse/nuxt@12.5.0(magicast@0.3.5)(nuxt@3.15.4(@parcel/watcher@2.4.1)(@types/node@22.10.7)(db0@0.2.1)(encoding@0.1.13)(eslint@9.20.0(jiti@2.4.2))(idb-keyval@6.2.1)(ioredis@5.4.2)(magicast@0.3.5)(optionator@0.9.4)(rollup@4.34.6)(terser@5.31.0)(tsx@4.19.2)(typescript@5.7.3)(vite@6.1.0(@types/node@22.10.7)(jiti@2.4.2)(terser@5.31.0)(tsx@4.19.2)(yaml@2.7.0))(vue-tsc@2.2.0(typescript@5.7.3))(yaml@2.7.0))(rollup@4.34.6)(typescript@5.7.3)':
     dependencies:
       '@nuxt/kit': 3.15.4(magicast@0.3.5)(rollup@4.34.6)
       '@vueuse/core': 12.5.0(typescript@5.7.3)
       '@vueuse/metadata': 12.5.0
       local-pkg: 1.0.0
-      nuxt: 3.15.4(@parcel/watcher@2.4.1)(@types/node@22.10.7)(db0@0.2.1)(encoding@0.1.13)(eslint@9.20.0(jiti@2.4.2))(ioredis@5.4.2)(magicast@0.3.5)(optionator@0.9.4)(rollup@4.34.6)(terser@5.31.0)(tsx@4.19.2)(typescript@5.7.3)(vite@6.1.0(@types/node@22.10.7)(jiti@2.4.2)(terser@5.31.0)(tsx@4.19.2)(yaml@2.7.0))(vue-tsc@2.2.0(typescript@5.7.3))(yaml@2.7.0)
+      nuxt: 3.15.4(@parcel/watcher@2.4.1)(@types/node@22.10.7)(db0@0.2.1)(encoding@0.1.13)(eslint@9.20.0(jiti@2.4.2))(idb-keyval@6.2.1)(ioredis@5.4.2)(magicast@0.3.5)(optionator@0.9.4)(rollup@4.34.6)(terser@5.31.0)(tsx@4.19.2)(typescript@5.7.3)(vite@6.1.0(@types/node@22.10.7)(jiti@2.4.2)(terser@5.31.0)(tsx@4.19.2)(yaml@2.7.0))(vue-tsc@2.2.0(typescript@5.7.3))(yaml@2.7.0)
       vue: 3.5.13(typescript@5.7.3)
     transitivePeerDependencies:
       - magicast
@@ -10177,6 +10186,8 @@ snapshots:
     dependencies:
       safer-buffer: 2.1.2
 
+  idb-keyval@6.2.1: {}
+
   ignore@5.3.2: {}
 
   ignore@7.0.3: {}
@@ -10981,7 +10992,7 @@ snapshots:
 
   neo-async@2.6.2: {}
 
-  nitropack@2.8.1(db0@0.2.1)(encoding@0.1.13)(ioredis@5.4.2)(magicast@0.3.5):
+  nitropack@2.8.1(db0@0.2.1)(encoding@0.1.13)(idb-keyval@6.2.1)(ioredis@5.4.2)(magicast@0.3.5):
     dependencies:
       '@cloudflare/kv-asset-handler': 0.3.4
       '@netlify/functions': 2.8.2
@@ -11046,7 +11057,7 @@ snapshots:
       unctx: 2.4.1
       unenv: 1.10.0
       unimport: 3.14.6(rollup@4.34.6)
-      unstorage: 1.14.4(db0@0.2.1)(ioredis@5.4.2)
+      unstorage: 1.14.4(db0@0.2.1)(idb-keyval@6.2.1)(ioredis@5.4.2)
     transitivePeerDependencies:
       - '@azure/app-configuration'
       - '@azure/cosmos'
@@ -11148,7 +11159,7 @@ snapshots:
       - supports-color
       - typescript
 
-  nuxt@3.15.4(@parcel/watcher@2.4.1)(@types/node@22.10.7)(db0@0.2.1)(encoding@0.1.13)(eslint@9.20.0(jiti@2.4.2))(ioredis@5.4.2)(magicast@0.3.5)(optionator@0.9.4)(rollup@4.34.6)(terser@5.31.0)(tsx@4.19.2)(typescript@5.7.3)(vite@6.1.0(@types/node@22.10.7)(jiti@2.4.2)(terser@5.31.0)(tsx@4.19.2)(yaml@2.7.0))(vue-tsc@2.2.0(typescript@5.7.3))(yaml@2.7.0):
+  nuxt@3.15.4(@parcel/watcher@2.4.1)(@types/node@22.10.7)(db0@0.2.1)(encoding@0.1.13)(eslint@9.20.0(jiti@2.4.2))(idb-keyval@6.2.1)(ioredis@5.4.2)(magicast@0.3.5)(optionator@0.9.4)(rollup@4.34.6)(terser@5.31.0)(tsx@4.19.2)(typescript@5.7.3)(vite@6.1.0(@types/node@22.10.7)(jiti@2.4.2)(terser@5.31.0)(tsx@4.19.2)(yaml@2.7.0))(vue-tsc@2.2.0(typescript@5.7.3))(yaml@2.7.0):
     dependencies:
       '@nuxt/cli': 3.21.1(magicast@0.3.5)
       '@nuxt/devalue': 2.0.2
@@ -11186,7 +11197,7 @@ snapshots:
       magic-string: 0.30.17
       mlly: 1.7.4
       nanotar: 0.2.0
-      nitropack: 2.8.1(db0@0.2.1)(encoding@0.1.13)(ioredis@5.4.2)(magicast@0.3.5)
+      nitropack: 2.8.1(db0@0.2.1)(encoding@0.1.13)(idb-keyval@6.2.1)(ioredis@5.4.2)(magicast@0.3.5)
       nypm: 0.5.2
       ofetch: 1.4.1
       ohash: 1.1.4
@@ -11208,7 +11219,7 @@ snapshots:
       unimport: 4.0.0(rollup@4.34.6)
       unplugin: 2.1.2
       unplugin-vue-router: 0.11.2(rollup@4.34.6)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))(vue@3.5.13(typescript@5.7.3))
-      unstorage: 1.14.4(db0@0.2.1)(ioredis@5.4.2)
+      unstorage: 1.14.4(db0@0.2.1)(idb-keyval@6.2.1)(ioredis@5.4.2)
       untyped: 1.5.2
       vue: 3.5.13(typescript@5.7.3)
       vue-bundle-renderer: 2.1.1
@@ -12458,7 +12469,7 @@ snapshots:
       acorn: 8.14.0
       webpack-virtual-modules: 0.6.2
 
-  unstorage@1.14.4(db0@0.2.1)(ioredis@5.4.2):
+  unstorage@1.14.4(db0@0.2.1)(idb-keyval@6.2.1)(ioredis@5.4.2):
     dependencies:
       anymatch: 3.1.3
       chokidar: 3.6.0
@@ -12470,6 +12481,7 @@ snapshots:
       ufo: 1.5.4
     optionalDependencies:
       db0: 0.2.1
+      idb-keyval: 6.2.1
       ioredis: 5.4.2
 
   untun@0.1.3:
