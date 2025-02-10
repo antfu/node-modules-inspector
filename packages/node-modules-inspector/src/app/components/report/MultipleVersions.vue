@@ -18,8 +18,8 @@ const sorted = computed(() => duplicated.value.map((packages) => {
 }))
 
 function showGraph(pkgs: PackageNode[]) {
-  filters.focus = null
-  filters.why = pkgs.map(pkg => pkg.spec)
+  filters.state.focus = null
+  filters.state.why = pkgs.map(pkg => pkg.spec)
   selectedNode.value = pkgs[0]
   nextTick(() => {
     router.push({ path: '/graph', hash: location.hash })

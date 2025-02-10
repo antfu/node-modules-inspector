@@ -22,12 +22,30 @@ const duplicated = computed(() => {
   return undefined
 })
 
-const status = computed(() => {
-  return {
-    isExcluded: payloads.excluded.has(props.pkg),
-    isUnFocused: filters.focus ? !payloads.filtered.has(props.pkg) : false,
-    isFocused: filters.focus ? payloads.filtered.has(props.pkg) : false,
-  }
+const isExcluded = computed(() => payloads.excluded.has(props.pkg))
+
+const selectionMode = computed<'focus' | 'why' | 'exclude' | 'none'>({
+  get() {
+    if (filters.state.focus?.includes(props.pkg.spec))
+      return 'focus'
+    if (filters.state.why?.includes(props.pkg.spec))
+      return 'why'
+    if (filters.state.excludes?.includes(props.pkg.spec))
+      return 'exclude'
+    return 'none'
+  },
+  set(v) {
+    filters.focus.toggle(props.pkg.spec, false)
+    filters.why.toggle(props.pkg.spec, false)
+    filters.excludes.toggle(props.pkg.spec, false)
+
+    if (v === 'focus')
+      filters.focus.toggle(props.pkg.spec, true)
+    if (v === 'why')
+      filters.why.toggle(props.pkg.spec, true)
+    if (v === 'exclude')
+      filters.excludes.toggle(props.pkg.spec, true)
+  },
 })
 
 function getDepth(amount: number, min = 1) {
@@ -49,80 +67,11 @@ const sizeTotal = computed(() => {
     return 0
   return [props.pkg, ...deps].reduce((acc, x) => acc + (x.resolved.installSize?.bytes || 0), 0)
 })
-
-function toggleFocus() {
-  let current = filters.focus || []
-  if (current.includes(props.pkg.spec))
-    current = current.filter(x => x !== props.pkg.spec)
-  else
-    current = [...current, props.pkg.spec]
-  filters.focus = current.length === 0 ? null : current
-}
-
-function toggleWhy() {
-  let current = filters.why || []
-  if (current.includes(props.pkg.spec))
-    current = current.filter(x => x !== props.pkg.spec)
-  else
-    current = [...current, props.pkg.spec]
-  filters.why = current.length === 0 ? null : current
-}
-
-function toggleExclude() {
-  let current = filters.excludes || []
-  if (current.includes(props.pkg.spec))
-    current = current.filter(x => x !== props.pkg.spec)
-  else
-    current = [...current, props.pkg.spec]
-  filters.excludes = current.length === 0 ? null : current
-}
 </script>
 
 <template>
   <div v-if="pkg" of-hidden h-full flex="~ col gap-0">
     <div absolute top-2 right-2 flex="~ items-center gap-0">
-      <VMenu placement="bottom-start" :triggers="['click', 'touch']">
-        <button
-          w-10 h-10 rounded-full
-          op30
-          hover="op100 bg-active"
-          flex="~ items-center justify-center"
-        >
-          <div i-ph-dots-three-vertical-bold />
-        </button>
-        <template #popper>
-          <div p1 flex="~ col">
-            <button
-              px2 py1 rounded hover:bg-active flex="~ items-center gap-2"
-              :class="filters.focus?.includes(pkg.spec) ? 'text-primary' : 'op75'"
-              :disabled="filters.excludes?.includes(pkg.spec)"
-              class="disabled:op25! disabled:pointer-events-none"
-              @click="toggleFocus()"
-            >
-              <div i-ph-arrows-in-cardinal-duotone flex-none />
-              <span class="ml-2">{{ filters.focus?.includes(pkg.spec) ? 'Unfocus' : 'Focus' }} on this package</span>
-            </button>
-            <button
-              px2 py1 rounded hover:bg-active flex="~ items-center gap-2"
-              :class="filters.why?.includes(pkg.spec) ? 'text-orange' : 'op75'"
-              :disabled="filters.excludes?.includes(pkg.spec)"
-              class="disabled:op25! disabled:pointer-events-none"
-              @click="toggleWhy()"
-            >
-              <div i-ph-seal-question-duotone flex-none />
-              <span class="ml-2">Check why this package is here</span>
-            </button>
-            <button
-              px2 py1 rounded hover:bg-active flex="~ items-center gap-2"
-              :class="filters.excludes?.includes(pkg.spec) ? 'text-purple' : 'op75'"
-              @click="toggleExclude()"
-            >
-              <div i-ph-network-slash-duotone flex-none />
-              <span class="ml-2">{{ filters.excludes?.includes(pkg.spec) ? 'Un-exclude' : 'Exclude' }} this package</span>
-            </button>
-          </div>
-        </template>
-      </VMenu>
       <button
         w-10 h-10 rounded-full
         op30
@@ -141,6 +90,12 @@ function toggleExclude() {
       <div flex="~ items-center wrap gap-2">
         <DisplayVersion :version="pkg.version" op75 />
         <DisplayModuleType text-sm :pkg :force="true" />
+        <div v-if="pkg.private" badge-color-gray px2 rounded text-sm border="~ base dashed">
+          Private
+        </div>
+        <div v-if="pkg.workspace" badge-color-lime px2 rounded text-sm>
+          Workspace
+        </div>
         <VMenu v-if="duplicated" font-mono>
           <div pl2 pr1 rounded bg-rose:10 text-rose text-sm flex="~ items-center gap-1">
             {{ duplicated.length }} versions
@@ -189,6 +144,15 @@ function toggleExclude() {
           >
             <div i-catppuccin-http icon-catppuccin ma />
           </NuxtLink>
+          <NuxtLink
+            v-if="pkg.resolved.funding"
+            :to="pkg.resolved.funding"
+            title="Open Funding"
+            target="_blank"
+            ml--1 w-8 h-8 rounded-full hover:bg-active flex
+          >
+            <div i-catppuccin-code-of-conduct icon-catppuccin ma />
+          </NuxtLink>
           <button
             v-if="backend?.functions.openInEditor"
             title="Open Package Folder in Editor"
@@ -215,25 +179,49 @@ function toggleExclude() {
             {{ pkg.resolved.author?.replace(/\<.*\>/, '').replace(/\(.*\)/, '') }}
           </span>
         </template>
+        <template v-if="pkg.resolved.engines?.node">
+          <span op50>·</span>
+          <DisplayNodeVersionRange :range="pkg.resolved.engines?.node" />
+        </template>
       </div>
-
-      <div flex="~ gap-2 wrap items-center">
-        <div v-if="pkg.private" badge-color-gray px2 rounded text-sm border="~ base dashed">
-          Private
-        </div>
-        <div v-if="pkg.workspace" badge-color-lime px2 rounded text-sm>
-          Workspace
-        </div>
-        <div v-if="status.isExcluded" badge-color-purple px2 rounded text-sm>
-          Excluded
-        </div>
-        <div v-if="status.isUnFocused" badge-color-yellow px2 rounded text-sm>
-          Not in Focus
-        </div>
-        <div v-if="status.isFocused" badge-color-green px2 rounded text-sm>
-          In Focus
-        </div>
-      </div>
+    </div>
+    <div grid="~ cols-3 gap-2 items-center" p2>
+      <button
+        v-tooltip="'Focus on this package and the dependencies it brings'"
+        flex="~ items-center gap-1 justify-center"
+        px4 py1 rounded hover:bg-active
+        :class="selectionMode === 'focus' ? 'text-teal bg-teal:10!' : 'op50'"
+        @click="selectionMode = selectionMode === 'focus' ? 'none' : 'focus'"
+      >
+        <div i-ph-arrows-in-cardinal-duotone flex-none />
+        <span>Focus</span>
+      </button>
+      <button
+        v-tooltip="'Focus on the packages that brings this package'"
+        flex="~ items-center gap-1 justify-center"
+        px4 py1 rounded hover:bg-active
+        :class="selectionMode === 'why' ? 'text-orange bg-orange:10!' : 'op50'"
+        @click="selectionMode = selectionMode === 'why' ? 'none' : 'why'"
+      >
+        <div i-ph-seal-question-duotone flex-none />
+        <span>Why</span>
+      </button>
+      <button
+        v-tooltip="'Exclude this package and the dependencies it brings'"
+        flex="~ items-center gap-1 justify-center" px4 py1 rounded
+        hover:bg-active border="~ transparent"
+        :class="[
+          selectionMode === 'exclude'
+            ? 'text-purple bg-purple:10!'
+            : isExcluded
+              ? 'border-dashed! border-purple:50!'
+              : 'op50',
+        ]"
+        @click="selectionMode = selectionMode === 'exclude' ? 'none' : 'exclude'"
+      >
+        <div i-ph-network-slash-duotone flex-none />
+        <span>Exclude</span>
+      </button>
     </div>
 
     <div v-if="pkg.resolved.installSize" p4 border="t base" flex="~ col gap-1">

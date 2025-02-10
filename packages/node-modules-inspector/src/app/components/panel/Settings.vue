@@ -1,6 +1,9 @@
 <script setup lang="ts">
+import { getBackend } from '~/backends'
 import { fetchData } from '~/state/data'
 import { settings } from '~/state/settings'
+
+const backend = getBackend()
 </script>
 
 <template>
@@ -23,7 +26,7 @@ import { settings } from '~/state/settings'
         <OptionCheckbox v-model="settings.colorizePackageSize" />
       </OptionItem>
     </div>
-    <div border="t base" p4 flex="~ gap-2 items-center">
+    <div v-if="backend.isDynamic" border="t base" p4 flex="~ gap-2 items-center">
       <button btn-action @click="fetchData()">
         <div i-ph-arrows-clockwise-duotone />
         Refetch Data

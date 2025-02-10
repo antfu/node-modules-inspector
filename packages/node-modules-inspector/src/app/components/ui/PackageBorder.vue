@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
+import type { HighlightMode } from '~/state/highlight'
 import { computed } from 'vue'
 import { selectedNode } from '~/state/current'
 import { filters } from '~/state/filters'
+import { getCompareHighlight } from '~/state/highlight'
 import { payloads } from '~/state/payload'
 
 const props = withDefaults(
@@ -12,11 +14,13 @@ const props = withDefaults(
     inner?: string
     as?: string
     fade?: boolean
+    highlightMode?: HighlightMode
   }>(),
   {
     selectionMode: 'none',
     as: 'div',
     fade: false,
+    highlightMode: 'focus',
   },
 )
 
@@ -24,14 +28,19 @@ const isSelected = computed(() => selectedNode.value === props.pkg)
 const isRelated = computed(() => {
   if (!selectedNode.value)
     return false
-  return isSelected.value || payloads.avaliable.flatDependents(selectedNode.value).includes(props.pkg) || payloads.avaliable.flatDependencies(props.pkg).includes(selectedNode.value)
+  return isSelected.value || payloads.avaliable.flatDependents(selectedNode.value).includes(props.pkg) || payloads.avaliable.flatDependencies(selectedNode.value).includes(props.pkg)
 })
 const isFaded = computed(() => selectedNode.value && !isRelated.value)
-
 const isFocused = computed(() => {
   if (!props.pkg)
     return false
-  return filters.focus?.includes(props.pkg.spec) || filters.why?.includes(props.pkg.spec)
+  return filters.state.focus?.includes(props.pkg.spec) || filters.state.why?.includes(props.pkg.spec)
+})
+
+const highlightCompare = computed(() => {
+  if (props.highlightMode !== 'compare')
+    return 'none'
+  return getCompareHighlight(props.pkg)
 })
 
 const classesOuter = computed(() => {
@@ -43,17 +52,24 @@ const classesOuter = computed(() => {
     list.push('z-graph-node')
 
   if (isFocused.value)
-    list.push('border-orange:50')
+    list.push('border-teal:50')
   else if (isSelected.value)
     list.push('border-primary')
   else if (isRelated.value)
     list.push('border-primary:50')
-  else
+  else if (highlightCompare.value === 'none')
     list.push('border-base')
+
+  if (highlightCompare.value === 'both')
+    list.push('border-pink5:50')
+  else if (highlightCompare.value === 'a')
+    list.push('border-yellow5:50')
+  else if (highlightCompare.value === 'b')
+    list.push('border-purple5:50')
 
   if (isSelected.value) {
     if (isFocused.value)
-      list.push('ring-3 ring-yellow:25! text-orange-600 dark:text-orange-300 border-orange!')
+      list.push('ring-3 ring-teal:25! text-teal-600 dark:text-teal-300 border-teal!')
     else
       list.push('ring-3 ring-primary:25! text-primary-600 dark:text-primary-300')
   }
@@ -68,9 +84,15 @@ const classesInner = computed(() => {
   const list: string[] = []
 
   if (isFocused.value)
-    list.push('bg-orange:10!')
+    list.push('bg-teal:10!')
   else if (isSelected.value)
     list.push('bg-primary:10!')
+  else if (highlightCompare.value === 'both')
+    list.push('bg-pink5:10')
+  else if (highlightCompare.value === 'a')
+    list.push('bg-yellow5:10')
+  else if (highlightCompare.value === 'b')
+    list.push('bg-purple5:10')
 
   if (isFaded.value && props.fade)
     list.push('op75')

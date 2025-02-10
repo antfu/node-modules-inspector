@@ -1,0 +1,112 @@
+<script setup lang="ts">
+import type { PackageNode } from 'node-modules-tools'
+import { computed, shallowReactive } from 'vue'
+import OffsettedContainer from '~/components/ui/OffsettedContainer.vue'
+import { selectedNode } from '~/state/current'
+import { filters } from '~/state/filters'
+import { payloads } from '~/state/payload'
+
+const payload = payloads.avaliable
+
+const selectedA = shallowReactive(new Set<PackageNode>())
+const selectedB = shallowReactive(new Set<PackageNode>())
+
+const selectedAll = computed(() => [...selectedA, ...selectedB])
+
+const rootPackages = computed(() => {
+  return [
+    ...filters.state['compare-a'] || [],
+    ...filters.state['compare-b'] || [],
+  ]
+    .map(x => payload.get(x))
+    .filter(x => !!x)
+})
+
+function compare() {
+  if (!selectedA.size || !selectedB.size)
+    return
+
+  selectedNode.value = undefined
+  filters.state['compare-a'] = Array.from(selectedA).map(x => x.spec)
+  filters.state['compare-b'] = Array.from(selectedB).map(x => x.spec)
+}
+
+function reset() {
+  selectedA.clear()
+  selectedB.clear()
+  filters.state['compare-a']?.forEach(x => selectedA.add(payload.get(x)!))
+  filters.state['compare-b']?.forEach(x => selectedB.add(payload.get(x)!))
+
+  filters.state['compare-a'] = null
+  filters.state['compare-b'] = null
+}
+</script>
+
+<template>
+  <OffsettedContainer
+    v-if="!filters.state['compare-a']?.length || !filters.state['compare-b']?.length"
+  >
+    <div flex="~ col items-center justify-center gap-10" mt-10>
+      <div text-center>
+        <h1 text-2xl font-bold>
+          Select packages to compare
+        </h1>
+        <p op50>
+          Use the filters to select packages to compare
+        </p>
+      </div>
+      <div grid="~ cols-[1fr_max-content_1fr] gap-2">
+        <div>
+          <div text-yellow p2 text-center op75>
+            Compare Group A
+          </div>
+          <OptionPackageMultiSelectInput v-model:selected="selectedA" :excludes="selectedAll">
+            <template #icon>
+              <div i-ph-package-duotone text-lg text-yellow flex-none />
+            </template>
+          </OptionPackageMultiSelectInput>
+        </div>
+        <div p2 rounded op50 py13>
+          vs
+        </div>
+        <div>
+          <div text-purple p2 text-center op75>
+            Compare Group B
+          </div>
+          <OptionPackageMultiSelectInput v-model:selected="selectedB" :excludes="selectedAll">
+            <template #icon>
+              <div i-ph-package-duotone text-lg text-purple flex-none />
+            </template>
+          </OptionPackageMultiSelectInput>
+        </div>
+      </div>
+
+      <button
+        :disabled="!selectedA.size || !selectedB.size"
+        class="disabled:op25 disabled:pointer-events-none"
+        px5 py1 text-lg border="~ base rounded-full" hover="bg-active op100"
+        @click="compare"
+      >
+        Start Compare
+      </button>
+    </div>
+  </OffsettedContainer>
+  <template v-else>
+    <GraphCanvas
+      :payload="payloads.filtered"
+      :root-packages="rootPackages"
+      highlight-mode="compare"
+    />
+    <div
+      border="~ base rounded-full" z-panel-nav
+      fixed top-4 left="50%" transform="-50%" bg-glass shadow of-hidden
+    >
+      <button
+        px5 py1 text-lg hover="bg-active op100" op50
+        @click="reset"
+      >
+        Start a new compare
+      </button>
+    </div>
+  </template>
+</template>

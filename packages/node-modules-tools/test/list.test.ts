@@ -38,14 +38,11 @@ it('runs', async () => {
         "engines": {
           "node": ">=6.0",
         },
+        "funding": undefined,
         "homepage": undefined,
         "installSize": {
           "bytes": 42798,
           "categories": {
-            "data": {
-              "bytes": 1524,
-              "count": 1,
-            },
             "doc": {
               "bytes": 22115,
               "count": 1,
@@ -53,6 +50,10 @@ it('runs', async () => {
             "js": {
               "bytes": 18020,
               "count": 4,
+            },
+            "json": {
+              "bytes": 1524,
+              "count": 1,
             },
             "other": {
               "bytes": 1139,

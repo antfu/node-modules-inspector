@@ -13,7 +13,7 @@ const sorted = computed(() =>
 <template>
   <div v-if="sorted.length">
     <UiSubTitle>
-      Largest Packages by Install Size
+      Largest Install Size
       <DisplayNumberBadge :number="sorted.length" rounded-full text-sm />
     </UiSubTitle>
     <ReportExpendableContainer :list="sorted">

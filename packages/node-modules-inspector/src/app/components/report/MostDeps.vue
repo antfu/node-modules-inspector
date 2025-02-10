@@ -13,7 +13,7 @@ const transitiveDeps = computed(() =>
 <template>
   <div v-if="transitiveDeps.length">
     <UiSubTitle>
-      Packages with the Most of Transitive Dependencies
+      Most Transitive Dependencies
       <DisplayNumberBadge :number="transitiveDeps.length" rounded-full text-sm />
     </UiSubTitle>
     <ReportExpendableContainer :list="transitiveDeps">

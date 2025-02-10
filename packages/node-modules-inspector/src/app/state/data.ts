@@ -1,12 +1,12 @@
 import type { ListPackageDependenciesResult } from 'node-modules-tools'
 import { shallowRef } from 'vue'
-import { ensureBackend } from '~/backends'
+import { getBackend } from '~/backends'
 
 export const rawData = shallowRef<ListPackageDependenciesResult | null>(null)
 
 export async function fetchData() {
   rawData.value = null
-  const backend = await ensureBackend()
+  const backend = getBackend()
   try {
     const data = await backend.functions.listDependencies()
 
@@ -19,7 +19,9 @@ export async function fetchData() {
     return rawData.value
   }
   catch (err) {
-    backend.connectionError.value = err
+    console.error(err)
+    if (backend)
+      backend.connectionError.value = err
     rawData.value = null
     return null
   }

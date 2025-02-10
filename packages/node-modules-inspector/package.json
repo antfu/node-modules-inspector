@@ -1,7 +1,7 @@
 {
   "name": "node-modules-inspector",
   "type": "module",
-  "version": "0.0.7",
+  "version": "0.0.10",
   "description": "A Node Modules Inspector",
   "author": "Anthony Fu <anthonyfu117@hotmail.com>",
   "license": "MIT",
@@ -20,12 +20,15 @@
     "dist"
   ],
   "scripts": {
-    "build": "nuxi build src && unbuild",
-    "build:wc": "NMI_BACKEND=webcontainer nuxi build src && unbuild",
-    "start": "node ./bin.mjs",
     "dev": "pnpm run -r stub && cd src && nuxi dev",
-    "dev:wc": "pnpm run -r stub && cd src && NMI_BACKEND=webcontainer nuxi dev",
-    "prepack": "pnpm build"
+    "build": "pnpm run wc:prepare && nuxi build src && unbuild",
+    "build:debug": "NUXT_DEBUG_BUILD=true pnpm run build",
+    "start": "node ./bin.mjs",
+    "prepack": "pnpm build",
+    "prepare": "nuxi prepare src && pnpm run wc:prepare",
+    "wc:prepare": "rollup -c",
+    "wc:build": "pnpm run wc:prepare && NMI_BACKEND=webcontainer nuxi build src && unbuild",
+    "wc:dev": "pnpm run -r stub && pnpm run wc:prepare && cd src && NMI_BACKEND=webcontainer nuxi dev"
   },
   "dependencies": {
     "birpc": "catalog:",
@@ -47,15 +50,22 @@
   },
   "devDependencies": {
     "@types/picomatch": "catalog:",
+    "@types/semver": "^7.5.8",
     "@unocss/nuxt": "catalog:",
     "@vueuse/nuxt": "catalog:",
+    "@webcontainer/api": "catalog:",
+    "@xterm/addon-fit": "catalog:",
+    "@xterm/xterm": "catalog:",
     "d3": "catalog:",
     "d3-hierarchy": "catalog:",
     "d3-shape": "catalog:",
     "floating-vue": "catalog:",
     "fuse.js": "catalog:",
+    "modern-screenshot": "catalog:",
     "picomatch": "catalog:",
+    "semver": "^7.7.1",
     "shiki": "catalog:",
+    "theme-vitesse": "catalog:",
     "vite-hot-client": "catalog:"
   }
 }

@@ -1,61 +1,15 @@
 <script setup lang="ts">
-import Fuse from 'fuse.js'
-import { computed, ref, useTemplateRef, watch } from 'vue'
+import type { PackageNode } from 'node-modules-tools'
+import { ref, useTemplateRef } from 'vue'
 import { selectedNode } from '~/state/current'
-import { payloads } from '~/state/payload'
 
 const input = ref('')
-const selectIndex = ref(0)
-
-const fuse = computed(() => new Fuse(payloads.avaliable.packages, {
-  keys: [
-    'name',
-    'spec',
-    'author',
-    'license',
-  ],
-}))
-
-watch(input, () => {
-  selectIndex.value = 0
-})
-
-const result = computed(() => {
-  if (!input.value.trim())
-    return []
-  const result = fuse.value.search(input.value.trim())
-  return result.map(i => i.item)
-    .slice(0, 10)
-})
 
 const el = useTemplateRef<HTMLInputElement>('el')
-function onCommitted() {
+function onCommitted(node: PackageNode) {
+  selectedNode.value = node
   input.value = ''
   el.value?.blur()
-}
-
-function onEnter(e: KeyboardEvent) {
-  switch (e.key) {
-    case 'ArrowDown': {
-      e.preventDefault()
-      selectIndex.value = Math.min(selectIndex.value + 1, result.value.length - 1)
-      break
-    }
-    case 'ArrowUp': {
-      e.preventDefault()
-      selectIndex.value = Math.max(selectIndex.value - 1, 0)
-      break
-    }
-    case 'Enter': {
-      e.preventDefault()
-      const item = result.value[selectIndex.value]
-      if (item) {
-        selectedNode.value = item
-        onCommitted()
-      }
-      break
-    }
-  }
 }
 </script>
 
@@ -66,43 +20,30 @@ function onEnter(e: KeyboardEvent) {
     focus-within="ring-4 ring-primary:20 w-60"
     :class="input ? 'border-primary w-60' : 'w-12'"
   >
-    <label
-      p3 flex-none rounded-full h-full
-      flex="~ items-center gap-1.5"
-      hover:bg-active
-    >
-      <div i-ph-magnifying-glass-duotone text-lg :class="input ? 'text-primary' : 'op50'" flex-none />
-      <input
-        ref="el"
-        v-model="input"
-        placeholder="Goto"
-        w-full bg-transparent outline-none
-        @keydown="onEnter"
-      >
-      <button
-        w-6 h-6 rounded-full hover:bg-active flex
-        :class="input ? '' : 'op0'"
-        @click="input = ''"
-      >
-        <div i-ph-x ma op50 />
-      </button>
-    </label>
-  </div>
-  <Teleport to="body">
-    <div
-      v-show="result.length"
-      fixed left-72 top-20 p2 bg-glass shadow rounded-xl z-panel-goto
-      border="~ base"
-      flex="~ col"
-    >
-      <template v-for="pkg, idx of result" :key="pkg.spec">
-        <TreeItem
-          :pkg
-          p2 w-full
-          :class="idx === selectIndex ? 'bg-active' : ''"
-          @click="onCommitted()"
-        />
+    <OptionPackageSelect v-model:input="input" @select="onCommitted">
+      <template #default="{ onEnter }">
+        <label
+          p3 flex-none rounded-full h-full
+          flex="~ items-center gap-1.5"
+          hover:bg-active
+        >
+          <div i-ph-magnifying-glass-duotone text-lg :class="input ? 'text-primary' : 'op50'" flex-none />
+          <input
+            ref="el"
+            v-model="input"
+            placeholder="Goto"
+            w-full bg-transparent outline-none
+            @keydown="onEnter"
+          >
+          <button
+            w-6 h-6 rounded-full hover:bg-active flex
+            :class="input ? '' : 'op0'"
+            @click="input = ''"
+          >
+            <div i-ph-x ma op50 />
+          </button>
+        </label>
       </template>
-    </div>
-  </Teleport>
+    </OptionPackageSelect>
+  </div>
 </template>

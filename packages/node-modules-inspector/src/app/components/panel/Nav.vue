@@ -2,7 +2,7 @@
 import { useRoute } from '#app/composables/router'
 import { computed } from 'vue'
 import { selectedNode } from '~/state/current'
-import { filtersActivated } from '~/state/filters'
+import { filters } from '~/state/filters'
 import { query } from '~/state/query'
 
 const route = useRoute()
@@ -46,6 +46,11 @@ const tabsMeta = [
     name: 'Report View',
     path: '/report',
     icon: 'i-ph-projector-screen-chart-duotone',
+  },
+  {
+    name: 'Compare',
+    path: '/compare',
+    icon: 'i-ph-line-vertical-duotone',
   },
 ]
 
@@ -110,8 +115,8 @@ function resetPanelState() {
         >
           <div i-ph-funnel-duotone text-xl />
         </button>
-        <div v-if="filtersActivated.length" absolute top--1 right--1 w-4 h-4 bg-primary-600 shadow text-white rounded-full flex text-0.6rem>
-          <span ma>{{ filtersActivated.length }}</span>
+        <div v-if="filters.select.activated.length" absolute top--1 right--1 w-4 h-4 bg-primary-600 shadow text-white rounded-full flex text-0.6rem>
+          <span ma>{{ filters.select.activated.length }}</span>
         </div>
       </div>
       <button
