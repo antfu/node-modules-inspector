@@ -40,6 +40,12 @@ defineProps<{
         rounded-full text-sm
       />
 
+      <DisplayDateBadge
+        v-if="settings.showPublishTimeBadge"
+        :pkg
+        rounded-full text-sm
+      />
+
       <!--
       <span op25>·</span>
       <div op75>

@@ -6,6 +6,7 @@
       <ReportEngines />
       <ReportUsedBy />
     </div>
+    <ReportPublishTime />
     <ReportMultipleVersions />
   </UiOffsettedContainer>
 </template>

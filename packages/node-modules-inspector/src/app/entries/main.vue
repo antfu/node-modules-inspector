@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Backend } from '~/types/backend'
 import { computed } from 'vue'
+import { setupQuery } from '~/state/query'
 import { backend } from '../backends'
 import { rawData } from '../state/data'
 
@@ -20,6 +21,8 @@ const error = computed(() => {
 })
 
 const isLoading = computed(() => Boolean(!backend.value || backend.value?.status.value !== 'connected' || error.value || !rawData.value))
+
+setupQuery()
 </script>
 
 <template>

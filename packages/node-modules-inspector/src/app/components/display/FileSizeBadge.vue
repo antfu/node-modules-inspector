@@ -23,11 +23,11 @@ const KB = 1024
 const MB = KB ** 2
 
 const colorScale = [
-  [80 * KB, 'text-gray:75!'],
-  [500 * KB, 'text-lime:75! saturate-50'],
-  [1 * MB, 'text-amber:85! saturate-80'],
-  [10 * MB, 'text-orange!'],
-  [20 * MB, 'text-red!'],
+  [80 * KB, 'color-scale-neutral'],
+  [500 * KB, 'color-scale-low'],
+  [1 * MB, 'color-scale-medium'],
+  [10 * MB, 'color-scale-high'],
+  [20 * MB, 'color-scale-critical'],
 ] as const
 
 const color = computed(() => {

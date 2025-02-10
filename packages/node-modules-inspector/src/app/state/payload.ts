@@ -1,7 +1,7 @@
 import type { PackageNode } from 'node-modules-tools'
 import { computed, reactive, watch } from 'vue'
 import { buildVersionToPackagesMap } from '../utils/maps'
-import { rawData } from './data'
+import { rawData, rawPublishDates } from './data'
 import { filters, filterSelectPredicate, filtersExcludePredicate } from './filters'
 
 export type ComputedPayload = ReturnType<typeof createComputedPayload>
@@ -154,6 +154,14 @@ export const payloads = {
 
   compareA: _compareA,
   compareB: _compareB,
+}
+
+export function getPublishTime(pkg: PackageNode | string) {
+  const spec = typeof pkg === 'string' ? pkg : pkg.spec
+  const date = rawPublishDates.value?.get(spec)
+  if (date)
+    return new Date(date)
+  return null
 }
 
 export const totalWorkspaceSize = computed(() => {

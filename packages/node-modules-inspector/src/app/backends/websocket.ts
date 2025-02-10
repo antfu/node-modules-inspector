@@ -95,6 +95,15 @@ export function createWebSocketBackend(options: WebSocketBackendOptions): Backen
           throw err
         }
       },
+      getPackagesPublishDate: async (specs: string[]) => {
+        try {
+          return await rpc.getPackagesPublishDate(specs)
+        }
+        catch (err) {
+          error.value = err
+          throw err
+        }
+      },
       openInEditor: (filename: string) => rpc.openInEditor.asEvent(filename),
       openInFinder: (filename: string) => rpc.openInFinder.asEvent(filename),
     },

@@ -4,8 +4,11 @@ import { WebContainer } from '@webcontainer/api'
 import c from 'chalk'
 import { join } from 'pathe'
 import { parse } from 'structured-clone-es'
+import { createStorage } from 'unstorage'
+import driverIndexedDb from 'unstorage/drivers/indexedb'
 import { shallowRef } from 'vue'
 import { WEBCONTAINER_STDOUT_PREFIX } from '~~/shared/constants'
+import { getPackagesPublishDate } from '~~/shared/publish-date'
 import { terminal } from '~/state/terminal'
 import { CODE_PACKAGE_JSON, CODE_SERVER } from './constants'
 
@@ -104,6 +107,11 @@ export async function install(
   // })
 
   const error = shallowRef<unknown | undefined>(undefined)
+  const storage = createStorage<string>({
+    driver: driverIndexedDb({
+      base: 'nmi:publish-date',
+    }),
+  })
 
   return {
     name: 'webcontainer',
@@ -124,6 +132,9 @@ export async function install(
           throw new Error('Failed to get dependencies')
         }
         return result
+      },
+      getPackagesPublishDate(deps) {
+        return getPackagesPublishDate(deps, { storage })
       },
     },
   }

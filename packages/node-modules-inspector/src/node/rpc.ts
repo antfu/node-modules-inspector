@@ -1,19 +1,28 @@
+import type { ServerFunctions } from '#shared/types'
 import type { ListPackageDependenciesOptions } from 'node-modules-tools'
-import type { ServerFunctions } from '../shared/types'
+import type { ListPackagePublishDatesOptions } from '../shared/publish-date'
 import process from 'node:process'
 import { listPackageDependencies } from 'node-modules-tools'
+import { getPackagesPublishDate } from '../shared/publish-date'
 
-export function createServerFunctions(options: Partial<ListPackageDependenciesOptions>): ServerFunctions {
+export interface CreateServerFunctionsOptions
+  extends Partial<ListPackageDependenciesOptions>, ListPackagePublishDatesOptions {
+}
+
+export function createServerFunctions(options: CreateServerFunctionsOptions): ServerFunctions {
   return {
     async listDependencies() {
-      console.log('Reading dependencies...')
-      const result = await listPackageDependencies({
+      console.log('[Node Modules Inspector] Reading dependencies...')
+      return listPackageDependencies({
         cwd: process.cwd(),
         depth: 25,
         monorepo: true,
         ...options,
       })
-      return result
+    },
+    async getPackagesPublishDate(deps: string[]) {
+      console.log('[Node Modules Inspector] Fetching publish dates...')
+      return getPackagesPublishDate(deps, { storage: options.storage })
     },
     async openInEditor(filename: string) {
       // @ts-expect-error missing types
