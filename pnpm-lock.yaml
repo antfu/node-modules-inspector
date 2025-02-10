@@ -66,6 +66,9 @@ catalogs:
     '@types/picomatch':
       specifier: ^3.0.2
       version: 3.0.2
+    '@types/semver':
+      specifier: ^7.5.8
+      version: 7.5.8
     '@types/stream-json':
       specifier: ^1.7.8
       version: 1.7.8
@@ -123,6 +126,9 @@ catalogs:
     fast-glob:
       specifier: ^3.3.3
       version: 3.3.3
+    fast-npm-meta:
+      specifier: ^0.3.0
+      version: 0.3.0
     flatted:
       specifier: ^3.3.2
       version: 3.3.2
@@ -138,6 +144,9 @@ catalogs:
     h3:
       specifier: ^1.15.0
       version: 1.15.0
+    idb-keyval:
+      specifier: ^6.2.1
+      version: 6.2.1
     launch-editor:
       specifier: ^2.9.1
       version: 2.9.1
@@ -183,6 +192,9 @@ catalogs:
     rollup-plugin-esbuild:
       specifier: ^6.2.0
       version: 6.2.0
+    semver:
+      specifier: ^7.7.1
+      version: 7.7.1
     shiki:
       specifier: ^2.3.2
       version: 2.3.2
@@ -207,6 +219,9 @@ catalogs:
     unbuild:
       specifier: ^3.3.1
       version: 3.3.1
+    unstorage:
+      specifier: ^1.14.4
+      version: 1.14.4
     vite-hot-client:
       specifier: ^2.0.4
       version: 2.0.4
@@ -306,7 +321,7 @@ importers:
         specifier: 'catalog:'
         version: 9.20.0(jiti@2.4.2)
       fast-npm-meta:
-        specifier: ^0.3.0
+        specifier: 'catalog:'
         version: 0.3.0
       lint-staged:
         specifier: 'catalog:'
@@ -333,7 +348,7 @@ importers:
         specifier: 'catalog:'
         version: 3.3.1(typescript@5.7.3)(vue-tsc@2.2.0(typescript@5.7.3))(vue@3.5.13(typescript@5.7.3))
       unstorage:
-        specifier: ^1.14.4
+        specifier: 'catalog:'
         version: 1.14.4(db0@0.2.1)(idb-keyval@6.2.1)(ioredis@5.4.2)
       vite:
         specifier: ^6.1.0
@@ -363,7 +378,7 @@ importers:
         specifier: 'catalog:'
         version: 3.3.3
       fast-npm-meta:
-        specifier: ^0.3.0
+        specifier: 'catalog:'
         version: 0.3.0
       flatted:
         specifier: 'catalog:'
@@ -398,6 +413,9 @@ importers:
       structured-clone-es:
         specifier: 'catalog:'
         version: 1.0.0
+      unstorage:
+        specifier: 'catalog:'
+        version: 1.14.4(db0@0.2.1)(idb-keyval@6.2.1)(ioredis@5.4.2)
       ws:
         specifier: 'catalog:'
         version: 8.18.0
@@ -406,7 +424,7 @@ importers:
         specifier: 'catalog:'
         version: 3.0.2
       '@types/semver':
-        specifier: ^7.5.8
+        specifier: 'catalog:'
         version: 7.5.8
       '@unocss/nuxt':
         specifier: 'catalog:'
@@ -439,7 +457,7 @@ importers:
         specifier: 'catalog:'
         version: 7.1.0
       idb-keyval:
-        specifier: ^6.2.1
+        specifier: 'catalog:'
         version: 6.2.1
       modern-screenshot:
         specifier: 'catalog:'
@@ -448,7 +466,7 @@ importers:
         specifier: 'catalog:'
         version: 4.0.2
       semver:
-        specifier: ^7.7.1
+        specifier: 'catalog:'
         version: 7.7.1
       shiki:
         specifier: 'catalog:'
@@ -6705,7 +6723,7 @@ snapshots:
       fast-glob: 3.3.3
       find-up: 7.0.0
       get-port-please: 3.1.2
-      h3: 1.14.0
+      h3: 1.15.0
       mlly: 1.7.4
       mrmime: 2.0.0
       open: 10.1.0
@@ -6918,7 +6936,7 @@ snapshots:
       defu: 6.1.4
       fuse.js: 7.1.0
       giget: 1.2.4
-      h3: 1.14.0
+      h3: 1.15.0
       httpxy: 0.1.7
       jiti: 2.4.2
       listhen: 1.9.0
@@ -7145,7 +7163,7 @@ snapshots:
       escape-string-regexp: 5.0.0
       externality: 1.0.2
       get-port-please: 3.1.2
-      h3: 1.14.0
+      h3: 1.15.0
       jiti: 2.4.2
       knitwork: 1.2.0
       magic-string: 0.30.17
@@ -10458,7 +10476,7 @@ snapshots:
       crossws: 0.3.3
       defu: 6.1.4
       get-port-please: 3.1.2
-      h3: 1.14.0
+      h3: 1.15.0
       http-shutdown: 1.2.2
       jiti: 2.4.2
       mlly: 1.7.4
@@ -11024,7 +11042,7 @@ snapshots:
       fs-extra: 11.2.0
       globby: 14.0.2
       gzip-size: 7.0.0
-      h3: 1.14.0
+      h3: 1.15.0
       hookable: 5.5.3
       httpxy: 0.1.7
       is-primitive: 3.0.1
@@ -12474,7 +12492,7 @@ snapshots:
       anymatch: 3.1.3
       chokidar: 3.6.0
       destr: 2.0.3
-      h3: 1.14.0
+      h3: 1.15.0
       lru-cache: 10.4.3
       node-fetch-native: 1.6.6
       ofetch: 1.4.1
