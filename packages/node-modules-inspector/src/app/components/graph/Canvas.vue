@@ -3,10 +3,11 @@ import type { HierarchyLink, HierarchyNode } from 'd3-hierarchy'
 import type { PackageNode } from 'node-modules-tools'
 import type { HighlightMode } from '~/state/highlight'
 import type { ComputedPayload } from '~/state/payload'
-import { useEventListener } from '@vueuse/core'
+import { onKeyPressed, useEventListener, useMagicKeys } from '@vueuse/core'
 import { hierarchy, tree } from 'd3-hierarchy'
 import { linkHorizontal, linkVertical } from 'd3-shape'
 import { computed, nextTick, onMounted, ref, shallowReactive, shallowRef, useTemplateRef, watch } from 'vue'
+import { useZoomElement } from '~/composables/zoomElement'
 import { selectedNode } from '~/state/current'
 import { getCompareHighlight } from '~/state/highlight'
 import { payloads } from '~/state/payload'
@@ -35,12 +36,31 @@ const links = shallowRef<Link[]>([])
 const nodesMap = shallowReactive(new Map<string, HierarchyNode<PackageNode>>())
 const linksMap = shallowReactive(new Map<string, Link>())
 
+const ZOOM_MIN = 0.4
+const ZOOM_MAX = 2
+const { control } = useMagicKeys()
+const { scale, zoomIn, zoomOut } = useZoomElement(container, {
+  wheel: control,
+  minScale: ZOOM_MIN,
+  maxScale: ZOOM_MAX,
+})
+
+onKeyPressed(['-', '_'], (e) => {
+  if (e.ctrlKey)
+    zoomOut()
+})
+
+onKeyPressed(['=', '+'], (e) => {
+  if (e.ctrlKey)
+    zoomIn()
+})
+
 const nodesRefMap = new Map<string, HTMLDivElement>()
 
 const NODE_WIDTH = 300
 const NODE_HEIGHT = 30
 const NODE_LINK_OFFSET = 20
-const NODE_MARGIN = 200
+const NODE_MARGIN = 800
 const NODE_GAP = 150
 
 function calculateGraph() {
@@ -135,7 +155,17 @@ const isGrabbing = shallowRef(false)
 function handleDragingScroll() {
   let x = 0
   let y = 0
+  const SCROLLBAR_THICKNESS = 20
+
   useEventListener(container, 'mousedown', (e) => {
+    // prevent dragging when clicking on scrollbar
+    const rect = container.value!.getBoundingClientRect()
+    const distRight = rect.right - e.clientX
+    const distBottom = rect.bottom - e.clientY
+    if (distRight <= SCROLLBAR_THICKNESS || distBottom <= SCROLLBAR_THICKNESS) {
+      return
+    }
+
     isGrabbing.value = true
     x = container.value!.scrollLeft + e.pageX
     y = container.value!.scrollTop + e.pageY
@@ -274,64 +304,97 @@ onMounted(() => {
 <template>
   <div
     ref="container"
-    w-screen h-screen of-scroll absolute inset-0 relative select-none
-    flex="~ items-center justify-center"
+    w-screen h-screen of-scroll relative select-none
     :class="isGrabbing ? 'cursor-grabbing' : ''"
   >
-    <div class="bg-dots" pointer-events-none z-graph-bg absolute left-0 top-0 :style="{ width: `${width}px`, height: `${height}px` }" />
-    <div ref="screenshotTarget" :style="{ minWidth: `${width}px`, minHeight: `${height}px` }">
-      <svg ref="svgLinks" pointer-events-none absolute left-0 top-0 z-graph-link :width="width" :height="height">
-        <g>
-          <path
-            v-for="link of [...links, ...additionalLinks]"
-            :key="link.id"
-            :d="generateLink(link)!"
-            :class="getLinkColor(link)"
-            fill="none"
-          />
-        </g>
-      </svg>
-      <svg ref="svgLinksActive" pointer-events-none absolute left-0 top-0 z-graph-link-active :width="width" :height="height">
-        <g>
-          <path
-            v-for="link of activeLinks"
-            :key="link.id"
-            :d="generateLink(link)!"
-            fill="none"
-            class="stroke-primary:75"
-          />
-        </g>
-      </svg>
-      <template
-        v-for="node of nodes"
-        :key="node.data.spec"
-      >
-        <template v-if="node.data.spec !== '~root'">
-          <GraphNode
-            :ref="(el: any) => nodesRefMap.set(node.data.spec, el?.$el)"
-            :pkg="node.data"
-            :highlight-mode="highlightMode"
-            :style="{
-              left: `${node.x}px`,
-              top: `${node.y}px`,
-              minWidth: `${NODE_WIDTH}px`,
-            }"
-          />
-        </template>
-      </template>
-    </div>
     <div
-      fixed right-4 bottom-4 z-panel-nav flex="~ gap-4 items-center"
-      bg-glass rounded-full border border-base shadow
+      flex="~ items-center justify-center"
+      :style="{ transform: `scale(${scale})`, transformOrigin: '0 0' }"
     >
-      <button
-        w-10 h-10 rounded-full hover:bg-active op50 hover:op100
-        flex="~ items-center justify-center"
-        title="Download Screenshot as PNG"
-        @click="takeScreenshot"
-      >
-        <div i-ph-download-duotone />
-      </button>
+      <div class="bg-dots" pointer-events-none z-graph-bg absolute left-0 top-0 :style="{ width: `${width}px`, height: `${height}px` }" />
+      <div ref="screenshotTarget" :style="{ minWidth: `${width * scale}px`, minHeight: `${height * scale}px` }">
+        <svg ref="svgLinks" pointer-events-none absolute left-0 top-0 z-graph-link :width="width" :height="height">
+          <g>
+            <path
+              v-for="link of [...links, ...additionalLinks]"
+              :key="link.id"
+              :d="generateLink(link)!"
+              :class="getLinkColor(link)"
+              fill="none"
+            />
+          </g>
+        </svg>
+        <svg ref="svgLinksActive" pointer-events-none absolute left-0 top-0 z-graph-link-active :width="width" :height="height">
+          <g>
+            <path
+              v-for="link of activeLinks"
+              :key="link.id"
+              :d="generateLink(link)!"
+              fill="none"
+              class="stroke-primary:75"
+            />
+          </g>
+        </svg>
+        <template
+          v-for="node of nodes"
+          :key="node.data.spec"
+        >
+          <template v-if="node.data.spec !== '~root'">
+            <GraphNode
+              :ref="(el: any) => nodesRefMap.set(node.data.spec, el?.$el)"
+              :pkg="node.data"
+              :highlight-mode="highlightMode"
+              :style="{
+                left: `${node.x}px`,
+                top: `${node.y}px`,
+                minWidth: `${NODE_WIDTH}px`,
+              }"
+            />
+          </template>
+        </template>
+      </div>
+    </div>
+
+    <div
+      fixed right-4 bottom-4 z-panel-nav flex="~ col gap-4 items-center"
+    >
+      <div w-10 flex="~ items-center justify-center">
+        <UiTimeoutView :content="`${Math.round(scale * 100)}%`" class="text-sm" />
+      </div>
+
+      <div bg-glass rounded-full border border-base shadow>
+        <button
+          :disabled="scale >= ZOOM_MAX"
+          w-10 h-10 rounded-full hover:bg-active op50 hover:op100
+          disabled:op20 disabled:bg-none disabled:cursor-not-allowed
+          flex="~ items-center justify-center"
+          title="Zoom In (Ctrl + =)"
+          @click="zoomIn()"
+        >
+          <div i-ph-magnifying-glass-plus-duotone />
+        </button>
+        <button
+          :disabled="scale <= ZOOM_MIN"
+          w-10 h-10 rounded-full hover:bg-active op50 hover:op100
+          disabled:op20 disabled:bg-none disabled:cursor-not-allowed
+          flex="~ items-center justify-center"
+          title="Zoom Out (Ctrl + -)"
+          @click="zoomOut()"
+        >
+          <div i-ph-magnifying-glass-minus-duotone />
+        </button>
+      </div>
+
+      <div bg-glass rounded-full border border-base shadow>
+        <button
+          w-10 h-10 rounded-full hover:bg-active op50 hover:op100
+          flex="~ items-center justify-center"
+          title="Download Screenshot as PNG"
+          @click="takeScreenshot"
+        >
+          <div i-ph-download-duotone />
+        </button>
+      </div>
     </div>
   </div>
 </template>
