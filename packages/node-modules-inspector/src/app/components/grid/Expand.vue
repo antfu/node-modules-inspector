@@ -3,7 +3,6 @@ import type { PackageNode } from 'node-modules-tools'
 
 defineProps<{
   packages: PackageNode[]
-  publishDates?: Map<string, string>
 }>()
 
 const value = defineModel('moduleValue', {
@@ -22,6 +21,6 @@ const value = defineModel('moduleValue', {
       <div i-ph-caret-down transition duration-300 op50 ml--5 text-base :class="value ? '' : 'rotate--90'" />
       <slot name="title" />
     </summary>
-    <GridContainer v-if="value" :packages="packages" :publish-dates="publishDates" mb4 />
+    <GridContainer v-if="value" :packages="packages" mb4 />
   </details>
 </template>

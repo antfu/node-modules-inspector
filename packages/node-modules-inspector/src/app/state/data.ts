@@ -3,6 +3,7 @@ import { shallowRef } from 'vue'
 import { getBackend } from '~/backends'
 
 export const rawData = shallowRef<ListPackageDependenciesResult | null>(null)
+export const rawPublishDates = shallowRef<Map<string, string> | null>(null)
 
 export async function fetchData() {
   rawData.value = null
@@ -15,6 +16,12 @@ export async function fetchData() {
       Object.freeze(pkg)
 
     rawData.value = data
+
+    const publishDate = await backend.functions.getPackagesPublishDate?.([...data.packages.keys()])
+    if (publishDate) {
+      Object.freeze(publishDate)
+      rawPublishDates.value = publishDate
+    }
 
     return rawData.value
   }

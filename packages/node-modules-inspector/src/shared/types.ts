@@ -2,6 +2,7 @@ import type { ListPackageDependenciesResult } from 'node-modules-tools'
 
 export interface ServerFunctions {
   listDependencies: () => Promise<ListPackageDependenciesResult>
+  getPackagesPublishDate: (deps: string[]) => Promise<Map<string, string>>
   openInEditor: (filename: string) => void
   openInFinder: (filename: string) => void
 }

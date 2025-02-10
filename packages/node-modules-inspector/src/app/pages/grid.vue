@@ -2,7 +2,6 @@
 import type { PackageNode } from 'node-modules-tools'
 import { computed } from 'vue'
 import { payloads } from '~/state/payload'
-import { rawPublishDates } from '~/state/publishDates'
 
 const MAX_DEPTH = 5
 
@@ -29,7 +28,6 @@ const depthMap = computed(() => {
       <GridExpand
         v-for="([depth, packages]) of depthMap" :key="depth"
         :packages="packages"
-        :publish-dates="rawPublishDates"
         :module-value="depth >= 4 ? false : true"
       >
         <template #title>

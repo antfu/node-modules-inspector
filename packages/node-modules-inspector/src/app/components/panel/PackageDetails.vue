@@ -5,7 +5,7 @@ import { computed } from 'vue'
 import { getBackend } from '~/backends'
 import { selectedNode } from '~/state/current'
 import { filters } from '~/state/filters'
-import { payloads } from '~/state/payload'
+import { getPublishTime, payloads } from '~/state/payload'
 import { query } from '~/state/query'
 import { settings } from '~/state/settings'
 
@@ -182,6 +182,10 @@ const sizeTotal = computed(() => {
         <template v-if="pkg.resolved.engines?.node">
           <span op50>·</span>
           <DisplayNodeVersionRange :range="pkg.resolved.engines?.node" />
+        </template>
+        <template v-if="getPublishTime(pkg)">
+          <span op50>·</span>
+          <DisplayDateBadge :date="getPublishTime(pkg)!" rounded-full text-sm />
         </template>
       </div>
     </div>

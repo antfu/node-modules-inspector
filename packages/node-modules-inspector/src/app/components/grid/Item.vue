@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
+import { computed } from 'vue'
 import { selectedNode } from '~/state/current'
-import { payloads } from '~/state/payload'
+import { getPublishTime, payloads } from '~/state/payload'
 import { settings } from '~/state/settings'
 
-defineProps<{
+const props = defineProps<{
   pkg: PackageNode
-  publishedAt?: string
 }>()
+
+const publishedAt = computed(() => getPublishTime(props.pkg))
 </script>
 
 <template>

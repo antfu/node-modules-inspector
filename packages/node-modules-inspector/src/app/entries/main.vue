@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import type { Backend } from '~/types/backend'
-import { computed, watch } from 'vue'
-import { fetchPublishDates } from '~/state/publishDates'
+import { computed } from 'vue'
 import { setupQuery } from '~/state/query'
 import { backend } from '../backends'
-import { fetchData, rawData } from '../state/data'
+import { rawData } from '../state/data'
 
 const props = defineProps<{
   backend?: Backend | undefined
@@ -21,15 +20,9 @@ const error = computed(() => {
   return null
 })
 
-setupQuery()
-fetchData()
-
-watch(() => rawData.value, async (deps) => {
-  if (deps) {
-    await fetchPublishDates(deps)
-  }
-}, { immediate: true })
 const isLoading = computed(() => Boolean(!backend.value || backend.value?.status.value !== 'connected' || error.value || !rawData.value))
+
+setupQuery()
 </script>
 
 <template>

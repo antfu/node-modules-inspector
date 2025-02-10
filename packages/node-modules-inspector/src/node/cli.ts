@@ -12,6 +12,7 @@ import c from 'picocolors'
 import { MARK_CHECK, MARK_INFO } from './constants'
 import { distDir } from './dirs'
 import { createHostServer } from './server'
+import { storage } from './storage'
 
 const cli = cac('node-modules-inspector')
 
@@ -32,9 +33,12 @@ cli
     const rpc = await import('./rpc').then(r => r.createServerFunctions({
       cwd,
       depth: options.depth,
+      storage,
     }))
     const rpcDump: ServerFunctionsDump = {
       listDependencies: await rpc.listDependencies(),
+      // TODO: Implement this
+      getPackagesPublishDate: new Map(),
     }
 
     let baseURL = options.base
@@ -85,6 +89,7 @@ cli
     const server = await createHostServer({
       cwd: options.root,
       depth: options.depth,
+      storage,
     })
 
     server.listen(port, host, async () => {

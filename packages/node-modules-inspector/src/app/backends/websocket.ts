@@ -1,4 +1,3 @@
-import type { ListPackageDependenciesResult } from 'node-modules-tools'
 import type { ClientFunctions, ServerFunctions } from '~~/shared/types'
 import type { Backend } from '~/types/backend'
 import { createBirpc } from 'birpc'
@@ -96,9 +95,9 @@ export function createWebSocketBackend(options: WebSocketBackendOptions): Backen
           throw err
         }
       },
-      getPackagesPublishDate: async (deps: ListPackageDependenciesResult) => {
+      getPackagesPublishDate: async (specs: string[]) => {
         try {
-          return await rpc.getPackagesPublishDate(deps)
+          return await rpc.getPackagesPublishDate(specs)
         }
         catch (err) {
           error.value = err
