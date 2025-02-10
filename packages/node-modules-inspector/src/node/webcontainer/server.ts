@@ -15,7 +15,7 @@ import { createServerFunctions } from '../rpc'
 
 const rpc = createServerFunctions({
   cwd: process.cwd(),
-  storage: createStorage({
+  storage: createStorage<string>({
     driver: driverMemory(),
   }),
 })

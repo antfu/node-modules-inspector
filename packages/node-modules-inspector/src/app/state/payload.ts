@@ -158,7 +158,10 @@ export const payloads = {
 
 export function getPublishTime(pkg: PackageNode | string) {
   const spec = typeof pkg === 'string' ? pkg : pkg.spec
-  return rawPublishDates.value?.get(spec)
+  const date = rawPublishDates.value?.get(spec)
+  if (date)
+    return new Date(date)
+  return null
 }
 
 export const totalWorkspaceSize = computed(() => {
