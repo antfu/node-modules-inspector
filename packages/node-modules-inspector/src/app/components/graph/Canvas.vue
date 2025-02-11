@@ -141,8 +141,8 @@ function calculateGraph() {
   links.value = _links
 
   nextTick(() => {
-    width.value = container.value!.scrollWidth + NODE_MARGIN
-    height.value = container.value!.scrollHeight + NODE_MARGIN
+    width.value = (container.value!.scrollWidth / scale.value + NODE_MARGIN)
+    height.value = (container.value!.scrollHeight / scale.value + NODE_MARGIN)
 
     if (query.selected)
       focusOn(query.selected, false)
