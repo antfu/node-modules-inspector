@@ -19,6 +19,8 @@ For now, you may try it by running following command under your **pnpm** project
 pnpx node-modules-inspector
 ```
 
+You can also try an online version at [node-modules.dev](https://node-modules.dev/), powered by [WebContainer](https://webcontainers.io/).
+
 ## Screenshots
 
 > Screenshots may not reflect the current state
