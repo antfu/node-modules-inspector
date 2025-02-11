@@ -56,7 +56,7 @@ const top = computed(() => {
       </button>
     </UiSubTitle>
     <div relative of-hidden border="~ rounded-xl base" bg-glass>
-      <div flex flex-col gap2 p4 of-auto relative>
+      <div flex flex-col gap2 p4 pt3 of-auto relative>
         <slot :items="top" />
       </div>
       <div

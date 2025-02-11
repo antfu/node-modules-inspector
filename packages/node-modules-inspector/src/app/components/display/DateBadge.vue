@@ -35,7 +35,7 @@ const daysAgo = computed(() => {
 
 const timeAgo = computed(() => {
   if (daysAgo.value < 1)
-    return [0, 'today']
+    return ['', 'today']
   if (daysAgo.value > 365)
     return [+(daysAgo.value / 365).toFixed(1), 'yr']
   if (daysAgo.value > 30)
@@ -60,10 +60,10 @@ const color = computed(() => {
   <div
     v-if="date"
     :class="color"
-    class="px-0.4em py-0.2em line-height-none bg-gray:5"
+    class="px-0.4em py-0.2em line-height-none bg-gray:5 text-sm"
     :title="`Published at ${String(date)}`"
   >
     <span font-mono>{{ timeAgo[0] }}</span>
-    <span op50 text-sm ml0.5>{{ timeAgo[1] }}</span>
+    <span op50 text-xs ml0.5>{{ timeAgo[1] }}</span>
   </div>
 </template>
