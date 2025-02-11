@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, shallowRef } from 'vue'
 import { backend } from '~/backends'
-import { fetchData } from '~/state/data'
+import { fetchData, rawData } from '~/state/data'
 import { query } from '~/state/query'
 import { openTerminal, showTerminal } from '~/state/terminal'
 import MainEntry from '../entries/main.vue'
@@ -38,7 +38,7 @@ async function run() {
 </script>
 
 <template>
-  <template v-if="!backend">
+  <template v-if="!backend && !rawData">
     <div flex="~ col items-center gap-5" p10>
       <div min-h-120 flex="~ col gap-2 items-center justify-center" flex-auto>
         <UiTitle :has-error="!!error" :is-loading="isLoading" />
@@ -60,8 +60,12 @@ async function run() {
           >
         </label>
 
-        <div text-center p2 op30 italic>
+        <div text-center p2 op35 italic>
           This will run a pnpm install inside your browser with <a href="https://webcontainers.io/" target="_blank" hover:underline>WebContainer</a>.
+        </div>
+        <div w-10 border="t base" my4 />
+        <div p2>
+          <span op35>You can also run this locally at your project root with</span> <code badge-color-gray font-mono px2 rounded>pnpx <span text-primary:90>node-modules-inspector</span></code>.
         </div>
 
         <div v-if="error" h-20 text-red rounded p2 flex="~ col items-center">
