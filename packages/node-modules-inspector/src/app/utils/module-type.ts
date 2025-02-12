@@ -19,6 +19,8 @@ export const MODULE_TYPES_COLOR_BADGE = {
 export function getModuleType(node: PackageNode | PackageModuleType) {
   const type = typeof node === 'string' ? node : node.resolved.module
 
+  if (settings.value.treatFauxAsESM && type === 'faux')
+    return 'esm'
   if (!settings.value.moduleTypeSimple)
     return type
 
