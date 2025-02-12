@@ -3,11 +3,11 @@ import type { PackageNode } from 'node-modules-tools'
 import { useRouter } from '#app/composables/router'
 import { DisplayDateBadge } from '#components'
 import { computed, nextTick } from 'vue'
-import { compareSemver } from '~~/shared/utils'
 import { selectedNode } from '~/state/current'
 import { filters } from '~/state/filters'
 import { payloads } from '~/state/payload'
 import { settings } from '~/state/settings'
+import { compareSemver } from '~/utils/semver'
 
 const router = useRouter()
 

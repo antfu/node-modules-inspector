@@ -55,7 +55,7 @@ export function parseSemverRange(range: string) {
   return result
 }
 
-function compareSemver(a: string, b: string) {
+export function compareSemver(a: string, b: string) {
   if (a === b)
     return 0
   try {

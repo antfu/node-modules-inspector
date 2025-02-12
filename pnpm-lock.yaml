@@ -489,6 +489,9 @@ importers:
       pathe:
         specifier: 'catalog:'
         version: 2.0.2
+      semver:
+        specifier: 'catalog:'
+        version: 7.7.1
       tinyexec:
         specifier: 'catalog:'
         version: 0.3.2
