@@ -43,26 +43,28 @@ const moduleTypes = Object.fromEntries(
 <template>
   <div
     v-if="filters.select.activated.length"
-    fixed right-32 top-4 z-panel-nav pl3 p1
+    fixed right-28 top-5 z-panel-nav
     bg-glass rounded-3xl border border-base shadow
-    flex="~ gap-2 items-center"
+    flex="~"
   >
-    <button relative @click="query.selected = '~filters'">
+    <button relative pl2 pr1 @click="query.selected = '~filters'">
       <div i-ph-funnel-duotone text-xl op50 />
       <div v-if="filters.select.activated.length" absolute top--2 right--2 w-4 h-4 bg-primary-600 shadow text-white rounded-full flex text-0.6rem>
         <span ma>{{ filters.select.activated.length }}</span>
       </div>
     </button>
 
-    <div v-if="filters.search.parsed.text" badge-color-primary flex="~ gap-1 items-center" px1 rounded>
+    <div v-if="filters.search.parsed.text" border="l base" flex="~ gap-1 items-center" px2>
       <div i-ph-text-t-duotone />
       {{ filters.search.parsed.text }}
     </div>
-    <div v-if="filters.state['source-type'] !== FILTERS_DEFAULT['source-type']" badge-color-blue capitalize flex="~ gap-1 items-center" px1 rounded>
+    <div v-if="filters.state['source-type'] !== FILTERS_DEFAULT['source-type']" border="l base" flex="~ gap-1 items-center" px2>
       <div i-ph-tree-view-duotone />
-      {{ filters.state['source-type'] }}
+      <span capitalize>
+        {{ filters.state['source-type'] }}
+      </span>
     </div>
-    <div v-if="filters.state.modules !== FILTERS_DEFAULT.modules" flex="~ gap-1 items-center">
+    <div v-if="filters.state.modules !== FILTERS_DEFAULT.modules" border="l base" flex="~ gap-1 items-center" px2>
       <template
         v-for="type of moduleTypesAvailable"
         :key="type"
@@ -75,25 +77,25 @@ const moduleTypes = Object.fromEntries(
         />
       </template>
     </div>
-    <div v-if="filters.search.parsed.author?.length" badge-color-gray flex="~ gap-1 items-center" px1 rounded>
-      <div i-ph-user-circle-duotone />
+    <div v-if="filters.search.parsed.author?.length" border="l base" flex="~ gap-1 items-center" px2>
+      <div i-ph-user-circle-duotone text-blue />
       {{ filters.search.parsed.author.map(a => a.source).join(', ') }}
     </div>
-    <div v-if="filters.search.parsed.license?.length" badge-color-gray flex="~ gap-1 items-center" px1 rounded>
-      <div i-ph-file-text-duotone />
+    <div v-if="filters.search.parsed.license?.length" border="l base" flex="~ gap-1 items-center" px2>
+      <div i-ph-file-text-duotone text-purple />
       {{ filters.search.parsed.license.map(a => a.source).join(', ') }}
     </div>
-    <div v-if="filters.state.focus" badge-color-green font-mono flex="~ gap-1 items-center" px1 rounded>
-      <div i-ph-arrows-in-cardinal-duotone />
+    <div v-if="filters.state.focus" border="l base" flex="~ gap-1 items-center" font-mono px2>
+      <div i-ph-arrows-in-cardinal-duotone text-primary />
       {{ filters.state.focus.join(', ') }}
     </div>
-    <div v-if="filters.state.why" badge-color-orange font-mono flex="~ gap-1 items-center" px1 rounded>
-      <div i-ph-seal-question-duotone />
+    <div v-if="filters.state.why" border="l base" flex="~ gap-1 items-center" font-mono px2>
+      <div i-ph-seal-question-duotone text-orange />
       {{ filters.state.why.join(', ') }}
     </div>
 
     <button
-      w8 h8 ml--2 rounded-full hover:bg-active op50 hover:op100 flex="~ items-center justify-center"
+      w8 h8 rounded-full hover:bg-active op50 hover:op100 flex="~ items-center justify-center"
       title="Clear Filters"
       @click="filters.select.reset()"
     >
