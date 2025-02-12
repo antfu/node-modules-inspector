@@ -1,6 +1,7 @@
 import type { PackageModuleType, PackageNode } from 'node-modules-tools'
 import { objectMap } from '@antfu/utils'
 import { objectEntries, useDebounce } from '@vueuse/core'
+import { constructPackageFilters } from 'node-modules-tools/utils'
 import { computed, reactive } from 'vue'
 import { getModuleType } from '../utils/module-type'
 import { parseSearch } from '../utils/search-parser'
@@ -62,6 +63,10 @@ const state = reactive<FilterOptions>({ ...FILTERS_DEFAULT })
 const searchDebounced = useDebounce(computed(() => state.search), 200)
 const searchParsed = computed(() => parseSearch(searchDebounced.value))
 
+const filtersExclude = computed(() => state.excludes?.length ? constructPackageFilters(state.excludes, 'some') : () => false)
+const filtersFocus = computed(() => state.focus?.length ? constructPackageFilters(state.focus, 'some') : () => false)
+const filtersWhy = computed(() => state.why?.length ? constructPackageFilters(state.why, 'some') : () => false)
+
 export function filtersExcludePredicate(pkg: PackageNode) {
   if (state['exclude-dts'] && pkg.resolved.module === 'dts')
     return true
@@ -69,8 +74,9 @@ export function filtersExcludePredicate(pkg: PackageNode) {
     return true
   if (state['exclude-private'] && pkg.private)
     return true
-  if (state.excludes && state.excludes.includes(pkg.spec))
-    return true
+  if (state.excludes?.length) {
+    return filtersExclude.value(pkg)
+  }
   return false
 }
 
@@ -78,11 +84,12 @@ export const filterSelectPredicate = computed(() => {
   const predicates: ((pkg: PackageNode) => boolean | undefined)[] = []
 
   if (state.focus) {
-    predicates.push(pkg => state.focus!.includes(pkg.spec) || state.focus!.some(f => pkg.flatDependents.has(f)))
+    // TODO: flatDependents use filtersFocus
+    predicates.push(pkg => filtersFocus.value(pkg) || state.focus!.some(f => pkg.flatDependents.has(f)))
   }
 
   if (state.why) {
-    predicates.push(pkg => state.why!.includes(pkg.spec) || state.why!.some(f => pkg.flatDependencies.has(f)))
+    predicates.push(pkg => filtersWhy.value(pkg) || state.why!.some(f => pkg.flatDependencies.has(f)))
   }
 
   if (state['source-type']) {

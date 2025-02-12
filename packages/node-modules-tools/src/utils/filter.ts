@@ -27,3 +27,10 @@ export function constructPackageFilter(range: string): (pkg: PackageNodeLike) =>
     return isNameMatch && isVersionMatch
   }
 }
+
+export function constructPackageFilters(ranges: string[], mode: 'some' | 'every'): (pkg: PackageNodeLike) => boolean {
+  const filters = ranges.map(constructPackageFilter)
+  return pkg => mode === 'some'
+    ? filters.some(filter => filter(pkg))
+    : filters.every(filter => filter(pkg))
+}
