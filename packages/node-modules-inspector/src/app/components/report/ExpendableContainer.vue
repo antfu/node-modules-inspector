@@ -62,17 +62,27 @@ const top = computed(() => {
       <div
         v-if="list.length > count"
         pointer-events-none absolute left-0 right-0 bottom-0 bg-gradient-more h-30 mb4
-        flex="~ col"
+        flex="~ justify-center"
       >
         <button
-          op35 p2 pt4 w-full mta
+          op35 p2 pt4 mta
           pointer-events-auto
           hover:op100
           flex="~ items-center gap-1 justify-center"
           @click="count = Math.round(count * 1.5)"
         >
           <div class="i-ri:arrow-down-double-line" />
-          More
+          More [+{{ Math.min(Math.round(count * 0.5), props.list.length) }}]
+        </button>
+        <button
+          op35 p2 pt4 mta
+          pointer-events-auto
+          hover:op100
+          flex="~ items-center gap-1 justify-center"
+          @click="count = props.list.length"
+        >
+          <div class="i-ri:arrow-down-double-line" />
+          All [+{{ props.list.length - count }}]
         </button>
       </div>
     </div>
