@@ -1,11 +1,9 @@
 import type { PackageModuleType, PackageNode } from 'node-modules-tools'
+import { computed } from 'vue'
 import { settings } from '~/state/settings'
 
 export const MODULE_TYPES_FULL = ['dual', 'esm', 'faux', 'cjs', 'dts'] as PackageModuleType[]
-export const MODULE_TYPES_SIMPLE = ['esm', 'cjs', 'dts'] as PackageModuleType[]
-
 export const MODULE_TYPES_FULL_SELECT = ['dual', 'esm', 'faux', 'cjs'] as PackageModuleType[]
-export const MODULE_TYPES_SIMPLE_SELECT = ['esm', 'cjs'] as PackageModuleType[]
 
 // @unocss-include
 export const MODULE_TYPES_COLOR_BADGE = {
@@ -39,3 +37,37 @@ export function getModuleTypeCounts(nodes: Iterable<PackageNode>) {
   }
   return counts
 }
+
+/**
+ * Available module types, excluding DTS.
+ *
+ * Used in filters.
+ */
+export const moduleTypesAvailable = computed(() => {
+  const baseTypes = new Set(MODULE_TYPES_FULL_SELECT)
+
+  if (settings.value.treatFauxAsESM)
+    baseTypes.delete('faux')
+  if (settings.value.moduleTypeSimple) {
+    baseTypes.delete('dual')
+    baseTypes.delete('faux')
+  }
+
+  return Array.from(baseTypes)
+})
+
+/**
+ * Available module types, including DTS
+ */
+export const moduleTypesAvailableFull = computed(() => {
+  const baseTypes = new Set(MODULE_TYPES_FULL)
+
+  if (settings.value.treatFauxAsESM)
+    baseTypes.delete('faux')
+  if (settings.value.moduleTypeSimple) {
+    baseTypes.delete('dual')
+    baseTypes.delete('faux')
+  }
+
+  return Array.from(baseTypes)
+})

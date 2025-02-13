@@ -4,14 +4,7 @@ import type { WritableComputedRef } from 'vue'
 import { computed } from 'vue'
 import { filters } from '~/state/filters'
 import { payloads } from '~/state/payload'
-import { settings } from '~/state/settings'
-import { MODULE_TYPES_FULL_SELECT, MODULE_TYPES_SIMPLE_SELECT } from '../../utils/module-type'
-
-const moduleTypesAvailable = computed<PackageModuleType[]>(() =>
-  settings.value.moduleTypeSimple
-    ? MODULE_TYPES_SIMPLE_SELECT
-    : MODULE_TYPES_FULL_SELECT,
-)
+import { MODULE_TYPES_FULL_SELECT, moduleTypesAvailable } from '../../utils/module-type'
 
 function createModuleTypeRef(name: PackageModuleType) {
   return computed({
