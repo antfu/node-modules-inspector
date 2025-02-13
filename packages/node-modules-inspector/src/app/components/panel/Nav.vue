@@ -53,11 +53,6 @@ const tabsMeta = [
     icon: 'i-ph-line-vertical-duotone',
   },
 ]
-
-function resetPanelState() {
-  isSettingOpen.value = false
-  isFiltersOpen.value = false
-}
 </script>
 
 <template>
@@ -97,7 +92,6 @@ function resetPanelState() {
           :title="tab.name"
           :class="route.path.startsWith(tab.path) ? 'text-primary' : 'op50'"
           :to="{ path: tab.path, hash: location.hash }"
-          @click="resetPanelState()"
         >
           <div :class="tab.icon" text-xl />
         </RouterLink>
