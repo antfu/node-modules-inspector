@@ -12,6 +12,9 @@ const backend = getBackend()
       <OptionItem title="Simplify module types" description="Show only ESM/CJS">
         <OptionCheckbox v-model="settings.moduleTypeSimple" />
       </OptionItem>
+      <OptionItem title="Treat FAUX as ESM" description="Treat FAUX as ESM">
+        <OptionCheckbox v-model="settings.treatFauxAsESM" />
+      </OptionItem>
       <OptionItem title="Module type indicator" description="Rendering mode of module type indicator">
         <OptionSelectGroup
           v-model="settings.moduleTypeRender"

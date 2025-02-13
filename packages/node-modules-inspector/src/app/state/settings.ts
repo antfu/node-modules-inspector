@@ -9,6 +9,7 @@ export interface Settings {
   showInstallSizeBadge: boolean
   showPublishTimeBadge: boolean
   showFileComposition: boolean
+  treatFauxAsESM: boolean
 }
 
 export const settings = useLocalStorage<Settings>(
@@ -22,6 +23,7 @@ export const settings = useLocalStorage<Settings>(
     showInstallSizeBadge: true,
     showPublishTimeBadge: false,
     showFileComposition: false,
+    treatFauxAsESM: false,
   },
   {
     deep: true,
