@@ -91,6 +91,12 @@ export function setupQuery() {
       })
     },
   )
+  watch(
+    () => route.path,
+    () => {
+      query.selected = ''
+    },
+  )
 
   debouncedWatch(
     () => filters.state,
