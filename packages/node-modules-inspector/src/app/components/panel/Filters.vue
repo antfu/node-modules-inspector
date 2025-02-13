@@ -4,7 +4,7 @@ import type { WritableComputedRef } from 'vue'
 import { computed } from 'vue'
 import { filters } from '~/state/filters'
 import { payloads } from '~/state/payload'
-import { MODULE_TYPES_FULL_SELECT, moduleTypesAvailable } from '../../utils/module-type'
+import { MODULE_TYPES_FULL_SELECT, moduleTypesAvailableSelect } from '../../utils/module-type'
 
 function createModuleTypeRef(name: PackageModuleType) {
   return computed({
@@ -12,13 +12,13 @@ function createModuleTypeRef(name: PackageModuleType) {
       return filters.state.modules == null || filters.state.modules.includes(name)
     },
     set(v) {
-      const current = new Set(filters.state.modules ? filters.state.modules : moduleTypesAvailable.value)
+      const current = new Set(filters.state.modules ? filters.state.modules : moduleTypesAvailableSelect.value)
       if (v)
         current.add(name)
       else
         current.delete(name)
 
-      if (current.size >= moduleTypesAvailable.value.length) {
+      if (current.size >= moduleTypesAvailableSelect.value.length) {
         filters.state.modules = null
       }
       else {
@@ -84,7 +84,7 @@ const moduleTypes = Object.fromEntries(
     <div flex="~ col gap-2" p4 border="t base">
       <div flex="~ gap-4 wrap">
         <label
-          v-for="type of moduleTypesAvailable"
+          v-for="type of moduleTypesAvailableSelect"
           :key="type"
           flex="~ gap-1 items-center"
         >

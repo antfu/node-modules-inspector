@@ -39,12 +39,10 @@ export function getModuleTypeCounts(nodes: Iterable<PackageNode>) {
 }
 
 /**
- * Available module types, excluding DTS.
- *
- * Used in filters.
+ * Currently available module types
  */
 export const moduleTypesAvailable = computed(() => {
-  const baseTypes = new Set(MODULE_TYPES_FULL_SELECT)
+  const baseTypes = new Set(MODULE_TYPES_FULL)
 
   if (settings.value.treatFauxAsESM)
     baseTypes.delete('faux')
@@ -57,10 +55,10 @@ export const moduleTypesAvailable = computed(() => {
 })
 
 /**
- * Available module types, including DTS
+ * Currently available module types, excluding DTS.
  */
-export const moduleTypesAvailableFull = computed(() => {
-  const baseTypes = new Set(MODULE_TYPES_FULL)
+export const moduleTypesAvailableSelect = computed(() => {
+  const baseTypes = new Set(MODULE_TYPES_FULL_SELECT)
 
   if (settings.value.treatFauxAsESM)
     baseTypes.delete('faux')
