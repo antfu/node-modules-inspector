@@ -53,8 +53,8 @@ setupQuery()
       </div>
     </div>
   </div>
-  <div v-else>
-    <PanelNav />
-    <NuxtPage />
-  </div>
+  <PanelNav v-else />
+  <NuxtLayout>
+    <NuxtPage v-if="!isLoading" />
+  </NuxtLayout>
 </template>

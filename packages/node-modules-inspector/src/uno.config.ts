@@ -20,7 +20,6 @@ export default defineConfig({
       'border-base': 'border-#8882',
 
       'bg-tooltip': 'bg-white:75 dark:bg-#111:75 backdrop-blur-8',
-      'bg-glass': 'bg-white:75 dark:bg-#111:75 backdrop-blur-5',
       'bg-code': 'bg-gray5:5',
 
       'bg-gradient-more': 'bg-gradient-to-t from-white via-white:80 to-white:0 dark:from-#111 dark:via-#111:80 dark:to-#111:0',
@@ -52,8 +51,11 @@ export default defineConfig({
       'color-scale-medium': 'text-amber:85! saturate-80',
       'color-scale-high': 'text-orange!',
       'color-scale-critical': 'text-red!',
+
+      'page-padding': 'pt-22 pl-112 pr-8 pb-8',
     },
     [/^badge-color-(\w+)$/, ([, color]) => `bg-${color}-400:20 dark:bg-${color}-400:10 text-${color}-700 dark:text-${color}-300 border-${color}-600:10 dark:border-${color}-300:10`],
+    [/^bg-glass(:\d+)?$/, ([, perc = ':75']) => `bg-white${perc} dark:bg-#111${perc} backdrop-blur-5`],
   ],
   theme: {
     colors: {

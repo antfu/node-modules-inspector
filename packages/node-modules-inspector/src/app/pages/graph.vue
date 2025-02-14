@@ -52,6 +52,10 @@ const rootPackages = computed(() => {
   return Array.from(root)
     .sort((a, b) => a.depth - b.depth || b.flatDependencies.size - a.flatDependencies.size)
 })
+
+definePageMeta({
+  noOffset: true,
+})
 </script>
 
 <template>
