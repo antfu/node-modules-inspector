@@ -21,7 +21,7 @@ const rootPackages = computed(() => {
     .filter(x => !!x)
 })
 
-const showGraph = computed(() => filters.state['compare-a']?.length || filters.state['compare-b']?.length)
+const showGraph = computed(() => filters.state['compare-a']?.length && filters.state['compare-b']?.length)
 
 definePageMeta({
   noOffset: showGraph,
