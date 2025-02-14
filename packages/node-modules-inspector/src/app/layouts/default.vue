@@ -1,8 +1,15 @@
 <script setup lang="ts">
+import { useRuntimeHook } from '#app/composables/runtime-hook'
+import { ref } from 'vue'
+
 const isLoading = ref(false)
 
-useRuntimeHook('page:loading:start', () => { isLoading.value = true })
-useRuntimeHook('page:loading:end', () => { isLoading.value = false })
+useRuntimeHook('page:loading:start', () => {
+  isLoading.value = true
+})
+useRuntimeHook('page:loading:end', () => {
+  isLoading.value = false
+})
 </script>
 
 <template>

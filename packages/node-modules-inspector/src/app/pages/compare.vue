@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
+import { definePageMeta } from '#imports'
 import { computed, shallowReactive } from 'vue'
 import { selectedNode } from '~/state/current'
 import { filters } from '~/state/filters'
