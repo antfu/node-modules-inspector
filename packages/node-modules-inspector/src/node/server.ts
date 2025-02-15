@@ -5,7 +5,7 @@ import { createServer } from 'node:http'
 import { createApp, eventHandler, serveStatic, toNodeListener } from 'h3'
 import { lookup } from 'mrmime'
 import { join } from 'pathe'
-import { distDir } from './dirs'
+import { distDir } from '../dirs'
 import { createWsServer } from './ws'
 
 export async function createHostServer(options: CreateWsServerOptions) {

@@ -14,7 +14,7 @@ export default defineBuildConfig({
       outDir: 'dist',
     },
     {
-      input: 'src/node/dirs.ts',
+      input: 'src/dirs.ts',
       name: 'dirs',
       outDir: 'dist',
     },

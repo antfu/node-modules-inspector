@@ -65,6 +65,7 @@ export async function createWsServer(options: CreateWsServerOptions) {
 
   const getMetadata = async (): Promise<ConnectionMeta> => {
     return {
+      backend: 'websocket',
       websocket: port,
     }
   }

@@ -54,5 +54,6 @@ export type ServerFunctionsDump = RemoveVoidKeysFromObject<{
 }>
 
 export interface ConnectionMeta {
-  websocket: number
+  backend: 'websocket' | 'static'
+  websocket?: number
 }

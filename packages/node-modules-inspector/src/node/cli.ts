@@ -9,8 +9,9 @@ import { getPort } from 'get-port-please'
 import open from 'open'
 import { relative, resolve } from 'pathe'
 import c from 'picocolors'
+import { stringify } from 'structured-clone-es'
+import { distDir } from '../dirs'
 import { MARK_CHECK, MARK_INFO } from './constants'
-import { distDir } from './dirs'
 import { createHostServer } from './server'
 import { storage } from './storage'
 
@@ -63,9 +64,10 @@ cli
         await fs.writeFile(resolve(outDir, file), newContent, 'utf-8')
       }
     }
-    await fs.mkdir(resolve(outDir, 'api'), { recursive: true })
 
-    await fs.writeFile(resolve(outDir, 'api/rpc-dump.json'), JSON.stringify(rpcDump, null, 2), 'utf-8')
+    await fs.mkdir(resolve(outDir, 'api'), { recursive: true })
+    await fs.writeFile(resolve(outDir, 'api/metadata.json'), JSON.stringify({ backend: 'static' }, null, 2), 'utf-8')
+    await fs.writeFile(resolve(outDir, 'api/rpc-dump.json'), stringify(rpcDump), 'utf-8')
 
     console.log(MARK_CHECK, `Built to ${relative(cwd, outDir)}`)
     console.log(MARK_INFO, `You can use static server like \`npx serve ${relative(cwd, outDir)}\` to serve the inspector`)
