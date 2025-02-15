@@ -33,7 +33,7 @@ const backend = getBackend()
       </OptionItem>
     </div>
     <div v-if="backend.isDynamic" border="t base" p4 flex="~ gap-2 items-center">
-      <button btn-action @click="fetchData()">
+      <button btn-action @click="fetchData(true)">
         <div i-ph-arrows-clockwise-duotone />
         Refetch Data
       </button>

@@ -1,9 +1,8 @@
-import type { ServerFunctions } from '#shared/types'
 import type { ListPackageDependenciesOptions } from 'node-modules-tools'
 import type { ListPackagePublishDatesOptions } from '../shared/publish-date'
-import type { NodeModulesInspectorConfig } from './config'
+import type { NodeModulesInspectorConfig, ServerFunctions } from '../shared/types'
 import process from 'node:process'
-import { listPackageDependencies } from 'node-modules-tools'
+import { constructPackageFilters, listPackageDependencies } from 'node-modules-tools'
 import { loadConfig } from 'unconfig'
 import { getPackagesPublishDate } from '../shared/publish-date'
 
@@ -12,8 +11,11 @@ export interface CreateServerFunctionsOptions
 }
 
 export function createServerFunctions(options: CreateServerFunctionsOptions): ServerFunctions {
-  return {
-    async getConfig() {
+  let _config: Promise<NodeModulesInspectorConfig> | null = null
+  const getConfig = async (force = false) => {
+    if (!force && _config)
+      return _config
+    _config = (async () => {
       const result = await loadConfig<NodeModulesInspectorConfig>({
         cwd: options.cwd,
         sources: [
@@ -28,14 +30,30 @@ export function createServerFunctions(options: CreateServerFunctionsOptions): Se
       else
         console.log('[Node Modules Inspector] No config found')
       return result.config
+    })()
+    return _config
+  }
+
+  return {
+    async getConfig(force?: boolean) {
+      return getConfig(force)
     },
-    async listDependencies() {
+    async listDependencies(force?: boolean) {
+      const config = await getConfig(force)
+      const excludeFilter = constructPackageFilters(config.excludePackages || [], 'some')
+      const depsFilter = constructPackageFilters(config.excludeDependenciesOf || [], 'some')
       console.log('[Node Modules Inspector] Reading dependencies...')
       return listPackageDependencies({
         cwd: process.cwd(),
         depth: 25,
         monorepo: true,
         ...options,
+        traverseFilter(node) {
+          return !excludeFilter(node)
+        },
+        dependenciesFilter(node) {
+          return !depsFilter(node)
+        },
       })
     },
     async getPackagesPublishDate(deps: string[]) {

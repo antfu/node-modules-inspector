@@ -36,6 +36,7 @@ cli
       storage,
     }))
     const rpcDump: ServerFunctionsDump = {
+      getConfig: await rpc.getConfig(),
       listDependencies: await rpc.listDependencies(),
       // TODO: Implement this
       getPackagesPublishDate: new Map(),

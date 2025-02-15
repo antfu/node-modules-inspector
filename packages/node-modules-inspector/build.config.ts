@@ -19,6 +19,7 @@ export default defineBuildConfig({
     },
   ],
   clean: false,
+  declaration: true,
   rollup: {
     inlineDependencies: true,
   },

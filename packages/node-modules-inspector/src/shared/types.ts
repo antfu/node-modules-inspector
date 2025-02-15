@@ -4,8 +4,8 @@ import type { FilterOptions } from './filters'
 export type { FilterOptions }
 
 export interface ServerFunctions {
-  getConfig: () => Promise<NodeModulesInspectorConfig>
-  listDependencies: () => Promise<ListPackageDependenciesResult>
+  getConfig: (force?: boolean) => Promise<NodeModulesInspectorConfig>
+  listDependencies: (force?: boolean) => Promise<ListPackageDependenciesResult>
   getPackagesPublishDate: (deps: string[]) => Promise<Map<string, string>>
   openInEditor: (filename: string) => void
   openInFinder: (filename: string) => void
