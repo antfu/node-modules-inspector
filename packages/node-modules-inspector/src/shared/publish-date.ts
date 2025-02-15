@@ -1,5 +1,5 @@
 import type { Storage } from 'unstorage'
-import { getLatestVersionBatch } from 'fast-npm-meta'
+import { getLatestVersion, getLatestVersionBatch } from 'fast-npm-meta'
 import pLimit from 'p-limit'
 
 export interface ListPackagePublishDatesOptions {
@@ -17,9 +17,10 @@ export async function getPackagesPublishDate(
   const known = await storage.keys()
   const unknown = packages.filter(p => !known.includes(p))
 
-  const BATCH_SIZE = 5
+  const BATCH_SIZE = 10
   const limit = pLimit(10)
   const promises: Promise<void>[] = []
+  const missingSpecs = new Set<string>()
 
   for (let i = 0; i < unknown.length; i += BATCH_SIZE) {
     const specs = unknown.slice(i, i + BATCH_SIZE)
@@ -34,14 +35,36 @@ export async function getPackagesPublishDate(
           }
         }
       }
-      catch (e) {
-        console.error('Failed to get packages publish date', specs)
-        console.error(e)
+      catch {
+        for (const spec of specs)
+          missingSpecs.add(spec)
       }
     }))
   }
 
   await Promise.all(promises)
+
+  // If batch failed, try to get publish date one by one
+  if (missingSpecs.size) {
+    await Promise.all(
+      Array.from(missingSpecs).map(spec => limit(async () => {
+        try {
+          const result = await getLatestVersion(spec)
+          if (result.publishedAt) {
+            const spec = `${result.name}@${result.version}`
+            map.set(spec, result.publishedAt)
+            await storage.setItem(spec, result.publishedAt)
+            missingSpecs.delete(spec)
+          }
+        }
+        catch {}
+      })),
+    )
+  }
+
+  if (missingSpecs.size) {
+    console.warn('Failed to get publish date for:', [...missingSpecs])
+  }
 
   await Promise.all(packages.map(async (p) => {
     if (!map.has(p)) {
