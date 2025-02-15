@@ -53,7 +53,7 @@
     "pathe": "catalog:",
     "picocolors": "catalog:",
     "structured-clone-es": "catalog:",
-    "unconfig": "^7.0.0",
+    "unconfig": "catalog:",
     "unstorage": "catalog:",
     "ws": "catalog:"
   },

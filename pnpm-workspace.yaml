@@ -1,8 +1,8 @@
 packages:
   - packages/*
 catalog:
-  '@antfu/eslint-config': ^4.2.0
-  '@antfu/utils': ^8.1.0
+  '@antfu/eslint-config': ^4.2.1
+  '@antfu/utils': ^9.0.0
   '@eslint/config-array': ^0.19.2
   '@iconify-json/carbon': ^1.2.7
   '@iconify-json/catppuccin': ^1.2.8
@@ -27,9 +27,9 @@ catalog:
   '@types/stream-json': ^1.7.8
   '@types/ws': ^8.5.14
   '@typescript-eslint/utils': ^8.24.0
-  '@unocss/eslint-config': ^65.4.3
-  '@unocss/nuxt': ^65.4.3
-  '@vueuse/nuxt': ^12.5.0
+  '@unocss/eslint-config': ^65.5.0
+  '@unocss/nuxt': ^65.5.0
+  '@vueuse/nuxt': ^12.6.1
   '@webcontainer/api': ^1.5.1
   '@xterm/addon-fit': ^0.10.0
   '@xterm/xterm': ^5.5.0
@@ -69,7 +69,7 @@ catalog:
   picocolors: ^1.1.1
   picomatch: ^4.0.2
   pkg-types: ^1.3.1
-  rollup: ^4.34.6
+  rollup: ^4.34.7
   rollup-plugin-esbuild: ^6.2.0
   semver: ^7.7.1
   shiki: ^2.3.2
@@ -80,6 +80,7 @@ catalog:
   tinyexec: ^0.3.2
   typescript: ^5.7.3
   unbuild: ^3.3.1
+  unconfig: ^7.0.0
   unstorage: ^1.14.4
   vite: ^6.1.0
   vite-hot-client: ^2.0.4
