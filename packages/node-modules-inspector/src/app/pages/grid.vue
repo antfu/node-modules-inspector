@@ -23,19 +23,17 @@ const depthMap = computed(() => {
 </script>
 
 <template>
-  <UiOffsettedContainer>
-    <div flex="~ col gap-2">
-      <GridExpand
-        v-for="([depth, packages]) of depthMap" :key="depth"
-        :packages="packages"
-        :module-value="depth >= 4 ? false : true"
-      >
-        <template #title>
-          <span v-if="depth" op75>Depth {{ depth }}{{ depth === MAX_DEPTH ? '+' : '' }}</span>
-          <span v-else op75>Workspace Packages</span>
-          <DisplayNumberBadge :number="packages.length" rounded-full ml2 text-base />
-        </template>
-      </GridExpand>
-    </div>
-  </UiOffsettedContainer>
+  <div flex="~ col gap-2">
+    <GridExpand
+      v-for="([depth, packages]) of depthMap" :key="depth"
+      :packages="packages"
+      :module-value="depth >= 4 ? false : true"
+    >
+      <template #title>
+        <span v-if="depth" op75>Depth {{ depth }}{{ depth === MAX_DEPTH ? '+' : '' }}</span>
+        <span v-else op75>Workspace Packages</span>
+        <DisplayNumberBadge :number="packages.length" rounded-full ml2 text-base />
+      </template>
+    </GridExpand>
+  </div>
 </template>

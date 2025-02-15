@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
+import { definePageMeta } from '#imports'
 import { computed } from 'vue'
 import { filters } from '~/state/filters'
 import { payloads } from '~/state/payload'
@@ -51,6 +52,10 @@ const rootPackages = computed(() => {
 
   return Array.from(root)
     .sort((a, b) => a.depth - b.depth || b.flatDependencies.size - a.flatDependencies.size)
+})
+
+definePageMeta({
+  noOffset: true,
 })
 </script>
 
