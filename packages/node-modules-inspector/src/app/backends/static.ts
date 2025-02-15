@@ -8,7 +8,7 @@ export function createStaticBackend(): Backend {
     connectionError: ref(undefined),
     connect() {},
     functions: {
-      listDependencies: () => {
+      getPayload: () => {
         throw new Error('Not implemented')
       },
     },

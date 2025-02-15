@@ -1,34 +1,27 @@
-import type { ListPackageDependenciesResult } from 'node-modules-tools'
-import type { NodeModulesInspectorConfig } from '~~/shared/types'
+import type { NodeModulesInspectorPayload } from '~~/shared/types'
 import { shallowRef, toRaw } from 'vue'
 import { getBackend } from '~/backends'
 import { filters, filtersDefault } from './filters'
 import { setupQuery } from './query'
 import { settings } from './settings'
 
-export const rawConfig = shallowRef<NodeModulesInspectorConfig | null>(null)
-export const rawData = shallowRef<ListPackageDependenciesResult | null>(null)
+export const rawData = shallowRef<NodeModulesInspectorPayload | null>(null)
 export const rawPublishDates = shallowRef<Map<string, string> | null>(null)
 
 export async function fetchData(force = false) {
   rawData.value = null
   const backend = getBackend()
   try {
-    backend.functions.getConfig?.(force)
-      .then((config) => {
-        rawConfig.value = config
-        Object.assign(settings.value, structuredClone(toRaw(config.defaultSettings || {})))
-        Object.assign(filters.state, structuredClone(toRaw(filtersDefault.value)))
-      })
-      .catch(e => console.error(e))
-
-    const data = await backend.functions.listDependencies(force)
+    const data = await backend.functions.getPayload(force)
 
     Object.freeze(data)
     for (const pkg of data.packages.values())
       Object.freeze(pkg)
 
     rawData.value = data
+
+    Object.assign(settings.value, structuredClone(toRaw(data.config?.defaultSettings || {})))
+    Object.assign(filters.state, structuredClone(toRaw(filtersDefault.value)))
 
     const publishDate = await backend.functions.getPackagesPublishDate?.(
       [...data.packages.entries()]

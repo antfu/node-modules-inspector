@@ -1,4 +1,4 @@
-import type { ListPackageDependenciesResult } from 'node-modules-tools'
+import type { NodeModulesInspectorPayload } from '~~/shared/types'
 import type { Backend } from '~/types/backend'
 import { WebContainer } from '@webcontainer/api'
 import c from 'chalk'
@@ -73,38 +73,16 @@ export async function install(
 
   await exec('pnpm', ['install', ...args])
 
-  let result: ListPackageDependenciesResult | undefined
+  let result: NodeModulesInspectorPayload | undefined
   const _process = exec('node', ['__server.mjs'], false, (chunk) => {
     if (chunk.startsWith(WEBCONTAINER_STDOUT_PREFIX)) {
       const data = chunk.slice(WEBCONTAINER_STDOUT_PREFIX.length)
-      result = parse(data) as ListPackageDependenciesResult
+      result = parse(data) as NodeModulesInspectorPayload
       // eslint-disable-next-line no-console
       console.log('Data fetched', result)
       return false
     }
   })
-
-  // WebContainer does not seems to support connecting to a websocket server direct
-  // So here we have to temporarily use a restful server
-  // const { port, url } = await new Promise<{ port: number, url: string }>((resolve, reject) => {
-  //   wc.on('server-ready', (port, url) => {
-  //     resolve({ port, url })
-  //   })
-  //   wc.on('error', (e) => {
-  //     terminal?.value?.writeln('')
-  //     terminal?.value?.writeln(c.red('> Failed to start server'))
-  //     terminal?.value?.writeln(c.red(`> ${String(e)}`))
-  //     console.error(e)
-  //     reject(e)
-  //   })
-  // })
-
-  // terminal.value?.writeln('')
-  // terminal.value?.writeln(c.gray(`> Connecting to websocket ${websocket}`))
-  // return createWebSocketBackend({
-  //   name: 'webcontainer',
-  //   websocketUrl: `${url.replace(/^http/, 'ws')}:${port}`
-  // })
 
   const error = shallowRef<unknown | undefined>(undefined)
   const storage = createStorage<string>({
@@ -121,7 +99,7 @@ export async function install(
       error.value = undefined
     },
     functions: {
-      async listDependencies() {
+      async getPayload() {
         let retries = 50
         // eslint-disable-next-line no-unmodified-loop-condition
         while (!result && retries > 0) {

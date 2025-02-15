@@ -35,15 +35,12 @@ export function createServerFunctions(options: CreateServerFunctionsOptions): Se
   }
 
   return {
-    async getConfig(force?: boolean) {
-      return getConfig(force)
-    },
-    async listDependencies(force?: boolean) {
+    async getPayload(force?: boolean) {
       const config = await getConfig(force)
       const excludeFilter = constructPackageFilters(config.excludePackages || [], 'some')
       const depsFilter = constructPackageFilters(config.excludeDependenciesOf || [], 'some')
       console.log('[Node Modules Inspector] Reading dependencies...')
-      return listPackageDependencies({
+      const result = await listPackageDependencies({
         cwd: process.cwd(),
         depth: 25,
         monorepo: true,
@@ -55,6 +52,10 @@ export function createServerFunctions(options: CreateServerFunctionsOptions): Se
           return !depsFilter(node)
         },
       })
+      return {
+        ...result,
+        config,
+      }
     },
     async getPackagesPublishDate(deps: string[]) {
       console.log('[Node Modules Inspector] Fetching publish dates...')

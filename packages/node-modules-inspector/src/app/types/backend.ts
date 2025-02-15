@@ -7,5 +7,5 @@ export interface Backend {
   connectionError: Ref<unknown | undefined>
   connect: () => Promise<void> | void
   isDynamic?: boolean
-  functions: Partial<ServerFunctions> & Pick<ServerFunctions, 'listDependencies'>
+  functions: Partial<ServerFunctions> & Pick<ServerFunctions, 'getPayload'>
 }

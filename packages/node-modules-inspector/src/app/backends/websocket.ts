@@ -86,18 +86,9 @@ export function createWebSocketBackend(options: WebSocketBackendOptions): Backen
     },
     isDynamic: true,
     functions: {
-      getConfig: async () => {
+      getPayload: async () => {
         try {
-          return await rpc.getConfig()
-        }
-        catch (err) {
-          error.value = err
-          throw err
-        }
-      },
-      listDependencies: async () => {
-        try {
-          return await rpc.listDependencies()
+          return await rpc.getPayload()
         }
         catch (err) {
           error.value = err

@@ -3,9 +3,12 @@ import type { FilterOptions } from './filters'
 
 export type { FilterOptions }
 
+export interface NodeModulesInspectorPayload extends ListPackageDependenciesResult {
+  config?: NodeModulesInspectorConfig
+}
+
 export interface ServerFunctions {
-  getConfig: (force?: boolean) => Promise<NodeModulesInspectorConfig>
-  listDependencies: (force?: boolean) => Promise<ListPackageDependenciesResult>
+  getPayload: (force?: boolean) => Promise<NodeModulesInspectorPayload>
   getPackagesPublishDate: (deps: string[]) => Promise<Map<string, string>>
   openInEditor: (filename: string) => void
   openInFinder: (filename: string) => void

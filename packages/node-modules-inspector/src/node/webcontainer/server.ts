@@ -21,7 +21,7 @@ const rpc = createServerFunctions({
 })
 
 async function run() {
-  console.log(WEBCONTAINER_STDOUT_PREFIX + stringify(await rpc.listDependencies()))
+  console.log(WEBCONTAINER_STDOUT_PREFIX + stringify(await rpc.getPayload()))
 }
 
 run()
