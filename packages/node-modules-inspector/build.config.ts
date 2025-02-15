@@ -1,3 +1,4 @@
+import { resolve } from 'node:path'
 import { defineBuildConfig } from 'unbuild'
 
 export default defineBuildConfig({
@@ -18,6 +19,9 @@ export default defineBuildConfig({
       outDir: 'dist',
     },
   ],
+  alias: {
+    '~~': resolve('src'),
+  },
   clean: false,
   declaration: true,
   rollup: {
