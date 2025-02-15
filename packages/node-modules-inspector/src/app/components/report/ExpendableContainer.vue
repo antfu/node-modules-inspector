@@ -71,8 +71,9 @@ const top = computed(() => {
           flex="~ items-center gap-1 justify-center"
           @click="count = Math.round(count * 1.5)"
         >
-          <div class="i-ri:arrow-down-double-line" />
-          More [+{{ Math.min(Math.round(count * 0.5), props.list.length) }}]
+          <div i-ri:arrow-down-double-line />
+          <span>More</span>
+          <DisplayNumberBadge prefix="+" :number="Math.min(Math.round(count * 0.5), props.list.length)" rounded-full text-sm />
         </button>
         <button
           op35 p2 pt4 mta
@@ -81,8 +82,9 @@ const top = computed(() => {
           flex="~ items-center gap-1 justify-center"
           @click="count = props.list.length"
         >
-          <div class="i-ri:arrow-down-double-line" />
-          All [+{{ props.list.length - count }}]
+          <div i-ph-arrows-out-line-vertical-duotone />
+          <span>All</span>
+          <DisplayNumberBadge :number="props.list.length" rounded-full text-sm />
         </button>
       </div>
     </div>
