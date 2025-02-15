@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
+import { definePageMeta } from '#imports'
 import { computed, shallowReactive } from 'vue'
-import OffsettedContainer from '~/components/ui/OffsettedContainer.vue'
 import { selectedNode } from '~/state/current'
 import { filters } from '~/state/filters'
 import { payloads } from '~/state/payload'
@@ -20,6 +20,12 @@ const rootPackages = computed(() => {
   ]
     .map(x => payload.get(x))
     .filter(x => !!x)
+})
+
+const showGraph = computed(() => filters.state['compare-a']?.length && filters.state['compare-b']?.length)
+
+definePageMeta({
+  noOffset: showGraph,
 })
 
 function compare() {
@@ -43,54 +49,53 @@ function reset() {
 </script>
 
 <template>
-  <OffsettedContainer
-    v-if="!filters.state['compare-a']?.length || !filters.state['compare-b']?.length"
+  <div
+    v-if="!showGraph"
+    flex="~ col items-center justify-center gap-10" mt-10
   >
-    <div flex="~ col items-center justify-center gap-10" mt-10>
-      <div text-center>
-        <h1 text-2xl font-bold>
-          Select packages to compare
-        </h1>
-        <p op50>
-          Use the filters to select packages to compare
-        </p>
-      </div>
-      <div grid="~ cols-[1fr_max-content_1fr] gap-2">
-        <div>
-          <div text-yellow p2 text-center op75>
-            Compare Group A
-          </div>
-          <OptionPackageMultiSelectInput v-model:selected="selectedA" :excludes="selectedAll">
-            <template #icon>
-              <div i-ph-package-duotone text-lg text-yellow flex-none />
-            </template>
-          </OptionPackageMultiSelectInput>
-        </div>
-        <div p2 rounded op50 py13>
-          vs
-        </div>
-        <div>
-          <div text-purple p2 text-center op75>
-            Compare Group B
-          </div>
-          <OptionPackageMultiSelectInput v-model:selected="selectedB" :excludes="selectedAll">
-            <template #icon>
-              <div i-ph-package-duotone text-lg text-purple flex-none />
-            </template>
-          </OptionPackageMultiSelectInput>
-        </div>
-      </div>
-
-      <button
-        :disabled="!selectedA.size || !selectedB.size"
-        class="disabled:op25 disabled:pointer-events-none"
-        px5 py1 text-lg border="~ base rounded-full" hover="bg-active op100"
-        @click="compare"
-      >
-        Start Compare
-      </button>
+    <div text-center>
+      <h1 text-2xl font-bold>
+        Select packages to compare
+      </h1>
+      <p op50>
+        Use the filters to select packages to compare
+      </p>
     </div>
-  </OffsettedContainer>
+    <div grid="~ cols-[1fr_max-content_1fr] gap-2">
+      <div>
+        <div text-yellow p2 text-center op75>
+          Compare Group A
+        </div>
+        <OptionPackageMultiSelectInput v-model:selected="selectedA" :excludes="selectedAll">
+          <template #icon>
+            <div i-ph-package-duotone text-lg text-yellow flex-none />
+          </template>
+        </OptionPackageMultiSelectInput>
+      </div>
+      <div p2 rounded op50 py13>
+        vs
+      </div>
+      <div>
+        <div text-purple p2 text-center op75>
+          Compare Group B
+        </div>
+        <OptionPackageMultiSelectInput v-model:selected="selectedB" :excludes="selectedAll">
+          <template #icon>
+            <div i-ph-package-duotone text-lg text-purple flex-none />
+          </template>
+        </OptionPackageMultiSelectInput>
+      </div>
+    </div>
+
+    <button
+      :disabled="!selectedA.size || !selectedB.size"
+      class="disabled:op25 disabled:pointer-events-none"
+      px5 py1 text-lg border="~ base rounded-full" hover="bg-active op100"
+      @click="compare"
+    >
+      Start Compare
+    </button>
+  </div>
   <template v-else>
     <GraphCanvas
       :payload="payloads.filtered"

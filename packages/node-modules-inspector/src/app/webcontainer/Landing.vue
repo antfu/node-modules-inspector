@@ -38,7 +38,7 @@ async function run() {
 </script>
 
 <template>
-  <template v-if="!backend && !rawData">
+  <template v-if="!backend || !rawData">
     <div flex="~ col items-center gap-5" p10>
       <div min-h-120 flex="~ col gap-2 items-center justify-center" flex-auto>
         <UiTitle :has-error="!!error" :is-loading="isLoading" />
