@@ -25,7 +25,7 @@ export async function fetchData(force = false) {
 
     const publishDate = await backend.functions.getPackagesPublishDate?.(
       [...data.packages.entries()]
-        .filter(x => !x[1].private && !x[1].workspace)
+        .filter(x => !x[1].private && !x[1].workspace && !x[1].resolved.publishTime)
         .map(x => x[0]),
     )
     if (publishDate) {

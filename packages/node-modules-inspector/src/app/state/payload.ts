@@ -11,8 +11,12 @@ function createComputedPayload(getter: () => PackageNode[]) {
   const map = computed(() => new Map(packages.value.map(i => [i.spec, i])))
   const versions = computed(() => buildVersionToPackagesMap(packages.value))
 
-  const get = (spec: string): PackageNode | undefined => {
-    return map.value.get(spec)
+  const get = (spec: string | PackageNode): PackageNode | undefined => {
+    if (typeof spec === 'string')
+      return map.value.get(spec)
+    return map.value.has(spec.spec)
+      ? spec
+      : undefined
   }
 
   const has = (spec: string | PackageNode): boolean => {
@@ -156,9 +160,13 @@ export const payloads = {
   compareB: _compareB,
 }
 
-export function getPublishTime(pkg: PackageNode | string) {
-  const spec = typeof pkg === 'string' ? pkg : pkg.spec
-  const date = rawPublishDates.value?.get(spec)
+export function getPublishTime(input: PackageNode | string) {
+  const pkg = payloads.all.get(input)
+  if (!pkg)
+    return null
+  if (pkg.resolved.publishTime)
+    return new Date(pkg.resolved.publishTime)
+  const date = rawPublishDates.value?.get(pkg.spec)
   if (date)
     return new Date(date)
   return null

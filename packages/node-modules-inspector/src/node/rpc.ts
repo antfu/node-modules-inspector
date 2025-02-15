@@ -52,6 +52,14 @@ export function createServerFunctions(options: CreateServerFunctionsOptions): Se
           return !depsFilter(node)
         },
       })
+
+      await Promise.all(Array.from(result.packages.values())
+        .map(async (pkg) => {
+          const time = await options.storage.getItem(pkg.spec)
+          if (time)
+            pkg.resolved.publishTime = time
+        }))
+
       return {
         ...result,
         config,

@@ -48,5 +48,6 @@ export interface PackageNode extends PackageNodeBase {
     homepage?: string
     engines?: Record<string, string>
     installSize?: PackageInstallSizeInfo
+    publishTime?: string
   }
 }
