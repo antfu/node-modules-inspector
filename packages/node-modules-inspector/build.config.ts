@@ -23,7 +23,7 @@ export default defineBuildConfig({
     '~~': resolve('src'),
   },
   clean: false,
-  declaration: true,
+  declaration: 'node16',
   rollup: {
     inlineDependencies: true,
   },
