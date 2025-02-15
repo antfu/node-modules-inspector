@@ -3,7 +3,7 @@ import { useRoute, useRouter } from '#app/composables/router'
 import { objectEntries } from '@antfu/utils'
 import { debouncedWatch, ignorableWatch } from '@vueuse/core'
 import { reactive, watch } from 'vue'
-import { filters, FILTERS_SCHEMA } from './filters'
+import { filters, FILTERS_SCHEMA, filtersDefault, isDeepEqual } from './filters'
 
 export interface QueryOptions extends Partial<{ [x in keyof FilterOptions]?: string }> {
   selected?: string
@@ -35,7 +35,7 @@ function queryToFilters(query: QueryOptions, filters: FilterOptions) {
     const raw = query[key]
 
     const resolved = !raw
-      ? s.default
+      ? structuredClone(filtersDefault.value[key])
       : s.type === Array
         ? raw.split(/[,+]/)
         : s.type === Boolean
@@ -50,7 +50,7 @@ function queryToFilters(query: QueryOptions, filters: FilterOptions) {
 function filtersToQuery(filters: FilterOptions, query: QueryOptions) {
   for (const [key, s] of objectEntries(FILTERS_SCHEMA)) {
     const value = filters[key]
-    const serialized = (value === s.default || value === null)
+    const serialized = (isDeepEqual(value, filtersDefault.value[key]) || value === null)
       ? undefined
       : s.type === Array
         ? (value as any)?.join('+')
@@ -63,7 +63,12 @@ function filtersToQuery(filters: FilterOptions, query: QueryOptions) {
   }
 }
 
+let _isQuerySetup = false
+
 export function setupQuery() {
+  if (_isQuerySetup)
+    return
+  _isQuerySetup = true
   Object.assign(query, parseQuery(location.hash.replace(/^#/, '')))
 
   queryToFilters(query, filters.state)

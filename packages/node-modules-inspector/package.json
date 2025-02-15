@@ -14,6 +14,11 @@
   "bugs": "https://github.com/antfu/node-modules-inspector/issues",
   "keywords": [],
   "sideEffects": false,
+  "exports": {
+    ".": "./dist/index.mjs"
+  },
+  "main": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
   "bin": "bin.mjs",
   "files": [
     "*.mjs",
@@ -21,6 +26,7 @@
   ],
   "scripts": {
     "dev": "pnpm run -r stub && cd src && nuxi dev",
+    "stub": "unbuild --stub",
     "build": "pnpm run wc:prepare && nuxi build src && unbuild",
     "build:debug": "NUXT_DEBUG_BUILD=true pnpm run build",
     "start": "node ./bin.mjs",
@@ -47,6 +53,7 @@
     "pathe": "catalog:",
     "picocolors": "catalog:",
     "structured-clone-es": "catalog:",
+    "unconfig": "^7.0.0",
     "unstorage": "catalog:",
     "ws": "catalog:"
   },

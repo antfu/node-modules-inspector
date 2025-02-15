@@ -2,7 +2,7 @@
 import type { PackageModuleType } from 'node-modules-tools'
 import type { WritableComputedRef } from 'vue'
 import { computed } from 'vue'
-import { filters, FILTERS_DEFAULT } from '~/state/filters'
+import { filters, filtersDefault, isDeepEqual } from '~/state/filters'
 import { query } from '~/state/query'
 import { MODULE_TYPES_FULL_SELECT, moduleTypesAvailableSelect } from '~/utils/module-type'
 
@@ -51,13 +51,13 @@ const moduleTypes = Object.fromEntries(
       <div i-ph-text-t-duotone />
       {{ filters.search.parsed.text }}
     </div>
-    <div v-if="filters.state['source-type'] !== FILTERS_DEFAULT['source-type']" border="l base" flex="~ gap-1 items-center" px2>
+    <div v-if="!isDeepEqual(filters.state['source-type'], filtersDefault['source-type'])" border="l base" flex="~ gap-1 items-center" px2>
       <div i-ph-tree-view-duotone />
       <span capitalize>
         {{ filters.state['source-type'] }}
       </span>
     </div>
-    <div v-if="filters.state.modules !== FILTERS_DEFAULT.modules" border="l base" flex="~ gap-1 items-center" px2>
+    <div v-if="!isDeepEqual(filters.state.modules, filtersDefault.modules)" border="l base" flex="~ gap-1 items-center" px2>
       <template
         v-for="type of moduleTypesAvailableSelect"
         :key="type"

@@ -43,6 +43,8 @@
     "eslint": "catalog:",
     "fast-npm-meta": "catalog:",
     "lint-staged": "catalog:",
+    "node-modules-inspector": "workspace:*",
+    "node-modules-tools": "workspace:*",
     "nuxt": "catalog:",
     "nuxt-eslint-auto-explicit-import": "catalog:",
     "rollup": "catalog:",

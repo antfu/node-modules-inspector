@@ -1,18 +1,7 @@
+import type { SettingsOptions } from '~~/shared/types'
 import { useLocalStorage } from '@vueuse/core'
 
-export interface Settings {
-  moduleTypeSimple: boolean
-  moduleTypeRender: 'badge' | 'circle' | 'none'
-  deepDependenciesTree: boolean
-  packageDetailsTab: 'dependencies' | 'dependents'
-  colorizePackageSize: boolean
-  showInstallSizeBadge: boolean
-  showPublishTimeBadge: boolean
-  showFileComposition: boolean
-  treatFauxAsESM: boolean
-}
-
-export const settings = useLocalStorage<Settings>(
+export const settings = useLocalStorage<SettingsOptions>(
   'node-modules-inspector-settings',
   {
     moduleTypeSimple: false,

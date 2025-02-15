@@ -1,53 +1,24 @@
-import type { PackageModuleType, PackageNode } from 'node-modules-tools'
+import type { PackageNode } from 'node-modules-tools'
+import type { FilterOptions } from '~~/shared/filters'
 import { objectMap } from '@antfu/utils'
 import { objectEntries, useDebounce } from '@vueuse/core'
 import { constructPackageFilters } from 'node-modules-tools/utils'
-import { computed, reactive } from 'vue'
+import { computed, reactive, toRaw } from 'vue'
+import { FILTERS_SCHEMA } from '~~/shared/filters'
 import { getModuleType } from '../utils/module-type'
 import { parseSearch } from '../utils/search-parser'
+import { rawConfig } from './data'
 
-export interface FilterOptions {
-  'search': string
-  'modules': null | PackageModuleType[]
-  'focus': null | string[]
-  'why': null | string[]
-  'excludes': null | string[]
-  'exclude-dts': boolean
-  'exclude-private': boolean
-  'exclude-workspace': boolean
-  'source-type': null | 'prod' | 'dev'
+export * from '~~/shared/filters'
 
-  'compare-a': null | string[]
-  'compare-b': null | string[]
-}
+const FILTERS_DEFAULT: FilterOptions = Object.freeze(objectMap(FILTERS_SCHEMA, (k, v) => [k, v.default]) as FilterOptions)
 
-export interface FilterSchema<Type> {
-  type: StringConstructor | ArrayConstructor | BooleanConstructor
-  default: Type
-  category: 'select' | 'exclude' | 'compare'
-}
-
-export const FILTERS_SCHEMA: {
-  [x in keyof FilterOptions]: FilterSchema<FilterOptions[x]>
-} = {
-  'search': { type: String, default: '', category: 'select' },
-  'modules': { type: Array, default: null, category: 'select' },
-  'focus': { type: Array, default: null, category: 'select' },
-  'why': { type: Array, default: null, category: 'select' },
-  'source-type': { type: String, default: null, category: 'select' },
-
-  // Compare
-  'compare-a': { type: Array, default: [], category: 'compare' },
-  'compare-b': { type: Array, default: [], category: 'compare' },
-
-  // Excludes
-  'excludes': { type: Array, default: null, category: 'exclude' },
-  'exclude-dts': { type: Boolean, default: true, category: 'exclude' },
-  'exclude-private': { type: Boolean, default: false, category: 'exclude' },
-  'exclude-workspace': { type: Boolean, default: import.meta.env.BACKEND === 'webcontainer', category: 'exclude' },
-}
-
-export const FILTERS_DEFAULT: FilterOptions = Object.freeze(objectMap(FILTERS_SCHEMA, (k, v) => [k, v.default]) as FilterOptions)
+export const filtersDefault = computed<FilterOptions>(() => {
+  return {
+    ...FILTERS_DEFAULT,
+    ...rawConfig.value?.defaultFilters || {},
+  }
+})
 
 export const FILTER_KEYS_SELECT = objectEntries(FILTERS_SCHEMA)
   .filter(([_, v]) => v.category === 'select')
@@ -59,7 +30,7 @@ export const FILTER_KEYS_EXCLUDES = objectEntries(FILTERS_SCHEMA)
 
 export const FILTER_KEYS_FULL = Object.keys(FILTERS_SCHEMA) as (keyof FilterOptions)[]
 
-const state = reactive<FilterOptions>({ ...FILTERS_DEFAULT })
+const state = reactive<FilterOptions>(filtersDefault.value)
 const searchDebounced = useDebounce(computed(() => state.search), 200)
 const searchParsed = computed(() => parseSearch(searchDebounced.value))
 
@@ -155,6 +126,17 @@ export const filterSelectPredicate = computed(() => {
   return (pkg: PackageNode) => predicates.every(i => i(pkg))
 })
 
+export function isDeepEqual(a: any, b: any) {
+  if (a === b)
+    return true
+  if (Array.isArray(a) && Array.isArray(b)) {
+    if (a.length !== b.length)
+      return false
+    return a.every((v, i) => v === b[i])
+  }
+  return false
+}
+
 export function createToggle(key: 'focus' | 'why' | 'excludes') {
   return (value: string, toggle?: boolean) => {
     const current = state[key] || []
@@ -201,18 +183,18 @@ export const filters = reactive({
     reset: () => {
       for (const key of FILTER_KEYS_SELECT) {
         // @ts-expect-error any
-        state[key] = FILTERS_DEFAULT[key]
+        state[key] = structuredClone(toRaw(filtersDefault.value[key]))
       }
     },
-    activated: computed(() => FILTER_KEYS_SELECT.filter(i => state[i] !== FILTERS_DEFAULT[i])),
+    activated: computed(() => FILTER_KEYS_SELECT.filter(i => !isDeepEqual(state[i], filtersDefault.value[i]))),
   },
   exclude: {
     reset: () => {
       for (const key of FILTER_KEYS_EXCLUDES) {
         // @ts-expect-error any
-        state[key] = FILTERS_DEFAULT[key]
+        state[key] = structuredClone(toRaw(filtersDefault.value[key]))
       }
     },
-    activated: computed(() => FILTER_KEYS_EXCLUDES.filter(i => state[i] !== FILTERS_DEFAULT[i])),
+    activated: computed(() => FILTER_KEYS_EXCLUDES.filter(i => !isDeepEqual(state[i], filtersDefault.value[i]))),
   },
 })

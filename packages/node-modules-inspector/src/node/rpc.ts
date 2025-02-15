@@ -1,8 +1,10 @@
 import type { ServerFunctions } from '#shared/types'
 import type { ListPackageDependenciesOptions } from 'node-modules-tools'
 import type { ListPackagePublishDatesOptions } from '../shared/publish-date'
+import type { NodeModulesInspectorConfig } from './config'
 import process from 'node:process'
 import { listPackageDependencies } from 'node-modules-tools'
+import { loadConfig } from 'unconfig'
 import { getPackagesPublishDate } from '../shared/publish-date'
 
 export interface CreateServerFunctionsOptions
@@ -11,6 +13,22 @@ export interface CreateServerFunctionsOptions
 
 export function createServerFunctions(options: CreateServerFunctionsOptions): ServerFunctions {
   return {
+    async getConfig() {
+      const result = await loadConfig<NodeModulesInspectorConfig>({
+        cwd: options.cwd,
+        sources: [
+          {
+            files: 'node-modules-inspector.config',
+          },
+        ],
+        defaults: {},
+      })
+      if (result.sources.length)
+        console.log(`[Node Modules Inspector] Config loaded from ${result.sources.join(', ')}`)
+      else
+        console.log('[Node Modules Inspector] No config found')
+      return result.config
+    },
     async listDependencies() {
       console.log('[Node Modules Inspector] Reading dependencies...')
       return listPackageDependencies({

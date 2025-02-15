@@ -1,7 +1,12 @@
 import type { ListPackageDependenciesResult } from 'node-modules-tools'
-import { shallowRef } from 'vue'
+import type { NodeModulesInspectorConfig } from '~~/shared/types'
+import { shallowRef, toRaw } from 'vue'
 import { getBackend } from '~/backends'
+import { filters, filtersDefault } from './filters'
+import { setupQuery } from './query'
+import { settings } from './settings'
 
+export const rawConfig = shallowRef<NodeModulesInspectorConfig | null>(null)
 export const rawData = shallowRef<ListPackageDependenciesResult | null>(null)
 export const rawPublishDates = shallowRef<Map<string, string> | null>(null)
 
@@ -9,6 +14,14 @@ export async function fetchData() {
   rawData.value = null
   const backend = getBackend()
   try {
+    backend.functions.getConfig?.()
+      .then((config) => {
+        rawConfig.value = config
+        Object.assign(settings.value, structuredClone(toRaw(config.defaultSettings || {})))
+        Object.assign(filters.state, structuredClone(toRaw(filtersDefault.value)))
+      })
+      .catch(e => console.error(e))
+
     const data = await backend.functions.listDependencies()
 
     Object.freeze(data)
@@ -35,5 +48,8 @@ export async function fetchData() {
       backend.connectionError.value = err
     rawData.value = null
     return null
+  }
+  finally {
+    setupQuery()
   }
 }

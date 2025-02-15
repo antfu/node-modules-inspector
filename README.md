@@ -21,6 +21,25 @@ pnpx node-modules-inspector
 
 You can also try an online version at [node-modules.dev](https://node-modules.dev/), powered by [WebContainer](https://webcontainers.io/).
 
+## Configuration
+
+You can create a `node-modules-inspector.config.ts` file in your project root to configure the inspector's default behaviour.
+
+```js
+import { defineConfig } from 'node-modules-inspector'
+
+export default defineConfig({
+  defaultFilters: {
+    excludes: [
+      'eslint',
+    ],
+  },
+  defaultSettings: {
+    moduleTypeSimple: true,
+  }
+})
+```
+
 ## Screenshots
 
 > Screenshots may not reflect the current state
