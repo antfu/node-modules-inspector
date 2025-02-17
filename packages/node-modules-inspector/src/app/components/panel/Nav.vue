@@ -109,7 +109,7 @@ function resetPanelState() {
         <button
           w-10 h-10 rounded-full hover:bg-active
           flex="~ items-center justify-center"
-          title="Settings"
+          title="Filters"
           :class="isFiltersOpen ? 'text-primary' : 'op50'"
           @click="isFiltersOpen = !isFiltersOpen"
         >
