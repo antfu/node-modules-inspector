@@ -17,7 +17,7 @@ import { toggleDark } from '~/composables/dark'
     <button
       w-10 h-10 rounded-full hover:bg-active op50 hover:op100
       flex="~ items-center justify-center"
-      title="Settings"
+      title="Toggle Dark Mode"
       @click="toggleDark()"
     >
       <div i-ph-sun-duotone dark:i-ph-moon-duotone text-xl />
