@@ -4,6 +4,7 @@ import type { FilterOptions } from './filters'
 export type { FilterOptions }
 
 export interface NodeModulesInspectorPayload extends ListPackageDependenciesResult {
+  timestamp: number
   config?: NodeModulesInspectorConfig
 }
 
@@ -15,6 +16,10 @@ export interface ServerFunctions {
 }
 
 export interface NodeModulesInspectorConfig {
+  /**
+   * The name of the project
+   */
+  name?: string
   /**
    * Exclude the packages and it's dependencies
    */

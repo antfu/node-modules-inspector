@@ -10,6 +10,9 @@ const backend = getBackend()
 const multipleVersionsCount = computed(() => {
   return Array.from(payloads.avaliable.versions.values()).filter(v => v.length > 1).length
 })
+
+const mins10 = 10 * 60 * 1000
+const timepassed = computed(() => rawData.value?.timestamp ? Date.now() - rawData.value.timestamp : 0)
 </script>
 
 <template>
@@ -40,7 +43,7 @@ const multipleVersionsCount = computed(() => {
         @click="backend.functions.openInFinder?.(rawData.root)"
       >
         <div i-catppuccin-folder-node-open icon-catppuccin flex-none />
-        <span font-mono break-after-all text-left leading-none>{{ rawData.root }}</span>
+        <span font-mono break-after-all text-left leading-none>{{ rawData.config?.name ?? rawData.root }}</span>
       </button>
       <div flex="~ gap-2 items-center">
         <div i-catppuccin-pnpm icon-catppuccin flex-none />
@@ -66,6 +69,11 @@ const multipleVersionsCount = computed(() => {
         <div i-catppuccin-binary icon-catppuccin flex-none />
         <DisplayFileSizeBadge :bytes="totalWorkspaceSize" :precent="false" rounded-full text-sm mx--0.2 mt-3px color="badge-color-primary" />
         <span ml--0.5>total node_modules size</span>
+      </div>
+      <div v-if="timepassed >= mins10" flex="~ gap-2 items-center">
+        <div i-catppuccin-changelog icon-catppuccin flex-none />
+        <DisplayDateBadge :time="rawData.timestamp" :colorize="false" rounded-full text-sm mx--0.2 mt-3px color="badge-color-primary" />
+        <span ml--0.5>last updated</span>
       </div>
     </div>
     <div>

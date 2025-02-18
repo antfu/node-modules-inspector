@@ -6,8 +6,7 @@ import { constructPackageFilters, listPackageDependencies } from 'node-modules-t
 import { loadConfig } from 'unconfig'
 import { getPackagesPublishDate } from '../shared/publish-date'
 
-export interface CreateServerFunctionsOptions
-  extends Partial<ListPackageDependenciesOptions>, ListPackagePublishDatesOptions {
+export interface CreateServerFunctionsOptions extends Partial<ListPackageDependenciesOptions>, ListPackagePublishDatesOptions {
 }
 
 export function createServerFunctions(options: CreateServerFunctionsOptions): ServerFunctions {
@@ -61,6 +60,7 @@ export function createServerFunctions(options: CreateServerFunctionsOptions): Se
         }))
 
       return {
+        timestamp: Date.now(),
         ...result,
         config,
       }

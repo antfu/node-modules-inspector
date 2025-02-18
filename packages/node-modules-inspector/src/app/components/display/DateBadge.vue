@@ -6,7 +6,8 @@ import { settings } from '~/state/settings'
 
 const props = withDefaults(
   defineProps<{
-    pkg: PackageNode
+    pkg?: PackageNode
+    time?: number | Date
     colorize?: boolean
   }>(),
   {
@@ -14,7 +15,12 @@ const props = withDefaults(
   },
 )
 
-const date = computed(() => getPublishTime(props.pkg))
+const date = computed(() => props.time
+  ? new Date(props.time)
+  : props.pkg
+    ? getPublishTime(props.pkg)
+    : undefined,
+)
 
 const colorScale = [
   [180, 'color-scale-neutral'],
@@ -35,7 +41,7 @@ const daysAgo = computed(() => {
 
 const timeAgo = computed(() => {
   if (daysAgo.value < 1)
-    return ['', 'today']
+    return ['today', '']
   if (daysAgo.value > 365)
     return [+(daysAgo.value / 365).toFixed(1), 'yr']
   if (daysAgo.value > 30)
