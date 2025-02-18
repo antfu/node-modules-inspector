@@ -307,10 +307,19 @@ function getShallowestDependents(pkg: PackageNode) {
       <template v-if="settings.packageDetailsTab === 'dependents'">
         <template v-if="pkg.flatDependents.size">
           <TreeDependencies
+            v-if="settings.deepDependenciesTree"
             py5 px4
             :currents="getShallowestDependents(pkg)"
             :list="payloads.avaliable.flatDependents(pkg)"
             :max-depth="getDepth(pkg.flatDependents.size, 2)"
+            type="dependents"
+          />
+          <TreeDependencies
+            v-else
+            py5 px4
+            :currents="payloads.avaliable.dependents(pkg)"
+            :list="payloads.avaliable.dependents(pkg)"
+            :max-depth="getDepth(pkg.dependents.size, 2)"
             type="dependents"
           />
         </template>
