@@ -42,12 +42,13 @@ async function run() {
     <div flex="~ col items-center gap-5" p10>
       <div min-h-120 flex="~ col gap-2 items-center justify-center" flex-auto>
         <UiTitle :has-error="!!error" :is-loading="isLoading" />
+
         <label
           border="~ base rounded-full" bg-glass shadow transition-all
-          flex="~ gap-2 items-center" py3 px8 mt5 text-lg
+          flex="~ gap-2 items-center" py3 px8 text-lg
           focus-within="shadow-xl ring-4 ring-primary:10"
         >
-          <div flex-none font-mono select-none>
+          <div flex-none font-mono select-none flex="~ gap-2 items-center">
             <span text-orange>pnpm</span> <span op50>install</span>
           </div>
           <input
@@ -59,13 +60,15 @@ async function run() {
             @keydown.enter="run"
           >
         </label>
-
-        <div text-center p2 op35 italic>
+        <div text-center transition duration-500 italic :class="input ? 'op35' : 'op0'">
           This will run a pnpm install inside your browser with <a href="https://webcontainers.io/" target="_blank" hover:underline>WebContainer</a>.
         </div>
-        <div w-10 border="t base" my4 />
-        <div p2>
-          <span op35>You can also run this locally at your project root with</span> <code badge-color-gray font-mono px2 rounded>pnpx <span text-primary:90>node-modules-inspector</span></code>.
+
+        <div p2 mt3>
+          <span op35>Or run this locally with</span> <code badge-color-gray important-bg-gray:3 font-mono px2 py1 rounded>pnpx <span text-primary:90>node-modules-inspector</span></code>.
+        </div>
+        <div absolute left-0 right-0 bottom-0 flex="~ col items-center gap-2" p4>
+          <UiCredits />
         </div>
 
         <div v-if="error" h-20 text-red rounded p2 flex="~ col items-center">
