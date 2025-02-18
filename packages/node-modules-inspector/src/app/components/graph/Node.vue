@@ -18,7 +18,7 @@ defineProps<{
     inner="graph-node-button"
     :fade="true"
     :highlight-mode="highlightMode"
-    @click="selectedNode = pkg === selectedNode ? null : pkg"
+    @click="selectedNode = pkg === selectedNode ? undefined : pkg"
   >
     <DisplayPackageSpec :pkg flex-auto justify-start text-left />
     <DisplayModuleType text-xs justify-end ml2 :pkg :badge="false" />

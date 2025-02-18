@@ -15,7 +15,7 @@ defineProps<{
     as="button"
     outer="border rounded-lg"
     inner="flex flex-col gap-2 hover:bg-active p2 px3"
-    @click="selectedNode = pkg === selectedNode ? null : pkg"
+    @click="selectedNode = pkg === selectedNode ? undefined : pkg"
   >
     <DisplayPackageSpec :pkg text-left />
     <div flex="~ wrap gap-2 items-center" text-sm>
