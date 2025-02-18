@@ -12,7 +12,7 @@ const props = withDefaults(
     excludes?: PackageNode[]
   }>(),
   {
-    payload: payloads.filtered as any,
+    payload: payloads.avaliable as any,
   },
 )
 
