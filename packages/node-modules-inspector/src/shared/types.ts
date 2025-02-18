@@ -21,6 +21,12 @@ export interface NodeModulesInspectorConfig {
    */
   name?: string
   /**
+   * Fetch the publish date of the packages
+   *
+   * @default true
+   */
+  fetchPublishDate?: boolean
+  /**
    * Exclude the packages and it's dependencies
    */
   excludePackages?: (string | ((node: PackageNodeRaw) => boolean))[]

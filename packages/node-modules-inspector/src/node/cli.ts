@@ -35,6 +35,7 @@ cli
       cwd,
       depth: options.depth,
       storage,
+      mode: 'build',
     }))
     const rpcDump: ServerFunctionsDump = {
       getPayload: await rpc.getPayload(),
@@ -92,6 +93,7 @@ cli
       cwd: options.root,
       depth: options.depth,
       storage,
+      mode: 'dev',
     })
 
     server.listen(port, host, async () => {

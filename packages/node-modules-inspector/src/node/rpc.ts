@@ -4,9 +4,10 @@ import type { NodeModulesInspectorConfig, ServerFunctions } from '../shared/type
 import process from 'node:process'
 import { constructPackageFilters, listPackageDependencies } from 'node-modules-tools'
 import { loadConfig } from 'unconfig'
-import { getPackagesPublishDate } from '../shared/publish-date'
+import { getPackagesPublishDate as _getPackagesPublishDate } from '../shared/publish-date'
 
 export interface CreateServerFunctionsOptions extends Partial<ListPackageDependenciesOptions>, ListPackagePublishDatesOptions {
+  mode: 'dev' | 'build'
 }
 
 export function createServerFunctions(options: CreateServerFunctionsOptions): ServerFunctions {
@@ -22,7 +23,10 @@ export function createServerFunctions(options: CreateServerFunctionsOptions): Se
             files: 'node-modules-inspector.config',
           },
         ],
-        defaults: {},
+        defaults: {
+          fetchPublishDate: true,
+        },
+        merge: true,
       })
       if (result.sources.length)
         console.log(`[Node Modules Inspector] Config loaded from ${result.sources.join(', ')}`)
@@ -31,6 +35,14 @@ export function createServerFunctions(options: CreateServerFunctionsOptions): Se
       return result.config
     })()
     return _config
+  }
+
+  async function getPackagesPublishDate(deps: string[]) {
+    const config = await getConfig()
+    if (!config.fetchPublishDate)
+      return new Map()
+    console.log('[Node Modules Inspector] Fetching publish dates...')
+    return _getPackagesPublishDate(deps, { storage: options.storage })
   }
 
   return {
@@ -52,6 +64,18 @@ export function createServerFunctions(options: CreateServerFunctionsOptions): Se
         },
       })
 
+      // For build mode, we fetch the publish date
+      if (options.mode === 'build' && config.fetchPublishDate) {
+        try {
+          await getPackagesPublishDate(Array.from(result.packages.keys()))
+        }
+        catch (e) {
+          console.error('[Node Modules Inspector] Failed to fetch publish dates')
+          console.error(e)
+        }
+      }
+
+      // Fullfill the publish time
       await Promise.all(Array.from(result.packages.values())
         .map(async (pkg) => {
           const time = await options.storage.getItem(pkg.spec)
@@ -65,10 +89,7 @@ export function createServerFunctions(options: CreateServerFunctionsOptions): Se
         config,
       }
     },
-    async getPackagesPublishDate(deps: string[]) {
-      console.log('[Node Modules Inspector] Fetching publish dates...')
-      return getPackagesPublishDate(deps, { storage: options.storage })
-    },
+    getPackagesPublishDate,
     async openInEditor(filename: string) {
       await import('launch-editor').then(r => (r.default || r)(filename))
     },
