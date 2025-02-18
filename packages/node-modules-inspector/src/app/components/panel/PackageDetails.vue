@@ -69,7 +69,7 @@ const sizeTotal = computed(() => {
 })
 
 function getShallowestDependents(pkg: PackageNode) {
-  const dependents = payloads.avaliable.dependents(pkg)
+  const dependents = payloads.avaliable.flatDependents(pkg)
   if (!dependents.length)
     return []
   const minDepth = Math.min(...dependents.map(x => x.depth))

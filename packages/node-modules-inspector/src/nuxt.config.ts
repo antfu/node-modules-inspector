@@ -113,6 +113,18 @@ export default defineNuxtConfig({
         },
       },
     },
+    optimizeDeps: {
+      include: [
+        'fuse.js',
+        'd3-hierarchy',
+        'd3-shape',
+        'modern-screenshot',
+      ],
+      exclude: [
+        'structured-clone-es',
+        'birpc',
+      ],
+    },
     plugins: [
       NUXT_DEBUG_BUILD ? Inspect({ build: true }) : null,
     ],
