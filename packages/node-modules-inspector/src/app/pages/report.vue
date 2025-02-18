@@ -1,10 +1,10 @@
 <template>
   <ReportTransitiveDeps />
   <ReportInstallSize />
-  <div grid="~ cols-2 gap-5">
-    <ReportEngines />
+  <div grid="~ cols-[4fr_5fr] gap-5">
+    <ReportPublishTime />
     <ReportUsedBy />
   </div>
-  <ReportPublishTime />
+  <ReportEngines />
   <ReportMultipleVersions />
 </template>
