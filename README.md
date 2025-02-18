@@ -10,16 +10,19 @@
 
 Interactive UI for local node modules inspection.
 
-> [!IMPORTANT]
-> Working in progress, expect incomplete features and bugs.
+### Quick Start
 
-For now, you may try it by running following command under your **pnpm** project.
+Try it by running following command under your `pnpm` project.
 
 ```bash
 pnpx node-modules-inspector
 ```
 
-You can also try an online version at [node-modules.dev](https://node-modules.dev/), powered by [WebContainer](https://webcontainers.io/).
+> Currently only support `pnpm` projects. We are counting on the community to bring support for other package managers.
+
+### Online Version
+
+You can also try an online version at [**node-modules.dev**](https://node-modules.dev/), powered by [WebContainer](https://webcontainers.io/).
 
 ## Configuration
 
