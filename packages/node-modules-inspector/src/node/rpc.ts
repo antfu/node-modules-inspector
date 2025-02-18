@@ -70,7 +70,6 @@ export function createServerFunctions(options: CreateServerFunctionsOptions): Se
       return getPackagesPublishDate(deps, { storage: options.storage })
     },
     async openInEditor(filename: string) {
-      // @ts-expect-error missing types
       await import('launch-editor').then(r => (r.default || r)(filename))
     },
     async openInFinder(filename: string) {
