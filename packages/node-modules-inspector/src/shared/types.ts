@@ -5,6 +5,7 @@ export type { FilterOptions }
 
 export interface NodeModulesInspectorPayload extends ListPackageDependenciesResult {
   timestamp: number
+  hash: string
   config?: NodeModulesInspectorConfig
 }
 

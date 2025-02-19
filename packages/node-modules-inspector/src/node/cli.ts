@@ -13,7 +13,7 @@ import { stringify } from 'structured-clone-es'
 import { distDir } from '../dirs'
 import { MARK_CHECK, MARK_INFO } from './constants'
 import { createHostServer } from './server'
-import { storage } from './storage'
+import { storagePublishDates } from './storage'
 
 const cli = cac('node-modules-inspector')
 
@@ -34,7 +34,7 @@ cli
     const rpc = await import('./rpc').then(r => r.createServerFunctions({
       cwd,
       depth: options.depth,
-      storage,
+      storagePublishDates,
       mode: 'build',
     }))
     const rpcDump: ServerFunctionsDump = {
@@ -92,7 +92,7 @@ cli
     const server = await createHostServer({
       cwd: options.root,
       depth: options.depth,
-      storage,
+      storagePublishDates,
       mode: 'dev',
     })
 

@@ -168,6 +168,9 @@ catalogs:
     nuxt-eslint-auto-explicit-import:
       specifier: ^0.1.1
       version: 0.1.1
+    ohash:
+      specifier: ^1.1.4
+      version: 1.1.4
     open:
       specifier: ^10.1.0
       version: 10.1.0
@@ -410,6 +413,9 @@ importers:
       node-modules-tools:
         specifier: workspace:*
         version: link:../node-modules-tools
+      ohash:
+        specifier: 'catalog:'
+        version: 1.1.4
       open:
         specifier: 'catalog:'
         version: 10.1.0

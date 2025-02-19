@@ -62,6 +62,7 @@ catalog:
   nitropack: 2.8.1
   nuxt: ^3.15.4
   nuxt-eslint-auto-explicit-import: ^0.1.1
+  ohash: ^1.1.4
   open: ^10.1.0
   p-limit: ^6.2.0
   package-manager-detector: ^0.2.9

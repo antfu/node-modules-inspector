@@ -85,7 +85,7 @@ export async function install(
   })
 
   const error = shallowRef<unknown | undefined>(undefined)
-  const storage = createStorage<string>({
+  const storagePublishDates = createStorage<string>({
     driver: driverIndexedDb({
       base: 'nmi:publish-date',
     }),
@@ -112,7 +112,7 @@ export async function install(
         return result
       },
       getPackagesPublishDate(deps) {
-        return getPackagesPublishDate(deps, { storage })
+        return getPackagesPublishDate(deps, { storagePublishDates })
       },
     },
   }

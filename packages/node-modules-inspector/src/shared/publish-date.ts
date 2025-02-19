@@ -3,14 +3,14 @@ import { getLatestVersion, getLatestVersionBatch } from 'fast-npm-meta'
 import pLimit from 'p-limit'
 
 export interface ListPackagePublishDatesOptions {
-  storage: Storage<string>
+  storagePublishDates: Storage<string>
 }
 
 export async function getPackagesPublishDate(
   packages: string[],
   options: ListPackagePublishDatesOptions,
 ) {
-  const { storage } = options
+  const { storagePublishDates: storage } = options
 
   const map = new Map<string, string>()
 

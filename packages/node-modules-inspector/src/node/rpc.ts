@@ -3,6 +3,7 @@ import type { ListPackagePublishDatesOptions } from '../shared/publish-date'
 import type { NodeModulesInspectorConfig, ServerFunctions } from '../shared/types'
 import process from 'node:process'
 import { constructPackageFilters, listPackageDependencies } from 'node-modules-tools'
+import { hash as getHash } from 'ohash'
 import { loadConfig } from 'unconfig'
 import { getPackagesPublishDate as _getPackagesPublishDate } from '../shared/publish-date'
 
@@ -42,7 +43,7 @@ export function createServerFunctions(options: CreateServerFunctionsOptions): Se
     if (!config.fetchPublishDate)
       return new Map()
     console.log('[Node Modules Inspector] Fetching publish dates...')
-    return _getPackagesPublishDate(deps, { storage: options.storage })
+    return _getPackagesPublishDate(deps, { storagePublishDates: options.storagePublishDates })
   }
 
   return {
@@ -64,6 +65,8 @@ export function createServerFunctions(options: CreateServerFunctionsOptions): Se
         },
       })
 
+      const hash = getHash([...result.packages.keys()].sort())
+
       // For build mode, we fetch the publish date
       if (options.mode === 'build' && config.fetchPublishDate) {
         try {
@@ -78,12 +81,13 @@ export function createServerFunctions(options: CreateServerFunctionsOptions): Se
       // Fullfill the publish time
       await Promise.all(Array.from(result.packages.values())
         .map(async (pkg) => {
-          const time = await options.storage.getItem(pkg.spec)
+          const time = await options.storagePublishDates.getItem(pkg.spec)
           if (time)
             pkg.resolved.publishTime = time
         }))
 
       return {
+        hash,
         timestamp: Date.now(),
         ...result,
         config,
