@@ -59,10 +59,14 @@ summary::-webkit-details-marker {
   box-shadow: 0 6px 30px #0000001a;
 }
 
+.v-popper--theme-tooltip {
+  max-width: 20rem;
+}
+
 .v-popper--theme-tooltip .v-popper__arrow-inner,
 .v-popper--theme-dropdown .v-popper__arrow-inner {
   visibility: visible;
-  --at-apply: border-white dark:border-neutral-900;
+  --at-apply: border-white dark:border-#111;
 }
 
 .v-popper--theme-tooltip .v-popper__arrow-outer,

@@ -15,31 +15,37 @@ defineProps<{
     as="button"
     outer="border rounded-lg"
     inner="flex flex-col gap-2 hover:bg-active p2 px3"
-    @click="selectedNode = pkg === selectedNode ? null : pkg"
+    @click="selectedNode = pkg === selectedNode ? undefined : pkg"
   >
     <DisplayPackageSpec :pkg text-left />
     <div flex="~ wrap gap-2 items-center" text-sm>
       <DisplayModuleType :pkg />
-      <template v-if="payloads.avaliable.flatDependents(pkg).length">
-        <div flex="~ items-center gap-1">
-          <div i-ph-arrow-elbow-down-right-duotone />
-          <DisplayNumberBadge :number="pkg.flatDependents.size" rounded-full text-sm />
-        </div>
-      </template>
+      <DisplayNumberBadge
+        v-if="payloads.avaliable.flatDependents(pkg).length"
+        :number="pkg.flatDependents.size"
+        icon="i-ph-arrow-elbow-down-right-duotone text-xs"
+        rounded-full text-sm
+      />
+      <DisplayNumberBadge
+        v-if="payloads.avaliable.flatDependencies(pkg).length"
+        :number="payloads.avaliable.flatDependencies(pkg).length"
+        icon="i-ph-lego-duotone text-xs"
+        rounded-full text-sm
+      />
 
-      <template v-if="payloads.avaliable.flatDependencies(pkg).length">
-        <div flex="~ items-center gap-1">
-          <div i-ph-lego-duotone />
-          <DisplayNumberBadge :number="payloads.avaliable.flatDependencies(pkg).length" rounded-full text-sm />
-        </div>
-      </template>
+      <DisplayFileSizeBadge
+        v-if="settings.showInstallSizeBadge && pkg.resolved.installSize?.bytes"
+        :bytes="pkg.resolved.installSize.bytes"
+        :digits="0"
+        rounded-full text-sm
+      />
 
-      <template v-if="settings.showInstallSizeBadge && pkg.resolved.installSize?.bytes">
-        <div flex="~ items-center gap-1">
-          <div i-ph-barbell-duotone />
-          <DisplayFileSizeBadge :bytes="pkg.resolved.installSize.bytes" :digits="0" rounded-full text-sm />
-        </div>
-      </template>
+      <DisplayDateBadge
+        v-if="settings.showPublishTimeBadge"
+        :pkg
+        rounded-full text-sm
+      />
+
       <!--
       <span op25>·</span>
       <div op75>

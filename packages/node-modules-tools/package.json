@@ -1,7 +1,7 @@
 {
   "name": "node-modules-tools",
   "type": "module",
-  "version": "0.0.7",
+  "version": "0.1.9",
   "description": "Tools for inspecting node_modules",
   "author": "Anthony Fu <anthonyfu117@hotmail.com>",
   "license": "MIT",
@@ -16,19 +16,12 @@
   "keywords": [],
   "sideEffects": false,
   "exports": {
-    ".": "./dist/index.mjs"
+    ".": "./dist/index.mjs",
+    "./utils": "./dist/utils.mjs"
   },
   "main": "./dist/index.mjs",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.mts",
-  "typesVersions": {
-    "*": {
-      "*": [
-        "./dist/*",
-        "./dist/index.d.ts"
-      ]
-    }
-  },
   "files": [
     "dist"
   ],
@@ -43,6 +36,7 @@
     "p-limit": "catalog:",
     "package-manager-detector": "catalog:",
     "pathe": "catalog:",
+    "semver": "catalog:",
     "tinyexec": "catalog:"
   },
   "devDependencies": {

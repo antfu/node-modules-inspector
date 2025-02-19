@@ -18,6 +18,10 @@ export interface ListPackageDependenciesOptions extends BaseOptions {
    * Filter if workspace should be recognized
    */
   workspace?: boolean
+  /**
+   * Filter whether a package's dependencies should be included
+   */
+  dependenciesFilter?: (node: PackageNodeRaw) => boolean
 }
 
 export interface ListPackageDependenciesRawResult {

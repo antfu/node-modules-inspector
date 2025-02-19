@@ -2,9 +2,15 @@
 import type { PackageNode } from 'node-modules-tools'
 import { selectedNode } from '~/state/current'
 
-defineProps<{
-  pkg?: PackageNode
-}>()
+withDefaults(
+  defineProps<{
+    pkg?: PackageNode
+    showModuleType?: boolean
+  }>(),
+  {
+    showModuleType: true,
+  },
+)
 </script>
 
 <template>
@@ -15,7 +21,7 @@ defineProps<{
     hover="bg-active"
     @click="selectedNode = pkg"
   >
-    <DisplayModuleType :pkg />
+    <DisplayModuleType v-if="showModuleType" :pkg />
     <DisplayPackageSpec :pkg />
   </button>
 </template>

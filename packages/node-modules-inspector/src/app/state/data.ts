@@ -1,14 +1,18 @@
-import type { ListPackageDependenciesResult } from 'node-modules-tools'
-import { shallowRef } from 'vue'
-import { ensureBackend } from '~/backends'
+import type { NodeModulesInspectorPayload } from '~~/shared/types'
+import { shallowRef, toRaw } from 'vue'
+import { getBackend } from '~/backends'
+import { filters, filtersDefault } from './filters'
+import { setupQuery } from './query'
+import { settings } from './settings'
 
-export const rawData = shallowRef<ListPackageDependenciesResult | null>(null)
+export const rawData = shallowRef<NodeModulesInspectorPayload | null>(null)
+export const rawPublishDates = shallowRef<Map<string, string> | null>(null)
 
-export async function fetchData() {
+export async function fetchData(force = false) {
   rawData.value = null
-  const backend = await ensureBackend()
+  const backend = getBackend()
   try {
-    const data = await backend.functions.listDependencies()
+    const data = await backend.functions.getPayload(force)
 
     Object.freeze(data)
     for (const pkg of data.packages.values())
@@ -16,11 +20,29 @@ export async function fetchData() {
 
     rawData.value = data
 
+    Object.assign(settings.value, structuredClone(toRaw(data.config?.defaultSettings || {})))
+    Object.assign(filters.state, structuredClone(toRaw(filtersDefault.value)))
+
+    const publishDate = await backend.functions.getPackagesPublishDate?.(
+      [...data.packages.entries()]
+        .filter(x => !x[1].private && !x[1].workspace && !x[1].resolved.publishTime)
+        .map(x => x[0]),
+    )
+    if (publishDate) {
+      Object.freeze(publishDate)
+      rawPublishDates.value = publishDate
+    }
+
     return rawData.value
   }
   catch (err) {
-    backend.connectionError.value = err
+    console.error(err)
+    if (backend)
+      backend.connectionError.value = err
     rawData.value = null
     return null
+  }
+  finally {
+    setupQuery()
   }
 }

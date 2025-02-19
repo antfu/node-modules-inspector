@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { getBackend } from '~/backends'
 import { rawData } from '~/state/data'
-import { payloads } from '~/state/payload'
+import { payloads, totalWorkspaceSize } from '~/state/payload'
 import { version } from '../../../../package.json'
 
 const backend = getBackend()
@@ -10,12 +10,15 @@ const backend = getBackend()
 const multipleVersionsCount = computed(() => {
   return Array.from(payloads.avaliable.versions.values()).filter(v => v.length > 1).length
 })
+
+const mins10 = 10 * 60 * 1000
+const timepassed = computed(() => rawData.value?.timestamp ? Date.now() - rawData.value.timestamp : 0)
 </script>
 
 <template>
   <div flex="~ col">
     <h1 text-lg p5 flex="~ gap-3 items-center">
-      <Logo w-9 h-9 alt="Logo" class="hover:animate-spin-reverse" />
+      <UiLogo w-9 h-9 alt="Logo" class="hover:animate-spin-reverse" />
       <div flex="~ col gap-0" leading-none>
         <span font-700 text-primary>Node Modules</span>
         <span op75>Inspector</span>
@@ -27,12 +30,20 @@ const multipleVersionsCount = computed(() => {
       </span>
     </h1>
     <div v-if="rawData" border="t base" flex="~ col gap-3" p5>
+      <div
+        v-if="backend.name === 'webcontainer'"
+        flex="~ gap-2 items-center"
+      >
+        <div i-catppuccin-stackblitz icon-catppuccin flex-none />
+        <a break-after-all text-left leading-none href="https://webcontainers.io/" target="_blank" hover="underline">WebContainer</a>
+      </div>
       <button
+        v-else
         flex="~ gap-2 items-center"
         @click="backend.functions.openInFinder?.(rawData.root)"
       >
         <div i-catppuccin-folder-node-open icon-catppuccin flex-none />
-        <span font-mono break-after-all text-left leading-none>{{ rawData.root }}</span>
+        <span font-mono break-after-all text-left leading-none>{{ rawData.config?.name ?? rawData.root }}</span>
       </button>
       <div flex="~ gap-2 items-center">
         <div i-catppuccin-pnpm icon-catppuccin flex-none />
@@ -54,22 +65,20 @@ const multipleVersionsCount = computed(() => {
         <DisplayNumberBadge :number="multipleVersionsCount" rounded-full text-sm mx--0.2 mt-3px color="badge-color-orange" />
         <span ml--0.5>libraries with multiple versions</span>
       </div>
+      <div flex="~ gap-2 items-center">
+        <div i-catppuccin-binary icon-catppuccin flex-none />
+        <DisplayFileSizeBadge :bytes="totalWorkspaceSize" :precent="false" rounded-full text-sm mx--0.2 mt-3px color="badge-color-primary" />
+        <span ml--0.5>total node_modules size</span>
+      </div>
+      <div v-if="timepassed >= mins10" flex="~ gap-2 items-center">
+        <div i-catppuccin-changelog icon-catppuccin flex-none />
+        <DisplayDateBadge :time="rawData.timestamp" :colorize="false" rounded-full text-sm mx--0.2 mt-3px color="badge-color-primary" />
+        <span ml--0.5>last updated</span>
+      </div>
     </div>
     <div>
       <UiPercentageModuleType :packages="payloads.avaliable.packages" :rounded="false" />
     </div>
-    <div border="t base" flex="~ gap-1.1 items-center" p3 pl5 pr4 text-hex-888e>
-      Made with
-      <div i-logos-nuxt-icon text-0.6rem mr--0.6 />
-      <span text-green>Nuxt</span>
-      and
-      <div i-ph-heart-duotone text-rose />
-      by
-      <a href="https://github.com/antfu" target="_blank" rel="noopener" hover="underline">Anthony Fu</a>
-      <div flex-auto />
-      <a href="https://github.com/antfu/node-modules-inspector" target="_blank" rel="noopener" op50 hover:op100>
-        <div i-ri-github-fill text-lg />
-      </a>
-    </div>
+    <UiCredits border="t base" />
   </div>
 </template>

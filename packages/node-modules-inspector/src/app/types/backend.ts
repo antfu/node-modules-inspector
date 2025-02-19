@@ -6,5 +6,6 @@ export interface Backend {
   status: Ref<'idle' | 'connecting' | 'connected' | 'error'>
   connectionError: Ref<unknown | undefined>
   connect: () => Promise<void> | void
-  functions: Partial<ServerFunctions> & Pick<ServerFunctions, 'listDependencies'>
+  isDynamic?: boolean
+  functions: Partial<ServerFunctions> & Pick<ServerFunctions, 'getPayload'>
 }

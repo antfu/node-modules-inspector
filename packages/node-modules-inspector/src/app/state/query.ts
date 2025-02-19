@@ -3,19 +3,21 @@ import { useRoute, useRouter } from '#app/composables/router'
 import { objectEntries } from '@antfu/utils'
 import { debouncedWatch, ignorableWatch } from '@vueuse/core'
 import { reactive, watch } from 'vue'
-import { filters, FILTERS_SCHEMA } from './filters'
+import { filters, FILTERS_SCHEMA, filtersDefault, isDeepEqual } from './filters'
 
 export interface QueryOptions extends Partial<{ [x in keyof FilterOptions]?: string }> {
   selected?: string
+  install?: string
 }
 
 export const query = reactive<QueryOptions>({
   selected: '',
+  install: '',
 } as any)
 
 function stringifyQuery(object: QueryOptions): string {
   const entries = Object.entries(object)
-    .map(i => [i[0], Array.isArray(i[1]) ? i[1].join(',') : i[1]])
+    .map(i => [i[0], Array.isArray(i[1]) ? i[1].join('+') : i[1]])
     .filter(x => !!x[1]) as [string, string][]
   const query = new URLSearchParams(entries)
   return query.toString()
@@ -33,9 +35,9 @@ function queryToFilters(query: QueryOptions, filters: FilterOptions) {
     const raw = query[key]
 
     const resolved = !raw
-      ? s.default
+      ? structuredClone(filtersDefault.value[key])
       : s.type === Array
-        ? raw.split(',')
+        ? raw.split(/[,+]/)
         : s.type === Boolean
           ? raw === 'true'
           : raw
@@ -48,10 +50,10 @@ function queryToFilters(query: QueryOptions, filters: FilterOptions) {
 function filtersToQuery(filters: FilterOptions, query: QueryOptions) {
   for (const [key, s] of objectEntries(FILTERS_SCHEMA)) {
     const value = filters[key]
-    const serialized = (value === s.default || value === null)
+    const serialized = (isDeepEqual(value, filtersDefault.value[key]) || value === null)
       ? undefined
       : s.type === Array
-        ? (value as any)?.join(',')
+        ? (value as any)?.join('+')
         : s.type === Boolean
           ? (value ? 'true' : 'false')
           : value
@@ -61,10 +63,15 @@ function filtersToQuery(filters: FilterOptions, query: QueryOptions) {
   }
 }
 
+let _isQuerySetup = false
+
 export function setupQuery() {
+  if (_isQuerySetup)
+    return
+  _isQuerySetup = true
   Object.assign(query, parseQuery(location.hash.replace(/^#/, '')))
 
-  queryToFilters(query, filters)
+  queryToFilters(query, filters.state)
 
   const router = useRouter()
   const route = useRoute()
@@ -91,9 +98,9 @@ export function setupQuery() {
   )
 
   debouncedWatch(
-    filters,
+    () => filters.state,
     () => {
-      filtersToQuery(filters, query)
+      filtersToQuery(filters.state, query)
     },
     { deep: true, debounce: 200 },
   )

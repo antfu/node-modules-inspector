@@ -2,72 +2,30 @@
 import type { PackageModuleType } from 'node-modules-tools'
 import type { WritableComputedRef } from 'vue'
 import { computed } from 'vue'
-import { excludesActivated, FILTER_KEYS_EXCLUDES, FILTER_KEYS_FILTERS, filters, FILTERS_DEFAULT, filtersActivated } from '~/state/filters'
+import { filters } from '~/state/filters'
 import { payloads } from '~/state/payload'
-import { settings } from '~/state/settings'
-import { MODULE_TYPES_FULL_SELECT, MODULE_TYPES_SIMPLE_SELECT } from '../../utils/module-type'
-
-const moduleTypesAvailable = computed<PackageModuleType[]>(() =>
-  settings.value.moduleTypeSimple
-    ? MODULE_TYPES_SIMPLE_SELECT
-    : MODULE_TYPES_FULL_SELECT,
-)
+import { MODULE_TYPES_FULL_SELECT, moduleTypesAvailableSelect } from '../../utils/module-type'
 
 function createModuleTypeRef(name: PackageModuleType) {
   return computed({
     get() {
-      return filters.modules == null || filters.modules.includes(name)
+      return filters.state.modules == null || filters.state.modules.includes(name)
     },
     set(v) {
-      const current = new Set(filters.modules ? filters.modules : moduleTypesAvailable.value)
+      const current = new Set(filters.state.modules ? filters.state.modules : moduleTypesAvailableSelect.value)
       if (v)
         current.add(name)
       else
         current.delete(name)
 
-      if (current.size >= moduleTypesAvailable.value.length) {
-        filters.modules = null
+      if (current.size >= moduleTypesAvailableSelect.value.length) {
+        filters.state.modules = null
       }
       else {
-        filters.modules = Array.from(current)
+        filters.state.modules = Array.from(current)
       }
     },
   })
-}
-
-function removeFocus(spec: string) {
-  if (!filters.focus)
-    return
-  const arr = filters.focus.filter(x => x !== spec)
-  filters.focus = arr.length === 0 ? null : arr
-}
-
-function removeExclude(spec: string) {
-  if (!filters.excludes)
-    return
-  const arr = filters.excludes.filter(x => x !== spec)
-  filters.excludes = arr.length === 0 ? null : arr
-}
-
-function removeWhy(spec: string) {
-  if (!filters.why)
-    return
-  const arr = filters.why.filter(x => x !== spec)
-  filters.why = arr.length === 0 ? null : arr
-}
-
-function resetFilters() {
-  for (const key of FILTER_KEYS_FILTERS) {
-    // @ts-expect-error any
-    filters[key] = FILTERS_DEFAULT[key]
-  }
-}
-
-function resetExcludes() {
-  for (const key of FILTER_KEYS_EXCLUDES) {
-    // @ts-expect-error any
-    filters[key] = FILTERS_DEFAULT[key]
-  }
 }
 
 const moduleTypes = Object.fromEntries(
@@ -79,15 +37,15 @@ const moduleTypes = Object.fromEntries(
   <div>
     <div p4 flex="~ gap-2 items-center">
       <button
-        btn-action :disabled="filtersActivated.length === 0"
-        @click="resetFilters()"
+        btn-action :disabled="filters.select.activated.length === 0"
+        @click="filters.select.reset()"
       >
         <div i-ph-funnel-x-duotone />
         Reset Filters
       </button>
       <button
-        btn-action :disabled="excludesActivated.length === 0"
-        @click="resetExcludes()"
+        btn-action :disabled="filters.exclude.activated.length === 0"
+        @click="filters.exclude.reset()"
       >
         <div i-ph-trash-simple-duotone />
         Reset Excludes
@@ -101,14 +59,14 @@ const moduleTypes = Object.fromEntries(
       >
         <div i-ph-text-t-duotone text-lg :class="filters.search ? 'text-primary' : 'op50'" flex-none />
         <input
-          v-model="filters.search"
-          placeholder="Filter by text"
+          v-model="filters.state.search"
+          placeholder="Filter by Text"
           w-full bg-transparent outline-none
         >
         <button
           w-6 h-6 rounded-full hover:bg-active flex
-          :class="filters.search ? '' : 'op0'"
-          @click="filters.search = ''"
+          :class="filters.state.search ? '' : 'op0'"
+          @click="filters.state.search = ''"
         >
           <div i-ph-x ma op50 />
         </button>
@@ -117,7 +75,7 @@ const moduleTypes = Object.fromEntries(
     <div flex="~ col gap-4" p4 border="t base">
       <OptionItem title="Dependency Source" description="Filter by source type of the dependency">
         <OptionSelectGroup
-          v-model="filters['source-type']"
+          v-model="filters.state['source-type']"
           :options="[null, 'prod', 'dev']"
           :titles="['All', 'Prod', 'Dev']"
         />
@@ -126,7 +84,7 @@ const moduleTypes = Object.fromEntries(
     <div flex="~ col gap-2" p4 border="t base">
       <div flex="~ gap-4 wrap">
         <label
-          v-for="type of moduleTypesAvailable"
+          v-for="type of moduleTypesAvailableSelect"
           :key="type"
           flex="~ gap-1 items-center"
         >
@@ -141,7 +99,42 @@ const moduleTypes = Object.fromEntries(
         </label>
       </div>
     </div>
-    <div v-if="filters.focus" flex="~ col gap-2" p4 border="t base">
+    <div v-if="filters.search.parsed.author?.length" flex="~ col gap-2" p4 border="t base">
+      <div flex="~ gap-2 items-center">
+        <div i-ph-user-circle-duotone flex-none />
+        <div>
+          <div>Authors</div>
+        </div>
+      </div>
+      <div flex="~ gap-2 wrap">
+        <div
+          v-for="author, idx of filters.search.parsed.author" :key="idx"
+          font-mono text-sm badge-color-gray rounded-full px2 py0.5
+          flex="~ gap-1 items-center"
+        >
+          {{ author.source }}
+        </div>
+      </div>
+    </div>
+    <div v-if="filters.search.parsed.license?.length" flex="~ col gap-2" p4 border="t base">
+      <div flex="~ gap-2 items-center">
+        <div i-ph-file-text-duotone flex-none />
+        <div>
+          <div>License</div>
+        </div>
+      </div>
+      <div flex="~ gap-2 wrap">
+        <div
+          v-for="license, idx of filters.search.parsed.license" :key="idx"
+          font-mono text-sm badge-color-gray rounded-full px2 py0.5
+          flex="~ gap-1 items-center"
+        >
+          {{ license.source }}
+        </div>
+      </div>
+    </div>
+
+    <div v-if="filters.state.focus" flex="~ col gap-2" p4 border="t base">
       <div flex="~ gap-2 items-center">
         <div i-ph-arrows-in-cardinal-duotone flex-none />
         <div>
@@ -153,7 +146,7 @@ const moduleTypes = Object.fromEntries(
       </div>
       <div flex="~ gap-2 wrap">
         <div
-          v-for="spec of filters.focus"
+          v-for="spec of filters.state.focus"
           :key="spec"
           badge-color-primary rounded-full px2 pl3 py0.5
           flex="~ gap-1 items-center"
@@ -161,13 +154,13 @@ const moduleTypes = Object.fromEntries(
           <div font-mono text-sm>
             {{ spec }}
           </div>
-          <button op50 hover:op100 @click="removeFocus(spec)">
+          <button op50 hover:op100 @click="filters.focus.toggle(spec, false)">
             <div i-ph-x op50 />
           </button>
         </div>
       </div>
     </div>
-    <div v-if="filters.why" flex="~ col gap-2" p4 border="t base">
+    <div v-if="filters.state.why" flex="~ col gap-2" p4 border="t base">
       <div flex="~ gap-2 items-center">
         <div i-ph-seal-question-duotone flex-none />
         <div>
@@ -179,7 +172,7 @@ const moduleTypes = Object.fromEntries(
       </div>
       <div flex="~ gap-2 wrap">
         <div
-          v-for="spec of filters.why"
+          v-for="spec of filters.state.why"
           :key="spec"
           badge-color-yellow rounded-full px2 pl3 py0.5
           flex="~ gap-1 items-center"
@@ -187,7 +180,7 @@ const moduleTypes = Object.fromEntries(
           <div font-mono text-sm>
             {{ spec }}
           </div>
-          <button op50 hover:op100 @click="removeWhy(spec)">
+          <button op50 hover:op100 @click="filters.why.toggle(spec, false)">
             <div i-ph-x op50 />
           </button>
         </div>
@@ -198,9 +191,9 @@ const moduleTypes = Object.fromEntries(
         <div i-ph-network-slash-duotone flex-none />
         Excludes
       </div>
-      <div v-if="filters.excludes" flex="~ gap-2 wrap">
+      <div v-if="filters.state.excludes" flex="~ gap-2 wrap">
         <div
-          v-for="spec of filters.excludes"
+          v-for="spec of filters.state.excludes"
           :key="spec"
           badge-color-purple rounded-full px2 pl3 py0.5
           flex="~ gap-1 items-center"
@@ -208,7 +201,7 @@ const moduleTypes = Object.fromEntries(
           <div font-mono text-sm>
             {{ spec }}
           </div>
-          <button op50 hover:op100 @click="removeExclude(spec)">
+          <button op50 hover:op100 @click="filters.excludes.toggle(spec, false)">
             <div i-ph-x op50 />
           </button>
         </div>
@@ -217,11 +210,14 @@ const moduleTypes = Object.fromEntries(
         To exclude a specific package, select from its menu
       </div>
       <div mt2>
-        <OptionItem title="Exclude Type-only Packages" description="Exclude TypeScript declaration packages">
-          <OptionCheckbox v-model="filters['exclude-dts']" />
+        <OptionItem title="Exclude Types Packages" description="Exclude TypeScript declaration packages">
+          <OptionCheckbox v-model="filters.state['exclude-dts']" />
         </OptionItem>
-        <OptionItem title="Exclude Private Packages" description="Exclude private workspace packages">
-          <OptionCheckbox v-model="filters['exclude-private']" />
+        <OptionItem title="Exclude Private Packages" description="Exclude private workspace packages and their dependencies">
+          <OptionCheckbox v-model="filters.state['exclude-private']" />
+        </OptionItem>
+        <OptionItem title="Exclude Workspace Roots" description="Exclude workspaces but NOT their dependencies">
+          <OptionCheckbox v-model="filters.state['exclude-workspace']" />
         </OptionItem>
       </div>
     </div>

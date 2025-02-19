@@ -1,18 +1,22 @@
 <script setup lang="ts">
 import type { HierarchyLink, HierarchyNode } from 'd3-hierarchy'
 import type { PackageNode } from 'node-modules-tools'
+import type { HighlightMode } from '~/state/highlight'
 import type { ComputedPayload } from '~/state/payload'
-import { useEventListener } from '@vueuse/core'
+import { onKeyPressed, useEventListener, useMagicKeys } from '@vueuse/core'
 import { hierarchy, tree } from 'd3-hierarchy'
 import { linkHorizontal, linkVertical } from 'd3-shape'
 import { computed, nextTick, onMounted, ref, shallowReactive, shallowRef, useTemplateRef, watch } from 'vue'
+import { useZoomElement } from '~/composables/zoomElement'
 import { selectedNode } from '~/state/current'
-import { filters } from '~/state/filters'
+import { getCompareHighlight } from '~/state/highlight'
 import { payloads } from '~/state/payload'
 import { query } from '~/state/query'
 
-const { payload } = defineProps<{
+const { payload, rootPackages, highlightMode } = defineProps<{
   payload: ComputedPayload
+  rootPackages: PackageNode[]
+  highlightMode?: HighlightMode
 }>()
 
 interface Link extends HierarchyLink<PackageNode> {
@@ -21,7 +25,8 @@ interface Link extends HierarchyLink<PackageNode> {
 
 const svgLinks = useTemplateRef<SVGSVGElement>('svgLinks')
 const svgLinksActive = useTemplateRef<SVGSVGElement>('svgLinksActive')
-const el = useTemplateRef<HTMLDivElement>('el')
+const container = useTemplateRef<HTMLDivElement>('container')
+const screenshotTarget = useTemplateRef<HTMLDivElement>('screenshotTarget')
 
 const width = ref(window.innerWidth)
 const height = ref(window.innerHeight)
@@ -31,42 +36,32 @@ const links = shallowRef<Link[]>([])
 const nodesMap = shallowReactive(new Map<string, HierarchyNode<PackageNode>>())
 const linksMap = shallowReactive(new Map<string, Link>())
 
+const ZOOM_MIN = 0.4
+const ZOOM_MAX = 2
+const { control } = useMagicKeys()
+const { scale, zoomIn, zoomOut } = useZoomElement(container, {
+  wheel: control,
+  minScale: ZOOM_MIN,
+  maxScale: ZOOM_MAX,
+})
+
+onKeyPressed(['-', '_'], (e) => {
+  if (e.ctrlKey)
+    zoomOut()
+})
+
+onKeyPressed(['=', '+'], (e) => {
+  if (e.ctrlKey)
+    zoomIn()
+})
+
 const nodesRefMap = new Map<string, HTMLDivElement>()
 
 const NODE_WIDTH = 300
 const NODE_HEIGHT = 30
 const NODE_LINK_OFFSET = 20
-const NODE_MARGIN = 200
+const NODE_MARGIN = 800
 const NODE_GAP = 150
-
-const rootPackages = computed(() => {
-  if (filters.focus?.length)
-    return filters.focus.map(payload.get).filter(x => !!x)
-
-  const sortedByDepth = [...payload.packages].sort((a, b) => b.depth - a.depth)
-  const rootMap = new Map<string, PackageNode>(payload.packages.map(x => [x.spec, x]))
-  let changed = true
-  while (changed) {
-    changed = false
-    for (const pkg of sortedByDepth) {
-      if (pkg.workspace)
-        continue
-      if (!rootMap.has(pkg.spec))
-        continue
-      for (const parent of pkg.dependents) {
-        if (rootMap.has(parent)) {
-          rootMap.delete(pkg.spec)
-          changed = true
-        }
-      }
-    }
-  }
-
-  const rootPackages = Array.from(rootMap.values())
-    .sort((a, b) => a.depth - b.depth || b.flatDependencies.size - a.flatDependencies.size)
-
-  return rootPackages
-})
 
 function calculateGraph() {
   // Unset the canvas size, and recalculate again after nodes are rendered
@@ -78,8 +73,8 @@ function calculateGraph() {
     { name: '~root', spec: '~root' } as any,
     (node) => {
       if (node.name === '~root') {
-        rootPackages.value.forEach(x => seen.add(x))
-        return rootPackages.value
+        rootPackages.forEach(x => seen.add(x))
+        return rootPackages
       }
       const children = payload.dependencies(node)
         .filter(x => !seen.has(x))
@@ -131,11 +126,23 @@ function calculateGraph() {
   for (const link of _links) {
     linksMap.set(link.id, link)
   }
+  for (const pkg of rootPackages) {
+    for (const dep of payload.dependencies(pkg)) {
+      const id = `${pkg.spec}|${dep.spec}`
+      if (!linksMap.has(id)) {
+        const source = nodesMap.get(pkg.spec)!
+        const target = nodesMap.get(dep.spec)!
+        const link: Link = { id, source, target }
+        linksMap.set(id, link)
+        _links.push(link)
+      }
+    }
+  }
   links.value = _links
 
   nextTick(() => {
-    width.value = el.value!.scrollWidth + NODE_MARGIN
-    height.value = el.value!.scrollHeight + NODE_MARGIN
+    width.value = (container.value!.scrollWidth / scale.value + NODE_MARGIN)
+    height.value = (container.value!.scrollHeight / scale.value + NODE_MARGIN)
 
     if (query.selected)
       focusOn(query.selected, false)
@@ -145,14 +152,23 @@ function calculateGraph() {
 }
 
 const isGrabbing = shallowRef(false)
-
 function handleDragingScroll() {
   let x = 0
   let y = 0
-  useEventListener(el, 'mousedown', (e) => {
+  const SCROLLBAR_THICKNESS = 20
+
+  useEventListener(container, 'mousedown', (e) => {
+    // prevent dragging when clicking on scrollbar
+    const rect = container.value!.getBoundingClientRect()
+    const distRight = rect.right - e.clientX
+    const distBottom = rect.bottom - e.clientY
+    if (distRight <= SCROLLBAR_THICKNESS || distBottom <= SCROLLBAR_THICKNESS) {
+      return
+    }
+
     isGrabbing.value = true
-    x = el.value!.scrollLeft + e.pageX
-    y = el.value!.scrollTop + e.pageY
+    x = container.value!.scrollLeft + e.pageX
+    y = container.value!.scrollTop + e.pageY
   })
   useEventListener('mouseleave', () => isGrabbing.value = false)
   useEventListener('mouseup', () => isGrabbing.value = false)
@@ -160,25 +176,19 @@ function handleDragingScroll() {
     if (!isGrabbing.value)
       return
     e.preventDefault()
-    el.value!.scrollLeft = x - e.pageX
-    el.value!.scrollTop = y - e.pageY
+    container.value!.scrollLeft = x - e.pageX
+    container.value!.scrollTop = y - e.pageY
   })
 }
 
-onMounted(() => {
-  handleDragingScroll()
-
-  watch(() => payload.packages, calculateGraph, { immediate: true })
-
-  watch(
-    () => query.selected,
-    () => {
-      if (query.selected)
-        focusOn(query.selected)
-    },
-    { flush: 'post' },
-  )
-})
+async function takeScreenshot() {
+  const { domToPng } = await import('modern-screenshot')
+  const dataUrl = await domToPng(screenshotTarget.value!)
+  const link = document.createElement('a')
+  link.download = 'node-modules-inspector.png'
+  link.href = dataUrl
+  link.click()
+}
 
 const additionalLinks = computed(() => {
   if (!query.selected)
@@ -252,53 +262,139 @@ function generateLink(link: HierarchyLink<PackageNode>) {
     target: [link.target.x! - NODE_WIDTH / 2 + NODE_LINK_OFFSET, link.target.y!],
   })
 }
+
+function getLinkColor(link: Link) {
+  if (!highlightMode)
+    return 'stroke-#8882'
+
+  const source = getCompareHighlight(link.source.data)
+  const target = getCompareHighlight(link.target.data)
+
+  const set = new Set([source, target])
+  if (set.size === 2 && set.has('both'))
+    set.delete('both')
+
+  if (set.size === 1) {
+    if (set.has('a'))
+      return 'stroke-yellow5:30'
+    if (set.has('b'))
+      return 'stroke-purple5:30'
+    if (set.has('both'))
+      return 'stroke-pink5:30'
+  }
+  return 'stroke-#8882'
+}
+
+onMounted(() => {
+  handleDragingScroll()
+
+  watch(() => payload.packages, calculateGraph, { immediate: true })
+
+  watch(
+    () => query.selected,
+    () => {
+      if (query.selected)
+        focusOn(query.selected)
+    },
+    { flush: 'post' },
+  )
+})
 </script>
 
 <template>
   <div
-    ref="el"
-    w-screen h-screen of-scroll absolute inset-0 relative select-none
-    flex="~ items-center justify-center"
+    ref="container"
+    w-screen h-screen of-scroll relative select-none
     :class="isGrabbing ? 'cursor-grabbing' : ''"
   >
-    <div class="bg-dots" pointer-events-none z-graph-bg absolute left-0 top-0 :style="{ width: `${width}px`, height: `${height}px` }" />
-    <svg ref="svgLinks" pointer-events-none absolute left-0 top-0 z-graph-link :width="width" :height="height">
-      <g>
-        <path
-          v-for="link of [...links, ...additionalLinks]"
-          :key="link.id"
-          :d="generateLink(link)!"
-          fill="none"
-          stroke="#8883"
-        />
-      </g>
-    </svg>
-    <svg ref="svgLinksActive" pointer-events-none absolute left-0 top-0 z-graph-link-active :width="width" :height="height">
-      <g>
-        <path
-          v-for="link of activeLinks"
-          :key="link.id"
-          :d="generateLink(link)!"
-          fill="none"
-          class="stroke-primary:75"
-        />
-      </g>
-    </svg>
-    <template
-      v-for="node of nodes"
-      :key="node.data.spec"
+    <div
+      flex="~ items-center justify-center"
+      :style="{ transform: `scale(${scale})`, transformOrigin: '0 0' }"
     >
-      <template v-if="node.data.spec !== '~root'">
-        <GraphNode
-          :ref="(el: any) => nodesRefMap.set(node.data.spec, el?.$el)"
-          :pkg="node.data"
-          :style="{
-            left: `${node.x}px`,
-            top: `${node.y}px`,
-            minWidth: `${NODE_WIDTH}px`,
-          }"
-        />
-      </template>
-    </template>
+      <div class="bg-dots" pointer-events-none z-graph-bg absolute left-0 top-0 :style="{ width: `${width}px`, height: `${height}px` }" />
+      <div ref="screenshotTarget" :style="{ minWidth: `${width * scale}px`, minHeight: `${height * scale}px` }">
+        <svg ref="svgLinks" pointer-events-none absolute left-0 top-0 z-graph-link :width="width" :height="height">
+          <g>
+            <path
+              v-for="link of [...links, ...additionalLinks]"
+              :key="link.id"
+              :d="generateLink(link)!"
+              :class="getLinkColor(link)"
+              fill="none"
+            />
+          </g>
+        </svg>
+        <svg ref="svgLinksActive" pointer-events-none absolute left-0 top-0 z-graph-link-active :width="width" :height="height">
+          <g>
+            <path
+              v-for="link of activeLinks"
+              :key="link.id"
+              :d="generateLink(link)!"
+              fill="none"
+              class="stroke-primary:75"
+            />
+          </g>
+        </svg>
+        <template
+          v-for="node of nodes"
+          :key="node.data.spec"
+        >
+          <template v-if="node.data.spec !== '~root'">
+            <GraphNode
+              :ref="(el: any) => nodesRefMap.set(node.data.spec, el?.$el)"
+              :pkg="node.data"
+              :highlight-mode="highlightMode"
+              :style="{
+                left: `${node.x}px`,
+                top: `${node.y}px`,
+                minWidth: `${NODE_WIDTH}px`,
+              }"
+            />
+          </template>
+        </template>
+      </div>
+    </div>
+
+    <div
+      fixed right-4 bottom-4 z-panel-nav flex="~ col gap-4 items-center"
+    >
+      <div w-10 flex="~ items-center justify-center">
+        <UiTimeoutView :content="`${Math.round(scale * 100)}%`" class="text-sm" />
+      </div>
+
+      <div bg-glass rounded-full border border-base shadow>
+        <button
+          :disabled="scale >= ZOOM_MAX"
+          w-10 h-10 rounded-full hover:bg-active op50 hover:op100
+          disabled:op20 disabled:bg-none disabled:cursor-not-allowed
+          flex="~ items-center justify-center"
+          title="Zoom In (Ctrl + =)"
+          @click="zoomIn()"
+        >
+          <div i-ph-magnifying-glass-plus-duotone />
+        </button>
+        <button
+          :disabled="scale <= ZOOM_MIN"
+          w-10 h-10 rounded-full hover:bg-active op50 hover:op100
+          disabled:op20 disabled:bg-none disabled:cursor-not-allowed
+          flex="~ items-center justify-center"
+          title="Zoom Out (Ctrl + -)"
+          @click="zoomOut()"
+        >
+          <div i-ph-magnifying-glass-minus-duotone />
+        </button>
+      </div>
+
+      <div bg-glass rounded-full border border-base shadow>
+        <button
+          w-10 h-10 rounded-full hover:bg-active op50 hover:op100
+          flex="~ items-center justify-center"
+          title="Download Screenshot as PNG"
+          @click="takeScreenshot"
+        >
+          <div i-ph-download-duotone />
+        </button>
+      </div>
+    </div>
   </div>
 </template>

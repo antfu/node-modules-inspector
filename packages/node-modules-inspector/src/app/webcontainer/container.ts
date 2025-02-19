@@ -1,59 +1,59 @@
-import type { Terminal } from '@xterm/xterm'
-import type { Metadata } from '~~/shared/types'
+import type { NodeModulesInspectorPayload } from '~~/shared/types'
+import type { Backend } from '~/types/backend'
 import { WebContainer } from '@webcontainer/api'
 import c from 'chalk'
 import { join } from 'pathe'
-import { WEBCONTAINER_STDOUT_MARKER } from '~~/shared/constants'
+import { parse } from 'structured-clone-es'
+import { createStorage } from 'unstorage'
+import driverIndexedDb from 'unstorage/drivers/indexedb'
+import { shallowRef } from 'vue'
+import { WEBCONTAINER_STDOUT_PREFIX } from '~~/shared/constants'
+import { getPackagesPublishDate } from '~~/shared/publish-date'
+import { terminal } from '~/state/terminal'
 import { CODE_PACKAGE_JSON, CODE_SERVER } from './constants'
 
 let _promise: Promise<WebContainer> | null = null
 const ROOT = '/app'
 
-export function ready() {
+export function getContainer() {
   if (!_promise) {
-    _promise = (async () => {
-      const wc = await WebContainer.boot()
-      await wc.mount({ app: { directory: {} } })
-
-      return wc
-    })()
+    terminal.value?.writeln('')
+    terminal.value?.writeln(c.gray('> Initiating WebContainer...'))
+    _promise = WebContainer.boot()
+      .then((wc) => {
+        terminal.value?.writeln(c.gray('> WebContainer is booted.'))
+        return wc
+      })
+      .catch((err) => {
+        console.error(err)
+        terminal.value?.writeln(c.red('> WebContainer failed to boot.'))
+        throw err
+      })
   }
   return _promise
 }
 
 export async function install(
-  terminal: Terminal,
   args: string[],
-) {
-  terminal.writeln('')
-  terminal.writeln(c.gray('> Initiating WebContainer...'))
-
-  const wc = await ready()
-
-  let metadata: Metadata | undefined
+): Promise<Backend> {
+  const wc = await getContainer()
 
   async function exec(
     cmd: string,
     args: string[],
     wait = true,
+    onChunk?: (chunk: string) => void | boolean,
   ) {
-    terminal.writeln('')
-    terminal.writeln(c.gray(`> ${cmd} ${args.join(' ')}`))
+    terminal.value?.writeln('')
+    terminal.value?.writeln(c.gray(`> ${cmd} ${args.join(' ')}`))
     const process = await wc.spawn(cmd, args, { cwd: ROOT })
 
     process.output.pipeTo(new WritableStream({
       write(chunk) {
-        terminal.write(chunk)
-        terminal.scrollToBottom()
-
-        let str = chunk.toString().trim()
-        if (str.startsWith(WEBCONTAINER_STDOUT_MARKER)) {
-          str = str.slice(WEBCONTAINER_STDOUT_MARKER.length)
-          try {
-            metadata = JSON.parse(str)
-          }
-          catch {}
-        }
+        if (onChunk?.(chunk) === false)
+          return
+        terminal.value?.write(chunk)
+        terminal.value?.scrollToBottom()
       },
     }))
 
@@ -73,21 +73,47 @@ export async function install(
 
   await exec('pnpm', ['install', ...args])
 
-  const _process = await exec('node', ['__server.mjs'], false)
+  let result: NodeModulesInspectorPayload | undefined
+  const _process = exec('node', ['__server.mjs'], false, (chunk) => {
+    if (chunk.startsWith(WEBCONTAINER_STDOUT_PREFIX)) {
+      const data = chunk.slice(WEBCONTAINER_STDOUT_PREFIX.length)
+      result = parse(data) as NodeModulesInspectorPayload
+      // eslint-disable-next-line no-console
+      console.log('Data fetched', result)
+      return false
+    }
+  })
 
-  let retries = 200
+  const error = shallowRef<unknown | undefined>(undefined)
+  const storage = createStorage<string>({
+    driver: driverIndexedDb({
+      base: 'nmi:publish-date',
+    }),
+  })
 
-  // eslint-disable-next-line no-unmodified-loop-condition
-  while (!metadata && retries > 0) {
-    await new Promise(r => setTimeout(r, 200))
-    retries--
+  return {
+    name: 'webcontainer',
+    connectionError: error,
+    status: shallowRef('connected'),
+    connect() {
+      error.value = undefined
+    },
+    functions: {
+      async getPayload() {
+        let retries = 50
+        // eslint-disable-next-line no-unmodified-loop-condition
+        while (!result && retries > 0) {
+          retries--
+          await new Promise(r => setTimeout(r, 100))
+        }
+        if (!result) {
+          throw new Error('Failed to get dependencies')
+        }
+        return result
+      },
+      getPackagesPublishDate(deps) {
+        return getPackagesPublishDate(deps, { storage })
+      },
+    },
   }
-  if (!metadata) {
-    terminal.writeln('')
-    terminal.writeln(c.red('> Failed to start server'))
-    return false
-  }
-
-  // eslint-disable-next-line no-console
-  console.log(metadata)
 }

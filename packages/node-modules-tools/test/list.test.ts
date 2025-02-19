@@ -34,8 +34,8 @@ describe('listPackageDependencies', () => {
         "ms@2.1.3",
       },
       "dependents": Set {
-        "@babel/core@7.26.0",
-        "@babel/traverse@7.25.9",
+        "@babel/core@7.26.9",
+        "@babel/traverse@7.26.9",
       },
       "depth": 4,
       "dev": true,
@@ -50,6 +50,7 @@ describe('listPackageDependencies', () => {
         "engines": {
           "node": ">=6.0",
         },
+        "funding": undefined,
         "homepage": undefined,
         "installSize": {
           "bytes": 42798,
@@ -84,8 +85,8 @@ describe('listPackageDependencies', () => {
     [
       "unbuild@3.3.1",
       "untyped@1.5.2",
-      "@babel/core@7.26.0",
-      "@babel/traverse@7.25.9",
+      "@babel/core@7.26.9",
+      "@babel/traverse@7.26.9",
       "@babel/helper-module-transforms@7.26.0",
       "@babel/helper-module-imports@7.25.9",
     ]

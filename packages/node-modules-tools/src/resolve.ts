@@ -5,7 +5,6 @@ import fs from 'node:fs/promises'
 import { join } from 'pathe'
 import { analyzePackageModuleType } from './analyze-esm'
 import { getPackageInstallSize } from './size'
-import { stripBomTag } from './utils'
 
 /**
  * Analyze a package node, and return a resolved package node.
@@ -39,9 +38,21 @@ export async function resolvePackage(
     engines: json.engines,
     license: json.license,
     author: typeof json.author === 'string' ? json.author : json.author?.url,
+    funding: json.funding,
     repository,
     homepage: json.homepage,
     installSize: await getPackageInstallSize(_pkg),
   }
   return _pkg
+}
+
+// strip UTF-8 BOM
+// copied from https://github.com/vitejs/vite/blob/90f1420430d7eff45c1e00a300fb0edd972ee0df/packages/vite/src/node/utils.ts#L1322
+function stripBomTag(content: string): string {
+  // eslint-disable-next-line unicorn/number-literal-case
+  if (content.charCodeAt(0) === 0xfeff) {
+    return content.slice(1)
+  }
+
+  return content
 }

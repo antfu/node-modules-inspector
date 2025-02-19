@@ -177,9 +177,12 @@ export async function listPackageDependencies(
       return node
 
     packages.set(node.spec, node)
-    for (const dep of Object.values(raw.dependencies || {})) {
-      const resolvedDep = traverse(dep, level + 1, mode)
-      node.dependencies.add(resolvedDep.spec)
+
+    if (options.dependenciesFilter?.(node) !== false) {
+      for (const dep of Object.values(raw.dependencies || {})) {
+        const resolvedDep = traverse(dep, level + 1, mode)
+        node.dependencies.add(resolvedDep.spec)
+      }
     }
 
     return node

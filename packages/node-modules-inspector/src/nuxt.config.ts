@@ -1,7 +1,9 @@
 import process from 'node:process'
 import { fileURLToPath } from 'node:url'
+import Inspect from 'vite-plugin-inspect'
 
-const backend = process.env.NMI_BACKEND ?? 'server'
+const NUXT_DEBUG_BUILD = !!process.env.NUXT_DEBUG_BUILD
+const backend = process.env.NMI_BACKEND ?? 'dev'
 const isWebContainer = backend === 'webcontainer'
 
 const headers = isWebContainer
@@ -23,7 +25,9 @@ export default defineNuxtConfig({
   ],
 
   alias: {
+    'node-modules-tools/utils': fileURLToPath(new URL('../../node-modules-tools/src/utils.ts', import.meta.url)),
     'node-modules-tools': fileURLToPath(new URL('../../node-modules-tools/src/index.ts', import.meta.url)),
+    'node-modules-inspector': fileURLToPath(new URL('../../node-modules-inspector/src/node/index.ts', import.meta.url)),
   },
 
   logLevel: 'verbose',
@@ -49,6 +53,7 @@ export default defineNuxtConfig({
   ],
 
   nitro: {
+    minify: NUXT_DEBUG_BUILD ? false : undefined,
     preset: 'static',
     output: {
       dir: '../dist',
@@ -95,6 +100,34 @@ export default defineNuxtConfig({
     server: {
       headers,
     },
+    build: {
+      minify: NUXT_DEBUG_BUILD ? false : undefined,
+      rollupOptions: {
+        output: {
+          entryFileNames: '_nuxt/[name].[hash].js',
+          chunkFileNames: '_nuxt/chunks/[name].[hash].js',
+          manualChunks: (id) => {
+            if (id.includes('@webcontainer'))
+              return 'webcontainer-vendor'
+          },
+        },
+      },
+    },
+    optimizeDeps: {
+      include: [
+        'fuse.js',
+        'd3-hierarchy',
+        'd3-shape',
+        'modern-screenshot',
+      ],
+      exclude: [
+        'structured-clone-es',
+        'birpc',
+      ],
+    },
+    plugins: [
+      NUXT_DEBUG_BUILD ? Inspect({ build: true }) : null,
+    ],
   },
 
   devtools: {
