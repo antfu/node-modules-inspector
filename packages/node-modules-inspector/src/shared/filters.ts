@@ -10,6 +10,7 @@ export interface FilterOptions {
   'exclude-private': boolean
   'exclude-workspace': boolean
   'source-type': null | 'prod' | 'dev'
+  'depths': null | (number | string)[]
 
   'compare-a': null | string[]
   'compare-b': null | string[]
@@ -29,6 +30,7 @@ export const FILTERS_SCHEMA: {
   'focus': { type: Array, default: null, category: 'select' },
   'why': { type: Array, default: null, category: 'select' },
   'source-type': { type: String, default: null, category: 'select' },
+  'depths': { type: Array, default: null, category: 'select' },
 
   // Compare
   'compare-a': { type: Array, default: [], category: 'compare' },

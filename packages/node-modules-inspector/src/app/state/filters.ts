@@ -63,6 +63,15 @@ export const filterSelectPredicate = computed(() => {
     predicates.push(pkg => filtersWhy.value(pkg) || state.why!.some(f => pkg.flatDependencies.has(f)))
   }
 
+  if (state.depths?.length) {
+    const depths = state.depths.map(i => typeof i === 'string' ? Number.parseInt(i) : i)
+    predicates.push((pkg) => {
+      if (pkg.depth === undefined)
+        return false
+      return depths.includes(pkg.depth)
+    })
+  }
+
   if (state['source-type']) {
     predicates.push((pkg) => {
       if (state['source-type'] === 'prod')

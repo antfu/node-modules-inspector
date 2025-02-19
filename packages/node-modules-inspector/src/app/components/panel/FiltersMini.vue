@@ -57,6 +57,12 @@ const moduleTypes = Object.fromEntries(
         {{ filters.state['source-type'] }}
       </span>
     </div>
+    <div v-if="!isDeepEqual(filters.state.depths, filtersDefault.depths)" border="l base" flex="~ gap-1 items-center" px2>
+      <div i-ph-stack-duotone />
+      <span>
+        {{ filters.state.depths?.map(i => `#${i}`).join(', ') || 'None' }}
+      </span>
+    </div>
     <div v-if="!isDeepEqual(filters.state.modules, filtersDefault.modules)" border="l base" flex="~ gap-1 items-center" px2>
       <template
         v-for="type of moduleTypesAvailableSelect"
