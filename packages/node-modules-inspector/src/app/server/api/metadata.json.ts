@@ -9,6 +9,7 @@ export default lazyEventHandler(async () => {
   const ws = await createWsServer({
     cwd: process.cwd(),
     storage,
+    mode: 'dev',
   })
 
   return defineEventHandler(async () => {

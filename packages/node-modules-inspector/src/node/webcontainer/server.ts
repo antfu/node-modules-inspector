@@ -18,6 +18,7 @@ const rpc = createServerFunctions({
   storage: createStorage<string>({
     driver: driverMemory(),
   }),
+  mode: 'dev',
 })
 
 async function run() {

@@ -15,14 +15,14 @@ const selectedAll = computed(() => [...selectedA, ...selectedB])
 
 const rootPackages = computed(() => {
   return [
-    ...filters.state['compare-a'] || [],
-    ...filters.state['compare-b'] || [],
+    ...filters.state.compareA || [],
+    ...filters.state.compareB || [],
   ]
     .map(x => payload.get(x))
     .filter(x => !!x)
 })
 
-const showGraph = computed(() => filters.state['compare-a']?.length && filters.state['compare-b']?.length)
+const showGraph = computed(() => filters.state.compareA?.length && filters.state.compareB?.length)
 
 definePageMeta({
   noOffset: showGraph,
@@ -33,18 +33,18 @@ function compare() {
     return
 
   selectedNode.value = undefined
-  filters.state['compare-a'] = Array.from(selectedA).map(x => x.spec)
-  filters.state['compare-b'] = Array.from(selectedB).map(x => x.spec)
+  filters.state.compareA = Array.from(selectedA).map(x => x.spec)
+  filters.state.compareB = Array.from(selectedB).map(x => x.spec)
 }
 
 function reset() {
   selectedA.clear()
   selectedB.clear()
-  filters.state['compare-a']?.forEach(x => selectedA.add(payload.get(x)!))
-  filters.state['compare-b']?.forEach(x => selectedB.add(payload.get(x)!))
+  filters.state.compareA?.forEach(x => selectedA.add(payload.get(x)!))
+  filters.state.compareB?.forEach(x => selectedB.add(payload.get(x)!))
 
-  filters.state['compare-a'] = null
-  filters.state['compare-b'] = null
+  filters.state.compareA = null
+  filters.state.compareB = null
 }
 </script>
 

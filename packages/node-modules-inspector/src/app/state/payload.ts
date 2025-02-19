@@ -104,7 +104,7 @@ const _excluded = createComputedPayload(() => {
     }
   }
 
-  if (filters.state['exclude-workspace']) {
+  if (filters.state.excludeWorkspace) {
     for (const pkg of _all.packages) {
       if (pkg.workspace)
         excluded.add(pkg)
@@ -130,20 +130,20 @@ const _filtered = createComputedPayload(() =>
 )
 
 const _compareA = createComputedPayload(() => {
-  if (!filters.state['compare-a']?.length)
+  if (!filters.state.compareA?.length)
     return []
   const packages = new Set(
-    _avaliable.getList(filters.state['compare-a'])
+    _avaliable.getList(filters.state.compareA)
       .flatMap(pkg => [pkg, ..._avaliable.flatDependencies(pkg)]),
   )
   return Array.from(packages)
 })
 
 const _compareB = createComputedPayload(() => {
-  if (!filters.state['compare-b']?.length)
+  if (!filters.state.compareB?.length)
     return []
   const packages = new Set(
-    _avaliable.getList(filters.state['compare-b'])
+    _avaliable.getList(filters.state.compareB)
       .flatMap(pkg => [pkg, ..._avaliable.flatDependencies(pkg)]),
   )
   return Array.from(packages)

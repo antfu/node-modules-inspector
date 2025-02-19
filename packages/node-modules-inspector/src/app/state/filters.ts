@@ -39,11 +39,11 @@ const filtersFocus = computed(() => state.focus?.length ? constructPackageFilter
 const filtersWhy = computed(() => state.why?.length ? constructPackageFilters(state.why, 'some') : () => false)
 
 export function filtersExcludePredicate(pkg: PackageNode) {
-  if (state['exclude-dts'] && pkg.resolved.module === 'dts')
+  if (state.excludeDts && pkg.resolved.module === 'dts')
     return true
-  if (state['exclude-dts'] && pkg.resolved.module === 'dts')
+  if (state.excludeDts && pkg.resolved.module === 'dts')
     return true
-  if (state['exclude-private'] && pkg.private)
+  if (state.excludePrivate && pkg.private)
     return true
   if (state.excludes?.length) {
     return filtersExclude.value(pkg)
@@ -72,11 +72,11 @@ export const filterSelectPredicate = computed(() => {
     })
   }
 
-  if (state['source-type']) {
+  if (state.sourceType) {
     predicates.push((pkg) => {
-      if (state['source-type'] === 'prod')
+      if (state.sourceType === 'prod')
         return pkg.prod || pkg.workspace
-      if (state['source-type'] === 'dev')
+      if (state.sourceType === 'dev')
         return pkg.dev || pkg.workspace
       return true
     })

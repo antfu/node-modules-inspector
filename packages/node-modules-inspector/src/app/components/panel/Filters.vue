@@ -118,7 +118,7 @@ const moduleTypes = Object.fromEntries(
     <div flex="~ col gap-4" p4 border="t base">
       <OptionItem title="Dependency Source" description="Filter by source type of the dependency">
         <OptionSelectGroup
-          v-model="filters.state['source-type']"
+          v-model="filters.state.sourceType"
           :options="[null, 'prod', 'dev']"
           :titles="['All', 'Prod', 'Dev']"
         />
@@ -296,13 +296,13 @@ const moduleTypes = Object.fromEntries(
       </div>
       <div mt2>
         <OptionItem title="Exclude Types Packages" description="Exclude TypeScript declaration packages">
-          <OptionCheckbox v-model="filters.state['exclude-dts']" />
+          <OptionCheckbox v-model="filters.state.excludeDts" />
         </OptionItem>
         <OptionItem title="Exclude Private Packages" description="Exclude private workspace packages and their dependencies">
-          <OptionCheckbox v-model="filters.state['exclude-private']" />
+          <OptionCheckbox v-model="filters.state.excludePrivate" />
         </OptionItem>
         <OptionItem title="Exclude Workspace Roots" description="Exclude workspaces but NOT their dependencies">
-          <OptionCheckbox v-model="filters.state['exclude-workspace']" />
+          <OptionCheckbox v-model="filters.state.excludeWorkspace" />
         </OptionItem>
       </div>
     </div>

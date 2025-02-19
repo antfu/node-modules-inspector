@@ -1,19 +1,19 @@
 import type { PackageModuleType } from 'node-modules-tools'
 
 export interface FilterOptions {
-  'search': string
-  'modules': null | PackageModuleType[]
-  'focus': null | string[]
-  'why': null | string[]
-  'excludes': null | string[]
-  'exclude-dts': boolean
-  'exclude-private': boolean
-  'exclude-workspace': boolean
-  'source-type': null | 'prod' | 'dev'
-  'depths': null | (number | string)[]
+  search: string
+  modules: null | PackageModuleType[]
+  focus: null | string[]
+  why: null | string[]
+  excludes: null | string[]
+  excludeDts: boolean
+  excludePrivate: boolean
+  excludeWorkspace: boolean
+  sourceType: null | 'prod' | 'dev'
+  depths: null | (number | string)[]
 
-  'compare-a': null | string[]
-  'compare-b': null | string[]
+  compareA: null | string[]
+  compareB: null | string[]
 }
 
 export interface FilterSchema<Type> {
@@ -25,20 +25,20 @@ export interface FilterSchema<Type> {
 export const FILTERS_SCHEMA: {
   [x in keyof FilterOptions]: FilterSchema<FilterOptions[x]>
 } = {
-  'search': { type: String, default: '', category: 'select' },
-  'modules': { type: Array, default: null, category: 'select' },
-  'focus': { type: Array, default: null, category: 'select' },
-  'why': { type: Array, default: null, category: 'select' },
-  'source-type': { type: String, default: null, category: 'select' },
-  'depths': { type: Array, default: null, category: 'select' },
+  search: { type: String, default: '', category: 'select' },
+  modules: { type: Array, default: null, category: 'select' },
+  focus: { type: Array, default: null, category: 'select' },
+  why: { type: Array, default: null, category: 'select' },
+  sourceType: { type: String, default: null, category: 'select' },
+  depths: { type: Array, default: null, category: 'select' },
 
   // Compare
-  'compare-a': { type: Array, default: [], category: 'compare' },
-  'compare-b': { type: Array, default: [], category: 'compare' },
+  compareA: { type: Array, default: [], category: 'compare' },
+  compareB: { type: Array, default: [], category: 'compare' },
 
   // Excludes
-  'excludes': { type: Array, default: null, category: 'exclude' },
-  'exclude-dts': { type: Boolean, default: true, category: 'exclude' },
-  'exclude-private': { type: Boolean, default: false, category: 'exclude' },
-  'exclude-workspace': { type: Boolean, default: import.meta.env.BACKEND === 'webcontainer', category: 'exclude' },
+  excludes: { type: Array, default: null, category: 'exclude' },
+  excludeDts: { type: Boolean, default: true, category: 'exclude' },
+  excludePrivate: { type: Boolean, default: false, category: 'exclude' },
+  excludeWorkspace: { type: Boolean, default: import.meta.env.BACKEND === 'webcontainer', category: 'exclude' },
 }

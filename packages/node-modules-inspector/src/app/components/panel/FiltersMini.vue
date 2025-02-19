@@ -51,10 +51,10 @@ const moduleTypes = Object.fromEntries(
       <div i-ph-text-t-duotone />
       {{ filters.search.parsed.text }}
     </div>
-    <div v-if="!isDeepEqual(filters.state['source-type'], filtersDefault['source-type'])" border="l base" flex="~ gap-1 items-center" px2>
+    <div v-if="!isDeepEqual(filters.state.sourceType, filtersDefault.sourceType)" border="l base" flex="~ gap-1 items-center" px2>
       <div i-ph-tree-view-duotone />
       <span capitalize>
-        {{ filters.state['source-type'] }}
+        {{ filters.state.sourceType }}
       </span>
     </div>
     <div v-if="!isDeepEqual(filters.state.depths, filtersDefault.depths)" border="l base" flex="~ gap-1 items-center" px2>
