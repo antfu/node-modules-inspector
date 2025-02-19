@@ -1,7 +1,7 @@
 import type { PackageNode } from 'node-modules-tools'
 import { computed, reactive, watch } from 'vue'
 import { buildVersionToPackagesMap } from '../utils/maps'
-import { rawData, rawPublishDates } from './data'
+import { rawPayload, rawPublishDates, rawReferencePayload } from './data'
 import { filters, filterSelectPredicate, filtersExcludePredicate } from './filters'
 
 export type ComputedPayload = ReturnType<typeof createComputedPayload>
@@ -78,20 +78,21 @@ function createComputedPayload(getter: () => PackageNode[]) {
   })
 }
 
-const _all = createComputedPayload(() => Array.from(rawData.value?.packages.values() || []))
+const _main = createComputedPayload(() => Array.from(rawPayload.value?.packages.values() || []))
+const _reference = createComputedPayload(() => Array.from(rawReferencePayload.value?.packages.values() || []))
 
 const _excluded = createComputedPayload(() => {
-  const excluded = new Set(_all.packages.filter(filtersExcludePredicate))
+  const excluded = new Set(_main.packages.filter(filtersExcludePredicate))
 
   let changed = true
   while (changed) {
     changed = false
-    for (const pkg of _all.packages) {
+    for (const pkg of _main.packages) {
       if (excluded.has(pkg) || !pkg.dependents.size)
         continue
       let shouldExclude = true
       for (const parentSpec of pkg.dependents) {
-        const parent = _all.map.get(parentSpec)
+        const parent = _main.map.get(parentSpec)
         if (!parent || !excluded.has(parent)) {
           shouldExclude = false
           break
@@ -105,7 +106,7 @@ const _excluded = createComputedPayload(() => {
   }
 
   if (filters.state.excludeWorkspace) {
-    for (const pkg of _all.packages) {
+    for (const pkg of _main.packages) {
       if (pkg.workspace)
         excluded.add(pkg)
     }
@@ -115,12 +116,12 @@ const _excluded = createComputedPayload(() => {
 })
 
 const _workspace = createComputedPayload(() =>
-  _all.packages
+  _main.packages
     .filter(pkg => pkg.workspace),
 )
 
 const _avaliable = createComputedPayload(() =>
-  _all.packages
+  _main.packages
     .filter(pkg => !_excluded.map.has(pkg.spec)),
 )
 
@@ -150,7 +151,7 @@ const _compareB = createComputedPayload(() => {
 })
 
 export const payloads = {
-  all: _all,
+  main: _main,
   excluded: _excluded,
   workspace: _workspace,
   avaliable: _avaliable,
@@ -158,10 +159,12 @@ export const payloads = {
 
   compareA: _compareA,
   compareB: _compareB,
+
+  reference: _reference,
 }
 
 export function getPublishTime(input: PackageNode | string) {
-  const pkg = payloads.all.get(input)
+  const pkg = payloads.main.get(input)
   if (!pkg)
     return null
   if (pkg.resolved.publishTime)

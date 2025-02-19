@@ -5,11 +5,12 @@ import { filters, filtersDefault } from './filters'
 import { setupQuery } from './query'
 import { settings } from './settings'
 
-export const rawData = shallowRef<NodeModulesInspectorPayload | null>(null)
+export const rawPayload = shallowRef<NodeModulesInspectorPayload | null>(null)
+export const rawReferencePayload = shallowRef<NodeModulesInspectorPayload | null>(null)
 export const rawPublishDates = shallowRef<Map<string, string> | null>(null)
 
 export async function fetchData(force = false) {
-  rawData.value = null
+  rawPayload.value = null
   const backend = getBackend()
   try {
     const data = await backend.functions.getPayload(force)
@@ -18,7 +19,7 @@ export async function fetchData(force = false) {
     for (const pkg of data.packages.values())
       Object.freeze(pkg)
 
-    rawData.value = data
+    rawPayload.value = data
 
     Object.assign(settings.value, structuredClone(toRaw(data.config?.defaultSettings || {})))
     Object.assign(filters.state, structuredClone(toRaw(filtersDefault.value)))
@@ -33,13 +34,13 @@ export async function fetchData(force = false) {
       rawPublishDates.value = publishDate
     }
 
-    return rawData.value
+    return rawPayload.value
   }
   catch (err) {
     console.error(err)
     if (backend)
       backend.connectionError.value = err
-    rawData.value = null
+    rawPayload.value = null
     return null
   }
   finally {

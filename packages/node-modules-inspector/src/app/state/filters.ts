@@ -7,7 +7,7 @@ import { computed, reactive, toRaw } from 'vue'
 import { FILTERS_SCHEMA } from '~~/shared/filters'
 import { getModuleType } from '../utils/module-type'
 import { parseSearch } from '../utils/search-parser'
-import { rawData } from './data'
+import { rawPayload } from './data'
 
 export * from '~~/shared/filters'
 
@@ -16,7 +16,7 @@ const FILTERS_DEFAULT: FilterOptions = Object.freeze(objectMap(FILTERS_SCHEMA, (
 export const filtersDefault = computed<FilterOptions>(() => {
   return {
     ...FILTERS_DEFAULT,
-    ...rawData.value?.config?.defaultFilters || {},
+    ...rawPayload.value?.config?.defaultFilters || {},
   }
 })
 

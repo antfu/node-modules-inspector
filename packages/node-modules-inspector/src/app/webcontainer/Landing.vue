@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, shallowRef } from 'vue'
 import { backend } from '~/backends'
-import { fetchData, rawData } from '~/state/data'
+import { fetchData, rawPayload } from '~/state/data'
 import { query } from '~/state/query'
 import { openTerminal, showTerminal } from '~/state/terminal'
 import MainEntry from '../entries/main.vue'
@@ -38,7 +38,7 @@ async function run() {
 </script>
 
 <template>
-  <template v-if="!backend || !rawData">
+  <template v-if="!backend || !rawPayload">
     <div flex="~ col items-center gap-5" p10>
       <div min-h-120 flex="~ col gap-2 items-center justify-center" flex-auto>
         <UiTitle :has-error="!!error" :is-loading="isLoading" />

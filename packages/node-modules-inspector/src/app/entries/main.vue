@@ -2,7 +2,7 @@
 import type { Backend } from '~/types/backend'
 import { computed } from 'vue'
 import { backend } from '../backends'
-import { rawData } from '../state/data'
+import { rawPayload } from '../state/data'
 
 const props = defineProps<{
   backend?: Backend | undefined
@@ -19,7 +19,7 @@ const error = computed(() => {
   return null
 })
 
-const isLoading = computed(() => Boolean(!backend.value || backend.value?.status.value !== 'connected' || error.value || !rawData.value))
+const isLoading = computed(() => Boolean(!backend.value || backend.value?.status.value !== 'connected' || error.value || !rawPayload.value))
 </script>
 
 <template>

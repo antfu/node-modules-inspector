@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { getBackend } from '~/backends'
-import { rawData } from '~/state/data'
+import { rawPayload } from '~/state/data'
 import { payloads, totalWorkspaceSize } from '~/state/payload'
 import { version } from '../../../../package.json'
 
@@ -12,7 +12,7 @@ const multipleVersionsCount = computed(() => {
 })
 
 const mins10 = 10 * 60 * 1000
-const timepassed = computed(() => rawData.value?.timestamp ? Date.now() - rawData.value.timestamp : 0)
+const timepassed = computed(() => rawPayload.value?.timestamp ? Date.now() - rawPayload.value.timestamp : 0)
 </script>
 
 <template>
@@ -29,7 +29,7 @@ const timepassed = computed(() => rawData.value?.timestamp ? Date.now() - rawDat
         <span op50>v{{ version }}</span>
       </span>
     </h1>
-    <div v-if="rawData" border="t base" flex="~ col gap-3" p5>
+    <div v-if="rawPayload" border="t base" flex="~ col gap-3" p5>
       <div
         v-if="backend.name === 'webcontainer'"
         flex="~ gap-2 items-center"
@@ -40,15 +40,15 @@ const timepassed = computed(() => rawData.value?.timestamp ? Date.now() - rawDat
       <button
         v-else
         flex="~ gap-2 items-center"
-        @click="backend.functions.openInFinder?.(rawData.root)"
+        @click="backend.functions.openInFinder?.(rawPayload.root)"
       >
         <div i-catppuccin-folder-node-open icon-catppuccin flex-none />
-        <span font-mono break-after-all text-left leading-none>{{ rawData.config?.name ?? rawData.root }}</span>
+        <span font-mono break-after-all text-left leading-none>{{ rawPayload.config?.name ?? rawPayload.root }}</span>
       </button>
       <div flex="~ gap-2 items-center">
         <div i-catppuccin-pnpm icon-catppuccin flex-none />
-        <span>{{ rawData.packageManager }}</span>
-        <DisplayVersion :version="rawData.packageManagerVersion" prefix="@" op75 />
+        <span>{{ rawPayload.packageManager }}</span>
+        <DisplayVersion :version="rawPayload.packageManagerVersion" prefix="@" op75 />
       </div>
       <div flex="~ gap-2 items-center">
         <div i-catppuccin-folder-packages-open icon-catppuccin flex-none />
@@ -72,7 +72,7 @@ const timepassed = computed(() => rawData.value?.timestamp ? Date.now() - rawDat
       </div>
       <div v-if="timepassed >= mins10" flex="~ gap-2 items-center">
         <div i-catppuccin-changelog icon-catppuccin flex-none />
-        <DisplayDateBadge :time="rawData.timestamp" :colorize="false" rounded-full text-sm mx--0.2 mt-3px color="badge-color-primary" />
+        <DisplayDateBadge :time="rawPayload.timestamp" :colorize="false" rounded-full text-sm mx--0.2 mt-3px color="badge-color-primary" />
         <span ml--0.5>last updated</span>
       </div>
     </div>
