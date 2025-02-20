@@ -2,7 +2,6 @@ import type { NodeModulesInspectorPayload } from '~~/shared/types'
 import { shallowRef, toRaw } from 'vue'
 import { getBackend } from '~/backends'
 import { filters, filtersDefault } from './filters'
-import { setupQuery } from './query'
 import { settings } from './settings'
 
 export const rawPayload = shallowRef<NodeModulesInspectorPayload | null>(null)
@@ -42,8 +41,5 @@ export async function fetchData(force = false) {
       backend.connectionError.value = err
     rawPayload.value = null
     return null
-  }
-  finally {
-    setupQuery()
   }
 }
