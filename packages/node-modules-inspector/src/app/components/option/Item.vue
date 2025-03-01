@@ -20,7 +20,7 @@ function reset() {
   <component :is="div ? 'div' : 'label'" flex="~ row gap-2 items-center" select-none>
     <div w-50 flex="~ gap-1 items-center">
       <VTooltip placement="left" distance="10">
-        <div op75 @dblclick="reset">
+        <div op75 text-sm @dblclick="reset">
           {{ title }}
         </div>
         <template #popper>

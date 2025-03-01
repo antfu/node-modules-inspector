@@ -18,7 +18,7 @@ const selected = ref<string[]>([])
 const licensesGroup = computed(() => {
   const group = new Map<string, PackageNode[]>()
   for (const pkg of payloads.filtered.packages) {
-    if (!pkg.resolved.license)
+    if (pkg.workspace)
       continue
     const key = pkg.resolved.license || '<Unspecified>'
     if (!group.has(key))
@@ -79,16 +79,17 @@ const filteredResult = computed(() => {
             Other Licenses
           </button>
         </div>
-        <div grid="~ cols-[max-content_1fr] gap-x-3 gap-y-1">
+        <div flex="~ col gap-y-1">
           <template v-for="group of licensesGroup" :key="group[0]">
-            <DisplayNumberBadge :number="group[1].length" rounded-full text-sm w-max mla />
             <button
               text-left hover:bg-active px2 ml--2 rounded
               flex="~ gap-2 items-center"
-              :class="{ 'bg-active text-primary': selected.includes(group[0]) }"
+              :class="{ 'text-primary': selected.includes(group[0]) }"
               @click="toggleSelected(group[0])"
             >
-              {{ group[0] }}
+              <OptionCheckbox :model-value="selected.includes(group[0])" pointer-events-none />
+              <span>{{ group[0] }}</span>
+              <DisplayNumberBadge :number="group[1].length" rounded-full text-sm w-max mra />
               <a
                 v-if="PERMISSIVE_LICENSES.includes(group[0])"
                 href="https://en.wikipedia.org/wiki/Permissive_software_license" target="_blank" badge-color-green text-xs px1 py0.5 rounded
@@ -120,7 +121,11 @@ const filteredResult = computed(() => {
               font-mono text-left hover:bg-active px2 ml--2 rounded
               @click="selectedNode = pkg"
             >
-              <DisplayPackageSpec :pkg />
+              <TreeItem
+                :pkg
+                :show-source-type="true"
+                :show-module-type="false"
+              />
             </button>
           </template>
         </div>

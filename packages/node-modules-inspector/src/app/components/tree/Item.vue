@@ -6,9 +6,11 @@ withDefaults(
   defineProps<{
     pkg?: PackageNode
     showModuleType?: boolean
+    showSourceType?: boolean
   }>(),
   {
     showModuleType: true,
+    showSourceType: false,
   },
 )
 </script>
@@ -23,5 +25,6 @@ withDefaults(
   >
     <DisplayModuleType v-if="showModuleType" :pkg />
     <DisplayPackageSpec :pkg />
+    <DisplaySourceTypeBadge v-if="showSourceType" :pkg />
   </button>
 </template>

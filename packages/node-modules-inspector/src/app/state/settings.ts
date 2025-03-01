@@ -12,6 +12,7 @@ export const settings = useLocalStorage<SettingsOptions>(
     showInstallSizeBadge: true,
     showPublishTimeBadge: false,
     showFileComposition: false,
+    showDependencySourceBadge: 'dev',
     treatFauxAsESM: false,
   },
   {

@@ -46,6 +46,8 @@ defineProps<{
         rounded-full text-sm
       />
 
+      <DisplaySourceTypeBadge :pkg />
+
       <!--
       <span op25>·</span>
       <div op75>

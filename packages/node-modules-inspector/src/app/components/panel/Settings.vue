@@ -31,6 +31,13 @@ const backend = getBackend()
       <OptionItem title="Colorize size badge" description="Colorize package size badge">
         <OptionCheckbox v-model="settings.colorizePackageSize" />
       </OptionItem>
+      <OptionItem title="Dependency source badge" description="Show a badge of the source type">
+        <OptionSelectGroup
+          v-model="settings.showDependencySourceBadge"
+          :options="['none', 'prod', 'dev', 'both']"
+          :titles="['None', 'Prod', 'Dev', 'Both']"
+        />
+      </OptionItem>
     </div>
     <div v-if="backend.isDynamic" border="t base" p4 flex="~ gap-2 items-center">
       <button btn-action @click="fetchData(true)">

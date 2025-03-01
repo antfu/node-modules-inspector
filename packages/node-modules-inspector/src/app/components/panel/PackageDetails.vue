@@ -104,6 +104,7 @@ function getShallowestDependents(pkg: PackageNode) {
         <div v-if="pkg.workspace" badge-color-lime px2 rounded text-sm>
           Workspace
         </div>
+        <DisplaySourceTypeBadge :pkg mode="both" />
         <VMenu v-if="duplicated" font-mono>
           <div pl2 pr1 rounded bg-rose:10 text-rose text-sm flex="~ items-center gap-1">
             {{ duplicated.length }} versions
