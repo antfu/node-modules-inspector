@@ -62,14 +62,14 @@ catalog:
   nitropack: 2.8.1
   nuxt: ^3.15.4
   nuxt-eslint-auto-explicit-import: ^0.1.1
-  ohash: ^2.0.6
+  ohash: ^2.0.7
   open: ^10.1.0
   p-limit: ^6.2.0
   package-manager-detector: ^0.2.10
   pathe: ^2.0.3
   picomatch: ^4.0.2
   pkg-types: ^2.0.0
-  rollup: ^4.34.8
+  rollup: 4.34.6
   rollup-plugin-esbuild: ^6.2.1
   semver: ^7.7.1
   shiki: ^3.1.0
@@ -78,7 +78,7 @@ catalog:
   structured-clone-es: ^1.0.0
   theme-vitesse: ^0.8.3
   tinyexec: ^0.3.2
-  typescript: ^5.7.3
+  typescript: ^5.8.2
   unbuild: ^3.5.0
   unconfig: ^7.1.0
   unstorage: ^1.15.0
