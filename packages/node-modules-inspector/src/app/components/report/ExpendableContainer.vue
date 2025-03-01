@@ -7,6 +7,7 @@ const props = withDefaults(
     title?: string | [string, string]
     reversable?: boolean
     mutliplier?: number
+    containerClass?: string
   }>(),
   {
     reversable: true,
@@ -44,7 +45,7 @@ const top = computed(() => {
   <div>
     <UiSubTitle v-if="title">
       {{ resolvedTitle }}
-      <DisplayNumberBadge :number="list.length" rounded-full text-sm />
+      <DisplayNumberBadge v-if="list.length" :number="list.length" rounded-full text-sm />
       <button
         v-if="reversable"
         title="Reverse"
@@ -55,7 +56,7 @@ const top = computed(() => {
         <div v-else i-ph-sort-ascending ma />
       </button>
     </UiSubTitle>
-    <div relative of-hidden border="~ rounded-xl base" bg-glass>
+    <div relative of-hidden border="~ rounded-xl base" bg-glass :class="containerClass">
       <div flex flex-col gap2 p4 pt3 of-auto relative>
         <slot :items="top" />
       </div>

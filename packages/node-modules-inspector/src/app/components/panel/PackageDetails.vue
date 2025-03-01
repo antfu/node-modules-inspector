@@ -154,8 +154,8 @@ function getShallowestDependents(pkg: PackageNode) {
             <div i-catppuccin-http icon-catppuccin ma />
           </NuxtLink>
           <NuxtLink
-            v-if="pkg.resolved.funding"
-            :to="pkg.resolved.funding"
+            v-if="pkg.resolved.funding?.url"
+            :to="pkg.resolved.funding.url"
             title="Open Funding"
             target="_blank"
             ml--1 w-8 h-8 rounded-full hover:bg-active flex

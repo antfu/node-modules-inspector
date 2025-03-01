@@ -33,12 +33,16 @@ export async function resolvePackage(
   if (json.repository && typeof json.repository !== 'string' && json.repository.directory)
     repository += `/tree/HEAD/${json.repository.directory}`
 
+  let funding = json.funding
+  if (typeof funding === 'string')
+    funding = { url: funding }
+
   _pkg.resolved = {
     module: analyzePackageModuleType(json),
     engines: json.engines,
     license: json.license,
     author: typeof json.author === 'string' ? json.author : json.author?.url,
-    funding: json.funding,
+    funding,
     repository,
     homepage: json.homepage,
     installSize: await getPackageInstallSize(_pkg),

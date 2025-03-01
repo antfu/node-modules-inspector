@@ -7,5 +7,6 @@
   </div>
   <ReportEngines />
   <ReportLicenses />
+  <ReportFunding />
   <ReportMultipleVersions />
 </template>
