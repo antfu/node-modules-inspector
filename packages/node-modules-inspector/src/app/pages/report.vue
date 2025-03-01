@@ -6,5 +6,6 @@
     <ReportUsedBy />
   </div>
   <ReportEngines />
+  <ReportLicenses />
   <ReportMultipleVersions />
 </template>
