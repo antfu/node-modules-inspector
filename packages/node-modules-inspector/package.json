@@ -37,6 +37,7 @@
     "wc:dev": "pnpm run -r stub && pnpm run wc:prepare && cd src && NMI_BACKEND=webcontainer nuxi dev"
   },
   "dependencies": {
+    "ansis": "catalog:",
     "birpc": "catalog:",
     "cac": "catalog:",
     "debug": "catalog:",
@@ -52,7 +53,6 @@
     "ohash": "catalog:",
     "open": "catalog:",
     "pathe": "catalog:",
-    "picocolors": "catalog:",
     "structured-clone-es": "catalog:",
     "unconfig": "catalog:",
     "unstorage": "catalog:",

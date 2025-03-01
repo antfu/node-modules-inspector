@@ -1,7 +1,7 @@
 import type { NodeModulesInspectorPayload } from '~~/shared/types'
 import type { Backend } from '~/types/backend'
 import { WebContainer } from '@webcontainer/api'
-import c from 'chalk'
+import c from 'ansis'
 import { join } from 'pathe'
 import { parse } from 'structured-clone-es'
 import { createStorage } from 'unstorage'
