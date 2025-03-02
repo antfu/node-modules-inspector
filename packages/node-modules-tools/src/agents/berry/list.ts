@@ -108,12 +108,15 @@ export async function listPackageDependencies(
       return node
 
     packages.set(node.spec, node)
-    for (const dep of raw.children.Dependencies || []) {
-      const actualDep = mapList.get(dep.locator)
-      if (!actualDep)
-        throw new Error(`Failed to find dependency ${dep.locator} of ${node.spec}`)
-      const result = normalize(actualDep)
-      node.dependencies.add(result.spec)
+
+    if (options.dependenciesFilter?.(node) !== false) {
+      for (const dep of raw.children.Dependencies || []) {
+        const actualDep = mapList.get(dep.locator)
+        if (!actualDep)
+          throw new Error(`Failed to find dependency ${dep.locator} of ${node.spec}`)
+        const result = normalize(actualDep)
+        node.dependencies.add(result.spec)
+      }
     }
 
     return node
