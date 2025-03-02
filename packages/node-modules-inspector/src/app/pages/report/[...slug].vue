@@ -8,6 +8,10 @@ const selected = computed(() => params.slug[0] || 'all')
 
 <template>
   <div flex="~ gap-2 items-center wrap">
+    <NuxtLink btn-action as="button" to="/report/funding" active-class="text-rose bg-rose:5">
+      <div i-ph-heart-duotone />
+      Funding
+    </NuxtLink>
     <NuxtLink btn-action as="button" to="/report/dependencies" active-class="text-primary bg-primary:5">
       <div i-ph-link-simple-duotone />
       Dependencies
@@ -31,10 +35,6 @@ const selected = computed(() => params.slug[0] || 'all')
     <NuxtLink btn-action as="button" to="/report/licenses" active-class="text-primary bg-primary:5">
       <div i-ph-scales-duotone />
       Licenses
-    </NuxtLink>
-    <NuxtLink btn-action as="button" to="/report/funding" active-class="text-rose bg-rose:5">
-      <div i-ph-heart-duotone />
-      Funding
     </NuxtLink>
     <NuxtLink btn-action as="button" to="/report" active-class="text-primary bg-primary:5">
       <div i-ph-grid-four-duotone />

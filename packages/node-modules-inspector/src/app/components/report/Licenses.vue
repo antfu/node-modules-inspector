@@ -92,7 +92,8 @@ const filteredResult = computed(() => {
               <DisplayNumberBadge :number="group[1].length" rounded-full text-sm w-max mra />
               <a
                 v-if="PERMISSIVE_LICENSES.includes(group[0])"
-                href="https://en.wikipedia.org/wiki/Permissive_software_license" target="_blank" badge-color-green text-xs px1 py0.5 rounded
+                href="https://en.wikipedia.org/wiki/Permissive_software_license" target="_blank"
+                badge-color-green text-xs px1.5 py0.5 rounded
               >
                 Permissive
               </a>
@@ -104,9 +105,12 @@ const filteredResult = computed(() => {
         <div v-if="!filteredResult.length" text-center py10 px5 op50 italic>
           Select licenses on the left to show packages
         </div>
-        <div v-else grid="~ cols-[max-content_1fr] gap-x-4 gap-y-1 items-center">
+        <div v-else grid="~ cols-[max-content_max-content_1fr] gap-x-4 gap-y-1 items-center">
           <div text-sm op50 text-center>
             License
+          </div>
+          <div text-sm op50 text-center>
+            Source
           </div>
           <div />
           <template v-for="pkg of filteredResult" :key="pkg.spec">
@@ -117,15 +121,14 @@ const filteredResult = computed(() => {
             >
               {{ pkg.resolved.license }}
             </a>
+            <div w-max>
+              <DisplaySourceTypeBadge :pkg mode="both" />
+            </div>
             <button
               font-mono text-left hover:bg-active px2 ml--2 rounded
               @click="selectedNode = pkg"
             >
-              <TreeItem
-                :pkg
-                :show-source-type="true"
-                :show-module-type="false"
-              />
+              <DisplayPackageSpec :pkg />
             </button>
           </template>
         </div>
