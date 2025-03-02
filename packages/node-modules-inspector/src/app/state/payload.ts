@@ -1,10 +1,8 @@
 import type { PackageNode } from 'node-modules-tools'
-import pm from 'picomatch'
 import { computed, reactive, watch } from 'vue'
 import { buildVersionToPackagesMap } from '../utils/maps'
-import { getModuleType } from '../utils/module-type'
-import { rawData } from './data'
-import { filters, filterSearchDebounced } from './filters'
+import { rawPayload, rawPublishDates, rawReferencePayload } from './data'
+import { filters, filterSelectPredicate, filtersExcludePredicate } from './filters'
 
 export type ComputedPayload = ReturnType<typeof createComputedPayload>
 
@@ -13,8 +11,12 @@ function createComputedPayload(getter: () => PackageNode[]) {
   const map = computed(() => new Map(packages.value.map(i => [i.spec, i])))
   const versions = computed(() => buildVersionToPackagesMap(packages.value))
 
-  const get = (spec: string): PackageNode | undefined => {
-    return map.value.get(spec)
+  const get = (spec: string | PackageNode): PackageNode | undefined => {
+    if (typeof spec === 'string')
+      return map.value.get(spec)
+    return map.value.has(spec.spec)
+      ? spec
+      : undefined
   }
 
   const has = (spec: string | PackageNode): boolean => {
@@ -76,29 +78,21 @@ function createComputedPayload(getter: () => PackageNode[]) {
   })
 }
 
-const _all = createComputedPayload(() => Array.from(rawData.value?.packages.values() || []))
+const _main = createComputedPayload(() => Array.from(rawPayload.value?.packages.values() || []))
+const _reference = createComputedPayload(() => Array.from(rawReferencePayload.value?.packages.values() || []))
 
 const _excluded = createComputedPayload(() => {
-  const excluded = new Set(_all.packages
-    .filter((pkg) => {
-      if (filters['exclude-dts'] && pkg.resolved.module === 'dts')
-        return true
-      if (filters['exclude-private'] && pkg.private)
-        return true
-      if (filters.excludes && filters.excludes.includes(pkg.spec))
-        return true
-      return false
-    }))
+  const excluded = new Set(_main.packages.filter(filtersExcludePredicate))
 
   let changed = true
   while (changed) {
     changed = false
-    for (const pkg of _all.packages) {
+    for (const pkg of _main.packages) {
       if (excluded.has(pkg) || !pkg.dependents.size)
         continue
       let shouldExclude = true
       for (const parentSpec of pkg.dependents) {
-        const parent = _all.map.get(parentSpec)
+        const parent = _main.map.get(parentSpec)
         if (!parent || !excluded.has(parent)) {
           shouldExclude = false
           break
@@ -111,74 +105,76 @@ const _excluded = createComputedPayload(() => {
     }
   }
 
+  if (filters.state.excludeWorkspace) {
+    for (const pkg of _main.packages) {
+      if (pkg.workspace)
+        excluded.add(pkg)
+    }
+  }
+
   return Array.from(excluded)
 })
 
-const _workspace = createComputedPayload(() => _all.packages.filter(pkg => pkg.workspace))
+const _workspace = createComputedPayload(() =>
+  _main.packages
+    .filter(pkg => pkg.workspace),
+)
 
-const _avaliable = createComputedPayload(() => {
-  return _all.packages
-    .filter(pkg => !_excluded.map.has(pkg.spec))
+const _avaliable = createComputedPayload(() =>
+  _main.packages
+    .filter(pkg => !_excluded.map.has(pkg.spec)),
+)
+
+const _filtered = createComputedPayload(() =>
+  _avaliable.packages
+    .filter(filterSelectPredicate.value),
+)
+
+const _compareA = createComputedPayload(() => {
+  if (!filters.state.compareA?.length)
+    return []
+  const packages = new Set(
+    _avaliable.getList(filters.state.compareA)
+      .flatMap(pkg => [pkg, ..._avaliable.flatDependencies(pkg)]),
+  )
+  return Array.from(packages)
 })
 
-const _filtered = createComputedPayload(() => Array.from((function *() {
-  for (const pkg of _avaliable.packages) {
-    if (filters.focus) {
-      const shouldTake = filters.focus.includes(pkg.spec) || filters.focus.some(f => pkg.flatDependents.has(f))
-      if (!shouldTake)
-        continue
-    }
-
-    if (filters.why) {
-      const shouldTake = filters.why.includes(pkg.spec) || filters.why.some(f => pkg.flatDependencies.has(f))
-      if (!shouldTake)
-        continue
-    }
-
-    if (filters.modules) {
-      const type = getModuleType(pkg)
-      // dts is always included here, as it's controlled by the exclude-dts option
-      if (!filters.modules.includes(type) && type !== 'dts')
-        continue
-    }
-
-    if (filterSearchDebounced.value) {
-      let search = filterSearchDebounced.value
-      let filtered = false
-
-      const negative = search.startsWith('!')
-      if (negative)
-        search = search.slice(1)
-
-      if (search.match(/[*[\]]/)) {
-        if (!pm.isMatch(pkg.name, search))
-          filtered = true
-      }
-      else {
-        if (!pkg.name.includes(search))
-          filtered = true
-      }
-
-      if (negative ? !filtered : filtered) {
-        continue
-      }
-    }
-
-    if (filters['source-type']) {
-      if (filters['source-type'] === 'prod' && !pkg.prod && !pkg.workspace)
-        continue
-      if (filters['source-type'] === 'dev' && !pkg.dev && !pkg.workspace)
-        continue
-    }
-
-    yield pkg
-  }
-})()))
+const _compareB = createComputedPayload(() => {
+  if (!filters.state.compareB?.length)
+    return []
+  const packages = new Set(
+    _avaliable.getList(filters.state.compareB)
+      .flatMap(pkg => [pkg, ..._avaliable.flatDependencies(pkg)]),
+  )
+  return Array.from(packages)
+})
 
 export const payloads = {
-  all: _all,
+  main: _main,
   excluded: _excluded,
   workspace: _workspace,
   avaliable: _avaliable,
   filtered: _filtered,
+
+  compareA: _compareA,
+  compareB: _compareB,
+
+  reference: _reference,
 }
+
+export function getPublishTime(input: PackageNode | string) {
+  const pkg = payloads.main.get(input)
+  if (!pkg)
+    return null
+  if (pkg.resolved.publishTime)
+    return new Date(pkg.resolved.publishTime)
+  const date = rawPublishDates.value?.get(pkg.spec)
+  if (date)
+    return new Date(date)
+  return null
+}
+
+export const totalWorkspaceSize = computed(() => {
+  return Array.from(payloads.avaliable.packages).reduce((acc, pkg) => acc + (pkg.resolved.installSize?.bytes || 0), 0)
+})

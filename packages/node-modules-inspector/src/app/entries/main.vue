@@ -1,14 +1,17 @@
 <script setup lang="ts">
+import type { Backend } from '~/types/backend'
 import { computed } from 'vue'
-import { setupQuery } from '~/state/query'
-import { version } from '../../../package.json'
-import { getBackend } from '../backends'
-import { fetchData, rawData } from '../state/data'
+import { backend } from '../backends'
+import { rawPayload } from '../state/data'
 
-const backend = getBackend()
-backend.value!.connect()
+const props = defineProps<{
+  backend?: Backend | undefined
+  error?: unknown
+}>()
 
 const error = computed(() => {
+  if (props.error)
+    return props.error
   if (backend.value?.connectionError.value)
     return backend.value.connectionError.value
   if (backend.value?.status.value === 'error')
@@ -16,36 +19,16 @@ const error = computed(() => {
   return null
 })
 
-setupQuery()
-fetchData()
+const isLoading = computed(() => Boolean(!backend.value || backend.value?.status.value !== 'connected' || error.value || !rawPayload.value))
 </script>
 
 <template>
   <div
-    v-if="backend.status.value !== 'connected' || error || !rawData"
+    v-if="isLoading"
     flex="~ col" h-full w-full items-center justify-center p4
   >
-    <div
-      flex="~ col gap-2 items-center justify-center" flex-auto
-      :class="error ? '' : 'animate-pulse'"
-    >
-      <h1 p5 flex="~ col gap-1 items-center">
-        <div relative>
-          <Logo
-            w-25 h-25 alt="Logo" transition-all duration-300
-            :class="error ? 'hue-rotate--105' : 'animate-spin-reverse'"
-          />
-          <div absolute top-0 right--2 text-orange transition-all duration-300 :class="error ? 'op100' : 'op0'">
-            <div i-ph-warning-fill text-3xl />
-          </div>
-        </div>
-        <div flex="~ gap-1" leading-none text-2xl mt-5>
-          <span font-700 text-primary transition-all duration-300 :class="error ? 'hue-rotate--105' : ''">Node Modules</span>
-          <span op75>Inspector</span>
-        </div>
-        <span font-mono op50>v{{ version }}</span>
-      </h1>
-
+    <div flex="~ col gap-2 items-center justify-center" flex-auto>
+      <UiTitle :has-error="!!error" :is-loading="isLoading" />
       <div h-20>
         <div v-if="error" text-red rounded p2 flex="~ col items-center">
           <div font-bold>
@@ -67,9 +50,8 @@ fetchData()
       </div>
     </div>
   </div>
-  <div v-else>
-    <PanelDark />
-    <PanelNav />
-    <NuxtPage />
-  </div>
+  <PanelNav v-else />
+  <NuxtLayout>
+    <NuxtPage v-if="!isLoading" />
+  </NuxtLayout>
 </template>

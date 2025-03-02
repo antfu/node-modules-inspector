@@ -25,12 +25,7 @@ type PnpmDependencyHierarchy = Pick<PackageDependencyHierarchy, 'name' | 'versio
 
 async function resolveRoot(options: ListPackageDependenciesOptions) {
   let raw: string | undefined
-  try {
-    raw = (await x('pnpm', ['root', '-w'], { throwOnError: true, nodeOptions: { cwd: options.cwd } }))
-      .stdout
-      .trim()
-  }
-  catch {
+  if (options.workspace === false) {
     try {
       raw = (await x('pnpm', ['root'], { throwOnError: true, nodeOptions: { cwd: options.cwd } }))
         .stdout
@@ -39,6 +34,24 @@ async function resolveRoot(options: ListPackageDependenciesOptions) {
     catch (err) {
       console.error('Failed to resolve root directory')
       console.error(err)
+    }
+  }
+  else {
+    try {
+      raw = (await x('pnpm', ['root', '-w'], { throwOnError: true, nodeOptions: { cwd: options.cwd } }))
+        .stdout
+        .trim()
+    }
+    catch {
+      try {
+        raw = (await x('pnpm', ['root'], { throwOnError: true, nodeOptions: { cwd: options.cwd } }))
+          .stdout
+          .trim()
+      }
+      catch (err) {
+        console.error('Failed to resolve root directory')
+        console.error(err)
+      }
     }
   }
   return raw ? dirname(raw) : options.cwd
@@ -60,6 +73,8 @@ async function getDependenciesTree(options: ListPackageDependenciesOptions): Pro
   const args = ['ls', '--json', '--no-optional', '--depth', String(options.depth)]
   if (options.monorepo)
     args.push('--recursive')
+  if (options.workspace === false)
+    args.push('--ignore-workspace')
   const process = x('pnpm', args, {
     throwOnError: true,
     nodeOptions: {
@@ -69,7 +84,7 @@ async function getDependenciesTree(options: ListPackageDependenciesOptions): Pro
   })
 
   const json = await import('../../json-parse-stream')
-    .then(r => r.parseJsonStream<PnpmDependencyHierarchy[]>(process.process!.stdout!))
+    .then(r => r.parseJsonStreamWithConcatArrays<PnpmDependencyHierarchy>(process.process!.stdout!))
 
   if (!Array.isArray(json))
     throw new Error(`Failed to parse \`pnpm ls\` output, expected an array but got: ${String(json)}`)
@@ -162,9 +177,12 @@ export async function listPackageDependencies(
       return node
 
     packages.set(node.spec, node)
-    for (const dep of Object.values(raw.dependencies || {})) {
-      const resolvedDep = traverse(dep, level + 1, mode)
-      node.dependencies.add(resolvedDep.spec)
+
+    if (options.dependenciesFilter?.(node) !== false) {
+      for (const dep of Object.values(raw.dependencies || {})) {
+        const resolvedDep = traverse(dep, level + 1, mode)
+        node.dependencies.add(resolvedDep.spec)
+      }
     }
 
     return node

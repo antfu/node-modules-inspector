@@ -3,15 +3,17 @@ import { existsSync } from 'node:fs'
 import fs from 'node:fs/promises'
 import process from 'node:process'
 
+import c from 'ansis'
 import cac from 'cac'
 import fg from 'fast-glob'
 import { getPort } from 'get-port-please'
 import open from 'open'
 import { relative, resolve } from 'pathe'
-import c from 'picocolors'
+import { stringify } from 'structured-clone-es'
+import { distDir } from '../dirs'
 import { MARK_CHECK, MARK_INFO } from './constants'
-import { distDir } from './dirs'
 import { createHostServer } from './server'
+import { storagePublishDates } from './storage'
 
 const cli = cac('node-modules-inspector')
 
@@ -32,9 +34,13 @@ cli
     const rpc = await import('./rpc').then(r => r.createServerFunctions({
       cwd,
       depth: options.depth,
+      storagePublishDates,
+      mode: 'build',
     }))
     const rpcDump: ServerFunctionsDump = {
-      listDependencies: await rpc.listDependencies(),
+      getPayload: await rpc.getPayload(),
+      // TODO: Implement this
+      getPackagesPublishDate: new Map(),
     }
 
     let baseURL = options.base
@@ -59,9 +65,10 @@ cli
         await fs.writeFile(resolve(outDir, file), newContent, 'utf-8')
       }
     }
-    await fs.mkdir(resolve(outDir, 'api'), { recursive: true })
 
-    await fs.writeFile(resolve(outDir, 'api/rpc-dump.json'), JSON.stringify(rpcDump, null, 2), 'utf-8')
+    await fs.mkdir(resolve(outDir, 'api'), { recursive: true })
+    await fs.writeFile(resolve(outDir, 'api/metadata.json'), JSON.stringify({ backend: 'static' }, null, 2), 'utf-8')
+    await fs.writeFile(resolve(outDir, 'api/rpc-dump.json'), stringify(rpcDump), 'utf-8')
 
     console.log(MARK_CHECK, `Built to ${relative(cwd, outDir)}`)
     console.log(MARK_INFO, `You can use static server like \`npx serve ${relative(cwd, outDir)}\` to serve the inspector`)
@@ -83,8 +90,10 @@ cli
     console.log(MARK_INFO, `Starting Node Modules Inspector at`, c.green(`http://${host === '127.0.0.1' ? 'localhost' : host}:${port}`), '\n')
 
     const server = await createHostServer({
-      root: options.root,
+      cwd: options.root,
       depth: options.depth,
+      storagePublishDates,
+      mode: 'dev',
     })
 
     server.listen(port, host, async () => {

@@ -5,8 +5,8 @@ import {
   presetAttributify,
   presetIcons,
   presetTypography,
-  presetUno,
   presetWebFonts,
+  presetWind3,
   transformerDirectives,
   transformerVariantGroup,
 } from 'unocss'
@@ -20,7 +20,6 @@ export default defineConfig({
       'border-base': 'border-#8882',
 
       'bg-tooltip': 'bg-white:75 dark:bg-#111:75 backdrop-blur-8',
-      'bg-glass': 'bg-white:75 dark:bg-#111:75 backdrop-blur-5',
       'bg-code': 'bg-gray5:5',
 
       'bg-gradient-more': 'bg-gradient-to-t from-white via-white:80 to-white:0 dark:from-#111 dark:via-#111:80 dark:to-#111:0',
@@ -42,10 +41,21 @@ export default defineConfig({
       'z-graph-node-active': 'z-13',
 
       'z-panel-content': 'z-50',
+      'z-panel-no-mobile': 'z-55',
       'z-panel-nav': 'z-60',
       'z-panel-goto': 'z-70',
+      'z-panel-terminal': 'z-80',
+
+      'color-scale-neutral': 'text-gray:75!',
+      'color-scale-low': 'text-lime:75! saturate-50',
+      'color-scale-medium': 'text-amber:85! saturate-80',
+      'color-scale-high': 'text-orange!',
+      'color-scale-critical': 'text-red!',
+
+      'page-padding': 'pt-22 pl-112 pr-8 pb-8',
     },
     [/^badge-color-(\w+)$/, ([, color]) => `bg-${color}-400:20 dark:bg-${color}-400:10 text-${color}-700 dark:text-${color}-300 border-${color}-600:10 dark:border-${color}-300:10`],
+    [/^bg-glass(:\d+)?$/, ([, opacity = ':75']) => `bg-white${opacity} dark:bg-#111${opacity} backdrop-blur-5`],
   ],
   theme: {
     colors: {
@@ -66,7 +76,7 @@ export default defineConfig({
     },
   },
   presets: [
-    presetUno(),
+    presetWind3(),
     presetAttributify(),
     presetIcons({
       scale: 1.2,

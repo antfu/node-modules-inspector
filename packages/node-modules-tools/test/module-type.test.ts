@@ -24,7 +24,7 @@ it('dual', async () => {
 })
 
 it('cjs', async () => {
-  expect(analyzePackageModuleType(await getPackageJsonPath('picocolors')))
+  expect(analyzePackageModuleType(await getPackageJsonPath('debug')))
     .toEqual('cjs')
 })
 

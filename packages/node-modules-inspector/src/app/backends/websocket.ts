@@ -1,10 +1,15 @@
-import type { ClientFunctions, Metadata, ServerFunctions } from '~~/shared/types'
+import type { ClientFunctions, ServerFunctions } from '~~/shared/types'
 import type { Backend } from '~/types/backend'
 import { createBirpc } from 'birpc'
 import { parse, stringify } from 'structured-clone-es'
 import { ref, shallowRef } from 'vue'
 
-export function createWebSocketBackend(): Backend {
+export interface WebSocketBackendOptions {
+  name: string
+  websocketUrl: string
+}
+
+export function createWebSocketBackend(options: WebSocketBackendOptions): Backend {
   const status: Backend['status'] = ref('idle')
   const error: Backend['connectionError'] = shallowRef(undefined)
 
@@ -42,11 +47,7 @@ export function createWebSocketBackend(): Backend {
 
   async function connect() {
     try {
-      const metadata: Metadata = await $fetch('/api/metadata.json')
-
-      const ws = new WebSocket(
-        `${location.protocol.replace('http', 'ws')}//${location.hostname}:${metadata.websocket}`,
-      )
+      const ws = new WebSocket(options.websocketUrl)
 
       ws.addEventListener('close', () => {
         status.value = 'idle'
@@ -75,7 +76,7 @@ export function createWebSocketBackend(): Backend {
   }
 
   return {
-    name: 'websocket',
+    name: options.name,
     status,
     connectionError: error,
     async connect() {
@@ -83,10 +84,20 @@ export function createWebSocketBackend(): Backend {
         connectPromise = connect()
       await connectPromise
     },
+    isDynamic: true,
     functions: {
-      listDependencies: async () => {
+      getPayload: async () => {
         try {
-          return await rpc.listDependencies()
+          return await rpc.getPayload()
+        }
+        catch (err) {
+          error.value = err
+          throw err
+        }
+      },
+      getPackagesPublishDate: async (specs: string[]) => {
+        try {
+          return await rpc.getPackagesPublishDate(specs)
         }
         catch (err) {
           error.value = err

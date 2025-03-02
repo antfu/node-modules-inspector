@@ -70,8 +70,9 @@ function populateRawResult(input: ListPackageDependenciesRawResult): ListPackage
     ) {
       for (const dep of node.dependencies) {
         const level = node.depth + 1
-        const depNode = result.packages.get(dep)!
-
+        const depNode = result.packages.get(dep)
+        if (!depNode)
+          continue
         if (!node.workspace) {
           if (node.dev)
             depNode.dev = true

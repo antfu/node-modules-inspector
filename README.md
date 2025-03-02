@@ -10,18 +10,52 @@
 
 Interactive UI for local node modules inspection.
 
-> [!IMPORTANT]
-> Working in progress, expect incomplete features and bugs.
+### Quick Start
 
-For now, you may try it by running following command under your **pnpm** project.
+Try it by running following command under your `pnpm` project.
 
 ```bash
 pnpx node-modules-inspector
 ```
 
-## Screenshots
+> Currently only support `pnpm` projects. We are counting on the community to bring support for other package managers.
 
-> Screenshots may not reflect the current state
+### Online Version
+
+You can also try an online version at [**node-modules.dev**](https://node-modules.dev/), powered by [WebContainer](https://webcontainers.io/).
+
+## Configuration
+
+You can create a `node-modules-inspector.config.ts` file in your project root to configure the inspector's default behaviour.
+
+```js
+import { defineConfig } from 'node-modules-inspector'
+
+export default defineConfig({
+  defaultFilters: {
+    excludes: [
+      'eslint',
+    ],
+  },
+  defaultSettings: {
+    moduleTypeSimple: true,
+  }
+})
+```
+
+## Static Build
+
+You can also build a static SPA of your current node_modules status:
+
+```bash
+pnpx node-modules-inspector build
+```
+
+Then you can host the `.node-modules-inspector` folder with any static file server.
+
+You can see a build for all Anthony Fu's packages at [everything.antfu.dev](https://everything.antfu.dev).
+
+## Screenshots
 
 ![Image](https://github.com/user-attachments/assets/80ce6f9d-26fb-4fcf-8c51-e3d2b6f9f24c)
 ![Image](https://github.com/user-attachments/assets/6de8614c-2663-4c69-bd1e-96e8e66673a7)

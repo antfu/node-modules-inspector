@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { WebcontainerLanding } from '#components'
+import WebContainer from '../webcontainer/Landing.vue'
 </script>
 
 <template>
-  <WebcontainerLanding />
+  <WebContainer />
 </template>

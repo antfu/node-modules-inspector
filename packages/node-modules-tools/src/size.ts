@@ -96,5 +96,11 @@ export function guessFileCategory(file: string): FileCategory {
     return 'image'
   if (base.match(/\.(?:md|txt|mdx|markdown|rst)$/i))
     return 'doc'
+  if (base.match(/\.(?:wasm|wat)$/i))
+    return 'wasm'
+  if (base.match(/\.flow$/i))
+    return 'flow'
+  if (base.match(/\.(?:ttf|otf|woff2?)$/i))
+    return 'font'
   return 'other'
 }
