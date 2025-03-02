@@ -9,7 +9,7 @@ catalog:
   '@iconify-json/logos': ^1.2.4
   '@iconify-json/ph': ^1.2.2
   '@iconify-json/ri': ^1.2.5
-  '@iconify-json/simple-icons': ^1.2.26
+  '@iconify-json/simple-icons': ^1.2.27
   '@nuxt/devtools': ^2.1.1
   '@nuxt/eslint': ^1.1.0
   '@pnpm/list': ^1000.0.9
@@ -37,7 +37,7 @@ catalog:
   bumpp: ^10.0.3
   bundle-require: ^5.1.0
   cac: ^6.7.14
-  ansis: ^3.16.0
+  ansis: ^3.17.0
   chokidar: ^4.0.3
   d3: ^7.9.0
   d3-hierarchy: ^3.1.2
@@ -62,13 +62,13 @@ catalog:
   nitropack: 2.8.1
   nuxt: ^3.15.4
   nuxt-eslint-auto-explicit-import: ^0.1.1
-  ohash: ^2.0.7
+  ohash: ^2.0.9
   open: ^10.1.0
   p-limit: ^6.2.0
   package-manager-detector: ^0.2.10
   pathe: ^2.0.3
   picomatch: ^4.0.2
-  pkg-types: ^2.0.0
+  pkg-types: ^2.0.1
   rollup: 4.34.6
   rollup-plugin-esbuild: ^6.2.1
   semver: ^7.7.1
@@ -86,5 +86,5 @@ catalog:
   vite-hot-client: ^2.0.4
   vite-plugin-inspect: ^11.0.0
   vitest: ^3.0.7
-  vue-tsc: ^2.2.4
+  vue-tsc: ^2.2.8
   ws: ^8.18.1
