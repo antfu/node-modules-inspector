@@ -50,7 +50,6 @@ const cols = computed(() => {
   >
     <div op50>
       The following packages you use are asking for funding. Consider supporting them to help them sustainable.
-      <div i-ph-heart-duotone text-pink inline-block />
     </div>
     <div grid="~ cols-2 gap-4">
       <div v-for="items, idx of cols" :key="idx">

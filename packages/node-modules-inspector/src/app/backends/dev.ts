@@ -3,7 +3,8 @@ import { createStaticBackend } from './static'
 import { createWebSocketBackend } from './websocket'
 
 export async function createDevBackend() {
-  const metadata: ConnectionMeta = await $fetch('/api/metadata.json') as any
+  const metadata: ConnectionMeta = await fetch('/api/metadata.json')
+    .then(r => r.json())
 
   if (metadata.backend === 'static') {
     return createStaticBackend()

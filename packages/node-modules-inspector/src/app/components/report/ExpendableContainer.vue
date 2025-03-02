@@ -16,7 +16,7 @@ const props = withDefaults(
 )
 
 const count = defineModel('count', {
-  default: 15,
+  default: 20,
 })
 
 const reverse = defineModel('reverse', {

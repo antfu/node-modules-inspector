@@ -11,6 +11,16 @@ const multipleVersionsCount = computed(() => {
   return Array.from(payloads.avaliable.versions.values()).filter(v => v.length > 1).length
 })
 
+const licensesCount = computed(() => {
+  const set = new Set<string>()
+  payloads.avaliable.packages.forEach((p) => {
+    set.add(p.resolved.license || '<Unspecified>')
+  })
+  return set.size
+})
+
+const fundingCount = computed(() => payloads.avaliable.packages.filter(p => p.resolved.funding).length)
+
 const mins10 = 10 * 60 * 1000
 const timepassed = computed(() => rawPayload.value?.timestamp ? Date.now() - rawPayload.value.timestamp : 0)
 </script>
@@ -55,21 +65,31 @@ const timepassed = computed(() => rawPayload.value?.timestamp ? Date.now() - raw
         <DisplayNumberBadge :number="payloads.workspace.packages.length" rounded-full text-sm mx--0.2 mt-3px color="badge-color-yellow" />
         <span ml--0.5>workspace packages</span>
       </div>
-      <div flex="~ gap-2 items-center">
+      <NuxtLink flex="~ gap-2 items-center" to="/grid">
         <div i-catppuccin-java-class icon-catppuccin flex-none />
         <DisplayNumberBadge :number="payloads.avaliable.packages.length" rounded-full text-sm mx--0.2 mt-3px color="badge-color-primary" />
         <span ml--0.5>total packages</span>
-      </div>
-      <div flex="~ gap-2 items-center">
+      </NuxtLink>
+      <NuxtLink flex="~ gap-2 items-center" to="/report/multiple-versions">
         <div i-catppuccin-java-enum icon-catppuccin flex-none />
         <DisplayNumberBadge :number="multipleVersionsCount" rounded-full text-sm mx--0.2 mt-3px color="badge-color-orange" />
         <span ml--0.5>libraries with multiple versions</span>
-      </div>
-      <div flex="~ gap-2 items-center">
+      </NuxtLink>
+      <NuxtLink flex="~ gap-2 items-center" to="/report/licenses">
+        <div i-catppuccin-license icon-catppuccin flex-none />
+        <DisplayNumberBadge :number="licensesCount" rounded-full text-sm mx--0.2 mt-3px color="badge-color-amber" />
+        <span ml--0.5>type of licenses</span>
+      </NuxtLink>
+      <NuxtLink flex="~ gap-2 items-center" to="/report/funding">
+        <div i-catppuccin-code-of-conduct icon-catppuccin flex-none />
+        <DisplayNumberBadge :number="fundingCount" rounded-full text-sm mx--0.2 mt-3px color="badge-color-pink" />
+        <span ml--0.5>packages request for funding</span>
+      </NuxtLink>
+      <NuxtLink flex="~ gap-2 items-center" to="/report/install-size">
         <div i-catppuccin-binary icon-catppuccin flex-none />
         <DisplayFileSizeBadge :bytes="totalWorkspaceSize" :precent="false" rounded-full text-sm mx--0.2 mt-3px color="badge-color-primary" />
         <span ml--0.5>total node_modules size</span>
-      </div>
+      </NuxtLink>
       <div v-if="timepassed >= mins10" flex="~ gap-2 items-center">
         <div i-catppuccin-changelog icon-catppuccin flex-none />
         <DisplayDateBadge :time="rawPayload.timestamp" :colorize="false" rounded-full text-sm mx--0.2 mt-3px color="badge-color-primary" />

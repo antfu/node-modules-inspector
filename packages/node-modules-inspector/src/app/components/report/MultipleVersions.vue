@@ -37,7 +37,7 @@ function showGraph(pkgs: PackageNode[]) {
     </UiSubTitle>
     <div badge-color-primary flex="~ gap-2 items-center" rounded-lg p2 my2 px3>
       <div i-ph-lightbulb-duotone flex-none />
-      <span>Run <code color-green>`pnpm dedupe`</code> to de-duplicate packages that satisfies with the ranges</span>
+      <span>Run <code color-primary bg-primary:10 rounded px1 py0.5>pnpm dedupe</code> to de-duplicate packages that satisfies with the ranges</span>
     </div>
     <div grid="~ cols-minmax-200px gap-4">
       <div

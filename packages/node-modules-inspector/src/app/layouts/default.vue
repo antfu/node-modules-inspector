@@ -10,6 +10,9 @@ useRuntimeHook('page:loading:start', () => {
 useRuntimeHook('page:loading:end', () => {
   isLoading.value = false
 })
+useRuntimeHook('page:finish', () => {
+  isLoading.value = false
+})
 </script>
 
 <template>
