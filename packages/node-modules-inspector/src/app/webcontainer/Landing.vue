@@ -64,8 +64,13 @@ async function run() {
           This will run a pnpm install inside your browser with <a href="https://webcontainers.io/" target="_blank" hover:underline>WebContainer</a>.
         </div>
 
-        <div p2 mt3>
-          <span op35>Or run this locally with</span> <code badge-color-gray important-bg-gray:3 font-mono px2 py1 rounded>pnpx <span text-primary:90>node-modules-inspector</span></code>.
+        <div p2 mt3 text-center flex="~ col gap-2">
+          <div>
+            <span op35>Or run in your local project with</span> <a href="https://github.com/antfu/node-modules-inspector" target="_blank"><code badge-color-gray important-bg-gray:3 font-mono px2 py1 rounded>pnpx <span text-primary:90>node-modules-inspector</span></code></a>
+          </div>
+          <div>
+            <span op35>Or see a static build demo at </span><a href="https://everything.antfu.dev" target="_blank" op50 hover="op100 underline text-primary">everything.antfu.dev</a>
+          </div>
         </div>
         <div absolute left-0 right-0 bottom-0 flex="~ col items-center gap-2" p4>
           <UiCredits />

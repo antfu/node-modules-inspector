@@ -43,9 +43,19 @@ export default defineConfig({
 })
 ```
 
-## Screenshots
+## Static Build
 
-> Screenshots may not reflect the current state
+You can also build a static SPA of your current node_modules status:
+
+```bash
+pnpx node-modules-inspector build
+```
+
+Then you can host the `.node-modules-inspector` folder with any static file server.
+
+You can see a build for all Anthony Fu's packages at [everything.antfu.dev](https://everything.antfu.dev).
+
+## Screenshots
 
 ![Image](https://github.com/user-attachments/assets/80ce6f9d-26fb-4fcf-8c51-e3d2b6f9f24c)
 ![Image](https://github.com/user-attachments/assets/6de8614c-2663-4c69-bd1e-96e8e66673a7)
