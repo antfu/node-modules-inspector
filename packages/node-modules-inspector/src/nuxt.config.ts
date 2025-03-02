@@ -70,10 +70,7 @@ export default defineNuxtConfig({
       },
       '/**': {
         prerender: false,
-        headers: {
-          'Cross-Origin-Embedder-Policy': 'require-corp',
-          'Cross-Origin-Opener-Policy': 'same-origin',
-        },
+        headers,
       },
     },
     sourceMap: false,
