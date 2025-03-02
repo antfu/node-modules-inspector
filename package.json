@@ -11,7 +11,7 @@
     "start": "pnpm -C packages/node-modules-inspector run start",
     "wc:dev": "pnpm -C packages/node-modules-inspector run wc:dev",
     "wc:build": "pnpm -C packages/node-modules-inspector run wc:build",
-    "prepare": "npx simple-git-hooks",
+    "prepare": "npx simple-git-hooks && pnpm -C packages/node-modules-inspector run dev:prepare",
     "lint": "pnpm -C packages/node-modules-inspector run prepare && eslint .",
     "test": "vitest",
     "release": "bumpp -r && pnpm publish -r",
