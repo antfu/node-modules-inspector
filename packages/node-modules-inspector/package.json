@@ -21,7 +21,7 @@
   "types": "./dist/index.d.mts",
   "bin": "bin.mjs",
   "files": [
-    "*.mjs",
+    "bin.mjs",
     "dist"
   ],
   "scripts": {
