@@ -37,7 +37,7 @@ export function parseFunding(url?: string): ResolvedFunding | undefined {
     name = url.replace(/^(?:https?:\/\/)?(?:www\.)?/, '').replace(/\/$/, '')
 
   if (type === 'github' && name)
-    avatar = `https://github.com/${name}.png`
+    avatar = `https://avatars.antfu.dev/gh/${name}`
   if (type === 'opencollective' && name)
     avatar = `https://opencollective.com/${name}/avatar.png`
 

@@ -24,7 +24,7 @@ withDefaults(
     @click="selectedNode = pkg"
   >
     <DisplayModuleType v-if="showModuleType" :pkg />
-    <DisplayPackageSpec :pkg />
     <DisplaySourceTypeBadge v-if="showSourceType" :pkg />
+    <DisplayPackageSpec :pkg />
   </button>
 </template>

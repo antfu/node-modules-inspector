@@ -32,7 +32,7 @@ const selected = computed(() => params.slug[0] || 'all')
       <div i-ph-scales-duotone />
       Licenses
     </NuxtLink>
-    <NuxtLink btn-action as="button" to="/report/funding" active-class="text-primary bg-primary:5">
+    <NuxtLink btn-action as="button" to="/report/funding" active-class="text-rose bg-rose:5">
       <div i-ph-heart-duotone />
       Funding
     </NuxtLink>

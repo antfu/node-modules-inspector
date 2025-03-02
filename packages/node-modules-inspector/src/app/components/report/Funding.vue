@@ -25,7 +25,7 @@ const fundingGroup = computed(() => {
     map.set(funding.entry, group)
   }
   return [...map.values()]
-    .sort((a, b) => a.packages.length - b.packages.length)
+    .sort((a, b) => a.packages.length - b.packages.length || a.info.name.localeCompare(b.info.name))
 })
 
 const cols = computed(() => {
@@ -35,49 +35,48 @@ const cols = computed(() => {
   }[][] = [
     [],
     [],
+    [],
   ]
   fundingGroup.value.forEach((group, idx) => {
-    cols[idx % 2].push(group)
+    cols[idx % 3].push(group)
   })
   return cols
 })
 </script>
 
 <template>
-  <ReportExpendableContainer
-    :list="[]"
-    title="Funding"
-  >
-    <div op50>
-      The following packages you use are asking for funding. Consider supporting them to help them sustainable.
-    </div>
-    <div grid="~ cols-2 gap-4">
-      <div v-for="items, idx of cols" :key="idx">
-        <div v-for="pkgs of items" :key="pkgs.info.url">
-          <div>
-            <div font-mono mt3 border="x t rounded-t-lg base" w-max p1 px3>
-              <DisplayFundingEntry :funding="pkgs.info.url">
-                <DisplayNumberBadge :number="pkgs.packages.length" rounded-full text-sm />
-              </DisplayFundingEntry>
-            </div>
-            <ReportExpendableContainer :list="pkgs.packages" container-class="rounded-lt-none">
-              <template #default="{ items }">
-                <div flex="~ col gap-x-4 gap-y-1">
-                  <template v-for="pkg of items" :key="pkg.spec">
-                    <button
-                      font-mono text-left hover:bg-active px2 ml--2 rounded
-                      flex="~ gap-2 items-center"
-                      @click="selectedNode = pkg"
-                    >
-                      <TreeItem :pkg :show-source-type="true" />
-                    </button>
-                  </template>
-                </div>
-              </template>
-            </ReportExpendableContainer>
+  <UiSubTitle>
+    Funding
+    <DisplayNumberBadge v-if="fundingGroup.length" :number="fundingGroup.length" rounded-full text-sm />
+  </UiSubTitle>
+  <div op50>
+    The following packages you use are requesting for funding. Consider supporting them to help them sustainable.
+  </div>
+  <div grid="~ cols-3 gap-4" mt4>
+    <div v-for="items, idx of cols" :key="idx">
+      <div v-for="pkgs of items" :key="pkgs.info.url">
+        <div>
+          <div font-mono mt3 border="x t rounded-t-lg base" w-max p1 px3 bg-base>
+            <DisplayFundingEntry :funding="pkgs.info.url">
+              <DisplayNumberBadge :number="pkgs.packages.length" rounded-full text-sm />
+            </DisplayFundingEntry>
           </div>
+          <ReportExpendableContainer :list="pkgs.packages" container-class="rounded-lt-none">
+            <template #default="{ items }">
+              <div flex="~ col gap-x-4 gap-y-1">
+                <template v-for="pkg of items" :key="pkg.spec">
+                  <button
+                    font-mono text-left px2 ml--2 rounded
+                    @click="selectedNode = pkg"
+                  >
+                    <TreeItem w-full :pkg :show-source-type="true" :show-module-type="false" />
+                  </button>
+                </template>
+              </div>
+            </template>
+          </ReportExpendableContainer>
         </div>
       </div>
     </div>
-  </ReportExpendableContainer>
+  </div>
 </template>
