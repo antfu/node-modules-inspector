@@ -19,6 +19,7 @@ export async function listPackageDependenciesRaw(
       break
     }
     case 'yarn@berry': {
+      console.warn('Yarn Berry support is experimental, if you encounter any issues, please open an issue with a reproduction')
       result = await import('../agents/berry').then(r => r.listPackageDependencies(options))
       break
     }
