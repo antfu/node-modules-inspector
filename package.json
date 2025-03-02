@@ -12,7 +12,7 @@
     "wc:dev": "pnpm -C packages/node-modules-inspector run wc:dev",
     "wc:build": "pnpm -C packages/node-modules-inspector run wc:build",
     "prepare": "npx simple-git-hooks && pnpm -C packages/node-modules-inspector run dev:prepare",
-    "lint": "pnpm -C packages/node-modules-inspector run prepare && eslint .",
+    "lint": "pnpm -C packages/node-modules-inspector run dev:prepare && eslint .",
     "test": "vitest",
     "release": "bumpp -r && pnpm publish -r",
     "typecheck": "vue-tsc --noEmit"

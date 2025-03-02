@@ -106,9 +106,8 @@ describe('listPackageDependencies', () => {
         "version": "4.4.0",
       }
     `)
-    expect(Array.from(item?.flatDependents ?? []).filter(d => !d.startsWith('node-modules-tools@'))).toMatchInlineSnapshot(`
+    expect(Array.from(item?.flatDependents ?? []).filter(d => !d.startsWith('node-modules-tools@') && !d.startsWith('#'))).toMatchInlineSnapshot(`
       [
-        "#workspace-root@0.2.3",
         "rollup-plugin-esbuild@6.2.1",
         "vitest@3.0.7",
         "vite-node@3.0.7",
