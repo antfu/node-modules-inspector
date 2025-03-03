@@ -79,11 +79,27 @@ export default defineNuxtConfig({
   app: {
     baseURL: './',
     head: {
+      title: 'Node Modules Inspector',
+      charset: 'utf-8',
       viewport: 'width=device-width,initial-scale=1',
+      meta: [
+        { name: 'description', content: 'Visualize your node_modules, inspect dependencies, and more.' },
+        { property: 'og:title', content: 'Node Modules Inspector' },
+        { property: 'og:description', content: 'Visualize your node_modules, inspect dependencies, and more.' },
+        { property: 'og:image', content: 'https://node-modules.dev/og.png' },
+        { property: 'og:url', content: 'https://node-modules.dev' },
+        { property: 'og:type', content: 'website' },
+        { property: 'twitter:card', content: 'summary_large_image' },
+        { property: 'twitter:title', content: 'Node Modules Inspector' },
+        { property: 'twitter:description', content: 'Visualize your node_modules, inspect dependencies, and more.' },
+        { property: 'twitter:image', content: 'https://node-modules.dev/og.png' },
+        { property: 'twitter:url', content: 'https://node-modules.dev' },
+      ],
       link: [
         { rel: 'icon', type: 'image/svg+xml', href: `/favicon.svg` },
       ],
       htmlAttrs: {
+        lang: 'en',
         class: 'bg-dots',
       },
     },

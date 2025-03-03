@@ -8,7 +8,7 @@
 [![JSDocs][jsdocs-src]][jsdocs-href]
 [![License][license-src]][license-href]
 
-Interactive UI for local node modules inspection.
+Visualize your node_modules, inspect dependencies, and more.
 
 ### Quick Start
 
