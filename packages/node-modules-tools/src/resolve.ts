@@ -53,6 +53,13 @@ export async function resolvePackage(
   const _pkg = pkg as unknown as PackageNode
   if (_pkg.resolved)
     return _pkg
+  if (!_pkg.filepath) {
+    _pkg.resolved = {
+      module: 'unknown',
+      packageJson: {},
+    }
+    return _pkg
+  }
 
   const path = join(pkg.filepath, 'package.json')
   if (existsSync(path)) {

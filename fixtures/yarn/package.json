@@ -1,0 +1,13 @@
+{
+  "type": "module",
+  "packageManager": "yarn@4.7.0",
+  "scripts": {
+    "dev": "node dev.mjs"
+  },
+  "dependencies": {
+    "vite-plugin-inspect": "^11.0.0"
+  },
+  "devDependencies": {
+    "tinyexec": "^0.3.2"
+  }
+}
