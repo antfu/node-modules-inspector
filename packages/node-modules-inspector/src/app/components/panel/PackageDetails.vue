@@ -163,7 +163,7 @@ function getShallowestDependents(pkg: PackageNode) {
             <div i-catppuccin-code-of-conduct icon-catppuccin ma />
           </NuxtLink>
           <button
-            v-if="backend?.functions.openInEditor"
+            v-if="backend?.functions.openInEditor && pkg.filepath"
             title="Open Package Folder in Editor"
             ml--1 w-8 h-8 rounded-full hover:bg-active flex
             @click="backend.functions.openInEditor(pkg.filepath)"
@@ -171,7 +171,7 @@ function getShallowestDependents(pkg: PackageNode) {
             <div i-catppuccin-folder-vscode hover:i-catppuccin-folder-vscode-open icon-catppuccin ma />
           </button>
           <button
-            v-if="backend?.functions.openInFinder"
+            v-if="backend?.functions.openInFinder && pkg.filepath"
             title="Open Package Folder in Finder"
             ml--1 w-8 h-8 rounded-full hover:bg-active flex
             @click="backend.functions.openInFinder(pkg.filepath)"

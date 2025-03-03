@@ -35,6 +35,11 @@ export function createServerFunctions(options: CreateServerFunctionsOptions): Se
         console.log('[Node Modules Inspector] No config found')
       return result.config
     })()
+
+    // Allow overriding CWD with env
+    if (process.env.NMI_CWD)
+      options.cwd = process.env.NMI_CWD
+
     return _config
   }
 

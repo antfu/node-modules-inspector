@@ -69,9 +69,13 @@ export async function listPackageDependencies(
   const list = await getDependenciesList(options)
   const mapList = new Map<string, BerryPackageNode>()
   for (const item of list) {
-    mapList.set(item.value, item)
+    mapList.set(cleanupSpec(item.value), item)
   }
   const packages = new Map<string, PackageNodeRaw>()
+
+  function cleanupSpec(spec: string) {
+    return spec.replace(/(\w)@.*npm:/, '$1@')
+  }
 
   const mapNormalize = new WeakMap<BerryPackageNode, PackageNodeRaw>()
   function normalize(raw: BerryPackageNode): PackageNodeRaw {
@@ -82,15 +86,19 @@ export async function listPackageDependencies(
     // Resolve workspace package version
     const version = raw.children.Version
 
-    const spec = raw.value
+    let name: string
+    if (raw.value.startsWith('@'))
+      name = `@${raw.value.slice(1).split('@')[0]}`
+    else
+      name = raw.value.split('@')[0]
 
-    const [name] = spec.split('@')
+    const spec = `${name}@${version}`
 
     node = packages.get(spec) || {
       spec,
       name,
       version,
-      filepath: 'TODO',
+      // filepath: 'TODO',
       dependencies: new Set(),
     }
     mapNormalize.set(raw, node)
@@ -111,9 +119,10 @@ export async function listPackageDependencies(
 
     if (options.dependenciesFilter?.(node) !== false) {
       for (const dep of raw.children.Dependencies || []) {
-        const actualDep = mapList.get(dep.locator)
+        const locator = cleanupSpec(dep.locator)
+        const actualDep = mapList.get(locator)
         if (!actualDep)
-          throw new Error(`Failed to find dependency ${dep.locator} of ${node.spec}`)
+          throw new Error(`Failed to find dependency ${locator} of ${node.spec}`)
         const result = normalize(actualDep)
         node.dependencies.add(result.spec)
       }

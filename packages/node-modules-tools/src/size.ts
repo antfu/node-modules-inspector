@@ -11,6 +11,8 @@ export async function getPackageInstallSize(
     return
   if (pkg.version.match(/^(?:file|link|workspace):/))
     return
+  if (!pkg.filepath)
+    return
 
   const root = pkg.filepath
   const files: string[] = []
