@@ -162,6 +162,14 @@ function getShallowestDependents(pkg: PackageNode) {
           >
             <div i-catppuccin-code-of-conduct icon-catppuccin ma />
           </NuxtLink>
+          <NuxtLink
+            :to="`https://publint.dev/${pkg.spec}`"
+            title="Open in Publint"
+            target="_blank"
+            ml--1 w-8 h-8 rounded-full hover:bg-active flex
+          >
+            <div i-catppuccin-lib icon-catppuccin ma />
+          </NuxtLink>
           <button
             v-if="backend?.functions.openInEditor"
             title="Open Package Folder in Editor"
@@ -235,6 +243,10 @@ function getShallowestDependents(pkg: PackageNode) {
         <div i-ph-network-slash-duotone flex-none />
         <span>Exclude</span>
       </button>
+    </div>
+
+    <div v-if="pkg.resolved.publint" border="t rounded base">
+      <IntegrationsPublintPanel :pkg="pkg" p4 />
     </div>
 
     <div v-if="pkg.resolved.installSize" p4 border="t base" flex="~ col gap-1">

@@ -13,7 +13,7 @@ import { stringify } from 'structured-clone-es'
 import { distDir } from '../dirs'
 import { MARK_CHECK, MARK_NODE } from './constants'
 import { createHostServer } from './server'
-import { storagePublishDates } from './storage'
+import { storagePublint, storagePublishDates } from './storage'
 
 const cli = cac('node-modules-inspector')
 
@@ -35,6 +35,7 @@ cli
       cwd,
       depth: options.depth,
       storagePublishDates,
+      storagePublint,
       mode: 'build',
     }))
     const rpcDump: ServerFunctionsDump = {
@@ -89,12 +90,18 @@ cli
 
     console.log(c.green`${MARK_NODE} Starting Node Modules Inspector at`, c.green(`http://${host === '127.0.0.1' ? 'localhost' : host}:${port}`), '\n')
 
-    const server = await createHostServer({
+    const { server, ws } = await createHostServer({
       cwd: options.root,
       depth: options.depth,
       storagePublishDates,
+      storagePublint,
       mode: 'dev',
     })
+
+    // Warm up the payload
+    setTimeout(() => {
+      ws.serverFunctions.getPayload()
+    }, 1)
 
     server.listen(port, host, async () => {
       if (options.open)

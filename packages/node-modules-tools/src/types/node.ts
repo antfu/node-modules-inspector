@@ -1,3 +1,4 @@
+import type { Message as PublintMessage } from 'publint'
 import type { PackageInstallSizeInfo } from './size'
 
 export type PackageModuleTypeSimple = 'cjs' | 'esm'
@@ -52,5 +53,6 @@ export interface PackageNode extends PackageNodeBase {
     engines?: Record<string, string>
     installSize?: PackageInstallSizeInfo
     publishTime?: string
+    publint?: PublintMessage[]
   }
 }

@@ -30,8 +30,9 @@ export interface NodeModulesInspectorConfig {
   /**
    * Enable publint
    *
+   * @experimental
    * @see https://publint.dev/
-   * @default true
+   * @default false
    */
   publint?: boolean
   /**

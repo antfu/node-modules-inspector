@@ -39,7 +39,12 @@ export default defineConfig({
   },
   defaultSettings: {
     moduleTypeSimple: true,
-  }
+  },
+
+  // Experimental publint.dev integration, default is false
+  publint: true
+
+  // ...see jsdoc for more options and details
 })
 ```
 

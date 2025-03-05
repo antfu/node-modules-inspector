@@ -1,18 +1,23 @@
 import process from 'node:process'
 import { consola } from 'consola'
-import { storagePublishDates } from '~~/node/storage'
+import { storagePublint, storagePublishDates } from '~~/node/storage'
 import { createWsServer } from '~~/node/ws'
 
 consola.restoreAll()
 
-export default lazyEventHandler(async () => {
-  const ws = await createWsServer({
-    cwd: process.cwd(),
-    storagePublishDates,
-    mode: 'dev',
-  })
+const ws = createWsServer({
+  cwd: process.cwd(),
+  storagePublishDates,
+  storagePublint,
+  mode: 'dev',
+}).then((ws) => {
+  // Warm up the payload
+  setTimeout(() => {
+    ws.serverFunctions.getPayload()
+  }, 1)
+  return ws
+})
 
-  return defineEventHandler(async () => {
-    return await ws.getMetadata()
-  })
+export default eventHandler(async () => {
+  return await (await ws).getMetadata()
 })

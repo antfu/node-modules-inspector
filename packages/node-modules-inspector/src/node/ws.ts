@@ -7,7 +7,7 @@ import { createBirpcGroup } from 'birpc'
 import { getPort } from 'get-port-please'
 import { parse, stringify } from 'structured-clone-es'
 import { WebSocketServer } from 'ws'
-import { MARK_NODE } from './constants'
+import { MARK_CHECK } from './constants'
 import { createServerFunctions } from './rpc'
 
 export interface CreateWsServerOptions extends CreateServerFunctionsOptions {
@@ -60,7 +60,7 @@ export async function createWsServer(options: CreateWsServerOptions) {
       })
     })
 
-    console.log(c.cyan`${MARK_NODE} Websocket client connected`)
+    console.log(c.green`${MARK_CHECK} Websocket client connected`)
   })
 
   const getMetadata = async (): Promise<ConnectionMeta> => {
@@ -73,6 +73,8 @@ export async function createWsServer(options: CreateWsServerOptions) {
   return {
     port,
     wss,
+    rpc,
+    serverFunctions,
     getMetadata,
   }
 }

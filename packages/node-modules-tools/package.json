@@ -44,6 +44,7 @@
     "@pnpm/types": "catalog:",
     "@types/stream-json": "catalog:",
     "pkg-types": "catalog:",
+    "publint": "catalog:",
     "stream-json": "catalog:",
     "unbuild": "catalog:"
   }
