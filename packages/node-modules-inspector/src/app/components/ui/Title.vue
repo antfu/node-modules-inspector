@@ -22,7 +22,6 @@ defineProps<{
       <span font-700 text-primary transition-all duration-300 :class="hasError ? 'hue-rotate--105' : ''">Node Modules</span>
       <span op75>Inspector</span>
       <span font-mono text-sm flex="~ col items-center" mr--14>
-        <div badge-color-lime rounded px2 text-xs py0.5>Preview</div>
         <span op50>v{{ version }}</span>
       </span>
     </div>

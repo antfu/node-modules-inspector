@@ -45,5 +45,8 @@ export async function createHostServer(options: CreateWsServerOptions) {
       return readCachedFile(join(distDir, 'index.html'))
   }))
 
-  return createServer(toNodeListener(app))
+  return {
+    server: createServer(toNodeListener(app)),
+    ws,
+  }
 }

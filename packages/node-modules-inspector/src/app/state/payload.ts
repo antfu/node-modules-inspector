@@ -24,7 +24,7 @@ function createComputedPayload(getter: () => PackageNode[]) {
   }
 
   const getList = (specs: Iterable<string>): PackageNode[] => {
-    return Array.from(function *() {
+    return Array.from(function* () {
       for (const spec of specs) {
         const pkg = get(spec)
         if (pkg)
