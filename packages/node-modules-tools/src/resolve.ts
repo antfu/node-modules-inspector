@@ -1,4 +1,4 @@
-import type { AgentName } from 'package-manager-detector'
+import type { Agent } from 'package-manager-detector'
 import type { PackageJson } from 'pkg-types'
 import type { BaseOptions, PackageNode, PackageNodeBase } from './types'
 import fs from 'node:fs/promises'
@@ -13,14 +13,20 @@ import { getPackageInstallSize } from './size'
  * - Set `module` to the resolved module type (cjs, esm, dual, faux, none).
  */
 export async function resolvePackage(
-  _packageManager: AgentName,
+  _packageManager: Agent,
   pkg: PackageNodeBase,
   _options: BaseOptions,
 ): Promise<PackageNode> {
   const _pkg = pkg as unknown as PackageNode
   if (_pkg.resolved)
     return _pkg
-  const content = await fs.readFile(join(pkg.filepath, 'package.json'), 'utf-8')
+  if (!_pkg.filepath) {
+    _pkg.resolved = {
+      module: 'cjs',
+    }
+    return _pkg
+  }
+  const content = await fs.readFile(join(pkg.filepath!, 'package.json'), 'utf-8')
   const json = JSON.parse(stripBomTag(content)) as PackageJson
 
   let repository = (typeof json.repository === 'string' ? json.repository : json.repository?.url)

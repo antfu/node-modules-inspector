@@ -11,7 +11,7 @@ export interface PackageNodeRaw {
   /** Combined name and version using `@` */
   spec: string
   /** Absolute file path of the package */
-  filepath: string
+  filepath?: string
   /** Direct dependencies of this package */
   dependencies: Set<string>
 
