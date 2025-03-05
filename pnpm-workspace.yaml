@@ -1,15 +1,10 @@
 packages:
   - packages/*
+
 catalog:
   '@antfu/eslint-config': ^4.3.0
   '@antfu/utils': ^9.1.0
   '@eslint/config-array': ^0.19.2
-  '@iconify-json/carbon': ^1.2.8
-  '@iconify-json/catppuccin': ^1.2.9
-  '@iconify-json/logos': ^1.2.4
-  '@iconify-json/ph': ^1.2.2
-  '@iconify-json/ri': ^1.2.5
-  '@iconify-json/simple-icons': ^1.2.27
   '@nuxt/devtools': ^2.1.1
   '@nuxt/eslint': ^1.1.0
   '@pnpm/list': ^1000.0.9
@@ -88,3 +83,17 @@ catalog:
   vitest: ^3.0.7
   vue-tsc: ^2.2.8
   ws: ^8.18.1
+
+catalogs:
+  iconify:
+    '@iconify-json/carbon': ^1.2.8
+    '@iconify-json/catppuccin': ^1.2.9
+    '@iconify-json/logos': ^1.2.4
+    '@iconify-json/ph': ^1.2.2
+    '@iconify-json/ri': ^1.2.5
+    '@iconify-json/simple-icons': ^1.2.27
+
+  antfu-stuff:
+    '@antfu/utils': 9.1.0
+    '@shikijs/langs-precompiled': 3.1.0
+    '@shikijs/transformers': 3.1.0
