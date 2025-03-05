@@ -11,7 +11,7 @@ import open from 'open'
 import { relative, resolve } from 'pathe'
 import { stringify } from 'structured-clone-es'
 import { distDir } from '../dirs'
-import { MARK_CHECK, MARK_INFO } from './constants'
+import { MARK_CHECK, MARK_NODE } from './constants'
 import { createHostServer } from './server'
 import { storagePublishDates } from './storage'
 
@@ -26,7 +26,7 @@ cli
   .option('--outDir <dir>', 'Output directory', { default: '.node-modules-inspector' })
   // Action
   .action(async (options) => {
-    console.log(MARK_INFO, 'Building static Node Modules Inspector...')
+    console.log(c.green`${MARK_NODE} Building static Node Modules Inspector...`)
 
     const cwd = process.cwd()
     const outDir = resolve(cwd, options.outDir)
@@ -70,8 +70,8 @@ cli
     await fs.writeFile(resolve(outDir, 'api/metadata.json'), JSON.stringify({ backend: 'static' }, null, 2), 'utf-8')
     await fs.writeFile(resolve(outDir, 'api/rpc-dump.json'), stringify(rpcDump), 'utf-8')
 
-    console.log(MARK_CHECK, `Built to ${relative(cwd, outDir)}`)
-    console.log(MARK_INFO, `You can use static server like \`npx serve ${relative(cwd, outDir)}\` to serve the inspector`)
+    console.log(c.green`${MARK_CHECK} Built to ${relative(cwd, outDir)}`)
+    console.log(c.green`${MARK_NODE} You can use static server like \`npx serve ${relative(cwd, outDir)}\` to serve the inspector`)
   })
 
 cli
@@ -87,7 +87,7 @@ cli
     const host = options.host
     const port = await getPort({ port: options.port, portRange: [9999, 15000], host })
 
-    console.log(MARK_INFO, `Starting Node Modules Inspector at`, c.green(`http://${host === '127.0.0.1' ? 'localhost' : host}:${port}`), '\n')
+    console.log(c.green`${MARK_NODE} Starting Node Modules Inspector at`, c.green(`http://${host === '127.0.0.1' ? 'localhost' : host}:${port}`), '\n')
 
     const server = await createHostServer({
       cwd: options.root,

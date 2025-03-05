@@ -7,7 +7,7 @@ import { createBirpcGroup } from 'birpc'
 import { getPort } from 'get-port-please'
 import { parse, stringify } from 'structured-clone-es'
 import { WebSocketServer } from 'ws'
-import { MARK_CHECK } from './constants'
+import { MARK_NODE } from './constants'
 import { createServerFunctions } from './rpc'
 
 export interface CreateWsServerOptions extends CreateServerFunctionsOptions {
@@ -28,7 +28,7 @@ export async function createWsServer(options: CreateWsServerOptions) {
     [],
     {
       onError(error, name) {
-        console.error(c.yellow(`[node-modules-inspector] RPC error on executing "${c.bold(name)}":`))
+        console.error(c.red`⬢ RPC error on executing "${c.bold(name)}":`)
         console.error(error)
         throw error
       },
@@ -60,7 +60,7 @@ export async function createWsServer(options: CreateWsServerOptions) {
       })
     })
 
-    console.log(MARK_CHECK, 'Websocket client connected')
+    console.log(c.cyan`${MARK_NODE} Websocket client connected`)
   })
 
   const getMetadata = async (): Promise<ConnectionMeta> => {

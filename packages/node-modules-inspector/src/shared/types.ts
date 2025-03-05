@@ -28,6 +28,13 @@ export interface NodeModulesInspectorConfig {
    */
   fetchPublishDate?: boolean
   /**
+   * Enable publint
+   *
+   * @see https://publint.dev/
+   * @default true
+   */
+  publint?: boolean
+  /**
    * Exclude the packages and it's dependencies
    */
   excludePackages?: (string | ((node: PackageNodeRaw) => boolean))[]
