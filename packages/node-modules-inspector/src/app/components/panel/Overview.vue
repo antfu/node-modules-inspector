@@ -35,7 +35,6 @@ const timepassed = computed(() => rawPayload.value?.timestamp ? Date.now() - raw
       </div>
       <div flex-auto />
       <span font-mono text-sm flex="~ col items-end">
-        <div badge-color-lime rounded px2 mr--2 text-xs py0.5>Preview</div>
         <span op50>v{{ version }}</span>
       </span>
     </h1>

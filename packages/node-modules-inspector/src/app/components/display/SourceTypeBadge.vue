@@ -33,13 +33,13 @@ const dev = computed(() => {
 
 <template>
   <template v-if="mode !== 'none'">
-    <div v-if="prod && dev" badge-color-sky px2 rounded-full text-sm title="Introduced by both dev and prod dependencies">
+    <div v-if="prod && dev" badge-color-green px2 rounded-full text-sm title="Introduced by both dev and prod dependencies">
       dev+prod
     </div>
     <div v-else-if="!prod && dev" badge-color-cyan px2 rounded-full text-sm title="Introduced by dev dependencies">
       dev
     </div>
-    <div v-if="prod && !dev" badge-color-yellow px2 rounded-full text-sm title="Introduced by prod dependencies">
+    <div v-if="prod && !dev" badge-color-lime px2 rounded-full text-sm title="Introduced by prod dependencies">
       prod
     </div>
   </template>

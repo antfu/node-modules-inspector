@@ -13,7 +13,9 @@ const parsed = computed(() => parseFunding(props.funding))
 <template>
   <a v-if="parsed" :href="parsed.url" target="_blank" flex="~ gap-2">
     <SafeImage
-      v-if="parsed.avatar" :src="parsed.avatar" w-6 h-6 rounded-full crossorigin="anonymous"
+      v-if="parsed.avatar" :src="parsed.avatar"
+      bg-active border="~ base rounded-full"
+      w6 h6 crossorigin="anonymous"
     />
     <span>{{ parsed.name }}</span>
     <slot />

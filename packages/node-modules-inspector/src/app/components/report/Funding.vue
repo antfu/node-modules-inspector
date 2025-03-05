@@ -53,11 +53,11 @@ const cols = computed(() => {
     The following packages you use are requesting for funding. Consider supporting them to help them sustainable.
   </div>
   <div grid="~ cols-3 gap-4" mt4>
-    <div v-for="items, idx of cols" :key="idx">
-      <div v-for="pkgs of items" :key="pkgs.info.url">
+    <div v-for="packages, idx of cols" :key="idx">
+      <div v-for="pkgs of packages" :key="pkgs.info.url">
         <div>
-          <div font-mono mt3 border="x t rounded-t-lg base" w-max p1 px3 bg-base>
-            <DisplayFundingEntry :funding="pkgs.info.url">
+          <div font-mono mt3 border="x t rounded-t-lg base" w-max bg-base of-hidden>
+            <DisplayFundingEntry :funding="pkgs.info.url" p1 px3 hover="bg-pink/5 text-pink" transition>
               <DisplayNumberBadge :number="pkgs.packages.length" rounded-full text-sm />
             </DisplayFundingEntry>
           </div>
