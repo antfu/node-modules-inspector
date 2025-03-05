@@ -9,9 +9,11 @@ const props = withDefaults(defineProps<{
   seen?: string[]
   depth?: number
   maxDepth?: number
+  sortBy?: 'depth' | 'name'
 }>(), {
   depth: 1,
   maxDepth: 6,
+  sortBy: 'depth',
 })
 
 const seen = computed(() => {
@@ -35,7 +37,12 @@ const tree = computed(() => {
         }),
       }
     })
-    .sort((a, b) => (b.children?.length || 0) - (a.children?.length || 0))
+    .sort((a, b) => {
+      if (props.sortBy === 'depth')
+        return (b.children?.length || 0) - (a.children?.length || 0)
+      else
+        return a.pkg.name.localeCompare(b.pkg.name)
+    })
 })
 </script>
 
@@ -53,6 +60,7 @@ const tree = computed(() => {
             :seen="seen"
             :depth="props.depth + 1"
             :max-depth="props.maxDepth"
+            :sort-by="props.sortBy"
           />
         </RenderNextTick>
         <div v-else-if="props.maxDepth > 2" ml6>

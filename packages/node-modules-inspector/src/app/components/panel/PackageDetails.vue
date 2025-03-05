@@ -346,6 +346,7 @@ function getShallowestDependents(pkg: PackageNode) {
             :list="payloads.avaliable.flatDependencies(pkg)"
             :max-depth="getDepth(pkg.flatDependencies.size)"
             type="dependencies"
+            :sort-by="settings.deepDependenciesTree ? 'depth' : 'name'"
           />
         </template>
         <div v-else op25 italic text-center pb4>
