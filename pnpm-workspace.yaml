@@ -1,5 +1,6 @@
 packages:
   - packages/*
+
 catalog:
   '@antfu/eslint-config': ^4.5.1
   '@antfu/utils': ^9.1.0
@@ -48,7 +49,7 @@ catalog:
   eslint: ^9.21.0
   fast-glob: ^3.3.3
   fast-npm-meta: ^0.3.1
-  find-up: ^7.0.0
+  find-up: 6.3.0
   flatted: ^3.3.3
   floating-vue: ^5.2.2
   fuse.js: ^7.1.0
@@ -89,3 +90,17 @@ catalog:
   vitest: ^3.0.7
   vue-tsc: ^2.2.8
   ws: ^8.18.1
+
+catalogs:
+  iconify:
+    '@iconify-json/carbon': ^1.2.8
+    '@iconify-json/catppuccin': ^1.2.9
+    '@iconify-json/logos': ^1.2.4
+    '@iconify-json/ph': ^1.2.2
+    '@iconify-json/ri': ^1.2.5
+    '@iconify-json/simple-icons': ^1.2.27
+
+  antfu-stuff:
+    '@antfu/utils': 9.1.0
+    '@shikijs/langs-precompiled': 3.1.0
+    '@shikijs/transformers': 3.1.0
