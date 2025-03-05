@@ -2,9 +2,59 @@ import type { AgentName } from 'package-manager-detector'
 import type { PackageJson } from 'pkg-types'
 import type { BaseOptions, PackageNode, PackageNodeBase } from './types'
 import fs from 'node:fs/promises'
+import { findUp } from 'find-up'
 import { join } from 'pathe'
+import { parse } from 'yaml'
 import { analyzePackageModuleType } from './analyze-esm'
 import { getPackageInstallSize } from './size'
+
+// Cache for workspace catalog data
+let workspaceCatalogCache: {
+  catalog?: Record<string, string>
+  catalogs?: Record<string, Record<string, string>>
+} | null = null
+
+// Function to get catalog information for a package
+async function getCatalogForPackage(packageName: string): Promise<string | undefined> {
+  // Load and cache workspace catalog data if not already loaded
+  if (workspaceCatalogCache === null) {
+    try {
+      const workspaceYamlPath = await findUp('pnpm-workspace.yaml')
+      if (workspaceYamlPath) {
+        const content = await fs.readFile(workspaceYamlPath, 'utf-8')
+        const workspaceData = parse(content)
+        workspaceCatalogCache = {
+          catalog: workspaceData.catalog,
+          catalogs: workspaceData.catalogs,
+        }
+      }
+      else {
+        workspaceCatalogCache = {}
+      }
+    }
+    catch (error) {
+      console.error('Error loading pnpm-workspace.yaml:', error)
+      workspaceCatalogCache = {}
+    }
+  }
+
+  // First check if package is in a named catalog (higher priority)
+  if (workspaceCatalogCache.catalogs) {
+    for (const [catalogName, packages] of Object.entries(workspaceCatalogCache.catalogs)) {
+      const packageKeys = Object.keys(packages)
+      if (packageKeys.includes(packageName)) {
+        return catalogName
+      }
+    }
+  }
+
+  // Then check if package is in the default catalog (lower priority)
+  if (workspaceCatalogCache.catalog && packageName in workspaceCatalogCache.catalog) {
+    return 'default'
+  }
+
+  return undefined
+}
 
 /**
  * Analyze a package node, and return a resolved package node.
@@ -37,6 +87,16 @@ export async function resolvePackage(
   if (typeof funding === 'string')
     funding = { url: funding }
 
+  // Extract org from package name
+  let org: string | undefined
+  const parts = pkg.name.split('/')
+  if (parts.length > 1) {
+    org = parts[0]
+  }
+
+  // Get catalog information for the package
+  const catalog = await getCatalogForPackage(pkg.name)
+
   _pkg.resolved = {
     module: analyzePackageModuleType(json),
     engines: json.engines,
@@ -46,6 +106,8 @@ export async function resolvePackage(
     repository,
     homepage: json.homepage,
     installSize: await getPackageInstallSize(_pkg),
+    org,
+    catalog,
   }
   return _pkg
 }
