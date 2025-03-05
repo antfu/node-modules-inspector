@@ -36,6 +36,7 @@
     "p-limit": "catalog:",
     "package-manager-detector": "catalog:",
     "pathe": "catalog:",
+    "publint": "catalog:",
     "semver": "catalog:",
     "tinyexec": "catalog:"
   },
@@ -44,7 +45,6 @@
     "@pnpm/types": "catalog:",
     "@types/stream-json": "catalog:",
     "pkg-types": "catalog:",
-    "publint": "catalog:",
     "stream-json": "catalog:",
     "unbuild": "catalog:"
   }

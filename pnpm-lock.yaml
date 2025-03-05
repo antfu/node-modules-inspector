@@ -510,6 +510,9 @@ importers:
       pathe:
         specifier: 'catalog:'
         version: 2.0.3
+      publint:
+        specifier: 'catalog:'
+        version: 0.3.8
       semver:
         specifier: 'catalog:'
         version: 7.7.1
@@ -529,9 +532,6 @@ importers:
       pkg-types:
         specifier: 'catalog:'
         version: 2.1.0
-      publint:
-        specifier: 'catalog:'
-        version: 0.3.8
       stream-json:
         specifier: 'catalog:'
         version: 1.9.1
