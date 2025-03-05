@@ -33,6 +33,7 @@
     "test": "vitest"
   },
   "dependencies": {
+    "find-up": "catalog:",
     "p-limit": "catalog:",
     "package-manager-detector": "catalog:",
     "pathe": "catalog:",
