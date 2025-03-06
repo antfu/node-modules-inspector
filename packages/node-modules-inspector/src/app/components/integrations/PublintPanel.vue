@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
 import { computed } from 'vue'
+import { settings } from '~/state/settings'
+import { formatMessage } from '~/utils/publint'
 
 const props = defineProps<{
   pkg: PackageNode
@@ -17,19 +19,30 @@ const counter = computed(() => {
   }
   return values
 })
+
+const icons = {
+  error: 'i-ph-x-duotone text-red',
+  warning: 'i-ph-warning-duotone text-amber',
+  suggestion: 'i-ph-info-duotone text-blue',
+}
+
+const messageColors = {
+  error: 'dark:text-red2:75 text-red8:75',
+  warning: 'dark:text-amber2:75 text-amber8:75',
+  suggestion: 'dark:text-blue2:75 text-blue8:75',
+}
 </script>
 
 <template>
-  <component
-    :is="props.pkg.resolved.publint.length > 0 ? 'a' : 'div'"
-    v-if="props.pkg.resolved.publint"
-    :href="`https://publint.dev/${props.pkg.spec}`"
-    target="_blank"
-    :class="props.pkg.resolved.publint.length > 0 ? 'hover:bg-active' : ''"
-    block
-  >
-    <div flex="~ gap-2 items-center">
+  <div v-if="props.pkg.resolved.publint" block>
+    <button flex="~ gap-2 items-center" w-full p4 select-none @click="settings.showPublintMessages = !settings.showPublintMessages">
       <span op50 text-sm>publint</span>
+      <template v-if="!props.pkg.resolved.publint.length">
+        <div badge-color-green rounded-full text-sm py0.5 px2 flex="~ items-center gap-1">
+          <div i-ph-checks-bold />
+          <span text-green6 dark:text-green text-xs>All Good</span>
+        </div>
+      </template>
       <template v-if="counter.error">
         <DisplayNumberBadge :number="counter.error" rounded-full text-sm color="badge-color-red">
           <template #after>
@@ -51,18 +64,31 @@ const counter = computed(() => {
           </template>
         </DisplayNumberBadge>
       </template>
-      <template v-if="!props.pkg.resolved.publint.length">
-        <div badge-color-green rounded-full text-sm py0.5 px2 flex="~ items-center gap-1">
-          <div i-ph-checks-bold />
-          <span text-green6 dark:text-green text-xs>All Good</span>
-        </div>
-      </template>
-    </div>
-    <!-- Publint does not provide a way for browser to render the message, we leave it here for now -->
-    <!-- <div>
-      <div v-for="message of props.pkg.resolved.publint" :key="message.code">
-        <span>{{ formatMessage(message) }}</span>
+      <div flex-auto />
+      <button
+        v-if="props.pkg.resolved.publint.length"
+        p1 rounded-full hover:bg-active mr--2
+        title="Toggle file composition"
+      >
+        <div i-ph-caret-down transition duration-300 :class="settings.showPublintMessages ? 'op75' : 'rotate-90 op25'" />
+      </button>
+    </button>
+    <a
+      v-if="settings.showPublintMessages && props.pkg.resolved.publint.length"
+      flex="~ col gap-2"
+      p3 mt--2 of-x-auto w-full
+      :href="`https://publint.dev/${props.pkg.spec}`"
+      target="_blank"
+      :class="props.pkg.resolved.publint.length > 0 ? 'hover:bg-active' : ''"
+    >
+      <div v-for="message of props.pkg.resolved.publint" :key="message.code" text-sm flex="~ gap-2">
+        <div :class="icons[message.type]" flex-none mt0.5 />
+        <div
+          rounded line-clamp-3 break-all
+          :class="messageColors[message.type]"
+          v-html="formatMessage(message, props.pkg)"
+        />
       </div>
-    </div> -->
-  </component>
+    </a>
+  </div>
 </template>

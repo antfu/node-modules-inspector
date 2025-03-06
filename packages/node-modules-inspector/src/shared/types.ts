@@ -64,6 +64,7 @@ export interface SettingsOptions {
   showFileComposition: boolean
   showDependencySourceBadge: 'none' | 'dev' | 'prod' | 'both'
   treatFauxAsESM: boolean
+  showPublintMessages: boolean
 }
 
 export type RemoveVoidKeysFromObject<T> = { [K in keyof T]: T[K] extends void ? never : K } extends { [_ in keyof T]: never } ? T : { [K in keyof T as T[K] extends void ? never : K]: T[K] }

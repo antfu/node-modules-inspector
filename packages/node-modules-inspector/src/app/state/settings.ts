@@ -13,6 +13,7 @@ export const settings = useLocalStorage<SettingsOptions>(
     showPublishTimeBadge: false,
     showFileComposition: false,
     showDependencySourceBadge: 'dev',
+    showPublintMessages: false,
     treatFauxAsESM: false,
   },
   {
