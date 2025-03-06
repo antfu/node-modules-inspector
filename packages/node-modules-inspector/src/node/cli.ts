@@ -5,11 +5,11 @@ import process from 'node:process'
 
 import c from 'ansis'
 import cac from 'cac'
-import fg from 'fast-glob'
 import { getPort } from 'get-port-please'
 import open from 'open'
 import { relative, resolve } from 'pathe'
 import { stringify } from 'structured-clone-es'
+import { glob } from 'tinyglobby'
 import { distDir } from '../dirs'
 import { MARK_CHECK, MARK_NODE } from './constants'
 import { createHostServer } from './server'
@@ -55,7 +55,7 @@ cli
       await fs.rm(outDir, { recursive: true })
     await fs.mkdir(outDir, { recursive: true })
     await fs.cp(distDir, outDir, { recursive: true })
-    const htmlFiles = await fg('**/*.html', { cwd: distDir, onlyFiles: true })
+    const htmlFiles = await glob('**/*.html', { cwd: distDir, onlyFiles: true, dot: true, expandDirectories: false })
     // Rewrite HTML files with base URL
     if (baseURL !== '/') {
       for (const file of htmlFiles) {

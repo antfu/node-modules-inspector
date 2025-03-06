@@ -53,7 +53,6 @@ export function createServerFunctions(options: CreateServerFunctionsOptions): Se
     const config = await getConfig()
     if (!config.fetchPublishDate)
       return new Map()
-    console.log(c.cyan`${MARK_NODE} Fetching publish dates...`)
     return _getPackagesPublishDate(deps, { storagePublishDates: options.storagePublishDates })
   }
 

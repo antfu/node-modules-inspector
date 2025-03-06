@@ -3,7 +3,7 @@
     "antfu.iconify",
     "antfu.unocss",
     "antfu.goto-alias",
-    "csstools.postcss",
+    "antfu.pnpm-catalog-lens",
     "dbaeumer.vscode-eslint",
     "vue.volar"
   ]

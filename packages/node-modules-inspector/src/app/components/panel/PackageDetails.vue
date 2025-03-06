@@ -246,7 +246,7 @@ function getShallowestDependents(pkg: PackageNode) {
     </div>
 
     <div v-if="pkg.resolved.publint" border="t rounded base">
-      <IntegrationsPublintPanel :pkg="pkg" p4 />
+      <IntegrationsPublintPanel :pkg="pkg" />
     </div>
 
     <div v-if="pkg.resolved.installSize" p4 border="t base" flex="~ col gap-1">
