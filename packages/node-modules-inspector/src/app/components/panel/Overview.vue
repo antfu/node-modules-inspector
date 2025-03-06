@@ -19,7 +19,7 @@ const licensesCount = computed(() => {
   return set.size
 })
 
-const fundingCount = computed(() => payloads.avaliable.packages.filter(p => p.resolved.funding).length)
+const fundingCount = computed(() => payloads.avaliable.packages.flatMap(p => p.resolved.fundings).length)
 
 const mins10 = 10 * 60 * 1000
 const timepassed = computed(() => rawPayload.value?.timestamp ? Date.now() - rawPayload.value.timestamp : 0)
