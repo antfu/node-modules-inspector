@@ -75,7 +75,7 @@ describe('listPackageDependencies', () => {
           "engines": {
             "node": ">=6.0",
           },
-          "funding": undefined,
+          "fundings": [],
           "homepage": undefined,
           "installSize": {
             "bytes": 42798,

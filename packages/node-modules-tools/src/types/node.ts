@@ -45,10 +45,10 @@ export interface PackageNode extends PackageNodeBase {
     license?: string
     author?: string
     repository?: string
-    funding?: {
-      url?: string
+    fundings: {
+      url: string
       type?: string
-    }
+    }[]
     homepage?: string
     engines?: Record<string, string>
     installSize?: PackageInstallSizeInfo
