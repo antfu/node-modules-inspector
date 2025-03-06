@@ -4,6 +4,7 @@ import { useLocalStorage } from '@vueuse/core'
 export const settings = useLocalStorage<SettingsOptions>(
   'node-modules-inspector-settings',
   {
+    graphRender: 'normal',
     moduleTypeSimple: false,
     moduleTypeRender: 'badge',
     deepDependenciesTree: true,

@@ -54,6 +54,7 @@ export interface NodeModulesInspectorConfig {
 }
 
 export interface SettingsOptions {
+  graphRender: 'normal' | 'dots'
   moduleTypeSimple: boolean
   moduleTypeRender: 'badge' | 'circle' | 'none'
   deepDependenciesTree: boolean
