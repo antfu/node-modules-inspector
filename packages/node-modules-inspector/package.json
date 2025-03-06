@@ -1,7 +1,7 @@
 {
   "name": "node-modules-inspector",
   "type": "module",
-  "version": "0.2.9",
+  "version": "0.2.10",
   "description": "A Node Modules Inspector",
   "author": "Anthony Fu <anthonyfu117@hotmail.com>",
   "license": "MIT",
