@@ -1,7 +1,7 @@
 packages:
   - packages/*
 catalog:
-  '@antfu/eslint-config': ^4.5.1
+  '@antfu/eslint-config': ^4.6.0
   '@antfu/utils': ^9.1.0
   '@eslint/config-array': ^0.19.2
   '@iconify-json/carbon': ^1.2.8
@@ -12,8 +12,8 @@ catalog:
   '@iconify-json/simple-icons': ^1.2.27
   '@nuxt/devtools': ^2.2.1
   '@nuxt/eslint': ^1.1.0
-  '@pnpm/list': ^1000.0.9
-  '@pnpm/types': ^1000.2.0
+  '@pnpm/list': ^1000.0.10
+  '@pnpm/types': ^1000.2.1
   '@rollup/plugin-alias': ^5.1.1
   '@rollup/plugin-commonjs': ^28.0.2
   '@rollup/plugin-node-resolve': ^16.0.0
