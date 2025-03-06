@@ -153,7 +153,10 @@ function getShallowestDependents(pkg: PackageNode) {
           >
             <div i-catppuccin-http icon-catppuccin ma />
           </NuxtLink>
-          <PanelPackageFunding v-if="pkg.resolved.fundings.length" :fundings="pkg.resolved.fundings" />
+          <PanelPackageFunding
+            v-if="pkg.resolved.fundings.length"
+            :fundings="pkg.resolved.fundings"
+          />
           <NuxtLink
             :to="`https://publint.dev/${pkg.spec}`"
             title="Open in Publint"
