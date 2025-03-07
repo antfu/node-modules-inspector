@@ -10,6 +10,7 @@ export interface DeprecatedInfo {
   }
   last: {
     deprecated: boolean
+    version?: string
     message?: string
   }
 }
@@ -94,7 +95,7 @@ export async function getPackageDeprecatedInfo(
     const currentVersionInfo = data.versions?.[pkg.version]
     if (currentVersionInfo?.deprecated) {
       result.current.deprecated = true
-      result.current.message = currentVersionInfo.deprecated
+      result.current.message = currentVersionInfo.deprecated ?? 'No deprecation message'
     }
 
     // 2. Get the last version by semver and check if it's deprecated
@@ -104,7 +105,8 @@ export async function getPackageDeprecatedInfo(
 
       if (lastVersionInfo?.deprecated) {
         result.last.deprecated = true
-        result.last.message = lastVersionInfo.deprecated
+        result.last.version = lastVersion
+        result.last.message = lastVersionInfo.deprecated ?? 'No deprecation message'
       }
     }
 
