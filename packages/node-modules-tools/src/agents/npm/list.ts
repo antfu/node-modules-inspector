@@ -2,6 +2,7 @@ import type { BaseManifest } from '@pnpm/types'
 import type { ListPackageDependenciesOptions, ListPackageDependenciesRawResult, PackageNodeRaw } from '../../types'
 import { dirname, relative } from 'pathe'
 import { x } from 'tinyexec'
+import { CLUSTER_DEP_DEV, CLUSTER_DEP_OPTIONAL, CLUSTER_DEP_PROD } from '../../constants'
 
 type NpmPackageNode = BaseManifest & {
   name: string
@@ -108,6 +109,7 @@ export async function listPackageDependencies(
     filepath: rootPackage.path,
     workspace: true,
     dependencies: new Set(),
+    clusters: new Set(),
   })
 
   workspaces.forEach((pkg, i) => {
@@ -128,6 +130,7 @@ export async function listPackageDependencies(
       dependencies: new Set(),
       private: pkg.private,
       workspace: true,
+      clusters: new Set(),
     }
     packageSpecByLocation.set(pkg.location, node.spec)
     packages.set(node.spec, node)
@@ -135,7 +138,7 @@ export async function listPackageDependencies(
 
   function normalize(
     raw: NpmPackageNode,
-    mode: 'dev' | 'prod' | 'optional',
+    clusters: Iterable<string>,
   ) {
     if (packages.has(raw.pkgid))
       return
@@ -147,22 +150,20 @@ export async function listPackageDependencies(
       spec: raw.pkgid,
       private: raw.private,
       filepath: raw.path,
-      dev: mode === 'dev',
-      optional: mode === 'optional',
-      prod: mode === 'prod',
       workspace: false,
       dependencies: new Set(),
+      clusters: new Set(clusters),
     })
   }
 
-  devDependencies.forEach((raw) => {
-    normalize(raw, 'dev')
-  })
   prodDependencies.forEach((raw) => {
-    normalize(raw, 'prod')
+    normalize(raw, [CLUSTER_DEP_PROD])
+  })
+  devDependencies.forEach((raw) => {
+    normalize(raw, [CLUSTER_DEP_DEV])
   })
   optionalDependencies.forEach((raw) => {
-    normalize(raw, 'optional')
+    normalize(raw, [CLUSTER_DEP_OPTIONAL])
   })
 
   // Add all dep links
