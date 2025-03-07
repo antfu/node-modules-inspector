@@ -8,7 +8,7 @@ defineProps<{
 
 <template>
   <NuxtLink
-    v-if="fundings.length === 1"
+    v-if="fundings?.length === 1"
     :to="fundings[0].url"
     title="Open Funding"
     target="_blank"
@@ -17,7 +17,7 @@ defineProps<{
     <div i-catppuccin-code-of-conduct icon-catppuccin ma />
   </NuxtLink>
 
-  <VMenu v-else ml--1 w-8 h-8 rounded-full hover:bg-active flex>
+  <VMenu v-else-if="fundings?.length" ml--1 w-8 h-8 rounded-full hover:bg-active flex>
     <div i-catppuccin-code-of-conduct icon-catppuccin ma title="Show Fundings" />
     <template #popper>
       <div flex="~ col" p1>

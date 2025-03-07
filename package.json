@@ -46,6 +46,7 @@
     "node-modules-tools": "workspace:*",
     "nuxt": "catalog:build",
     "nuxt-eslint-auto-explicit-import": "catalog:devtools",
+    "p-limit": "catalog:deps",
     "rollup": "catalog:build",
     "rollup-plugin-esbuild": "catalog:build",
     "simple-git-hooks": "catalog:devtools",

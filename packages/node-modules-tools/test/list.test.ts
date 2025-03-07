@@ -38,8 +38,8 @@ describe('listPackageDependencies', () => {
         },
         "dependents": Set {
           "rollup-plugin-esbuild@6.2.1",
-          "vitest@3.0.7",
-          "vite-node@3.0.7",
+          "vitest@3.0.8",
+          "vite-node@3.0.8",
           "eslint@9.21.0",
           "@eslint/config-array@0.19.2",
           "@eslint/eslintrc@3.3.0",
@@ -63,11 +63,15 @@ describe('listPackageDependencies', () => {
           "vue-eslint-parser@9.4.3",
           "https-proxy-agent@5.0.1",
           "agent-base@6.0.2",
+          "vite-node@3.0.7",
         },
         "depth": 2,
         "filepath": undefined,
         "flatClusters": Set {
           "dep:dev",
+          "catalog:build",
+          "catalog:testing",
+          "catalog:devtools",
         },
         "flatDependencies": Set {
           "ms@2.1.3",
@@ -79,6 +83,7 @@ describe('listPackageDependencies', () => {
           "engines": {
             "node": ">=6.0",
           },
+          "exports": undefined,
           "fundings": [],
           "homepage": undefined,
           "installSize": {
@@ -113,17 +118,15 @@ describe('listPackageDependencies', () => {
     expect(Array.from(item?.flatDependents ?? []).filter(d => !d.startsWith('node-modules-tools@') && !d.startsWith('#'))).toMatchInlineSnapshot(`
       [
         "rollup-plugin-esbuild@6.2.1",
-        "vitest@3.0.7",
-        "vite-node@3.0.7",
-        "@nuxt/vite-builder@3.15.4",
-        "nuxt@3.15.4",
+        "vitest@3.0.8",
+        "vite-node@3.0.8",
         "eslint@9.21.0",
         "@eslint-community/eslint-utils@4.4.1",
         "@typescript-eslint/utils@8.26.0",
         "@unocss/eslint-plugin@66.0.0",
         "@unocss/eslint-config@66.0.0",
         "@stylistic/eslint-plugin@4.2.0",
-        "@antfu/eslint-config@4.6.0",
+        "@antfu/eslint-config@4.7.0",
         "@nuxt/eslint-config@1.1.0",
         "@nuxt/eslint@1.1.0",
         "@vitest/eslint-plugin@1.1.36",
@@ -164,11 +167,12 @@ describe('listPackageDependencies', () => {
         "@eslint/eslintrc@3.3.0",
         "vite-plugin-inspect@11.0.0",
         "@nuxt/devtools@2.2.1",
+        "nuxt@3.15.4",
         "lint-staged@15.4.3",
         "@typescript-eslint/typescript-estree@8.26.0",
         "micromark@4.0.1",
         "mdast-util-from-markdown@2.0.2",
-        "@eslint/markdown@6.2.2",
+        "@eslint/markdown@6.3.0",
         "mdast-util-gfm@3.0.0",
         "mdast-util-gfm-footnote@2.0.0",
         "mdast-util-gfm-strikethrough@2.0.0",
@@ -179,6 +183,7 @@ describe('listPackageDependencies', () => {
         "@nuxt/kit@3.15.4",
         "@nuxt/devtools-kit@2.2.1",
         "@nuxt/telemetry@2.6.4",
+        "@nuxt/vite-builder@3.15.4",
         "@babel/helper-module-transforms@7.26.0",
         "@vitejs/plugin-vue-jsx@4.1.1",
         "@babel/plugin-syntax-jsx@7.25.9",
@@ -199,6 +204,7 @@ describe('listPackageDependencies', () => {
         "@vercel/nft@0.24.4",
         "nitropack@2.8.1",
         "agent-base@6.0.2",
+        "vite-node@3.0.7",
       ]
     `)
   })

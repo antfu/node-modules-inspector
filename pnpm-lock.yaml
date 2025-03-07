@@ -330,6 +330,9 @@ importers:
       nuxt-eslint-auto-explicit-import:
         specifier: catalog:devtools
         version: 0.1.1(eslint@9.21.0(jiti@2.4.2))(magicast@0.3.5)(rollup@4.34.6)(typescript@5.8.2)
+      p-limit:
+        specifier: catalog:deps
+        version: 6.2.0
       rollup:
         specifier: ^4.34.6
         version: 4.34.6
