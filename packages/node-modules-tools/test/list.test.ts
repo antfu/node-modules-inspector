@@ -30,6 +30,9 @@ describe('listPackageDependencies', () => {
       flatDependents: undefined,
     }).toMatchInlineSnapshot(`
       {
+        "clusters": Set {
+          "dep:dev",
+        },
         "dependencies": Set {
           "ms@2.1.3",
         },
@@ -62,8 +65,10 @@ describe('listPackageDependencies', () => {
           "agent-base@6.0.2",
         },
         "depth": 2,
-        "dev": true,
         "filepath": undefined,
+        "flatClusters": Set {
+          "dep:dev",
+        },
         "flatDependencies": Set {
           "ms@2.1.3",
         },

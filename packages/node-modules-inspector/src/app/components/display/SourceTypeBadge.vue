@@ -1,14 +1,21 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
 import type { SettingsOptions } from '~~/shared/types'
-import { CLUSTER_DEP_DEV, CLUSTER_DEP_PROD } from 'node-modules-tools/constants'
+import type { ComputedPayload } from '~/state/payload'
 import { computed } from 'vue'
+import { payloads } from '~/state/payload'
 import { settings } from '~/state/settings'
 
-const props = defineProps<{
-  pkg: PackageNode
-  mode?: SettingsOptions['showDependencySourceBadge']
-}>()
+const props = withDefaults(
+  defineProps<{
+    pkg: PackageNode
+    payload?: ComputedPayload
+    mode?: SettingsOptions['showDependencySourceBadge']
+  }>(),
+  {
+    payload: () => payloads.avaliable,
+  },
+)
 
 const mode = computed(() => props.mode || settings.value.showDependencySourceBadge)
 
@@ -18,8 +25,8 @@ const prod = computed(() => {
   if (mode.value === 'dev')
     return false
   if (mode.value === 'prod')
-    return props.pkg.flatClusters.has(CLUSTER_DEP_PROD) && !props.pkg.flatClusters.has(CLUSTER_DEP_DEV)
-  return props.pkg.flatClusters.has(CLUSTER_DEP_PROD)
+    return props.payload.isInDepCluster(props.pkg, 'prod') && !props.payload.isInDepCluster(props.pkg, 'dev')
+  return props.payload.isInDepCluster(props.pkg, 'prod')
 })
 const dev = computed(() => {
   if (mode.value === 'none')
@@ -27,8 +34,8 @@ const dev = computed(() => {
   if (mode.value === 'prod')
     return false
   if (mode.value === 'dev')
-    return props.pkg.flatClusters.has(CLUSTER_DEP_DEV) && !props.pkg.flatClusters.has(CLUSTER_DEP_PROD)
-  return props.pkg.flatClusters.has(CLUSTER_DEP_DEV)
+    return props.payload.isInDepCluster(props.pkg, 'dev') && !props.payload.isInDepCluster(props.pkg, 'prod')
+  return props.payload.isInDepCluster(props.pkg, 'dev')
 })
 </script>
 

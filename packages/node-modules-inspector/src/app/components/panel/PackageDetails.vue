@@ -313,13 +313,13 @@ function getShallowestDependents(pkg: PackageNode) {
 
     <div flex="~ col gap-1" flex-auto of-auto>
       <template v-if="settings.packageDetailsTab === 'dependents'">
-        <template v-if="pkg.flatDependents.size">
+        <template v-if="payloads.avaliable.flatDependents(pkg).length">
           <TreeDependencies
             v-if="settings.deepDependenciesTree"
             py5 px4
             :currents="getShallowestDependents(pkg)"
             :list="payloads.avaliable.flatDependents(pkg)"
-            :max-depth="getDepth(pkg.flatDependents.size, 2)"
+            :max-depth="getDepth(payloads.avaliable.flatDependents(pkg).length, 2)"
             type="dependents"
           />
           <TreeDependencies
@@ -327,7 +327,7 @@ function getShallowestDependents(pkg: PackageNode) {
             py5 px4
             :currents="payloads.avaliable.dependents(pkg)"
             :list="payloads.avaliable.dependents(pkg)"
-            :max-depth="getDepth(pkg.dependents.size, 2)"
+            :max-depth="getDepth(payloads.avaliable.dependents(pkg).length, 2)"
             type="dependents"
           />
         </template>
@@ -346,12 +346,12 @@ function getShallowestDependents(pkg: PackageNode) {
           />
         </div>
 
-        <template v-if="pkg.flatDependencies.size">
+        <template v-if="payloads.avaliable.flatDependencies(pkg).length">
           <TreeDependencies
             py5 pt2 px4
             :currents="payloads.avaliable.dependencies(pkg)"
             :list="payloads.avaliable.flatDependencies(pkg)"
-            :max-depth="getDepth(pkg.flatDependencies.size)"
+            :max-depth="getDepth(payloads.avaliable.flatDependencies(pkg).length)"
             type="dependencies"
           />
         </template>
