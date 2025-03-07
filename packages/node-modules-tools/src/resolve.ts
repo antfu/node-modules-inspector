@@ -47,14 +47,10 @@ export async function resolvePackage(
     fundings = rawFunding ? [rawFunding] : []
   }
 
-  const deprecatedInfo = await getPackageDeprecatedInfo(_pkg)
-  // debuging
-  // if (deprecatedInfo.current.deprecated || deprecatedInfo.last.deprecated) {
-  //   console.warn(
-  //     `Package "${pkg.name}@${pkg.version}":\n`
-  //     + `${JSON.stringify(deprecatedInfo, null, 2)}\n`,
-  //   )
-  // }
+  const [installSize, deprecatedInfo] = await Promise.all([
+    getPackageInstallSize(_pkg),
+    getPackageDeprecatedInfo(_pkg),
+  ])
 
   _pkg.resolved = {
     module: analyzePackageModuleType(json),
@@ -65,7 +61,7 @@ export async function resolvePackage(
     exports: json.exports,
     repository,
     homepage: json.homepage,
-    installSize: await getPackageInstallSize(_pkg),
+    installSize,
     deprecatedInfo,
   }
   return _pkg
