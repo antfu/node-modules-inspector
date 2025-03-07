@@ -11,8 +11,8 @@ const isCurrentDeprecated = computed(() => props.pkg?.resolved?.deprecatedInfo?.
 const deprecationTitle = computed(() => {
   if (isCurrentDeprecated.value) {
     const currentInfo = props.pkg?.resolved?.deprecatedInfo?.current
-    if (currentInfo) {
-      return `This package is deprecated: ${currentInfo.message}`
+    if (currentInfo?.deprecated) {
+      return `This package is deprecated: ${currentInfo.deprecated}`
     }
   }
   return ''

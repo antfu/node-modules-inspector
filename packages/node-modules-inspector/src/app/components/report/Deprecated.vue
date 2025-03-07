@@ -49,10 +49,10 @@ function showGraph(pkg: PackageNode) {
 
 function getDeprecationMessage(pkg: PackageNode, type: 'current' | 'last'): string {
   if (type === 'current') {
-    return pkg.resolved.deprecatedInfo?.current?.message || 'No message provided'
+    return pkg.resolved.deprecatedInfo?.current?.deprecated ?? ''
   }
   else {
-    return pkg.resolved.deprecatedInfo?.last?.message || 'No message provided'
+    return pkg.resolved.deprecatedInfo?.last?.deprecated ?? ''
   }
 }
 </script>
