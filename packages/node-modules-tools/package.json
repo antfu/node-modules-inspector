@@ -34,6 +34,7 @@
     "test": "vitest"
   },
   "dependencies": {
+    "js-yaml": "catalog:deps",
     "p-limit": "catalog:deps",
     "package-manager-detector": "catalog:deps",
     "pathe": "catalog:deps",
@@ -44,6 +45,7 @@
   "devDependencies": {
     "@pnpm/list": "catalog:types",
     "@pnpm/types": "catalog:types",
+    "@types/js-yaml": "catalog:types",
     "@types/stream-json": "catalog:types",
     "pkg-types": "catalog:types",
     "stream-json": "catalog:deps",

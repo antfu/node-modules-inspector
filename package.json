@@ -2,7 +2,7 @@
   "type": "module",
   "version": "0.2.10",
   "private": true,
-  "packageManager": "pnpm@10.5.2",
+  "packageManager": "pnpm@10.6.1",
   "scripts": {
     "build": "pnpm -r run build",
     "build:debug": "NUXT_DEBUG_BUILD=true pnpm -r run build",
@@ -39,7 +39,7 @@
     "@unocss/eslint-config": "catalog:devtools",
     "ansis": "catalog:deps",
     "bumpp": "catalog:devtools",
-    "eslint": "catalog:types",
+    "eslint": "catalog:devtools",
     "fast-npm-meta": "catalog:deps",
     "lint-staged": "catalog:devtools",
     "node-modules-inspector": "workspace:*",
