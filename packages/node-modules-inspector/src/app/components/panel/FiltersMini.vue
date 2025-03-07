@@ -57,6 +57,15 @@ const moduleTypes = Object.fromEntries(
         {{ filters.state.sourceType }}
       </span>
     </div>
+    <div
+      v-if="!isDeepEqual(filters.state.clusters, filtersDefault.clusters)"
+      border="l base" flex="~ gap-1 items-center" px2
+    >
+      <div i-ph-exclude-duotone />
+      <div flex="~ gap-1 wrap">
+        <DisplayClusterBadge v-for="cluster of filters.state.clusters" :key="cluster" :cluster="cluster" />
+      </div>
+    </div>
     <div v-if="!isDeepEqual(filters.state.depths, filtersDefault.depths)" border="l base" flex="~ gap-1 items-center" px2>
       <div i-ph-stack-duotone />
       <span>

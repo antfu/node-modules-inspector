@@ -83,6 +83,12 @@ export const filterSelectPredicate = computed(() => {
     })
   }
 
+  if (state.clusters) {
+    predicates.push((pkg) => {
+      return (state.clusters || [])[state.clustersMode === 'or' ? 'some' : 'every'](c => pkg.flatClusters.has(c))
+    })
+  }
+
   predicates.push((pkg) => {
     const type = getModuleType(pkg)
     // dts is always included here, as it's controlled by the exclude-dts option
