@@ -53,7 +53,7 @@ const clusters = Object.fromEntries(
 </script>
 
 <template>
-  <div v-if="clustersAvailableSelect.length" flex="~ col gap-2" p4 border="t base">
+  <div v-if="clustersAvailableSelect.length >= 2" flex="~ col gap-2" p4 border="t base">
     <div flex="~ gap-2 items-center" h-6>
       <div
         v-tooltip="'Clusters are groups of packages that are introduced together by some conditions, such as pnpm catalogs'"

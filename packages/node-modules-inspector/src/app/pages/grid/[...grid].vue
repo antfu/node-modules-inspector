@@ -82,17 +82,20 @@ const groups = computed<Group[]>(() => {
 <template>
   <div flex="~ col gap-2">
     <div flex="~ gap-2 items-center wrap" mb4>
+      <div op50>
+        Group by
+      </div>
       <NuxtLink btn-action as="button" to="/grid/depth" active-class="text-primary bg-primary:5">
         <div i-ph-stack-simple-duotone />
-        Group by Depth
+        Depth
       </NuxtLink>
       <NuxtLink btn-action as="button" to="/grid/module-type" active-class="text-primary bg-primary:5">
-        <div i-ph-files-duotone />
-        Group by Module Type
+        <div i-ph-file-code-duotone />
+        Module Type
       </NuxtLink>
       <NuxtLink btn-action as="button" to="/grid/clusters" active-class="text-primary bg-primary:5">
         <div i-ph-exclude-duotone />
-        Group by Clusters
+        Clusters
       </NuxtLink>
     </div>
 
