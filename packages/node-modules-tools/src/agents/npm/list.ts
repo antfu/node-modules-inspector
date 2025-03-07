@@ -46,14 +46,14 @@ async function getNpmVersion(options: ListPackageDependenciesOptions) {
   }
 }
 
-async function queryDependencies(root: string, ...query: string[]): Promise<NpmPackageNode[]> {
+async function queryDependencies(options: ListPackageDependenciesOptions, query: string): Promise<NpmPackageNode[]> {
   // https://docs.npmjs.com/cli/v9/commands/npm-query
-  const args = ['query', ...query]
+  const args = ['query', query, '--package-lock-only']
   const process = x('npm', args, {
     throwOnError: true,
     nodeOptions: {
       stdio: 'pipe',
-      cwd: root,
+      cwd: options.cwd,
     },
   })
 
@@ -69,16 +69,27 @@ async function queryDependencies(root: string, ...query: string[]): Promise<NpmP
 export async function listPackageDependencies(
   options: ListPackageDependenciesOptions,
 ): Promise<ListPackageDependenciesRawResult> {
-  const root = await resolveRoot(options) || options.cwd
+  // Run concurrently since npm cli has a lot of loading overhead
+  // Source: https://marvinh.dev/blog/speeding-up-javascript-ecosystem-part-4/
+  const [
+    rootPackage,
+    workspaces,
+    devDependencies,
+    prodDependencies,
+    packageManagerVersion,
+    root,
+  ] = await Promise.all([
+    queryDependencies(options, ':root').then(res => res[0]),
+    queryDependencies(options, '.workspace'),
+    queryDependencies(options, '.dev'),
+    queryDependencies(options, '.prod'),
+    getNpmVersion(options),
+    resolveRoot(options),
+  ])
 
-  // package-lock-only is faster
-  const rootPackage = (await queryDependencies(root, ':root', '--package-lock-only'))[0]
   if (!rootPackage)
     throw new Error('Could not find root package.json')
 
-  const workspaces = await queryDependencies(root, '.workspace', '--package-lock-only')
-  const devDependencies = await queryDependencies(root, '.dev')
-  const prodDependencies = await queryDependencies(root, '.prod')
   const packages = new Map<string, PackageNodeRaw>()
   const packageSpecByLocation = new Map<string, string>()
 
@@ -93,14 +104,14 @@ export async function listPackageDependencies(
     dependencies: new Set(),
   })
 
-  workspaces.forEach((pkg) => {
+  workspaces.forEach((pkg, i) => {
     let name = pkg.name
     if (!name) {
       let path = relative(root, pkg.path)
       if (path === '.')
         path = ''
       const suffix = path.toLowerCase().replace(/[^a-z0-9-]+/g, '_').slice(0, 20)
-      name = suffix ? `#workspace-${suffix}` : '#workspace-package'
+      name = suffix ? `#workspace-${suffix}` : `#workspace-package-${i + 1}`
     }
     const version = pkg.version || '0.0.0'
     const node: PackageNodeRaw = {
@@ -167,7 +178,7 @@ export async function listPackageDependencies(
   return {
     root,
     packageManager: 'npm',
-    packageManagerVersion: await getNpmVersion(options),
+    packageManagerVersion,
     packages,
   }
 }
