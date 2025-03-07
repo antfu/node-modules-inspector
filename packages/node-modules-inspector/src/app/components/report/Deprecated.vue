@@ -78,7 +78,9 @@ function getDeprecationMessage(pkg: PackageNode, type: 'current' | 'last'): stri
           v-for="pkg of currentDeprecated" :key="pkg.spec"
           border="~ base rounded-lg" bg-glass
           flex="~ col"
+          cursor-pointer
           :class="selectedNode === pkg ? 'border-primary ring-4 ring-primary:20' : ''"
+          @click="selectedNode = pkg"
         >
           <div flex="~ items-center gap-2" border="b base" px2 py1>
             <h2 font-mono flex-auto pl2>
@@ -92,11 +94,11 @@ function getDeprecationMessage(pkg: PackageNode, type: 'current' | 'last'): stri
               <div i-ph-graph-duotone text-lg />
             </button>
           </div>
-          <div flex="~ col gap-1" p2>
+          <div flex="~ col gap-1" p2 h-full>
             <div class="text-gray-400 text-sm mb-2">
               {{ getDeprecationMessage(pkg, 'current') }}
             </div>
-            <div flex="~ justify-between items-end w-full">
+            <div flex="~ justify-between items-end w-full" mt-auto>
               <DisplayDateBadge v-if="settings.showPublishTimeBadge" :pkg :badge="false" rounded-full text-xs />
               <DisplayModuleType :pkg :badge="false" text-xs />
             </div>
@@ -114,7 +116,9 @@ function getDeprecationMessage(pkg: PackageNode, type: 'current' | 'last'): stri
           v-for="pkg of currentDeprecatedButLatestOk" :key="pkg.spec"
           border="~ base rounded-lg" bg-glass
           flex="~ col"
+          cursor-pointer
           :class="selectedNode === pkg ? 'border-primary ring-4 ring-primary:20' : ''"
+          @click="selectedNode = pkg"
         >
           <div flex="~ items-center gap-2" border="b base" px2 py1>
             <h2 font-mono flex-auto pl2>
@@ -128,11 +132,11 @@ function getDeprecationMessage(pkg: PackageNode, type: 'current' | 'last'): stri
               <div i-ph-graph-duotone text-lg />
             </button>
           </div>
-          <div flex="~ col gap-1" p2>
+          <div flex="~ col gap-1" p2 h-full>
             <div class="text-gray-400 text-sm mb-2">
               {{ getDeprecationMessage(pkg, 'current') }}
             </div>
-            <div flex="~ justify-between items-end w-full">
+            <div flex="~ justify-between items-end w-full" mt-auto>
               <DisplayDateBadge v-if="settings.showPublishTimeBadge" :pkg :badge="false" rounded-full text-xs />
               <DisplayModuleType :pkg :badge="false" text-xs />
             </div>
@@ -150,7 +154,9 @@ function getDeprecationMessage(pkg: PackageNode, type: 'current' | 'last'): stri
           v-for="pkg of futureDeprecated" :key="pkg.spec"
           border="~ base rounded-lg" bg-glass
           flex="~ col"
+          cursor-pointer
           :class="selectedNode === pkg ? 'border-primary ring-4 ring-primary:20' : ''"
+          @click="selectedNode = pkg"
         >
           <div flex="~ items-center gap-2" border="b base" px2 py1>
             <h2 font-mono flex-auto pl2>
@@ -164,12 +170,12 @@ function getDeprecationMessage(pkg: PackageNode, type: 'current' | 'last'): stri
               <div i-ph-graph-duotone text-lg />
             </button>
           </div>
-          <div flex="~ col gap-1" p2>
+          <div flex="~ col gap-1" p2 h-full>
             <div class="text-gray-400 text-sm mb-2">
               Latest version ({{ pkg.resolved.deprecatedInfo?.last?.version }}) is deprecated:
               {{ getDeprecationMessage(pkg, 'last') }}
             </div>
-            <div flex="~ justify-between items-end w-full">
+            <div flex="~ justify-between items-end w-full" mt-auto>
               <DisplayDateBadge v-if="settings.showPublishTimeBadge" :pkg :badge="false" rounded-full text-xs />
               <DisplayModuleType :pkg :badge="false" text-xs />
             </div>
