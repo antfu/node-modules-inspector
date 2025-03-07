@@ -1,114 +1,5 @@
 <script setup lang="ts">
-import type { PackageModuleType } from 'node-modules-tools'
-import type { WritableComputedRef } from 'vue'
-import { computed } from 'vue'
 import { filters } from '~/state/filters'
-import { payloads } from '~/state/payload'
-import { MODULE_TYPES_FULL_SELECT, moduleTypesAvailableSelect } from '../../utils/module-type'
-
-function createModuleTypeRef(name: PackageModuleType) {
-  return computed({
-    get() {
-      return filters.state.modules == null || filters.state.modules.includes(name)
-    },
-    set(v) {
-      const current = new Set(filters.state.modules ? filters.state.modules : moduleTypesAvailableSelect.value)
-      if (v)
-        current.add(name)
-      else
-        current.delete(name)
-
-      if (current.size >= moduleTypesAvailableSelect.value.length) {
-        filters.state.modules = null
-      }
-      else {
-        filters.state.modules = Array.from(current)
-      }
-    },
-  })
-}
-
-const availableDepths = computed(() => {
-  let max = 0
-  for (const pkg of payloads.avaliable.packages) {
-    if (pkg.depth > max) {
-      max = pkg.depth
-    }
-  }
-  return Array.from({ length: max + 1 }, (_, i) => i)
-})
-
-function createDepthRef(value: number) {
-  return computed<boolean>({
-    get() {
-      return filters.state.depths == null || filters.state.depths.some(x => +x === value)
-    },
-    set(v) {
-      const current = new Set((filters.state.depths ? filters.state.depths : availableDepths.value).map(i => +i))
-      if (v)
-        current.add(value)
-      else
-        current.delete(value)
-
-      if (current.size >= availableDepths.value.length) {
-        filters.state.depths = null
-      }
-      else {
-        filters.state.depths = Array.from(current)
-      }
-    },
-  })
-}
-
-const clustersAvailableSelect = computed(() => {
-  const clusters = new Set<string>()
-  for (const c of payloads.avaliable.clusters) {
-    if (!c.startsWith('dep:'))
-      clusters.add(c)
-  }
-  return Array.from(clusters)
-})
-
-function createClusterRef(name: string) {
-  return computed<boolean>({
-    get() {
-      return filters.state.clusters == null || filters.state.clusters.includes(name)
-    },
-    set(v) {
-      const current = new Set(filters.state.clusters ? filters.state.clusters : clustersAvailableSelect.value)
-      if (v)
-        current.add(name)
-      else
-        current.delete(name)
-
-      if (current.size >= clustersAvailableSelect.value.length) {
-        filters.state.clusters = null
-      }
-      else {
-        filters.state.clusters = Array.from(current)
-      }
-    },
-  })
-}
-
-const depthsRefs = computed(() => availableDepths.value.map(i => createDepthRef(i)))
-const depthsRefsAll = computed({
-  get() {
-    return filters.state.depths == null || filters.state.depths.length === availableDepths.value.length
-  },
-  set(v) {
-    filters.state.depths = v ? null : []
-  },
-})
-const depthGridRows = computed(() => Math.ceil(availableDepths.value.length / 3))
-
-const moduleTypes = Object.fromEntries(
-  MODULE_TYPES_FULL_SELECT.map(x => [x, createModuleTypeRef(x)] as const),
-) as Record<PackageModuleType, WritableComputedRef<boolean>>
-
-const clusters = Object.fromEntries(
-  clustersAvailableSelect.value.map(x => [x, createClusterRef(x)] as const),
-) as Record<string, WritableComputedRef<boolean>>
 </script>
 
 <template>
@@ -129,6 +20,7 @@ const clusters = Object.fromEntries(
         Reset Excludes
       </button>
     </div>
+
     <div flex="~ col gap-4" border="t base">
       <label
         p4 flex-none h-full
@@ -150,6 +42,7 @@ const clusters = Object.fromEntries(
         </button>
       </label>
     </div>
+
     <div flex="~ col gap-4" p4 border="t base">
       <OptionItem title="Dependency Source" description="Filter by source type of the dependency">
         <OptionSelectGroup
@@ -159,50 +52,9 @@ const clusters = Object.fromEntries(
         />
       </OptionItem>
     </div>
-    <div flex="~ col gap-2" p4 border="t base">
-      <div flex="~ gap-4 wrap">
-        <label
-          v-for="type of moduleTypesAvailableSelect"
-          :key="type"
-          flex="~ gap-1 items-center"
-        >
-          <OptionCheckbox
-            v-model="moduleTypes[type].value"
-          />
-          <DisplayModuleType
-            :pkg="type"
-            :force="true"
-            :class="moduleTypes[type].value ? '' : 'saturate-0 op75'"
-          />
-        </label>
-      </div>
-    </div>
 
-    <div v-if="clustersAvailableSelect.length" flex="~ col gap-2" p4 border="t base">
-      <div flex="~ gap-2 items-center">
-        <div i-ph-exclude-duotone flex-none />
-        <div>
-          <div>Clusters</div>
-        </div>
-      </div>
-      <div flex="~ gap-x-4 gap-y-2 wrap" mt1>
-        <label
-          v-for="type of clustersAvailableSelect"
-          :key="type"
-          flex="~ gap-1 items-center"
-        >
-          <OptionCheckbox
-            v-model="clusters[type].value"
-          />
-          <DisplayClusterBadge
-            select-none
-            :cluster="type"
-            :force="true"
-            :class="clusters[type].value ? '' : 'saturate-0 op75'"
-          />
-        </label>
-      </div>
-    </div>
+    <PanelFiltersOptionModuleTypes />
+    <PanelFiltersOptionClusters />
 
     <div v-if="filters.search.parsed.author?.length" flex="~ col gap-2" p4 border="t base">
       <div flex="~ gap-2 items-center">
@@ -239,157 +91,10 @@ const clusters = Object.fromEntries(
       </div>
     </div>
 
-    <div v-if="filters.state.focus" flex="~ col gap-2" p4 border="t base">
-      <div flex="~ gap-2 items-center">
-        <div i-ph-arrows-in-cardinal-duotone flex-none />
-        <div>
-          <div>Focus On</div>
-          <div op50 text-sm mt--0.5>
-            Filter specific packages and their dependencies
-          </div>
-        </div>
-      </div>
-      <div flex="~ gap-2 wrap">
-        <div
-          v-for="spec of filters.state.focus"
-          :key="spec"
-          badge-color-primary rounded-full px2 pl3 py0.5
-          flex="~ gap-1 items-center"
-        >
-          <div font-mono text-sm>
-            {{ spec }}
-          </div>
-          <button op50 hover:op100 @click="filters.focus.toggle(spec, false)">
-            <div i-ph-x op50 />
-          </button>
-        </div>
-      </div>
-    </div>
-    <div v-if="filters.state.why" flex="~ col gap-2" p4 border="t base">
-      <div flex="~ gap-2 items-center">
-        <div i-ph-seal-question-duotone flex-none />
-        <div>
-          <div>Why</div>
-          <div op50 text-sm mt--0.5>
-            Filter dependents to see why packages are used
-          </div>
-        </div>
-      </div>
-      <div flex="~ gap-2 wrap">
-        <div
-          v-for="spec of filters.state.why"
-          :key="spec"
-          badge-color-yellow rounded-full px2 pl3 py0.5
-          flex="~ gap-1 items-center"
-        >
-          <div font-mono text-sm>
-            {{ spec }}
-          </div>
-          <button op50 hover:op100 @click="filters.why.toggle(spec, false)">
-            <div i-ph-x op50 />
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <div flex="~ col gap-2" p4 border="t base">
-      <div flex="~ gap-2 items-center">
-        <div i-ph-stack-duotone flex-none />
-        <div flex-auto>
-          Dependency Depth
-        </div>
-        <label
-          flex="~ gap-1 items-center"
-        >
-          <OptionCheckbox
-            v-model="depthsRefsAll"
-          />
-          <div>
-            All
-          </div>
-          <DisplayNumberBadge
-            :number="payloads.avaliable.packages.length"
-            rounded-full text-xs
-          />
-        </label>
-      </div>
-      <div grid="~ flow-col" :style="`grid-template-rows: repeat(${depthGridRows}, minmax(0, 1fr));`">
-        <label
-          v-for="depth of availableDepths"
-          :key="depth"
-          flex="~ gap-1 items-center"
-        >
-          <OptionCheckbox
-            v-model="depthsRefs[depth].value"
-          />
-          <div font-mono>
-            #{{ depth }}
-          </div>
-          <DisplayNumberBadge
-            :number="payloads.avaliable.packages.filter(p => p.depth === depth).length"
-            rounded-full text-xs
-          />
-        </label>
-      </div>
-    </div>
-
-    <div flex="~ col gap-2" p4 border="t base">
-      <div flex="~ gap-2 items-center">
-        <div i-ph-network-slash-duotone flex-none />
-        Excludes
-      </div>
-      <div v-if="filters.state.excludes" flex="~ gap-2 wrap">
-        <div
-          v-for="spec of filters.state.excludes"
-          :key="spec"
-          badge-color-purple rounded-full px2 pl3 py0.5
-          flex="~ gap-1 items-center"
-        >
-          <div font-mono text-sm>
-            {{ spec }}
-          </div>
-          <button op50 hover:op100 @click="filters.excludes.toggle(spec, false)">
-            <div i-ph-x op50 />
-          </button>
-        </div>
-      </div>
-      <div v-else op50 text-sm italic>
-        To exclude a specific package, select from its menu
-      </div>
-      <div mt2 flex="~ col gap-1">
-        <OptionItem title="Exclude Types Packages" description="Exclude TypeScript declaration packages">
-          <OptionCheckbox v-model="filters.state.excludeDts" />
-        </OptionItem>
-        <OptionItem title="Exclude Private Packages" description="Exclude private workspace packages and their dependencies">
-          <OptionCheckbox v-model="filters.state.excludePrivate" />
-        </OptionItem>
-        <OptionItem title="Exclude Workspace Roots" description="Exclude workspaces but NOT their dependencies">
-          <OptionCheckbox v-model="filters.state.excludeWorkspace" />
-        </OptionItem>
-      </div>
-    </div>
-
-    <div border="t base">
-      <div flex="~ gap-2 items-center" p4 pb0>
-        <div i-ph-chart-bar-duotone flex-none />
-        Filter Results
-      </div>
-      <div p3 flex="~ col gap-2 ">
-        <div flex="~ items-center gap-2">
-          <DisplayNumberBadge :number="payloads.filtered.packages.length" rounded-full color="badge-color-primary" />
-          <span op50>of</span>
-          <DisplayNumberBadge :number="payloads.avaliable.packages.length" rounded-full />
-          <span op50>packages filtered</span>
-        </div>
-        <div v-if="payloads.excluded.packages.length" flex="~ items-center gap-1" text-0.85rem>
-          <span op25>(</span>
-          <DisplayNumberBadge :number="payloads.excluded.packages.length" rounded-full />
-          <span op50>packages excluded</span>
-          <span op25>)</span>
-        </div>
-      </div>
-      <UiPercentageModuleType :packages="payloads.filtered.packages" :rounded="false" />
-    </div>
-    <!-- <PanelSettings border="t base" /> -->
+    <PanelFiltersOptionFocus />
+    <PanelFiltersOptionWhy />
+    <PanelFiltersOptionDepth />
+    <PanelFiltersOptionExcludes />
+    <PanelFiltersResults />
   </div>
 </template>
