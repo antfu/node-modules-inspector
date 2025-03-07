@@ -58,13 +58,11 @@
     "vitest": "catalog:testing",
     "vue-tsc": "catalog:devtools"
   },
-  "pnpm": {
-    "overrides": {
-      "@nuxt/devtools": "catalog:devtools",
-      "nitropack": "catalog:build",
-      "rollup": "catalog:build",
-      "vite": "catalog:build"
-    }
+  "resolutions": {
+    "@nuxt/devtools": "catalog:devtools",
+    "nitropack": "catalog:build",
+    "rollup": "catalog:build",
+    "vite": "catalog:build"
   },
   "simple-git-hooks": {
     "pre-commit": "npx lint-staged"
