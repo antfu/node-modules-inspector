@@ -24,6 +24,19 @@ const duplicated = computed(() => {
 
 const isExcluded = computed(() => payloads.excluded.has(props.pkg))
 
+const resolvedRepository = computed(() => {
+  const { repository } = props.pkg.resolved
+  if (!repository)
+    return undefined
+  if (/https?:\/\//i.test(repository)) {
+    return repository
+  }
+  if (/^[a-z0-9]+(?:[-_.][a-z0-9]+)*\/[a-z0-9]+(?:[-_.][a-z0-9]+)*$/i.test(repository)) {
+    return `https://github.com/${repository}`
+  }
+  return undefined
+})
+
 const selectionMode = computed<'focus' | 'why' | 'exclude' | 'none'>({
   get() {
     if (filters.state.focus?.includes(props.pkg.spec))
@@ -136,8 +149,8 @@ function getShallowestDependents(pkg: PackageNode) {
             <div i-catppuccin-npm icon-catppuccin ma />
           </NuxtLink>
           <NuxtLink
-            v-if="pkg.resolved.repository?.match(/https?:\/\//)"
-            :to="pkg.resolved.repository"
+            v-if="resolvedRepository"
+            :to="resolvedRepository"
             title="Open Repository"
             target="_blank"
             ml--1 w-8 h-8 rounded-full hover:bg-active flex
