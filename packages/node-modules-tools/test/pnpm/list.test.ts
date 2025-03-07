@@ -1,8 +1,8 @@
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
-import { listPackageDependencies } from '../src'
+import { listPackageDependencies } from '../../src'
 
-describe('listPackageDependencies', () => {
+describe('listPnpmPackageDependencies', () => {
   it('runs with multiple package.json files', async () => {
     const list = await listPackageDependencies({
       cwd: fileURLToPath(new URL('./fixtures/multiple-package-jsons', import.meta.url)),
@@ -11,15 +11,18 @@ describe('listPackageDependencies', () => {
       workspace: false,
     })
 
+    expect(list.packageManager).toBe('pnpm')
     expect(list.packages.size).toBe(2)
   })
 
   it('runs on this repository', async () => {
     const list = await listPackageDependencies({
-      cwd: fileURLToPath(new URL('../..', import.meta.url)),
+      cwd: fileURLToPath(new URL('../../..', import.meta.url)),
       depth: 25,
       monorepo: false,
     })
+
+    expect(list.packageManager).toBe('pnpm')
 
     const item = Array.from(list.packages.values()).find(i => i.name === 'debug')
 
