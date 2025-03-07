@@ -64,7 +64,7 @@ async function queryDependencies(options: ListPackageDependenciesOptions, query:
     .then(r => r.parseJsonStreamWithConcatArrays<NpmPackageNode>(process.process!.stdout!))
 
   if (!Array.isArray(json))
-    throw new Error(`Failed to parse \`npm query .workspace\` output, expected an array but got: ${String(json)}`)
+    throw new Error(`Failed to parse \`npm query\` output, expected an array but got: ${String(json)}`)
 
   return json
 }
