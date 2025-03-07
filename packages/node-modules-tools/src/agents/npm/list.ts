@@ -72,7 +72,7 @@ async function queryDependencies(options: ListPackageDependenciesOptions, query:
 export async function listPackageDependencies(
   options: ListPackageDependenciesOptions,
 ): Promise<ListPackageDependenciesRawResult> {
-  // Run concurrently since npm cli has a lot of loading overhead
+  // Run concurrently since npm cli has a lot of overhead
   // Source: https://marvinh.dev/blog/speeding-up-javascript-ecosystem-part-4/
   const [
     rootPackage,
@@ -96,6 +96,7 @@ export async function listPackageDependencies(
     throw new Error('Could not find root package.json')
 
   const packages = new Map<string, PackageNodeRaw>()
+  // Used to link package deps with resolved version
   const packageSpecByLocation = new Map<string, string>()
 
   packageSpecByLocation.set(rootPackage.location, rootPackage.pkgid)
