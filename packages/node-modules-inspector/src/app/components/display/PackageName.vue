@@ -13,7 +13,7 @@ const deprecationTitle = computed(() => {
   if (isFutureDeprecated.value) {
     const lastInfo = props.pkg?.resolved?.deprecatedInfo?.last
     if (lastInfo?.deprecated) {
-      return `Will be deprecated in ${lastInfo.version}: ${lastInfo.deprecated}`
+      return `${props.pkg?.name}@${lastInfo.version} (last version) is deprecated: ${lastInfo.deprecated}`
     }
   }
   return ''
@@ -22,9 +22,9 @@ const deprecationTitle = computed(() => {
 
 <template>
   <span
+    v-tooltip="deprecationTitle"
     font-mono
-    :class="{ 'text-red-500': isFutureDeprecated }"
-    :title="deprecationTitle"
+    :class="{ 'text-red-500 line-through': isFutureDeprecated }"
   >
     {{ name }}
   </span>

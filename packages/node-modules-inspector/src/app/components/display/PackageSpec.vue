@@ -12,7 +12,7 @@ const deprecationTitle = computed(() => {
   if (isCurrentDeprecated.value) {
     const currentInfo = props.pkg?.resolved?.deprecatedInfo?.current
     if (currentInfo?.deprecated) {
-      return `This package is deprecated: ${currentInfo.deprecated}`
+      return `${props.pkg.name}@${props.pkg.version} is deprecated: ${currentInfo.deprecated}`
     }
   }
   return ''
@@ -32,11 +32,11 @@ const deprecationTitle = computed(() => {
     </span>
     <DisplayPackageName :name="props.pkg.name" :pkg="props.pkg" />
     <DisplayVersion
+      v-tooltip="deprecationTitle"
       op50
       :version="props.pkg.version"
       prefix="@"
-      :class="{ 'text-red-500 !op100': isCurrentDeprecated }"
-      :title="deprecationTitle"
+      :class="{ 'text-red-500 line-through': isCurrentDeprecated }"
     />
   </span>
 </template>

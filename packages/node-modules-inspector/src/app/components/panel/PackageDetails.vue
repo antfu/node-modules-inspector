@@ -9,6 +9,7 @@ import { filters } from '~/state/filters'
 import { getPublishTime, payloads } from '~/state/payload'
 import { query } from '~/state/query'
 import { settings } from '~/state/settings'
+import DisplayDeprecatedBadge from '../display/DeprecatedBadge.vue'
 
 const props = defineProps<{
   pkg: PackageNode
@@ -237,6 +238,10 @@ function getShallowestDependents(pkg: PackageNode) {
     </div>
     <div v-if="cluster.length" px4 my2 flex="~ gap-2 wrap items-center">
       <DisplayClusterBadge v-for="c of cluster" :key="c" flex="~ items-center gap-1" :cluster="c" />
+      <DisplayDeprecatedBadge :pkg="pkg" />
+    </div>
+    <div v-else px4 my2 flex="~ gap-2 wrap items-center">
+      <DisplayDeprecatedBadge :pkg="pkg" />
     </div>
     <div grid="~ cols-3 gap-2 items-center" p2>
       <button
