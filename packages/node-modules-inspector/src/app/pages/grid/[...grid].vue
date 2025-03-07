@@ -1,18 +1,17 @@
 <script setup lang="ts">
 import type { PackageModuleType, PackageNode } from 'node-modules-tools'
 import { useRoute } from '#app/composables/router'
-import { CLUSTER_DEP_DEV, CLUSTER_DEP_PROD } from 'node-modules-tools/constants'
 import { computed } from 'vue'
 import { payloads } from '~/state/payload'
 
 const params = useRoute().params as Record<string, string>
-const tab = computed<'depth' | 'clusters' | 'module-type'>(() => params.slug[0] as any || 'depth')
+const tab = computed<'depth' | 'clusters' | 'module-type'>(() => params.grid[0] as any || 'depth')
 
 const MAX_DEPTH = 5
 
 interface Group {
   name: string
-  catalog?: string
+  cluster?: string
   module?: PackageModuleType
   packages: PackageNode[]
   expanded?: boolean
@@ -31,7 +30,7 @@ const groups = computed<Group[]>(() => {
     return [...map.entries()]
       .sort(([a], [b]) => a.localeCompare(b))
       .map(([type, packages]) => ({
-        name: '',
+        name: type,
         module: type,
         packages,
         expanded: false,
@@ -50,27 +49,12 @@ const groups = computed<Group[]>(() => {
 
     return [...map.entries()]
       .sort(([a], [b]) => a.localeCompare(b))
-      .map(([cluster, packages]) => {
-        let name = cluster
-        let catalog
-        if (name === CLUSTER_DEP_DEV) {
-          name = 'Dev Dependencies'
-        }
-        else if (name === CLUSTER_DEP_PROD) {
-          name = 'Prod Dependencies'
-        }
-        else if (name.startsWith('catalog:')) {
-          catalog = name.slice(8)
-          name = `Catalog: `
-        }
-
-        return {
-          name,
-          catalog,
-          packages,
-          expanded: false,
-        }
-      })
+      .map(([cluster, packages]) => ({
+        name: cluster,
+        cluster,
+        packages,
+        expanded: false,
+      }))
   }
   else {
     const map = new Map<number, PackageNode[]>()
@@ -89,7 +73,7 @@ const groups = computed<Group[]>(() => {
       .map(([depth, packages]) => ({
         name: depth === 0 ? 'Workspace Packages' : `Depth ${depth}`,
         packages,
-        expanded: depth < 4,
+        expanded: depth < 3,
       }))
   }
 })
@@ -120,11 +104,9 @@ const groups = computed<Group[]>(() => {
     >
       <template #title>
         <div flex="~ items-center gap-1">
-          <span op75>{{ group.name }}</span>
-          <div v-if="group.catalog" rounded-full text-base badge-color-primary px2>
-            {{ group.catalog }}
-          </div>
-          <DisplayModuleType v-if="group.module" :pkg="group.module" />
+          <DisplayClusterBadge v-if="group.cluster" :cluster="group.cluster" />
+          <DisplayModuleType v-else-if="group.module" :pkg="group.module" />
+          <span v-else op75>{{ group.name }}</span>
         </div>
         <DisplayNumberBadge :number="group.packages.length" rounded-full ml2 text-base />
       </template>

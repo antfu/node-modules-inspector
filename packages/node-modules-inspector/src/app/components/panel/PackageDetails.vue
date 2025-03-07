@@ -37,6 +37,8 @@ const resolvedRepository = computed(() => {
   return undefined
 })
 
+const cluster = computed(() => [...payloads.avaliable.flatClusters(props.pkg)].filter(i => !i.startsWith('dep:')))
+
 const selectionMode = computed<'focus' | 'why' | 'exclude' | 'none'>({
   get() {
     if (filters.state.focus?.includes(props.pkg.spec))
@@ -213,6 +215,9 @@ function getShallowestDependents(pkg: PackageNode) {
           <DisplayDateBadge :pkg rounded-full text-sm />
         </template>
       </div>
+    </div>
+    <div v-if="cluster.length" px4 my2 flex="~ gap-2 wrap items-center">
+      <DisplayClusterBadge v-for="c of cluster" :key="c" flex="~ items-center gap-1" :cluster="c" />
     </div>
     <div grid="~ cols-3 gap-2 items-center" p2>
       <button

@@ -41,13 +41,13 @@ const dev = computed(() => {
 
 <template>
   <template v-if="mode !== 'none'">
-    <div v-if="prod && dev" badge-color-green px2 rounded-full text-sm title="Introduced by both dev and prod dependencies">
+    <div v-if="prod && dev" v-tooltip="'This package is introduced from both dev and prod dependencies'" badge-color-green px2 rounded-full text-sm>
       dev+prod
     </div>
-    <div v-else-if="!prod && dev" badge-color-cyan px2 rounded-full text-sm title="Introduced by dev dependencies">
+    <div v-else-if="!prod && dev" v-tooltip="'This package is introduced from dev dependencies'" badge-color-cyan px2 rounded-full text-sm>
       dev
     </div>
-    <div v-if="prod && !dev" badge-color-lime px2 rounded-full text-sm title="Introduced by prod dependencies">
+    <div v-if="prod && !dev" v-tooltip="'This package is introduced from prod dependencies'" badge-color-lime px2 rounded-full text-sm>
       prod
     </div>
   </template>
