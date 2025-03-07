@@ -64,5 +64,14 @@ export interface PackageNode extends PackageNodeBase {
      * Result for publint, null for invalid, undefined for not checked yet, empty array for all good
      */
     publint?: PublintMessage[] | null
+    deprecatedInfo: {
+      deprecated: boolean
+      willbedeprecated?: {
+        version: string
+        message: string
+        timeAfterCurrent: number
+        versionsCount: number
+      }
+    }
   }
 }
