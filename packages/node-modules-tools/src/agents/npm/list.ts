@@ -46,9 +46,12 @@ async function getNpmVersion(options: ListPackageDependenciesOptions) {
   }
 }
 
-async function queryDependencies(options: ListPackageDependenciesOptions, query: string): Promise<NpmPackageNode[]> {
+async function queryDependencies(options: ListPackageDependenciesOptions, query: string, lockfileOnly = false): Promise<NpmPackageNode[]> {
   // https://docs.npmjs.com/cli/v9/commands/npm-query
-  const args = ['query', query, '--package-lock-only']
+  const args = ['query']
+  if (lockfileOnly)
+    args.push('--package-lock-only')
+  args.push(query)
   const process = x('npm', args, {
     throwOnError: true,
     nodeOptions: {
@@ -76,13 +79,15 @@ export async function listPackageDependencies(
     workspaces,
     devDependencies,
     prodDependencies,
+    optionalDependencies,
     packageManagerVersion,
     root,
   ] = await Promise.all([
-    queryDependencies(options, ':root').then(res => res[0]),
-    queryDependencies(options, '.workspace'),
+    queryDependencies(options, ':root', true).then(res => res[0]),
+    queryDependencies(options, '.workspace', true),
     queryDependencies(options, '.dev'),
     queryDependencies(options, '.prod'),
+    queryDependencies(options, '.optional'),
     getNpmVersion(options),
     resolveRoot(options),
   ])
@@ -154,15 +159,19 @@ export async function listPackageDependencies(
   })
   prodDependencies.forEach((raw) => {
     normalize(raw, 'prod')
-  });
+  })
+  optionalDependencies.forEach((raw) => {
+    normalize(raw, 'optional')
+  })
 
-  // Add all deps
-  [
+  // Add all dep links
+  Array.of(
     ...devDependencies,
     ...prodDependencies,
+    ...optionalDependencies,
     ...workspaces,
     rootPackage,
-  ].forEach((raw) => {
+  ).forEach((raw) => {
     const pkg = packages.get(raw.pkgid)
     if (!pkg)
       return
