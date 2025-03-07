@@ -1,4 +1,5 @@
 import type { PackageNode } from 'node-modules-tools'
+import { CLUSTER_DEP_DEV, CLUSTER_DEP_OPTIONAL, CLUSTER_DEP_PROD } from 'node-modules-tools/constants'
 import { computed, reactive, watch } from 'vue'
 import { buildVersionToPackagesMap } from '../utils/maps'
 import { rawPayload, rawPublishDates, rawReferencePayload } from './data'
@@ -10,6 +11,15 @@ function createComputedPayload(getter: () => PackageNode[]) {
   const packages = computed(getter)
   const map = computed(() => new Map(packages.value.map(i => [i.spec, i])))
   const versions = computed(() => buildVersionToPackagesMap(packages.value))
+  const clusters = computed(() => {
+    const clusters = new Set<string>()
+    for (const pkg of packages.value) {
+      for (const cluster of pkg.clusters) {
+        clusters.add(cluster)
+      }
+    }
+    return clusters
+  })
 
   const get = (spec: string | PackageNode): PackageNode | undefined => {
     if (typeof spec === 'string')
@@ -24,7 +34,7 @@ function createComputedPayload(getter: () => PackageNode[]) {
   }
 
   const getList = (specs: Iterable<string>): PackageNode[] => {
-    return Array.from(function *() {
+    return Array.from(function* () {
       for (const spec of specs) {
         const pkg = get(spec)
         if (pkg)
@@ -33,40 +43,69 @@ function createComputedPayload(getter: () => PackageNode[]) {
     }())
   }
 
-  const _cache = {
+  const _cacheList = {
     dependencies: new Map<string, PackageNode[]>(),
     dependents: new Map<string, PackageNode[]>(),
     flatDependencies: new Map<string, PackageNode[]>(),
     flatDependents: new Map<string, PackageNode[]>(),
   }
 
+  const _cacheFlatClusters = new Map<string, Set<string>>()
+
   watch(packages, () => {
-    _cache.dependencies.clear()
-    _cache.dependents.clear()
-    _cache.flatDependencies.clear()
-    _cache.flatDependents.clear()
+    _cacheList.dependencies.clear()
+    _cacheList.dependents.clear()
+    _cacheList.flatDependencies.clear()
+    _cacheList.flatDependents.clear()
+    _cacheFlatClusters.clear()
   })
 
-  function cached(key: keyof typeof _cache): (pkg: PackageNode) => PackageNode[] {
+  function cachedGetList(key: keyof typeof _cacheList): (pkg: PackageNode) => PackageNode[] {
     return (pkg) => {
-      const cached = _cache[key].get(pkg.spec)
+      const cached = _cacheList[key].get(pkg.spec)
       if (cached)
         return cached
       const result = getList(pkg[key])
-      _cache[key].set(pkg.spec, result)
+      _cacheList[key].set(pkg.spec, result)
       return result
     }
   }
 
-  const flatDependents = cached('flatDependents')
-  const flatDependencies = cached('flatDependencies')
-  const dependencies = cached('dependencies')
-  const dependents = cached('dependents')
+  const flatDependents = cachedGetList('flatDependents')
+  const flatDependencies = cachedGetList('flatDependencies')
+  const dependencies = cachedGetList('dependencies')
+  const dependents = cachedGetList('dependents')
+
+  function flatClusters(pkg: PackageNode) {
+    const cached = _cacheFlatClusters.get(pkg.spec)
+    if (cached)
+      return cached
+    const result = new Set(pkg.clusters)
+    for (const dep of flatDependents(pkg)) {
+      for (const cluster of dep.clusters) {
+        result.add(cluster)
+      }
+    }
+    _cacheFlatClusters.set(pkg.spec, result)
+    return result
+  }
+
+  function isInDepCluster(pkg: PackageNode, type: 'dev' | 'prod' | 'optional') {
+    return flatClusters(pkg).has(
+      type === 'dev'
+        ? CLUSTER_DEP_DEV
+        : type === 'prod'
+          ? CLUSTER_DEP_PROD
+          : CLUSTER_DEP_OPTIONAL,
+    )
+  }
 
   return reactive({
     packages,
     map,
     versions,
+    clusters,
+
     has,
     get,
     getList,
@@ -75,6 +114,8 @@ function createComputedPayload(getter: () => PackageNode[]) {
     dependents,
     flatDependents,
     flatDependencies,
+    flatClusters,
+    isInDepCluster,
   })
 }
 

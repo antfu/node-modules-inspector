@@ -31,5 +31,6 @@ const formatted = computed(() => {
   <div :class="color" class="px-0.4em py-0.2em font-mono line-height-none flex items-center">
     <div v-if="icon" :class="icon" class="mr-1" />
     {{ prefix || '' }}{{ formatted }}
+    <slot name="after" />
   </div>
 </template>

@@ -19,7 +19,7 @@ const licensesCount = computed(() => {
   return set.size
 })
 
-const fundingCount = computed(() => payloads.avaliable.packages.filter(p => p.resolved.funding).length)
+const fundingCount = computed(() => payloads.avaliable.packages.flatMap(p => p.resolved.fundings).length)
 
 const mins10 = 10 * 60 * 1000
 const timepassed = computed(() => rawPayload.value?.timestamp ? Date.now() - rawPayload.value.timestamp : 0)
@@ -35,7 +35,6 @@ const timepassed = computed(() => rawPayload.value?.timestamp ? Date.now() - raw
       </div>
       <div flex-auto />
       <span font-mono text-sm flex="~ col items-end">
-        <div badge-color-lime rounded px2 mr--2 text-xs py0.5>Preview</div>
         <span op50>v{{ version }}</span>
       </span>
     </h1>

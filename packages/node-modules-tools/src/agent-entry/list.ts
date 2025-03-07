@@ -34,8 +34,12 @@ function populateRawResult(input: ListPackageDependenciesRawResult): ListPackage
       dependents: new Set(),
       flatDependencies: new Set(),
       flatDependents: new Set(),
+      flatClusters: new Set(),
       depth: pkg.workspace ? 0 : Infinity,
     }) as PackageNodeBase
+    for (const cluster of pkg.clusters) {
+      node.flatClusters.add(cluster)
+    }
     result.packages.set(spec, node)
   }
 
@@ -61,12 +65,9 @@ function populateRawResult(input: ListPackageDependenciesRawResult): ListPackage
         if (!depNode)
           continue
         if (!node.workspace) {
-          if (node.dev)
-            depNode.dev = true
-          if (node.prod)
-            depNode.prod = true
-          if (node.optional)
-            depNode.optional = true
+          for (const cluster of node.flatClusters) {
+            depNode.flatClusters.add(cluster)
+          }
         }
         if (depNode.depth > level)
           depNode.depth = level

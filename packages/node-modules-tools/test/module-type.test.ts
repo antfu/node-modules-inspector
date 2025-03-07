@@ -1,11 +1,15 @@
 import fs from 'node:fs/promises'
 import { resolvePath } from 'mlly'
+import { resolvePackageJSON } from 'pkg-types'
 import { expect, it } from 'vitest'
 import { analyzePackageModuleType } from '../src/analyze-esm'
 
 async function getPackageJsonPath(pkg: string) {
   return JSON.parse(await fs.readFile(
-    await resolvePath(`${pkg}/package.json`),
+    await resolvePath(`${pkg}/package.json`)
+      .catch(async () => {
+        return await resolvePackageJSON(await resolvePath(pkg))
+      }),
     'utf-8',
   ))
 }
@@ -29,6 +33,6 @@ it('cjs', async () => {
 })
 
 it('esm', async () => {
-  expect(analyzePackageModuleType(await getPackageJsonPath('shiki')))
+  expect(analyzePackageModuleType(await getPackageJsonPath('p-limit')))
     .toEqual('esm')
 })

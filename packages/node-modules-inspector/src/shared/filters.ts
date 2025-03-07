@@ -5,12 +5,15 @@ export interface FilterOptions {
   modules: null | PackageModuleType[]
   focus: null | string[]
   why: null | string[]
+  sourceType: null | 'prod' | 'dev'
+  depths: null | (number | string)[]
+  clusters: null | string[]
+  clustersMode: 'and' | 'or'
+
   excludes: null | string[]
   excludeDts: boolean
   excludePrivate: boolean
   excludeWorkspace: boolean
-  sourceType: null | 'prod' | 'dev'
-  depths: null | (number | string)[]
 
   compareA: null | string[]
   compareB: null | string[]
@@ -19,7 +22,7 @@ export interface FilterOptions {
 export interface FilterSchema<Type> {
   type: StringConstructor | ArrayConstructor | BooleanConstructor
   default: Type
-  category: 'select' | 'exclude' | 'compare'
+  category: 'select' | 'exclude' | 'compare' | 'option'
 }
 
 export const FILTERS_SCHEMA: {
@@ -31,6 +34,9 @@ export const FILTERS_SCHEMA: {
   why: { type: Array, default: null, category: 'select' },
   sourceType: { type: String, default: null, category: 'select' },
   depths: { type: Array, default: null, category: 'select' },
+  clusters: { type: Array, default: null, category: 'select' },
+
+  clustersMode: { type: String, default: 'or', category: 'option' },
 
   // Compare
   compareA: { type: Array, default: [], category: 'compare' },

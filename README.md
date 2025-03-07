@@ -8,7 +8,7 @@
 [![JSDocs][jsdocs-src]][jsdocs-href]
 [![License][license-src]][license-href]
 
-Interactive UI for local node modules inspection.
+Visualize your node_modules, inspect dependencies, and more.
 
 ### Quick Start
 
@@ -42,7 +42,12 @@ export default defineConfig({
   },
   defaultSettings: {
     moduleTypeSimple: true,
-  }
+  },
+
+  // Experimental publint.dev integration, default is false
+  publint: true
+
+  // ...see jsdoc for more options and details
 })
 ```
 

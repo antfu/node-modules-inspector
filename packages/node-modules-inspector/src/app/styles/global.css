@@ -59,6 +59,10 @@ summary::-webkit-details-marker {
   box-shadow: 0 6px 30px #0000001a;
 }
 
+.v-popper--theme-tooltip .v-popper__inner {
+  --at-apply: text-sm;
+}
+
 .v-popper--theme-tooltip {
   max-width: 20rem;
 }

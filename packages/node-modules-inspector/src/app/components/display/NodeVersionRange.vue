@@ -13,7 +13,7 @@ const parsed = computed(() => props.range && parseSemverRange(props.range))
   <span
     v-if="range && parsed"
     font-mono px2 pl1 py0.5 rounded-lg text-sm flex="~ gap-2 items-center"
-    :class="parsed.valid ? 'badge-color-gray' : 'badge-color-red'"
+    :class="parsed.valid ? 'badge-color-gray !bg-active' : 'badge-color-red'"
   >
     <div i-catppuccin-package-json icon-catppuccin flex-none />
     <div v-if="!parsed.valid">

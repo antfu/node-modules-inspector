@@ -33,16 +33,26 @@ export async function resolvePackage(
   if (json.repository && typeof json.repository !== 'string' && json.repository.directory)
     repository += `/tree/HEAD/${json.repository.directory}`
 
-  let funding = json.funding
-  if (typeof funding === 'string')
-    funding = { url: funding }
+  type RawFunding = string | { url: string, type?: string }
+  const rawFunding: RawFunding | RawFunding[] | undefined = json.funding
+  let fundings: { url: string, type?: string }[]
+  if (typeof rawFunding === 'string') {
+    fundings = [{ url: rawFunding }]
+  }
+  else if (Array.isArray(rawFunding)) {
+    fundings = rawFunding.map(f => typeof f === 'string' ? { url: f } : f)
+  }
+  else {
+    fundings = rawFunding ? [rawFunding] : []
+  }
 
   _pkg.resolved = {
     module: analyzePackageModuleType(json),
     engines: json.engines,
     license: json.license,
     author: typeof json.author === 'string' ? json.author : json.author?.url,
-    funding,
+    fundings,
+    exports: json.exports,
     repository,
     homepage: json.homepage,
     installSize: await getPackageInstallSize(_pkg),

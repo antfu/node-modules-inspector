@@ -28,7 +28,7 @@ export async function createWsServer(options: CreateWsServerOptions) {
     [],
     {
       onError(error, name) {
-        console.error(c.yellow(`[node-modules-inspector] RPC error on executing "${c.bold(name)}":`))
+        console.error(c.red`⬢ RPC error on executing "${c.bold(name)}":`)
         console.error(error)
         throw error
       },
@@ -60,7 +60,7 @@ export async function createWsServer(options: CreateWsServerOptions) {
       })
     })
 
-    console.log(MARK_CHECK, 'Websocket client connected')
+    console.log(c.green`${MARK_CHECK} Websocket client connected`)
   })
 
   const getMetadata = async (): Promise<ConnectionMeta> => {
@@ -73,6 +73,8 @@ export async function createWsServer(options: CreateWsServerOptions) {
   return {
     port,
     wss,
+    rpc,
+    serverFunctions,
     getMetadata,
   }
 }

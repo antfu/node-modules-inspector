@@ -1,11 +1,19 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 
 const props = defineProps<{
   src: string
 }>()
 
-const success = ref(true)
+const success = ref(false)
+
+onMounted(() => {
+  const img = new Image()
+  img.src = props.src
+  img.onload = () => {
+    success.value = true
+  }
+})
 </script>
 
 <template>

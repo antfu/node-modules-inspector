@@ -3,7 +3,7 @@ import { useRoute } from '#app/composables/router'
 import { computed } from 'vue'
 
 const params = useRoute().params as Record<string, string>
-const selected = computed(() => params.slug[0] || 'all')
+const selected = computed(() => params.report[0] || 'all')
 </script>
 
 <template>

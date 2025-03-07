@@ -1,7 +1,7 @@
 {
   "name": "node-modules-tools",
   "type": "module",
-  "version": "0.2.8",
+  "version": "0.3.0",
   "description": "Tools for inspecting node_modules",
   "author": "Anthony Fu <anthonyfu117@hotmail.com>",
   "license": "MIT",
@@ -17,7 +17,8 @@
   "sideEffects": false,
   "exports": {
     ".": "./dist/index.mjs",
-    "./utils": "./dist/utils.mjs"
+    "./utils": "./dist/utils.mjs",
+    "./constants": "./dist/constants.mjs"
   },
   "main": "./dist/index.mjs",
   "module": "./dist/index.mjs",
@@ -33,18 +34,21 @@
     "test": "vitest"
   },
   "dependencies": {
-    "p-limit": "catalog:",
-    "package-manager-detector": "catalog:",
-    "pathe": "catalog:",
-    "semver": "catalog:",
-    "tinyexec": "catalog:"
+    "js-yaml": "catalog:deps",
+    "p-limit": "catalog:deps",
+    "package-manager-detector": "catalog:deps",
+    "pathe": "catalog:deps",
+    "pkg-types": "catalog:types",
+    "publint": "catalog:deps",
+    "semver": "catalog:deps",
+    "tinyexec": "catalog:deps"
   },
   "devDependencies": {
-    "@pnpm/list": "catalog:",
-    "@pnpm/types": "catalog:",
-    "@types/stream-json": "catalog:",
-    "pkg-types": "catalog:",
-    "stream-json": "catalog:",
-    "unbuild": "catalog:"
+    "@pnpm/list": "catalog:types",
+    "@pnpm/types": "catalog:types",
+    "@types/js-yaml": "catalog:types",
+    "@types/stream-json": "catalog:types",
+    "stream-json": "catalog:deps",
+    "unbuild": "catalog:build"
   }
 }

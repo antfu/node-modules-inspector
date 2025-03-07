@@ -22,7 +22,7 @@ defineProps<{
       <DisplayModuleType :pkg />
       <DisplayNumberBadge
         v-if="payloads.avaliable.flatDependents(pkg).length"
-        :number="pkg.flatDependents.size"
+        :number="payloads.avaliable.flatDependents(pkg).length"
         icon="i-ph-arrow-elbow-down-right-duotone text-xs"
         rounded-full text-sm
       />

@@ -46,11 +46,11 @@ export default defineConfig({
       'z-panel-goto': 'z-70',
       'z-panel-terminal': 'z-80',
 
-      'color-scale-neutral': 'text-gray:75!',
-      'color-scale-low': 'text-lime:75! saturate-50',
-      'color-scale-medium': 'text-amber:85! saturate-80',
-      'color-scale-high': 'text-orange!',
-      'color-scale-critical': 'text-red!',
+      'color-scale-neutral': 'text-gray7:75 dark:text-gray:75!',
+      'color-scale-low': 'text-lime7:75 dark:text-lime:75! dark:saturate-50',
+      'color-scale-medium': 'text-amber7:85 dark:text-amber:85! dark:saturate-80',
+      'color-scale-high': 'text-orange7:95 dark:text-orange:95!',
+      'color-scale-critical': 'text-red7:95 dark:text-red:95!',
 
       'page-padding': 'pt-22 pl-112 pr-8 pb-8',
     },
