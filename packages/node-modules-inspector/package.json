@@ -49,9 +49,11 @@
     "node-modules-tools": "workspace:*",
     "ohash": "catalog:deps",
     "open": "catalog:deps",
+    "p-limit": "catalog:deps",
     "pathe": "catalog:deps",
     "publint": "catalog:deps",
     "structured-clone-es": "catalog:deps",
+    "tinyglobby": "catalog:deps",
     "unconfig": "catalog:deps",
     "unstorage": "catalog:deps",
     "ws": "catalog:deps"

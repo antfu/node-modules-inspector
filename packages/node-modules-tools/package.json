@@ -38,6 +38,7 @@
     "p-limit": "catalog:deps",
     "package-manager-detector": "catalog:deps",
     "pathe": "catalog:deps",
+    "pkg-types": "catalog:types",
     "publint": "catalog:deps",
     "semver": "catalog:deps",
     "tinyexec": "catalog:deps"
@@ -47,7 +48,6 @@
     "@pnpm/types": "catalog:types",
     "@types/js-yaml": "catalog:types",
     "@types/stream-json": "catalog:types",
-    "pkg-types": "catalog:types",
     "stream-json": "catalog:deps",
     "unbuild": "catalog:build"
   }

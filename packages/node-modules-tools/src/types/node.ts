@@ -1,3 +1,4 @@
+import type { PackageJsonExports } from 'pkg-types'
 import type { Message as PublintMessage } from 'publint'
 import type { PackageInstallSizeInfo } from './size'
 
@@ -50,14 +51,18 @@ export interface PackageNode extends PackageNodeBase {
     license?: string
     author?: string
     repository?: string
-    fundings: {
+    fundings?: {
       url: string
       type?: string
     }[]
+    exports?: PackageJsonExports
     homepage?: string
     engines?: Record<string, string>
     installSize?: PackageInstallSizeInfo
     publishTime?: string
-    publint?: PublintMessage[]
+    /**
+     * Result for publint, null for invalid, undefined for not checked yet, empty array for all good
+     */
+    publint?: PublintMessage[] | null
   }
 }

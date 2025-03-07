@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
 import { Menu as VMenu } from 'floating-vue'
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import { getBackend } from '~/backends'
 import { selectedNode } from '~/state/current'
+import { fetchPublintMessages, rawPublintMessages } from '~/state/data'
 import { filters } from '~/state/filters'
 import { getPublishTime, payloads } from '~/state/payload'
 import { query } from '~/state/query'
@@ -73,9 +74,27 @@ function getDepth(amount: number, min = 1) {
   return 10
 }
 
+const publint = computed(() => {
+  if (props.pkg.resolved.publint)
+    return props.pkg.resolved.publint
+  if (rawPublintMessages.value?.has(props.pkg.spec))
+    return rawPublintMessages.value.get(props.pkg.spec)
+  return undefined
+})
+
+watch(
+  publint,
+  async (value) => {
+    if (value === undefined)
+      fetchPublintMessages(props.pkg)
+  },
+  { immediate: true },
+)
+
 const sizeInstall = computed(() => {
   return props.pkg.resolved.installSize?.bytes || 0
 })
+
 const sizeTotal = computed(() => {
   const deps = payloads.avaliable.flatDependencies(props.pkg)
   if (!deps.length)
@@ -169,7 +188,7 @@ function getShallowestDependents(pkg: PackageNode) {
             <div i-catppuccin-http icon-catppuccin ma />
           </NuxtLink>
           <PanelPackageFunding
-            v-if="pkg.resolved.fundings.length"
+            v-if="pkg.resolved.fundings?.length"
             :fundings="pkg.resolved.fundings"
           />
           <NuxtLink
@@ -258,8 +277,8 @@ function getShallowestDependents(pkg: PackageNode) {
       </button>
     </div>
 
-    <div v-if="pkg.resolved.publint" border="t rounded base">
-      <IntegrationsPublintPanel :pkg="pkg" />
+    <div v-if="publint" border="t rounded base">
+      <IntegrationsPublintPanel :pkg="pkg" :messages="publint" />
     </div>
 
     <div v-if="pkg.resolved.installSize" p4 border="t base" flex="~ col gap-1">

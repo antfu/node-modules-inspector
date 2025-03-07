@@ -15,7 +15,7 @@ const fundingGroup = computed(() => {
     if (pkg.workspace)
       continue
 
-    for (const funding of pkg.resolved.fundings) {
+    for (const funding of pkg.resolved.fundings || []) {
       const resolved = parseFunding(funding.url)
       if (!resolved)
         continue

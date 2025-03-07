@@ -88,6 +88,9 @@ catalogs:
     tinyexec:
       specifier: ^0.3.2
       version: 0.3.2
+    tinyglobby:
+      specifier: ^0.2.12
+      version: 0.2.12
     unconfig:
       specifier: ^7.3.0
       version: 7.3.0
@@ -396,6 +399,9 @@ importers:
       open:
         specifier: catalog:deps
         version: 10.1.0
+      p-limit:
+        specifier: catalog:deps
+        version: 6.2.0
       pathe:
         specifier: catalog:deps
         version: 2.0.3
@@ -405,6 +411,9 @@ importers:
       structured-clone-es:
         specifier: catalog:deps
         version: 1.0.0
+      tinyglobby:
+        specifier: catalog:deps
+        version: 0.2.12
       unconfig:
         specifier: catalog:deps
         version: 7.3.0
@@ -478,6 +487,9 @@ importers:
       pathe:
         specifier: catalog:deps
         version: 2.0.3
+      pkg-types:
+        specifier: catalog:types
+        version: 2.1.0
       publint:
         specifier: catalog:deps
         version: 0.3.8
@@ -500,9 +512,6 @@ importers:
       '@types/stream-json':
         specifier: catalog:types
         version: 1.7.8
-      pkg-types:
-        specifier: catalog:types
-        version: 2.1.0
       stream-json:
         specifier: catalog:deps
         version: 1.9.1
