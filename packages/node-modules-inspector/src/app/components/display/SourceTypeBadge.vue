@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
 import type { SettingsOptions } from '~~/shared/types'
+import { CLUSTER_DEP_DEV, CLUSTER_DEP_PROD } from 'node-modules-tools/constants'
 import { computed } from 'vue'
 import { settings } from '~/state/settings'
 
@@ -17,8 +18,8 @@ const prod = computed(() => {
   if (mode.value === 'dev')
     return false
   if (mode.value === 'prod')
-    return props.pkg.prod && !props.pkg.dev
-  return props.pkg.prod
+    return props.pkg.flatClusters.has(CLUSTER_DEP_PROD) && !props.pkg.flatClusters.has(CLUSTER_DEP_DEV)
+  return props.pkg.flatClusters.has(CLUSTER_DEP_PROD)
 })
 const dev = computed(() => {
   if (mode.value === 'none')
@@ -26,8 +27,8 @@ const dev = computed(() => {
   if (mode.value === 'prod')
     return false
   if (mode.value === 'dev')
-    return props.pkg.dev && !props.pkg.prod
-  return props.pkg.dev
+    return props.pkg.flatClusters.has(CLUSTER_DEP_DEV) && !props.pkg.flatClusters.has(CLUSTER_DEP_PROD)
+  return props.pkg.flatClusters.has(CLUSTER_DEP_DEV)
 })
 </script>
 

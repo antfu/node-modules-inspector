@@ -17,7 +17,8 @@
   "sideEffects": false,
   "exports": {
     ".": "./dist/index.mjs",
-    "./utils": "./dist/utils.mjs"
+    "./utils": "./dist/utils.mjs",
+    "./constants": "./dist/constants.mjs"
   },
   "main": "./dist/index.mjs",
   "module": "./dist/index.mjs",

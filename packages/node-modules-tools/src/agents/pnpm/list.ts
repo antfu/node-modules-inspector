@@ -3,6 +3,7 @@ import type { ProjectManifest } from '@pnpm/types'
 import type { ListPackageDependenciesOptions, ListPackageDependenciesRawResult, PackageNodeRaw } from '../../types'
 import { dirname, relative } from 'pathe'
 import { x } from 'tinyexec'
+import { CLUSTER_DEP_DEV, CLUSTER_DEP_PROD } from '../../constants'
 
 type PnpmPackageNode = Pick<ProjectManifest, 'description' | 'license' | 'author' | 'homepage'> & {
   alias: string | undefined
@@ -116,6 +117,7 @@ export async function listPackageDependencies(
       filepath: pkg.path,
       dependencies: new Set(),
       workspace: true,
+      clusters: new Set(),
     }
     if (pkg.private)
       node.private = true
@@ -148,6 +150,7 @@ export async function listPackageDependencies(
       version,
       filepath: raw.path,
       dependencies: new Set(),
+      clusters: new Set(),
     }
     mapNormalize.set(raw, node)
     return node
@@ -156,17 +159,14 @@ export async function listPackageDependencies(
   function traverse(
     raw: PnpmPackageNode,
     level: number,
-    mode: 'dev' | 'prod' | 'optional',
+    clusters: Iterable<string>,
   ): PackageNodeRaw {
     const node = normalize(raw)
 
     if (!node.workspace) {
-      if (mode === 'dev')
-        node.dev = true
-      if (mode === 'prod')
-        node.prod = true
-      if (mode === 'optional')
-        node.optional = true
+      for (const cluster of clusters) {
+        node.clusters.add(cluster)
+      }
     }
 
     // Filter out node
@@ -180,7 +180,7 @@ export async function listPackageDependencies(
 
     if (options.dependenciesFilter?.(node) !== false) {
       for (const dep of Object.values(raw.dependencies || {})) {
-        const resolvedDep = traverse(dep, level + 1, mode)
+        const resolvedDep = traverse(dep, level + 1, clusters)
         node.dependencies.add(resolvedDep.spec)
       }
     }
@@ -191,11 +191,11 @@ export async function listPackageDependencies(
   // Traverse deps
   for (const { pkg, node } of workspacePackages) {
     for (const dep of Object.values(pkg.dependencies || {})) {
-      const result = traverse(dep, 1, 'prod')
+      const result = traverse(dep, 1, [CLUSTER_DEP_PROD])
       node.dependencies.add(result.spec)
     }
     for (const dep of Object.values(pkg.devDependencies || {})) {
-      const result = traverse(dep, 1, 'dev')
+      const result = traverse(dep, 1, [CLUSTER_DEP_DEV])
       node.dependencies.add(result.spec)
     }
   }

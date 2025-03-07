@@ -2,6 +2,7 @@ import type { PackageNode } from 'node-modules-tools'
 import type { FilterOptions } from '~~/shared/filters'
 import { objectMap } from '@antfu/utils'
 import { objectEntries, useDebounce } from '@vueuse/core'
+import { CLUSTER_DEP_DEV, CLUSTER_DEP_PROD } from 'node-modules-tools/constants'
 import { constructPackageFilters } from 'node-modules-tools/utils'
 import { computed, reactive, toRaw } from 'vue'
 import { FILTERS_SCHEMA } from '~~/shared/filters'
@@ -75,9 +76,9 @@ export const filterSelectPredicate = computed(() => {
   if (state.sourceType) {
     predicates.push((pkg) => {
       if (state.sourceType === 'prod')
-        return pkg.prod || pkg.workspace
+        return pkg.flatClusters.has(CLUSTER_DEP_PROD) || pkg.workspace
       if (state.sourceType === 'dev')
-        return pkg.dev || pkg.workspace
+        return pkg.flatClusters.has(CLUSTER_DEP_DEV) || pkg.workspace
       return true
     })
   }

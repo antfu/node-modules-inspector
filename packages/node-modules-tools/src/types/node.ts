@@ -20,12 +20,15 @@ export interface PackageNodeRaw {
   workspace?: boolean
   /** Is this package private */
   private?: boolean
-  /** Is this package part of devDependencies */
-  dev?: boolean
-  /** Is this package part of dependencies */
-  prod?: boolean
-  /** Is this package part of optionalDependencies */
-  optional?: boolean
+
+  /**
+   * Cluster of this package.
+   * Cluster is a set of labels that will inherits to all nested dependencies.
+   *
+   * Typically it would includes things like `dep:dev` or `dep:prod`,
+   * or catalogs like `catalog:default` or `catalog:custom-named`.
+   */
+  clusters: Set<string>
 }
 
 export interface PackageNodeBase extends PackageNodeRaw {
@@ -37,6 +40,8 @@ export interface PackageNodeBase extends PackageNodeRaw {
   flatDependencies: Set<string>
   /** All nested  dependents of this package */
   flatDependents: Set<string>
+  /** All clusters of this package */
+  flatClusters: Set<string>
 }
 
 export interface PackageNode extends PackageNodeBase {
