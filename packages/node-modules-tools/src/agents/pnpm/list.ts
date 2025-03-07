@@ -185,7 +185,7 @@ export async function listPackageDependencies(
 
     if (!node.workspace && level === 1) {
       const catalogs = Object.entries(catalogsMap)
-        .filter(([_, catalog]) => catalog[node.name])
+        .filter(([_, catalog]) => catalog?.[node.name])
         .map(([name]) => name)
       for (const catalog of catalogs) {
         node.clusters.add(`catalog:${catalog}`)
