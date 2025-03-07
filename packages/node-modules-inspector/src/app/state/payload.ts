@@ -219,3 +219,10 @@ export function getPublishTime(input: PackageNode | string) {
 export const totalWorkspaceSize = computed(() => {
   return Array.from(payloads.avaliable.packages).reduce((acc, pkg) => acc + (pkg.resolved.installSize?.bytes || 0), 0)
 })
+
+export const totalDeprecatedCount = computed(() => {
+  return Array.from(payloads.avaliable.packages).filter(pkg =>
+    pkg.resolved.deprecatedInfo?.current?.deprecated
+    || pkg.resolved.deprecatedInfo?.last?.deprecated,
+  ).length
+})

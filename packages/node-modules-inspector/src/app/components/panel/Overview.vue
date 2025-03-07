@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { getBackend } from '~/backends'
 import { rawPayload } from '~/state/data'
-import { payloads, totalWorkspaceSize } from '~/state/payload'
+import { payloads, totalDeprecatedCount, totalWorkspaceSize } from '~/state/payload'
 import { version } from '../../../../package.json'
 
 const backend = getBackend()
@@ -68,6 +68,11 @@ const timepassed = computed(() => rawPayload.value?.timestamp ? Date.now() - raw
         <div i-catppuccin-java-class icon-catppuccin flex-none />
         <DisplayNumberBadge :number="payloads.avaliable.packages.length" rounded-full text-sm mx--0.2 mt-3px color="badge-color-primary" />
         <span ml--0.5>total packages</span>
+      </NuxtLink>
+      <NuxtLink flex="~ gap-2 items-center" to="/report/deprecated">
+        <div i-ph-warning-duotone flex-none />
+        <DisplayNumberBadge :number="totalDeprecatedCount" rounded-full text-sm mx--0.2 mt-3px color="badge-color-red" />
+        <span ml--0.5>deprecated packages</span>
       </NuxtLink>
       <NuxtLink flex="~ gap-2 items-center" to="/report/multiple-versions">
         <div i-catppuccin-java-enum icon-catppuccin flex-none />
