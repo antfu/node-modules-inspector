@@ -4,12 +4,13 @@ import fs from 'node:fs/promises'
 import { join } from 'pathe'
 
 export interface DeprecatedInfo {
-  deprecated: boolean
-  willbedeprecated?: {
-    version: string
-    message: string
-    timeAfterCurrent: number
-    versionsCount: number
+  current: {
+    deprecated: boolean
+    message?: string
+  }
+  last: {
+    deprecated: boolean
+    message?: string
   }
 }
 
@@ -21,12 +22,24 @@ export interface DeprecatedInfo {
 export async function getPackageDeprecatedInfo(
   pkg: PackageNodeRaw,
 ): Promise<DeprecatedInfo> {
-  if (pkg.workspace)
-    return { deprecated: false }
-  if (pkg.name.startsWith('#'))
-    return { deprecated: false }
-  if (pkg.version.match(/^(?:file|link|workspace):/))
-    return { deprecated: false }
+  if (pkg.workspace) {
+    return {
+      current: { deprecated: false },
+      last: { deprecated: false },
+    }
+  }
+  if (pkg.name.startsWith('#')) {
+    return {
+      current: { deprecated: false },
+      last: { deprecated: false },
+    }
+  }
+  if (pkg.version.match(/^(?:file|link|workspace):/)) {
+    return {
+      current: { deprecated: false },
+      last: { deprecated: false },
+    }
+  }
 
   // Create cache directory if it doesn't exist
   const cacheDir = '/tmp/node-modules-inspector/deprecated'
@@ -54,18 +67,16 @@ export async function getPackageDeprecatedInfo(
 
     // Initialize result
     const result: DeprecatedInfo = {
-      deprecated: false,
+      current: {
+        deprecated: false,
+      },
+      last: {
+        deprecated: false,
+      },
     }
 
-    // Check if the current version is deprecated
-    const currentVersionInfo = data.versions?.[pkg.version]
-    if (currentVersionInfo?.deprecated) {
-      result.deprecated = true
-    }
-
-    // Check for future deprecations
+    // Get all versions and sort them by semver
     const versions = Object.keys(data.versions || {})
-    // Sort versions to find the next version after the current one
     const semverSort = (a: string, b: string) => {
       const aParts = a.split('.').map(Number)
       const bParts = b.split('.').map(Number)
@@ -77,61 +88,23 @@ export async function getPackageDeprecatedInfo(
       }
       return 0
     }
-
     const sortedVersions = versions.sort(semverSort)
-    const currentVersionIndex = sortedVersions.indexOf(pkg.version)
 
-    if (currentVersionIndex !== -1 && currentVersionIndex < sortedVersions.length - 1) {
-      // Get the latest version
-      const latestVersion = sortedVersions[sortedVersions.length - 1]
+    // 1. Check if the current version is deprecated
+    const currentVersionInfo = data.versions?.[pkg.version]
+    if (currentVersionInfo?.deprecated) {
+      result.current.deprecated = true
+      result.current.message = currentVersionInfo.deprecated
+    }
 
-      // Check if the latest version is deprecated
-      const isLatestDeprecated = !!data.versions[latestVersion]?.deprecated
+    // 2. Get the last version by semver and check if it's deprecated
+    if (sortedVersions.length > 0) {
+      const lastVersion = sortedVersions[sortedVersions.length - 1]
+      const lastVersionInfo = data.versions?.[lastVersion]
 
-      // Only proceed if the latest version is deprecated
-      if (isLatestDeprecated) {
-        // Find the last deprecated version after the current one
-        let lastDeprecatedVersion: string | null = null
-        let lastDeprecatedVersionIndex = -1
-
-        // Get the publication date of the current version
-        const currentVersionDate = new Date(data.time?.[pkg.version] || 0)
-
-        // Check all future versions for deprecation
-        for (let i = currentVersionIndex + 1; i < sortedVersions.length; i++) {
-          const version = sortedVersions[i]
-          const versionDate = new Date(data.time?.[version] || 0)
-
-          // Only consider versions published after the current version
-          if (data.versions[version]?.deprecated && versionDate > currentVersionDate) {
-            lastDeprecatedVersion = version
-            lastDeprecatedVersionIndex = i
-          }
-        }
-
-        // If we found a deprecated version after the current one
-        if (lastDeprecatedVersion && lastDeprecatedVersionIndex !== -1) {
-          const version = lastDeprecatedVersion
-          // Get the publication date of the deprecated version
-          const deprecatedVersionDate = new Date(data.time?.[version] || 0)
-
-          // Calculate days difference (if dates are available)
-          const daysDifference = currentVersionDate.getTime() && deprecatedVersionDate.getTime()
-            ? Math.floor((deprecatedVersionDate.getTime() - currentVersionDate.getTime()) / (1000 * 60 * 60 * 24))
-            : 0
-
-          // Only consider it as "will be deprecated" if the days difference is positive
-          if (daysDifference > 0) {
-            const versionsCount = lastDeprecatedVersionIndex - currentVersionIndex
-
-            result.willbedeprecated = {
-              version,
-              message: data.versions[version].deprecated,
-              timeAfterCurrent: daysDifference,
-              versionsCount,
-            }
-          }
-        }
+      if (lastVersionInfo?.deprecated) {
+        result.last.deprecated = true
+        result.last.message = lastVersionInfo.deprecated
       }
     }
 
@@ -142,6 +115,9 @@ export async function getPackageDeprecatedInfo(
   }
   catch {
     // If there's an error fetching data, return a default value
-    return { deprecated: false }
+    return {
+      current: { deprecated: false },
+      last: { deprecated: false },
+    }
   }
 }

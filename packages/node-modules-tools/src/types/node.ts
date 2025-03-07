@@ -1,5 +1,6 @@
 import type { PackageJsonExports } from 'pkg-types'
 import type { Message as PublintMessage } from 'publint'
+import type { DeprecatedInfo } from '../deprecated'
 import type { PackageInstallSizeInfo } from './size'
 
 export type PackageModuleTypeSimple = 'cjs' | 'esm'
@@ -64,14 +65,6 @@ export interface PackageNode extends PackageNodeBase {
      * Result for publint, null for invalid, undefined for not checked yet, empty array for all good
      */
     publint?: PublintMessage[] | null
-    deprecatedInfo: {
-      deprecated: boolean
-      willbedeprecated?: {
-        version: string
-        message: string
-        timeAfterCurrent: number
-        versionsCount: number
-      }
-    }
+    deprecatedInfo: DeprecatedInfo
   }
 }

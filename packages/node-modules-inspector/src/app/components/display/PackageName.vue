@@ -7,15 +7,20 @@ const props = defineProps<{
   pkg?: PackageNode
 }>()
 
-const isDeprecated = computed(() => props.pkg?.resolved?.deprecatedInfo?.deprecated || false)
-const willBeDeprecated = computed(() => props.pkg?.resolved?.deprecatedInfo?.willbedeprecated)
+const isFutureDeprecated = computed(() => props.pkg?.resolved?.deprecatedInfo?.last?.deprecated || false)
 
 const deprecationTitle = computed(() => {
-  if (isDeprecated.value) {
-    return 'This package is deprecated'
-  }
-  if (willBeDeprecated.value) {
-    return `Will be deprecated in version ${willBeDeprecated.value.version} (${willBeDeprecated.value.versionsCount} versions ahead)`
+  if (isFutureDeprecated.value) {
+    const currentInfo = props.pkg?.resolved?.deprecatedInfo?.current
+    if (currentInfo) {
+      return `This package is deprecated: ${currentInfo.message}`
+    }
+    else {
+      const lastInfo = props.pkg?.resolved?.deprecatedInfo?.last
+      if (lastInfo) {
+        return `Will be deprecated in: ${lastInfo.message}`
+      }
+    }
   }
   return ''
 })
@@ -24,7 +29,7 @@ const deprecationTitle = computed(() => {
 <template>
   <span
     font-mono
-    :class="{ 'text-red-500': isDeprecated }"
+    :class="{ 'text-red-500': isFutureDeprecated }"
     :title="deprecationTitle"
   >
     {{ name }}

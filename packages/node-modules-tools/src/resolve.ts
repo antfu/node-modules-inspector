@@ -48,12 +48,13 @@ export async function resolvePackage(
   }
 
   const deprecatedInfo = await getPackageDeprecatedInfo(_pkg)
-  if (deprecatedInfo.deprecated) {
-    console.warn(
-      `Package "${pkg.name}@${pkg.version}":\n`
-      + `${JSON.stringify(deprecatedInfo, null, 2)}\n`,
-    )
-  }
+  // debuging
+  // if (deprecatedInfo.current.deprecated || deprecatedInfo.last.deprecated) {
+  //   console.warn(
+  //     `Package "${pkg.name}@${pkg.version}":\n`
+  //     + `${JSON.stringify(deprecatedInfo, null, 2)}\n`,
+  //   )
+  // }
 
   _pkg.resolved = {
     module: analyzePackageModuleType(json),
