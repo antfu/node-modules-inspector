@@ -50,7 +50,7 @@ const tabsMeta = [
   {
     name: 'Compare',
     path: '/compare',
-    icon: 'i-ph-line-vertical-duotone',
+    icon: 'i-ph-flip-horizontal-duotone',
   },
 ]
 

@@ -12,13 +12,6 @@ import { filters } from '~/state/filters'
         <div i-ph-funnel-x-duotone />
         Reset Filters
       </button>
-      <button
-        btn-action :disabled="filters.exclude.activated.length === 0"
-        @click="filters.exclude.reset()"
-      >
-        <div i-ph-trash-simple-duotone />
-        Reset Excludes
-      </button>
     </div>
 
     <div flex="~ col gap-4" border="t base">
@@ -94,7 +87,6 @@ import { filters } from '~/state/filters'
     <PanelFiltersOptionFocus />
     <PanelFiltersOptionWhy />
     <PanelFiltersOptionDepth />
-    <PanelFiltersOptionExcludes />
     <PanelFiltersResults />
   </div>
 </template>

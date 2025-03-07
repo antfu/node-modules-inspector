@@ -5,8 +5,21 @@ import { filters } from '~/state/filters'
 <template>
   <div flex="~ col gap-2" p4 border="t base">
     <div flex="~ gap-2 items-center">
-      <div i-ph-network-slash-duotone flex-none />
-      Excludes
+      <div
+        v-tooltip="'Excluded packages and the dependencies they introduced are ignored in all representations'"
+        flex="~ gap-2 items-center" select-none
+      >
+        <div i-ph-network-slash-duotone flex-none />
+        <div>Excludes</div>
+      </div>
+      <div flex-auto />
+      <button
+        btn-action :disabled="filters.exclude.activated.length === 0"
+        @click="filters.exclude.reset()"
+      >
+        <div i-ph-trash-simple-duotone />
+        Reset
+      </button>
     </div>
     <div v-if="filters.state.excludes" flex="~ gap-2 wrap">
       <div

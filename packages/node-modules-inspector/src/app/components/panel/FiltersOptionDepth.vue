@@ -50,10 +50,16 @@ const depthGridRows = computed(() => Math.ceil(availableDepths.value.length / 3)
 <template>
   <div flex="~ col gap-2" p4 border="t base">
     <div flex="~ gap-2 items-center">
-      <div i-ph-stack-duotone flex-none />
-      <div flex-auto>
-        Dependency Depth
+      <div
+        v-tooltip="'Dependency depth is the number of dependencies between the root package and the target package'"
+        flex="~ gap-2 items-center"
+      >
+        <div i-ph-stack-duotone flex-none />
+        <div>
+          Dependency Depth
+        </div>
       </div>
+      <div flex-auto />
       <label
         flex="~ gap-1 items-center"
       >

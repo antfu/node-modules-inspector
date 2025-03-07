@@ -39,6 +39,9 @@ const backend = getBackend()
         />
       </OptionItem>
     </div>
+
+    <PanelFiltersOptionExcludes />
+
     <div v-if="backend.isDynamic" border="t base" p4 flex="~ gap-2 items-center">
       <button btn-action @click="fetchData(true)">
         <div i-ph-arrows-clockwise-duotone />
