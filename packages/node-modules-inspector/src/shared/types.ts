@@ -1,7 +1,8 @@
-import type { ListPackageDependenciesResult, PackageNodeRaw } from 'node-modules-tools'
+import type { ListPackageDependenciesResult, PackageNode, PackageNodeRaw } from 'node-modules-tools'
+import type { Message as PublintMessage } from 'publint'
 import type { FilterOptions } from './filters'
 
-export type { FilterOptions }
+export type { FilterOptions, PublintMessage }
 
 export interface NodeModulesInspectorPayload extends ListPackageDependenciesResult {
   timestamp: number
@@ -12,6 +13,7 @@ export interface NodeModulesInspectorPayload extends ListPackageDependenciesResu
 export interface ServerFunctions {
   getPayload: (force?: boolean) => Promise<NodeModulesInspectorPayload>
   getPackagesPublishDate: (deps: string[]) => Promise<Map<string, string>>
+  getPublint: (pkg: Pick<PackageNode, 'private' | 'workspace' | 'spec' | 'filepath'>) => Promise<PublintMessage[] | null>
   openInEditor: (filename: string) => void
   openInFinder: (filename: string) => void
 }
@@ -54,6 +56,7 @@ export interface NodeModulesInspectorConfig {
 }
 
 export interface SettingsOptions {
+  graphRender: 'normal' | 'dots'
   moduleTypeSimple: boolean
   moduleTypeRender: 'badge' | 'circle' | 'none'
   deepDependenciesTree: boolean
@@ -71,9 +74,12 @@ export type RemoveVoidKeysFromObject<T> = { [K in keyof T]: T[K] extends void ? 
 
 export interface ClientFunctions {}
 
-export type ServerFunctionsDump = RemoveVoidKeysFromObject<{
-  [K in keyof ServerFunctions]: Awaited<ReturnType<ServerFunctions[K]>>
-}>
+export type ServerFunctionsDump = Omit<
+  RemoveVoidKeysFromObject<{
+    [K in keyof ServerFunctions]: Awaited<ReturnType<ServerFunctions[K]>>
+  }>,
+  'getPublint' | 'getPackagesPublishDate'
+>
 
 export interface ConnectionMeta {
   backend: 'websocket' | 'static'

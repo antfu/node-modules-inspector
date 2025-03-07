@@ -14,12 +14,14 @@ const props = withDefaults(
     inner?: string
     as?: string
     fade?: boolean
+    borderBase?: string
     highlightMode?: HighlightMode
   }>(),
   {
     selectionMode: 'none',
     as: 'div',
     fade: false,
+    borderBase: 'border-base',
     highlightMode: 'focus',
   },
 )
@@ -58,7 +60,7 @@ const classesOuter = computed(() => {
   else if (isRelated.value)
     list.push('border-primary:50')
   else if (highlightCompare.value === 'none')
-    list.push('border-base')
+    list.push(props.borderBase)
 
   if (highlightCompare.value === 'both')
     list.push('border-pink5:50')

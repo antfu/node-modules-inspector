@@ -14,15 +14,18 @@ const fundingGroup = computed(() => {
   for (const pkg of payloads.filtered.packages) {
     if (pkg.workspace)
       continue
-    const funding = parseFunding(pkg.resolved.funding?.url)
-    if (!funding)
-      continue
-    const group = map.get(funding.entry) ?? {
-      info: funding,
-      packages: [],
+
+    for (const funding of pkg.resolved.fundings || []) {
+      const resolved = parseFunding(funding.url)
+      if (!resolved)
+        continue
+      const group = map.get(resolved.entry) ?? {
+        info: resolved,
+        packages: [],
+      }
+      group.packages.push(pkg)
+      map.set(resolved.entry, group)
     }
-    group.packages.push(pkg)
-    map.set(funding.entry, group)
   }
   return [...map.values()]
     .sort((a, b) => a.packages.length - b.packages.length || a.info.name.localeCompare(b.info.name))

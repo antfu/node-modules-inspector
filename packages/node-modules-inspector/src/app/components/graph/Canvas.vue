@@ -6,12 +6,15 @@ import type { ComputedPayload } from '~/state/payload'
 import { onKeyPressed, useEventListener, useMagicKeys } from '@vueuse/core'
 import { hierarchy, tree } from 'd3-hierarchy'
 import { linkHorizontal, linkVertical } from 'd3-shape'
-import { computed, nextTick, onMounted, ref, shallowReactive, shallowRef, useTemplateRef, watch } from 'vue'
+import { computed, nextTick, onMounted, reactive, ref, shallowReactive, shallowRef, useTemplateRef, watch } from 'vue'
 import { useZoomElement } from '~/composables/zoomElement'
 import { selectedNode } from '~/state/current'
 import { getCompareHighlight } from '~/state/highlight'
 import { payloads } from '~/state/payload'
 import { query } from '~/state/query'
+import { settings } from '~/state/settings'
+import GraphDot from './Dot.vue'
+import GraphNode from './Node.vue'
 
 const { payload, rootPackages, highlightMode } = defineProps<{
   payload: ComputedPayload
@@ -57,11 +60,13 @@ onKeyPressed(['=', '+'], (e) => {
 
 const nodesRefMap = new Map<string, HTMLDivElement>()
 
-const NODE_WIDTH = 300
-const NODE_HEIGHT = 30
-const NODE_LINK_OFFSET = 20
-const NODE_MARGIN = 800
-const NODE_GAP = 150
+const SPACING = reactive({
+  width: computed(() => settings.value.graphRender === 'normal' ? 300 : 10),
+  height: computed(() => settings.value.graphRender === 'normal' ? 30 : 20),
+  linkOffset: computed(() => settings.value.graphRender === 'normal' ? 20 : 0),
+  margin: computed(() => 800),
+  gap: computed(() => settings.value.graphRender === 'normal' ? 150 : 100),
+})
 
 function calculateGraph() {
   // Unset the canvas size, and recalculate again after nodes are rendered
@@ -86,26 +91,26 @@ function calculateGraph() {
 
   // Calculate the layout
   const layout = tree<PackageNode>()
-    .nodeSize([NODE_HEIGHT, NODE_WIDTH + NODE_GAP])
+    .nodeSize([SPACING.height, SPACING.width + SPACING.gap])
   layout(root)
 
   // Rotate the graph from top-down to left-right
   const _nodes = root.descendants()
   for (const node of _nodes) {
-    [node.x, node.y] = [node.y! - NODE_WIDTH, node.x!]
+    [node.x, node.y] = [node.y! - SPACING.width, node.x!]
   }
 
   // Offset the graph and adding margin
   const minX = Math.min(..._nodes.map(n => n.x!))
   const minY = Math.min(..._nodes.map(n => n.y!))
-  if (minX < NODE_MARGIN) {
+  if (minX < SPACING.margin) {
     for (const node of _nodes) {
-      node.x! += Math.abs(minX) + NODE_MARGIN
+      node.x! += Math.abs(minX) + SPACING.margin
     }
   }
-  if (minY < NODE_MARGIN) {
+  if (minY < SPACING.margin) {
     for (const node of _nodes) {
-      node.y! += Math.abs(minY) + NODE_MARGIN
+      node.y! += Math.abs(minY) + SPACING.margin
     }
   }
 
@@ -141,8 +146,8 @@ function calculateGraph() {
   links.value = _links
 
   nextTick(() => {
-    width.value = (container.value!.scrollWidth / scale.value + NODE_MARGIN)
-    height.value = (container.value!.scrollHeight / scale.value + NODE_MARGIN)
+    width.value = (container.value!.scrollWidth / scale.value + SPACING.margin)
+    height.value = (container.value!.scrollHeight / scale.value + SPACING.margin)
 
     if (query.selected)
       focusOn(query.selected, false)
@@ -253,13 +258,13 @@ const createLinkVertical = linkVertical()
 function generateLink(link: HierarchyLink<PackageNode>) {
   if (link.target.x! <= link.source.x!) {
     return createLinkVertical({
-      source: [link.source.x! + NODE_WIDTH / 2 - NODE_LINK_OFFSET, link.source.y!],
-      target: [link.target.x! - NODE_WIDTH / 2 + NODE_LINK_OFFSET, link.target.y!],
+      source: [link.source.x! + SPACING.width / 2 - SPACING.linkOffset, link.source.y!],
+      target: [link.target.x! - SPACING.width / 2 + SPACING.linkOffset, link.target.y!],
     })
   }
   return createLinkHorizontal({
-    source: [link.source.x! + NODE_WIDTH / 2 - NODE_LINK_OFFSET, link.source.y!],
-    target: [link.target.x! - NODE_WIDTH / 2 + NODE_LINK_OFFSET, link.target.y!],
+    source: [link.source.x! + SPACING.width / 2 - SPACING.linkOffset, link.source.y!],
+    target: [link.target.x! - SPACING.width / 2 + SPACING.linkOffset, link.target.y!],
   })
 }
 
@@ -285,10 +290,18 @@ function getLinkColor(link: Link) {
   return 'stroke-#8882'
 }
 
+function toggleRender() {
+  settings.value.graphRender = settings.value.graphRender === 'normal' ? 'dots' : 'normal'
+}
+
 onMounted(() => {
   handleDragingScroll()
 
-  watch(() => payload.packages, calculateGraph, { immediate: true })
+  watch(
+    () => [payload.packages, settings.value.graphRender],
+    calculateGraph,
+    { immediate: true },
+  )
 
   watch(
     () => query.selected,
@@ -340,14 +353,15 @@ onMounted(() => {
           :key="node.data.spec"
         >
           <template v-if="node.data.spec !== '~root'">
-            <GraphNode
+            <component
+              :is="settings.graphRender === 'normal' ? GraphNode : GraphDot"
               :ref="(el: any) => nodesRefMap.set(node.data.spec, el?.$el)"
               :pkg="node.data"
               :highlight-mode="highlightMode"
               :style="{
                 left: `${node.x}px`,
                 top: `${node.y}px`,
-                minWidth: `${NODE_WIDTH}px`,
+                minWidth: settings.graphRender === 'normal' ? `${SPACING.width}px` : undefined,
               }"
             />
           </template>
@@ -382,6 +396,18 @@ onMounted(() => {
           @click="zoomOut()"
         >
           <div i-ph-magnifying-glass-minus-duotone />
+        </button>
+      </div>
+
+      <div bg-glass rounded-full border border-base shadow>
+        <button
+          w-10 h-10 rounded-full hover:bg-active op50 hover:op100
+          flex="~ items-center justify-center"
+          title="Toggle Graph Render Mode"
+          @click="toggleRender"
+        >
+          <div v-if="settings.graphRender === 'dots'" i-ph-dots-nine-duotone />
+          <div v-else i-ph-dresser-duotone />
         </button>
       </div>
 

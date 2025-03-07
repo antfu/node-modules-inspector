@@ -1,8 +1,11 @@
 import type { PackageDependencyHierarchy } from '@pnpm/list'
 import type { ProjectManifest } from '@pnpm/types'
 import type { ListPackageDependenciesOptions, ListPackageDependenciesRawResult, PackageNodeRaw } from '../../types'
-import { dirname, relative } from 'pathe'
+import fs from 'node:fs'
+import YAML from 'js-yaml'
+import { dirname, join, relative } from 'pathe'
 import { x } from 'tinyexec'
+import { CLUSTER_DEP_DEV, CLUSTER_DEP_PROD } from '../../constants'
 
 type PnpmPackageNode = Pick<ProjectManifest, 'description' | 'license' | 'author' | 'homepage'> & {
   alias: string | undefined
@@ -92,11 +95,23 @@ async function getDependenciesTree(options: ListPackageDependenciesOptions): Pro
   return json
 }
 
+export async function getCatalogs(root: string): Promise<Record<string, Record<string, string>>> {
+  if (!fs.existsSync(join(root, 'pnpm-workspace.yaml')))
+    return {}
+  const raw = await fs.promises.readFile(join(root, 'pnpm-workspace.yaml'), 'utf-8')
+  const data = YAML.load(raw) as any || {}
+  return {
+    ...data.catalogs || {},
+    default: data.catalog,
+  }
+}
+
 export async function listPackageDependencies(
   options: ListPackageDependenciesOptions,
 ): Promise<ListPackageDependenciesRawResult> {
   const root = await resolveRoot(options) || options.cwd
   const tree = await getDependenciesTree(options)
+  const catalogsMap = await getCatalogs(root)
   const packages = new Map<string, PackageNodeRaw>()
 
   const workspacePackages = tree.map((pkg) => {
@@ -116,6 +131,7 @@ export async function listPackageDependencies(
       filepath: pkg.path,
       dependencies: new Set(),
       workspace: true,
+      clusters: new Set(),
     }
     if (pkg.private)
       node.private = true
@@ -148,6 +164,7 @@ export async function listPackageDependencies(
       version,
       filepath: raw.path,
       dependencies: new Set(),
+      clusters: new Set(),
     }
     mapNormalize.set(raw, node)
     return node
@@ -156,17 +173,23 @@ export async function listPackageDependencies(
   function traverse(
     raw: PnpmPackageNode,
     level: number,
-    mode: 'dev' | 'prod' | 'optional',
+    clusters: Iterable<string>,
   ): PackageNodeRaw {
     const node = normalize(raw)
 
     if (!node.workspace) {
-      if (mode === 'dev')
-        node.dev = true
-      if (mode === 'prod')
-        node.prod = true
-      if (mode === 'optional')
-        node.optional = true
+      for (const cluster of clusters) {
+        node.clusters.add(cluster)
+      }
+    }
+
+    if (!node.workspace && level === 1) {
+      const catalogs = Object.entries(catalogsMap)
+        .filter(([_, catalog]) => catalog?.[node.name])
+        .map(([name]) => name)
+      for (const catalog of catalogs) {
+        node.clusters.add(`catalog:${catalog}`)
+      }
     }
 
     // Filter out node
@@ -180,7 +203,7 @@ export async function listPackageDependencies(
 
     if (options.dependenciesFilter?.(node) !== false) {
       for (const dep of Object.values(raw.dependencies || {})) {
-        const resolvedDep = traverse(dep, level + 1, mode)
+        const resolvedDep = traverse(dep, level + 1, clusters)
         node.dependencies.add(resolvedDep.spec)
       }
     }
@@ -191,11 +214,11 @@ export async function listPackageDependencies(
   // Traverse deps
   for (const { pkg, node } of workspacePackages) {
     for (const dep of Object.values(pkg.dependencies || {})) {
-      const result = traverse(dep, 1, 'prod')
+      const result = traverse(dep, 1, [CLUSTER_DEP_PROD])
       node.dependencies.add(result.spec)
     }
     for (const dep of Object.values(pkg.devDependencies || {})) {
-      const result = traverse(dep, 1, 'dev')
+      const result = traverse(dep, 1, [CLUSTER_DEP_DEV])
       node.dependencies.add(result.spec)
     }
   }

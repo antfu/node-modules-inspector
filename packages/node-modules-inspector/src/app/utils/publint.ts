@@ -30,7 +30,7 @@ function getPkgPathValue(pkg: any, path: string[]): any {
     }
   }
   catch (e) {
-    console.error(e)
+    console.warn('[publint] Failed to get path value', e)
     return '<unknown>'
   }
   return v

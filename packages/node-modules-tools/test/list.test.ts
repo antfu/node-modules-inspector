@@ -30,6 +30,9 @@ describe('listPackageDependencies', () => {
       flatDependents: undefined,
     }).toMatchInlineSnapshot(`
       {
+        "clusters": Set {
+          "dep:dev",
+        },
         "dependencies": Set {
           "ms@2.1.3",
         },
@@ -42,10 +45,9 @@ describe('listPackageDependencies', () => {
           "@eslint/eslintrc@3.3.0",
           "vite-plugin-inspect@11.0.0",
           "lint-staged@15.4.3",
-          "node-modules-inspector@link:packages/node-modules-inspector",
           "@typescript-eslint/typescript-estree@8.26.0",
           "eslint-plugin-jsdoc@50.6.3",
-          "vue-eslint-parser@10.0.0",
+          "vue-eslint-parser@10.1.1",
           "@typescript-eslint/parser@8.26.0",
           "eslint-plugin-toml@0.12.0",
           "eslint-plugin-yml@1.17.0",
@@ -63,8 +65,10 @@ describe('listPackageDependencies', () => {
           "agent-base@6.0.2",
         },
         "depth": 2,
-        "dev": true,
         "filepath": undefined,
+        "flatClusters": Set {
+          "dep:dev",
+        },
         "flatDependencies": Set {
           "ms@2.1.3",
         },
@@ -75,7 +79,7 @@ describe('listPackageDependencies', () => {
           "engines": {
             "node": ">=6.0",
           },
-          "funding": undefined,
+          "fundings": [],
           "homepage": undefined,
           "installSize": {
             "bytes": 42798,
@@ -119,7 +123,7 @@ describe('listPackageDependencies', () => {
         "@unocss/eslint-plugin@66.0.0",
         "@unocss/eslint-config@66.0.0",
         "@stylistic/eslint-plugin@4.2.0",
-        "@antfu/eslint-config@4.5.1",
+        "@antfu/eslint-config@4.6.0",
         "@nuxt/eslint-config@1.1.0",
         "@nuxt/eslint@1.1.0",
         "@vitest/eslint-plugin@1.1.36",
@@ -143,8 +147,9 @@ describe('listPackageDependencies', () => {
         "eslint-plugin-antfu@3.1.0",
         "eslint-plugin-command@3.1.0",
         "eslint-plugin-jsdoc@50.6.3",
+        "eslint-plugin-pnpm-catalogs@0.1.0",
         "eslint-plugin-unused-imports@4.1.4",
-        "vue-eslint-parser@10.0.0",
+        "vue-eslint-parser@10.1.1",
         "@typescript-eslint/parser@8.26.0",
         "eslint-compat-utils@0.6.4",
         "eslint-plugin-toml@0.12.0",
@@ -160,7 +165,6 @@ describe('listPackageDependencies', () => {
         "vite-plugin-inspect@11.0.0",
         "@nuxt/devtools@2.2.1",
         "lint-staged@15.4.3",
-        "node-modules-inspector@link:packages/node-modules-inspector",
         "@typescript-eslint/typescript-estree@8.26.0",
         "micromark@4.0.1",
         "mdast-util-from-markdown@2.0.2",

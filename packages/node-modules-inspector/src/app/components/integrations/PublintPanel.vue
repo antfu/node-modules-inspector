@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
+import type { Message as PublintMessage } from 'publint'
 import { computed } from 'vue'
 import { settings } from '~/state/settings'
 import { formatMessage } from '~/utils/publint'
 
 const props = defineProps<{
   pkg: PackageNode
+  messages: PublintMessage[] | undefined | null
 }>()
 
 const counter = computed(() => {
@@ -14,7 +16,7 @@ const counter = computed(() => {
     warning: 0,
     suggestion: 0,
   }
-  for (const message of props.pkg.resolved.publint || []) {
+  for (const message of props.messages || []) {
     values[message.type]++
   }
   return values
@@ -34,10 +36,10 @@ const messageColors = {
 </script>
 
 <template>
-  <div v-if="props.pkg.resolved.publint" block>
+  <div v-if="messages" block>
     <button flex="~ gap-2 items-center" w-full p4 select-none @click="settings.showPublintMessages = !settings.showPublintMessages">
       <span op50 text-sm>publint</span>
-      <template v-if="!props.pkg.resolved.publint.length">
+      <template v-if="!messages.length">
         <div badge-color-green rounded-full text-sm py0.5 px2 flex="~ items-center gap-1">
           <div i-ph-checks-bold />
           <span text-green6 dark:text-green text-xs>All Good</span>
@@ -66,7 +68,7 @@ const messageColors = {
       </template>
       <div flex-auto />
       <button
-        v-if="props.pkg.resolved.publint.length"
+        v-if="messages.length"
         p1 rounded-full hover:bg-active mr--2
         title="Toggle file composition"
       >
@@ -74,19 +76,19 @@ const messageColors = {
       </button>
     </button>
     <a
-      v-if="settings.showPublintMessages && props.pkg.resolved.publint.length"
+      v-if="settings.showPublintMessages && messages.length"
       flex="~ col gap-2"
       p3 mt--2 of-x-auto w-full
       :href="`https://publint.dev/${props.pkg.spec}`"
       target="_blank"
-      :class="props.pkg.resolved.publint.length > 0 ? 'hover:bg-active' : ''"
+      :class="messages.length > 0 ? 'hover:bg-active' : ''"
     >
-      <div v-for="message of props.pkg.resolved.publint" :key="message.code" text-sm flex="~ gap-2">
+      <div v-for="message of messages" :key="message.code" text-sm flex="~ gap-2">
         <div :class="icons[message.type]" flex-none mt0.5 />
         <div
           rounded line-clamp-3 break-all
           :class="messageColors[message.type]"
-          v-html="formatMessage(message, props.pkg)"
+          v-html="formatMessage(message, { ...props.pkg, ...props.pkg.resolved })"
         />
       </div>
     </a>

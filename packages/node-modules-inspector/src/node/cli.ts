@@ -26,7 +26,7 @@ cli
   .option('--outDir <dir>', 'Output directory', { default: '.node-modules-inspector' })
   // Action
   .action(async (options) => {
-    console.log(c.green`${MARK_NODE} Building static Node Modules Inspector...`)
+    console.log(c.cyan`${MARK_NODE} Building static Node Modules Inspector...`)
 
     const cwd = process.cwd()
     const outDir = resolve(cwd, options.outDir)
@@ -40,8 +40,6 @@ cli
     }))
     const rpcDump: ServerFunctionsDump = {
       getPayload: await rpc.getPayload(),
-      // TODO: Implement this
-      getPackagesPublishDate: new Map(),
     }
 
     let baseURL = options.base

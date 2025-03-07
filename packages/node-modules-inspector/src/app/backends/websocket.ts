@@ -1,3 +1,4 @@
+import type { PackageNode } from 'node-modules-tools'
 import type { ClientFunctions, ServerFunctions } from '~~/shared/types'
 import type { Backend } from '~/types/backend'
 import { createBirpc } from 'birpc'
@@ -103,6 +104,9 @@ export function createWebSocketBackend(options: WebSocketBackendOptions): Backen
           error.value = err
           throw err
         }
+      },
+      getPublint: async (pkg: Pick<PackageNode, 'spec' | 'filepath'>) => {
+        return await rpc.getPublint(pkg)
       },
       openInEditor: (filename: string) => rpc.openInEditor.asEvent(filename),
       openInFinder: (filename: string) => rpc.openInFinder.asEvent(filename),

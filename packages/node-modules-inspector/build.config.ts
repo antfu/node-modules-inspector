@@ -25,6 +25,8 @@ export default defineBuildConfig({
   clean: false,
   declaration: 'node16',
   rollup: {
-    inlineDependencies: true,
+    inlineDependencies: [
+      '@antfu/utils',
+    ],
   },
 })

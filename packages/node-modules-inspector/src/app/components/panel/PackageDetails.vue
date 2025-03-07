@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
 import { Menu as VMenu } from 'floating-vue'
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import { getBackend } from '~/backends'
 import { selectedNode } from '~/state/current'
+import { fetchPublintMessages, rawPublintMessages } from '~/state/data'
 import { filters } from '~/state/filters'
 import { getPublishTime, payloads } from '~/state/payload'
 import { query } from '~/state/query'
@@ -23,6 +24,21 @@ const duplicated = computed(() => {
 })
 
 const isExcluded = computed(() => payloads.excluded.has(props.pkg))
+
+const resolvedRepository = computed(() => {
+  const { repository } = props.pkg.resolved
+  if (!repository)
+    return undefined
+  if (/https?:\/\//i.test(repository)) {
+    return repository
+  }
+  if (/^[a-z0-9]+(?:[-_.][a-z0-9]+)*\/[a-z0-9]+(?:[-_.][a-z0-9]+)*$/i.test(repository)) {
+    return `https://github.com/${repository}`
+  }
+  return undefined
+})
+
+const cluster = computed(() => [...payloads.avaliable.flatClusters(props.pkg)].filter(i => !i.startsWith('dep:')))
 
 const selectionMode = computed<'focus' | 'why' | 'exclude' | 'none'>({
   get() {
@@ -58,9 +74,27 @@ function getDepth(amount: number, min = 1) {
   return 10
 }
 
+const publint = computed(() => {
+  if (props.pkg.resolved.publint)
+    return props.pkg.resolved.publint
+  if (rawPublintMessages.value?.has(props.pkg.spec))
+    return rawPublintMessages.value.get(props.pkg.spec)
+  return undefined
+})
+
+watch(
+  publint,
+  async (value) => {
+    if (value === undefined)
+      fetchPublintMessages(props.pkg)
+  },
+  { immediate: true },
+)
+
 const sizeInstall = computed(() => {
   return props.pkg.resolved.installSize?.bytes || 0
 })
+
 const sizeTotal = computed(() => {
   const deps = payloads.avaliable.flatDependencies(props.pkg)
   if (!deps.length)
@@ -136,8 +170,8 @@ function getShallowestDependents(pkg: PackageNode) {
             <div i-catppuccin-npm icon-catppuccin ma />
           </NuxtLink>
           <NuxtLink
-            v-if="pkg.resolved.repository?.match(/https?:\/\//)"
-            :to="pkg.resolved.repository"
+            v-if="resolvedRepository"
+            :to="resolvedRepository"
             title="Open Repository"
             target="_blank"
             ml--1 w-8 h-8 rounded-full hover:bg-active flex
@@ -153,15 +187,10 @@ function getShallowestDependents(pkg: PackageNode) {
           >
             <div i-catppuccin-http icon-catppuccin ma />
           </NuxtLink>
-          <NuxtLink
-            v-if="pkg.resolved.funding?.url"
-            :to="pkg.resolved.funding.url"
-            title="Open Funding"
-            target="_blank"
-            ml--1 w-8 h-8 rounded-full hover:bg-active flex
-          >
-            <div i-catppuccin-code-of-conduct icon-catppuccin ma />
-          </NuxtLink>
+          <PanelPackageFunding
+            v-if="pkg.resolved.fundings?.length"
+            :fundings="pkg.resolved.fundings"
+          />
           <NuxtLink
             :to="`https://publint.dev/${pkg.spec}`"
             title="Open in Publint"
@@ -206,6 +235,9 @@ function getShallowestDependents(pkg: PackageNode) {
         </template>
       </div>
     </div>
+    <div v-if="cluster.length" px4 my2 flex="~ gap-2 wrap items-center">
+      <DisplayClusterBadge v-for="c of cluster" :key="c" flex="~ items-center gap-1" :cluster="c" />
+    </div>
     <div grid="~ cols-3 gap-2 items-center" p2>
       <button
         v-tooltip="'Focus on this package and the dependencies it brings'"
@@ -245,8 +277,8 @@ function getShallowestDependents(pkg: PackageNode) {
       </button>
     </div>
 
-    <div v-if="pkg.resolved.publint" border="t rounded base">
-      <IntegrationsPublintPanel :pkg="pkg" />
+    <div v-if="publint" border="t rounded base">
+      <IntegrationsPublintPanel :pkg="pkg" :messages="publint" />
     </div>
 
     <div v-if="pkg.resolved.installSize" p4 border="t base" flex="~ col gap-1">
@@ -318,13 +350,13 @@ function getShallowestDependents(pkg: PackageNode) {
 
     <div flex="~ col gap-1" flex-auto of-auto>
       <template v-if="settings.packageDetailsTab === 'dependents'">
-        <template v-if="pkg.flatDependents.size">
+        <template v-if="payloads.avaliable.flatDependents(pkg).length">
           <TreeDependencies
             v-if="settings.deepDependenciesTree"
             py5 px4
             :currents="getShallowestDependents(pkg)"
             :list="payloads.avaliable.flatDependents(pkg)"
-            :max-depth="getDepth(pkg.flatDependents.size, 2)"
+            :max-depth="getDepth(payloads.avaliable.flatDependents(pkg).length, 2)"
             type="dependents"
           />
           <TreeDependencies
@@ -332,7 +364,7 @@ function getShallowestDependents(pkg: PackageNode) {
             py5 px4
             :currents="payloads.avaliable.dependents(pkg)"
             :list="payloads.avaliable.dependents(pkg)"
-            :max-depth="getDepth(pkg.dependents.size, 2)"
+            :max-depth="getDepth(payloads.avaliable.dependents(pkg).length, 2)"
             type="dependents"
           />
         </template>
@@ -351,12 +383,12 @@ function getShallowestDependents(pkg: PackageNode) {
           />
         </div>
 
-        <template v-if="pkg.flatDependencies.size">
+        <template v-if="payloads.avaliable.flatDependencies(pkg).length">
           <TreeDependencies
             py5 pt2 px4
             :currents="payloads.avaliable.dependencies(pkg)"
             :list="payloads.avaliable.flatDependencies(pkg)"
-            :max-depth="getDepth(pkg.flatDependencies.size)"
+            :max-depth="getDepth(payloads.avaliable.flatDependencies(pkg).length)"
             type="dependencies"
             :sort-by="settings.deepDependenciesTree ? 'depth' : 'name'"
           />

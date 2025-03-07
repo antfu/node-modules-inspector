@@ -1,4 +1,4 @@
-import type { ListPackageDependenciesOptions } from 'node-modules-tools'
+import type { ListPackageDependenciesOptions, PackageNode } from 'node-modules-tools'
 import type { Message as PublintMessage } from 'publint'
 import type { Storage } from 'unstorage'
 import type { ListPackagePublishDatesOptions } from '../shared/publish-date'
@@ -56,6 +56,33 @@ export function createServerFunctions(options: CreateServerFunctionsOptions): Se
     return _getPackagesPublishDate(deps, { storagePublishDates: options.storagePublishDates })
   }
 
+  async function getPublint(pkg: Pick<PackageNode, 'private' | 'workspace' | 'spec' | 'filepath'>, log = true) {
+    if (pkg.workspace || pkg.private)
+      return null
+    if (log)
+      console.log(c.cyan`${MARK_NODE} Running publint for ${pkg.spec}...`)
+    try {
+      let result = await options.storagePublint?.getItem(pkg.spec) || undefined
+      const { publint } = await import('publint')
+      if (!result) {
+        result = await publint({
+          pack: false,
+          pkgDir: pkg.filepath,
+          strict: false,
+        }).then(r => r.messages) || []
+        await options.storagePublint?.setItem(pkg.spec, result)
+      }
+      if (log)
+        console.log(c.green`${MARK_CHECK} Publint for ${pkg.spec} finished with ${result.length} messages`)
+      return result
+    }
+    catch (e) {
+      console.error(c.red`${MARK_NODE} Failed to run publint for ${pkg.spec}`)
+      console.error(e)
+      return null
+    }
+  }
+
   function getPayload(force?: boolean) {
     if (force) {
       _config = null
@@ -86,36 +113,37 @@ export function createServerFunctions(options: CreateServerFunctionsOptions): Se
 
     const hash = getHash([...result.packages.keys()].sort())
 
-    if (config.publint) {
-      console.log(c.cyan`${MARK_NODE} Running publint...`)
-      const { publint } = await import('publint')
-      const limit = pLimit(20)
-      await Promise.all([...result.packages.values()].map(pkg => limit(async () => {
-        let result = await options.storagePublint?.getItem(pkg.spec) || undefined
-        if (!result) {
-          result = await publint({
-            pack: false,
-            pkgDir: pkg.filepath,
-            strict: false,
-          }).then(r => r.messages) || []
-          await options.storagePublint?.setItem(pkg.spec, result)
-        }
-        pkg.resolved.publint = result
-      })))
+    const buildTasks: (Promise<void>)[] = []
+
+    // For build mode, we run publint upfront
+    if (options.mode === 'build' && config.publint) {
+      buildTasks.push((async () => {
+        console.log(c.cyan`${MARK_NODE} Running publint...`)
+        const limit = pLimit(20)
+        await Promise.all([...result.packages.values()]
+          .map(pkg => limit(async () => {
+            pkg.resolved.publint ||= await getPublint(pkg, false)
+          })))
+        console.log(c.green`${MARK_CHECK} Publint finished`)
+      })())
     }
 
     // For build mode, we fetch the publish date
     if (options.mode === 'build' && config.fetchPublishDate) {
-      console.log(c.cyan`${MARK_NODE} Fetching publish dates...`)
-      try {
-        await getPackagesPublishDate(Array.from(result.packages.keys()))
-      }
-      catch (e) {
-        console.error(c.red`${MARK_NODE} Failed to fetch publish dates`)
-        console.error(e)
-      }
-      console.log(c.green`${MARK_CHECK} Publish dates fetched`)
+      buildTasks.push((async () => {
+        console.log(c.cyan`${MARK_NODE} Fetching publish dates...`)
+        try {
+          await getPackagesPublishDate(Array.from(result.packages.keys()))
+        }
+        catch (e) {
+          console.error(c.red`${MARK_NODE} Failed to fetch publish dates`)
+          console.error(e)
+        }
+        console.log(c.green`${MARK_CHECK} Publish dates fetched`)
+      })())
     }
+
+    await Promise.all(buildTasks)
 
     // Fullfill the publish time
     await Promise.all(Array.from(result.packages.values())
@@ -138,6 +166,7 @@ export function createServerFunctions(options: CreateServerFunctionsOptions): Se
   return {
     getPayload,
     getPackagesPublishDate,
+    getPublint,
     async openInEditor(filename: string) {
       await import('launch-editor').then(r => (r.default || r)(filename))
     },

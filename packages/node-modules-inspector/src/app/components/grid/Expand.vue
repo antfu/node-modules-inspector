@@ -17,7 +17,7 @@ const value = defineModel('moduleValue', {
     :open="value"
     @toggle="value = ($event as any).target.open"
   >
-    <summary font-mono text-xl flex="~ wrap items-center gap-2" cursor-pointer select-none hover:bg-active rounded p1>
+    <summary text-xl flex="~ wrap items-center gap-2" cursor-pointer select-none hover:bg-active rounded p1>
       <div i-ph-caret-down transition duration-300 op50 ml--5 text-base :class="value ? '' : 'rotate--90'" />
       <slot name="title" />
     </summary>
