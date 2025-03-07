@@ -13,6 +13,8 @@ export async function listPackageDependenciesRaw(
   let result: ListPackageDependenciesRawResult
   if (manager === 'pnpm')
     result = await import('../agents/pnpm').then(r => r.listPackageDependencies(options))
+  else if (manager === 'npm')
+    result = await import('../agents/npm').then(r => r.listPackageDependencies(options))
   else
     throw new Error(`Package manager ${manager} is not yet supported`)
 
