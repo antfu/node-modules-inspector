@@ -85,7 +85,11 @@ const titleMap = {
                 <div i-ph-graph-duotone text-lg />
               </button>
             </div>
-            <DisplayDeprecationMessage :pkg="pkg" class="bg-transparent!" pointer-events-none />
+            <DisplayDeprecationMessage
+              :pkg="pkg"
+              :show-title="false"
+              class="bg-transparent!" pointer-events-none
+            />
             <div flex="~ justify-between items-end w-full" mt-auto p2>
               <DisplayDateBadge :pkg rounded-full text-xs />
               <DisplayModuleType :pkg text-xs />

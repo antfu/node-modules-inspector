@@ -3,9 +3,12 @@ import type { PackageNode } from 'node-modules-tools'
 import { computed } from 'vue'
 import { getDeprecatedInfo } from '~/state/payload'
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   pkg: PackageNode
-}>()
+  showTitle?: boolean
+}>(), {
+  showTitle: true,
+})
 
 const deprecation = computed(() => getDeprecatedInfo(props.pkg))
 
@@ -25,6 +28,7 @@ const labelMap = {
     target="_blank"
   >
     <div
+      v-if="showTitle"
       flex="~ gap-1 items-center"
       text-sm font-bold
       :class="deprecation.type === 'future' ? 'text-orange' : 'text-red'"
