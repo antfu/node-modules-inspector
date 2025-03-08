@@ -4,7 +4,6 @@ import type { BaseOptions, PackageNode, PackageNodeBase } from './types'
 import fs from 'node:fs/promises'
 import { join } from 'pathe'
 import { analyzePackageModuleType } from './analyze-esm'
-import { getPackageDeprecatedInfo } from './deprecated'
 import { getPackageInstallSize } from './size'
 
 /**
@@ -47,11 +46,6 @@ export async function resolvePackage(
     fundings = rawFunding ? [rawFunding] : []
   }
 
-  const [installSize, deprecatedInfo] = await Promise.all([
-    getPackageInstallSize(_pkg),
-    getPackageDeprecatedInfo(_pkg),
-  ])
-
   _pkg.resolved = {
     module: analyzePackageModuleType(json),
     engines: json.engines,
@@ -61,8 +55,7 @@ export async function resolvePackage(
     exports: json.exports,
     repository,
     homepage: json.homepage,
-    installSize,
-    deprecatedInfo,
+    installSize: await getPackageInstallSize(_pkg),
   }
   return _pkg
 }
