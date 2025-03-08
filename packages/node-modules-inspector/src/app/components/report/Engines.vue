@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { DisplayNodeVersionRange } from '#components'
 import { computed } from 'vue'
-import { selectedNode } from '~/state/current'
-import { payloads } from '~/state/payload'
-import { compareSemverRange, parseSemverRange } from '~/utils/semver'
+import { selectedNode } from '../../state/current'
+import { payloads } from '../../state/payload'
+import { compareSemverRange, parseSemverRange } from '../../utils/semver'
 
 const transitiveDeps = computed(() =>
   Array.from(payloads.filtered.packages)

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { payloads } from '~/state/payload'
+import { payloads } from '../../state/payload'
 </script>
 
 <template>

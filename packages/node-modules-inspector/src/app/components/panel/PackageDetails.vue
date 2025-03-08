@@ -2,13 +2,13 @@
 import type { PackageNode } from 'node-modules-tools'
 import { Menu as VMenu } from 'floating-vue'
 import { computed, watch } from 'vue'
-import { getBackend } from '~/backends'
-import { selectedNode } from '~/state/current'
-import { fetchPublintMessages, rawPublintMessages } from '~/state/data'
-import { filters } from '~/state/filters'
-import { getDeprecatedInfo, getNpmMetaLatest, getPublishTime, payloads } from '~/state/payload'
-import { query } from '~/state/query'
-import { settings } from '~/state/settings'
+import { getBackend } from '../../backends'
+import { selectedNode } from '../../state/current'
+import { fetchPublintMessages, rawPublintMessages } from '../../state/data'
+import { filters } from '../../state/filters'
+import { getDeprecatedInfo, getNpmMetaLatest, getPublishTime, payloads } from '../../state/payload'
+import { query } from '../../state/query'
+import { settings } from '../../state/settings'
 
 const props = defineProps<{
   pkg: PackageNode

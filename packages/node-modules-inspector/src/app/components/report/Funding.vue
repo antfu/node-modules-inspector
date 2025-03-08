@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
-import type { ResolvedFunding } from '~/utils/funding'
+import type { ResolvedFunding } from '../../utils/funding'
 import { computed } from 'vue'
-import { selectedNode } from '~/state/current'
-import { payloads } from '~/state/payload'
-import { parseFunding } from '~/utils/funding'
+import { selectedNode } from '../../state/current'
+import { payloads } from '../../state/payload'
+import { parseFunding } from '../../utils/funding'
 
 const fundingGroup = computed(() => {
   const map = new Map<string, {

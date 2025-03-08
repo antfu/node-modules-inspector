@@ -1,6 +1,6 @@
 import type { PackageModuleType, PackageNode } from 'node-modules-tools'
 import { computed } from 'vue'
-import { settings } from '~/state/settings'
+import { settings } from '../state/settings'
 
 export const MODULE_TYPES_FULL = ['dual', 'esm', 'faux', 'cjs', 'dts'] as PackageModuleType[]
 export const MODULE_TYPES_FULL_SELECT = ['dual', 'esm', 'faux', 'cjs'] as PackageModuleType[]

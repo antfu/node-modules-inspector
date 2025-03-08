@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { useRoute } from '#app/composables/router'
 import { computed } from 'vue'
-import { selectedNode } from '~/state/current'
-import { filters } from '~/state/filters'
-import { query } from '~/state/query'
+import { selectedNode } from '../../state/current'
+import { filters } from '../../state/filters'
+import { query } from '../../state/query'
 
 const route = useRoute()
 const isSettingOpen = computed({

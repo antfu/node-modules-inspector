@@ -1,7 +1,7 @@
 <script setup lang="ts" generic="T">
 import { computed } from 'vue'
-import { selectedNode } from '~/state/current'
-import { payloads } from '~/state/payload'
+import { selectedNode } from '../../state/current'
+import { payloads } from '../../state/payload'
 
 const sorted = computed(() =>
   Array.from(payloads.filtered.packages)

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { WritableComputedRef } from 'vue'
 import { computed } from 'vue'
-import { filters } from '~/state/filters'
-import { payloads } from '~/state/payload'
+import { filters } from '../../state/filters'
+import { payloads } from '../../state/payload'
 
 const clustersAvailableSelect = computed(() => {
   const clusters = new Set<string>()

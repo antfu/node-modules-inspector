@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
-import type { ComputedPayload } from '~/state/payload'
+import type { ComputedPayload } from '../../state/payload'
 import { Menu as VMenu } from 'floating-vue'
 import Fuse from 'fuse.js'
 import { computed, ref, watch } from 'vue'
-import { payloads } from '~/state/payload'
+import { payloads } from '../../state/payload'
 
 const props = withDefaults(
   defineProps<{

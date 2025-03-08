@@ -6,7 +6,7 @@
  * The dist will be send to WebConainter to create the server to communicate with the main app.
  */
 
-import type { NpmMeta, NpmMetaLatest } from '../../shared/types'
+import type { NpmMeta, NpmMetaLatest } from 'node-modules-tools'
 import process from 'node:process'
 import { stringify } from 'structured-clone-es'
 import { createStorage } from 'unstorage'

@@ -1,8 +1,8 @@
-import type { PackageNode } from 'node-modules-tools'
-import type { NodeModulesInspectorPayload, NpmMeta, NpmMetaLatest, PublintMessage } from '~~/shared/types'
+import type { NpmMeta, NpmMetaLatest, PackageNode, PublintMessage } from 'node-modules-tools'
+import type { NodeModulesInspectorPayload } from '../../shared/types'
 import { ref, shallowRef, toRaw } from 'vue'
-import { isNpmMetaLatestValid } from '~~/shared/utils'
-import { getBackend } from '~/backends'
+import { isNpmMetaLatestValid } from '../../shared/utils'
+import { getBackend } from '../backends'
 import { filters, filtersDefault } from './filters'
 import { settings } from './settings'
 

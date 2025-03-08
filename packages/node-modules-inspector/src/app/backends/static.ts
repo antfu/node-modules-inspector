@@ -1,5 +1,5 @@
-import type { ServerFunctionsDump } from '~~/shared/types'
-import type { Backend } from '~/types/backend'
+import type { ServerFunctionsDump } from '../../shared/types'
+import type { Backend } from '../types/backend'
 import { parse } from 'structured-clone-es'
 import { ref } from 'vue'
 

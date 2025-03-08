@@ -1,9 +1,8 @@
-import type { ListPackageDependenciesResult, PackageNode, PackageNodeRaw } from 'node-modules-tools'
-import type { Message as PublintMessage } from 'publint'
+import type { ListPackageDependenciesResult, NpmMeta, NpmMetaLatest, PackageNode, PackageNodeRaw, PublintMessage } from 'node-modules-tools'
 import type { Storage } from 'unstorage'
 import type { FilterOptions } from './filters'
 
-export type { FilterOptions, PublintMessage }
+export type { FilterOptions }
 
 export interface NodeModulesInspectorPayload extends ListPackageDependenciesResult {
   timestamp: number
@@ -88,29 +87,6 @@ export type ServerFunctionsDump = Omit<
 export interface ConnectionMeta {
   backend: 'websocket' | 'static'
   websocket?: number
-}
-
-export interface NpmMeta {
-  publishedAt: number
-  deprecated?: string
-}
-
-/**
- * Npm meta of the latest version of a certain package
- * Unlike NpmMeta with is immutable, NpmMetaLatest is coupled with time,
- * so the `vaildUntil` is used to determine if the meta would need to be updated.
- */
-export interface NpmMetaLatest extends NpmMeta {
-  version: string
-  /**
-   * Date when the meta was fetched
-   */
-  fetechedAt: number
-  /**
-   * We calculate a smart "TTL" based on how open the package updates.
-   * If this timestemp is greater than the current time, the meta should be discarded.
-   */
-  vaildUntil: number
 }
 
 export interface ListPackagesNpmMetaOptions {

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { DisplayDateBadge } from '#components'
 import { computed } from 'vue'
-import { selectedNode } from '~/state/current'
-import { getNpmMetaLatest, getPublishTime, payloads } from '~/state/payload'
+import { selectedNode } from '../../state/current'
+import { getNpmMetaLatest, getPublishTime, payloads } from '../../state/payload'
 
 const packages = computed(() =>
   Array.from(payloads.filtered.packages)

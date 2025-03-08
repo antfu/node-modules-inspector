@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import type { PackageModuleType, PackageNode } from 'node-modules-tools'
 import { computed } from 'vue'
-import { payloads } from '~/state/payload'
-import { getModuleTypeCounts } from '~/utils/module-type'
-import { MODULE_TYPES_COLOR_BADGE } from '../../utils/module-type'
+import { payloads } from '../../state/payload'
+import { getModuleTypeCounts, MODULE_TYPES_COLOR_BADGE } from '../../utils/module-type'
 
 const props = withDefaults(
   defineProps<{

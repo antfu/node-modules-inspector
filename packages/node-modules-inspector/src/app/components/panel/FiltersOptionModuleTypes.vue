@@ -2,7 +2,7 @@
 import type { PackageModuleType } from 'node-modules-tools'
 import type { WritableComputedRef } from 'vue'
 import { computed } from 'vue'
-import { filters } from '~/state/filters'
+import { filters } from '../../state/filters'
 import { MODULE_TYPES_FULL_SELECT, moduleTypesAvailableSelect } from '../../utils/module-type'
 
 function createModuleTypeRef(name: PackageModuleType) {

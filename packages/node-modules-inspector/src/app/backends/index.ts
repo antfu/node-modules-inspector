@@ -1,4 +1,4 @@
-import type { Backend } from '~/types/backend'
+import type { Backend } from '../types/backend'
 import { shallowRef } from 'vue'
 
 export const backend = shallowRef<Backend>()

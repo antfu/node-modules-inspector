@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
 import { computed } from 'vue'
-import { getPublishTime } from '~/state/payload'
+import { getPublishTime } from '../../state/payload'
 
 const props = withDefaults(
   defineProps<{

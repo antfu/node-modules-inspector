@@ -1,4 +1,4 @@
-import type { ServerFunctionsDump } from '~~/shared/types'
+import type { ServerFunctionsDump } from '../shared/types'
 import { existsSync } from 'node:fs'
 import fs from 'node:fs/promises'
 import process from 'node:process'

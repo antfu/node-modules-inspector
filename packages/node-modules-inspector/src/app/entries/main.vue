@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Backend } from '~/types/backend'
+import type { Backend } from '../types/backend'
 import { computed } from 'vue'
 import { backend } from '../backends'
 import { rawPayload } from '../state/data'

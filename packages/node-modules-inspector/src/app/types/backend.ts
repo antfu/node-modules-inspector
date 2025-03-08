@@ -1,5 +1,5 @@
 import type { Ref } from 'vue'
-import type { NodeModulesInspectorPayload, ServerFunctions } from '~~/shared/types'
+import type { NodeModulesInspectorPayload, ServerFunctions } from '../../shared/types'
 
 export interface ReferencePayloadFunctions {
   getReferencePayload?: (hash?: string) => Promise<NodeModulesInspectorPayload>

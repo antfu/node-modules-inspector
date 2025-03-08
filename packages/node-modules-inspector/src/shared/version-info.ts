@@ -1,5 +1,6 @@
 import type { ResolvedPackageVersion } from 'fast-npm-meta'
-import type { ListPackagesNpmMetaLatestOptions, ListPackagesNpmMetaOptions, NpmMeta, NpmMetaLatest } from './types'
+import type { NpmMeta, NpmMetaLatest } from 'node-modules-tools'
+import type { ListPackagesNpmMetaLatestOptions, ListPackagesNpmMetaOptions } from './types'
 import { getLatestVersion, getLatestVersionBatch } from 'fast-npm-meta'
 import pLimit from 'p-limit'
 import { isNpmMetaLatestValid } from './utils'

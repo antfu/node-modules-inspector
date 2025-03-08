@@ -2,8 +2,8 @@
 import type { PackageNode } from 'node-modules-tools'
 import { definePageMeta } from '#imports'
 import { computed } from 'vue'
-import { filters } from '~/state/filters'
-import { payloads } from '~/state/payload'
+import { filters } from '../state/filters'
+import { payloads } from '../state/payload'
 
 const payload = payloads.filtered
 

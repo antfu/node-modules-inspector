@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
-import type { HighlightMode } from '~/state/highlight'
+import type { HighlightMode } from '../../state/highlight'
 import { computed } from 'vue'
-import { selectedNode } from '~/state/current'
-import { filters } from '~/state/filters'
-import { getCompareHighlight } from '~/state/highlight'
-import { payloads } from '~/state/payload'
+import { selectedNode } from '../../state/current'
+import { filters } from '../../state/filters'
+import { getCompareHighlight } from '../../state/highlight'
+import { payloads } from '../../state/payload'
 
 const props = withDefaults(
   defineProps<{

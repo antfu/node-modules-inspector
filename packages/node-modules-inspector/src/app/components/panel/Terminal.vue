@@ -5,8 +5,8 @@ import { Terminal } from '@xterm/xterm'
 import themeDark from 'theme-vitesse/extra/xterm-vitesse-dark.json'
 import themeLight from 'theme-vitesse/extra/xterm-vitesse-light.json'
 import { computed, onBeforeUnmount, onMounted, useTemplateRef, watch } from 'vue'
-import { openTerminal, showTerminal, terminal } from '~/state/terminal'
 import { isDark } from '../../composables/dark'
+import { openTerminal, showTerminal, terminal } from '../../state/terminal'
 import '@xterm/xterm/css/xterm.css'
 
 const theme = computed<ITheme>(() => {

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { settings } from '~/state/settings'
+import { settings } from '../../state/settings'
 
 const props = withDefaults(
   defineProps<{

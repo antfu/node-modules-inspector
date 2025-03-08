@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import type { PackageNode } from 'node-modules-tools'
-import type { Message as PublintMessage } from 'publint'
+import type { PackageNode, PublintMessage } from 'node-modules-tools'
 import { computed } from 'vue'
-import { settings } from '~/state/settings'
-import { formatMessage } from '~/utils/publint'
+import { settings } from '../../state/settings'
+import { formatMessage } from '../../utils/publint'
 
 const props = defineProps<{
   pkg: PackageNode
