@@ -215,7 +215,7 @@ export function getNpmMetaLatest(input: PackageNode | string): NpmMetaLatest | n
   const pkg = payloads.main.get(input)
   if (!pkg)
     return null
-  return [pkg.resolved.npmMetaLatest, rawNpmMetaLatest.value.get(pkg.spec)]
+  return [pkg.resolved.npmMetaLatest, rawNpmMetaLatest.value.get(pkg.name)]
     .filter(x => !!x)
     .sort((a, b) => b.fetechedAt - a.fetechedAt)[0] || null
 }
