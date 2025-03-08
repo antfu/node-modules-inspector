@@ -3,7 +3,7 @@ import antfu from '@antfu/eslint-config'
 import nuxt from './packages/node-modules-inspector/src/.nuxt/eslint.config.mjs'
 
 export default antfu({
-  pnpmCatalogs: true,
+  pnpm: true,
 })
   .append(nuxt())
   .append({

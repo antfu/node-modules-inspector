@@ -96,14 +96,11 @@ export function createWebSocketBackend(options: WebSocketBackendOptions): Backen
           throw err
         }
       },
-      getPackagesPublishDate: async (specs: string[]) => {
-        try {
-          return await rpc.getPackagesPublishDate(specs)
-        }
-        catch (err) {
-          error.value = err
-          throw err
-        }
+      getPackagesNpmMeta: async (specs: string[]) => {
+        return await rpc.getPackagesNpmMeta(specs)
+      },
+      getPackagesNpmMetaLatest: async (pkgNames: string[]) => {
+        return await rpc.getPackagesNpmMetaLatest(pkgNames)
       },
       getPublint: async (pkg: Pick<PackageNode, 'spec' | 'filepath'>) => {
         return await rpc.getPublint(pkg)

@@ -7,7 +7,7 @@ import { formatMessage } from '~/utils/publint'
 
 const props = defineProps<{
   pkg: PackageNode
-  messages: PublintMessage[] | undefined | null
+  messages: readonly PublintMessage[] | undefined | null
 }>()
 
 const counter = computed(() => {
