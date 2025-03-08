@@ -1,18 +1,14 @@
-import type { Storage } from 'unstorage'
+import type { ListPackagesNpmMetaOptions, NpmMeta } from './types'
 import { getLatestVersion, getLatestVersionBatch } from 'fast-npm-meta'
 import pLimit from 'p-limit'
 
-export interface ListPackagePublishDatesOptions {
-  storagePublishDates: Storage<string>
-}
-
-export async function getPackagesPublishDate(
+export async function getPackagesNpmMeta(
   packages: string[],
-  options: ListPackagePublishDatesOptions,
+  options: ListPackagesNpmMetaOptions,
 ) {
-  const { storagePublishDates: storage } = options
+  const { storageNpmMeta: storage } = options
 
-  const map = new Map<string, string>()
+  const map = new Map<string, NpmMeta>()
 
   const known = await storage.keys()
   const unknown = packages.filter(p => !known.includes(p))
@@ -26,12 +22,16 @@ export async function getPackagesPublishDate(
     const specs = unknown.slice(i, i + BATCH_SIZE)
     promises.push(limit(async () => {
       try {
-        const result = await getLatestVersionBatch(specs)
+        const result = await getLatestVersionBatch(specs, { metadata: true })
         for (const r of result) {
           if (r.publishedAt) {
             const spec = `${r.name}@${r.version}`
-            map.set(spec, r.publishedAt)
-            await storage.setItem(spec, r.publishedAt)
+            const meta: NpmMeta = {
+              time: r.publishedAt,
+              deprecated: r.deprecated,
+            }
+            map.set(spec, meta)
+            await storage.setItem(spec, meta)
           }
         }
       }
@@ -49,11 +49,15 @@ export async function getPackagesPublishDate(
     await Promise.all(
       Array.from(missingSpecs).map(spec => limit(async () => {
         try {
-          const result = await getLatestVersion(spec)
+          const result = await getLatestVersion(spec, { metadata: true })
           if (result.publishedAt) {
             const spec = `${result.name}@${result.version}`
-            map.set(spec, result.publishedAt)
-            await storage.setItem(spec, result.publishedAt)
+            const meta: NpmMeta = {
+              time: result.publishedAt,
+              deprecated: result.deprecated,
+            }
+            map.set(spec, meta)
+            await storage.setItem(spec, meta)
             missingSpecs.delete(spec)
           }
         }

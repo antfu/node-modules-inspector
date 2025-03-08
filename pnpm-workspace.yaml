@@ -9,7 +9,7 @@ catalogs:
     '@vueuse/nuxt': ^12.8.2
     esbuild: ^0.25.0
     nitropack: 2.8.1
-    nuxt: ^3.16.0
+    nuxt: ~3.15
     rollup: ^4.34.9
     rollup-plugin-esbuild: ^6.2.1
     unbuild: ^3.5.0
@@ -45,7 +45,7 @@ catalogs:
     '@typescript-eslint/utils': ^8.26.0
     '@unocss/eslint-config': ^66.0.0
     bumpp: ^10.0.3
-    eslint: ^9.21.0
+    eslint: ^9.22.0
     lint-staged: ^15.4.3
     nuxt-eslint-auto-explicit-import: ^0.1.1
     simple-git-hooks: ^2.11.1
@@ -88,3 +88,7 @@ catalogs:
     '@types/stream-json': ^1.7.8
     '@types/ws': ^8.18.0
     pkg-types: ^2.1.0
+onlyBuiltDependencies:
+  - '@parcel/watcher'
+  - esbuild
+  - simple-git-hooks

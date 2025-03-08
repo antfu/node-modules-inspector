@@ -96,9 +96,9 @@ export function createWebSocketBackend(options: WebSocketBackendOptions): Backen
           throw err
         }
       },
-      getPackagesPublishDate: async (specs: string[]) => {
+      getPackagesNpmMeta: async (specs: string[]) => {
         try {
-          return await rpc.getPackagesPublishDate(specs)
+          return await rpc.getPackagesNpmMeta(specs)
         }
         catch (err) {
           error.value = err

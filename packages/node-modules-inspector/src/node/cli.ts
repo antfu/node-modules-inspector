@@ -13,7 +13,7 @@ import { glob } from 'tinyglobby'
 import { distDir } from '../dirs'
 import { MARK_CHECK, MARK_NODE } from './constants'
 import { createHostServer } from './server'
-import { storagePublint, storagePublishDates } from './storage'
+import { storageNpmMeta, storagePublint } from './storage'
 
 const cli = cac('node-modules-inspector')
 
@@ -34,7 +34,7 @@ cli
     const rpc = await import('./rpc').then(r => r.createServerFunctions({
       cwd,
       depth: options.depth,
-      storagePublishDates,
+      storageNpmMeta,
       storagePublint,
       mode: 'build',
     }))
@@ -91,7 +91,7 @@ cli
     const { server, ws } = await createHostServer({
       cwd: options.root,
       depth: options.depth,
-      storagePublishDates,
+      storageNpmMeta,
       storagePublint,
       mode: 'dev',
     })

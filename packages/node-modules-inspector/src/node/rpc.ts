@@ -1,18 +1,19 @@
 import type { ListPackageDependenciesOptions, PackageNode } from 'node-modules-tools'
 import type { Message as PublintMessage } from 'publint'
 import type { Storage } from 'unstorage'
-import type { ListPackagePublishDatesOptions } from '../shared/publish-date'
-import type { NodeModulesInspectorConfig, NodeModulesInspectorPayload, ServerFunctions } from '../shared/types'
+import type { ListPackagesNpmMetaOptions, NodeModulesInspectorConfig, NodeModulesInspectorPayload, ServerFunctions } from '../shared/types'
 import process from 'node:process'
 import c from 'ansis'
 import { constructPackageFilters, listPackageDependencies } from 'node-modules-tools'
 import { hash as getHash } from 'ohash'
 import pLimit from 'p-limit'
 import { loadConfig } from 'unconfig'
-import { getPackagesPublishDate as _getPackagesPublishDate } from '../shared/publish-date'
+import { getPackagesNpmMeta as _getPackagesNpmMeta } from '../shared/version-info'
 import { MARK_CHECK, MARK_NODE } from './constants'
 
-export interface CreateServerFunctionsOptions extends Partial<ListPackageDependenciesOptions>, ListPackagePublishDatesOptions {
+export interface CreateServerFunctionsOptions extends
+  Partial<ListPackageDependenciesOptions>,
+  ListPackagesNpmMetaOptions {
   mode: 'dev' | 'build'
 
   storagePublint?: Storage<PublintMessage[]>
@@ -39,7 +40,7 @@ export function createServerFunctions(options: CreateServerFunctionsOptions): Se
         },
       ],
       defaults: {
-        fetchPublishDate: true,
+        fetchNpmMeta: true,
         publint: false,
       },
       merge: true,
@@ -49,11 +50,11 @@ export function createServerFunctions(options: CreateServerFunctionsOptions): Se
     return result.config
   }
 
-  async function getPackagesPublishDate(deps: string[]) {
+  async function getPackagesNpmMeta(deps: string[]) {
     const config = await getConfig()
-    if (!config.fetchPublishDate)
+    if (!config.fetchNpmMeta)
       return new Map()
-    return _getPackagesPublishDate(deps, { storagePublishDates: options.storagePublishDates })
+    return _getPackagesNpmMeta(deps, { storageNpmMeta: options.storageNpmMeta })
   }
 
   async function getPublint(pkg: Pick<PackageNode, 'private' | 'workspace' | 'spec' | 'filepath'>, log = true) {
@@ -128,29 +129,29 @@ export function createServerFunctions(options: CreateServerFunctionsOptions): Se
       })())
     }
 
-    // For build mode, we fetch the publish date
-    if (options.mode === 'build' && config.fetchPublishDate) {
+    // For build mode, we fetch the npm meta upfront
+    if (options.mode === 'build' && config.fetchNpmMeta) {
       buildTasks.push((async () => {
-        console.log(c.cyan`${MARK_NODE} Fetching publish dates...`)
+        console.log(c.cyan`${MARK_NODE} Fetching npm meta...`)
         try {
-          await getPackagesPublishDate(Array.from(result.packages.keys()))
+          await getPackagesNpmMeta(Array.from(result.packages.keys()))
         }
         catch (e) {
-          console.error(c.red`${MARK_NODE} Failed to fetch publish dates`)
+          console.error(c.red`${MARK_NODE} Failed to fetch npm meta`)
           console.error(e)
         }
-        console.log(c.green`${MARK_CHECK} Publish dates fetched`)
+        console.log(c.green`${MARK_CHECK} npm meta fetched`)
       })())
     }
 
     await Promise.all(buildTasks)
 
-    // Fullfill the publish time
+    // Fullfill the npm meta
     await Promise.all(Array.from(result.packages.values())
       .map(async (pkg) => {
-        const time = await options.storagePublishDates.getItem(pkg.spec)
-        if (time)
-          pkg.resolved.publishTime = time
+        const meta = await options.storageNpmMeta.getItem(pkg.spec)
+        if (meta)
+          pkg.resolved.npmMeta = meta
       }))
 
     console.log(c.green`${MARK_CHECK} node_modules read finished`)
@@ -165,7 +166,7 @@ export function createServerFunctions(options: CreateServerFunctionsOptions): Se
 
   return {
     getPayload,
-    getPackagesPublishDate,
+    getPackagesNpmMeta,
     getPublint,
     async openInEditor(filename: string) {
       await import('launch-editor').then(r => (r.default || r)(filename))

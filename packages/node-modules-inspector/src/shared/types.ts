@@ -1,5 +1,6 @@
 import type { ListPackageDependenciesResult, PackageNode, PackageNodeRaw } from 'node-modules-tools'
 import type { Message as PublintMessage } from 'publint'
+import type { Storage } from 'unstorage'
 import type { FilterOptions } from './filters'
 
 export type { FilterOptions, PublintMessage }
@@ -12,7 +13,7 @@ export interface NodeModulesInspectorPayload extends ListPackageDependenciesResu
 
 export interface ServerFunctions {
   getPayload: (force?: boolean) => Promise<NodeModulesInspectorPayload>
-  getPackagesPublishDate: (deps: string[]) => Promise<Map<string, string>>
+  getPackagesNpmMeta: (deps: string[]) => Promise<Map<string, NpmMeta>>
   getPublint: (pkg: Pick<PackageNode, 'private' | 'workspace' | 'spec' | 'filepath'>) => Promise<PublintMessage[] | null>
   openInEditor: (filename: string) => void
   openInFinder: (filename: string) => void
@@ -24,11 +25,13 @@ export interface NodeModulesInspectorConfig {
    */
   name?: string
   /**
-   * Fetch the publish date of the packages
+   * Fetch meta data like publish date, deprecated info, from npm
+   * This will require internet connection.
+   * The result will be cached in filesystem or IndexedDB.
    *
    * @default true
    */
-  fetchPublishDate?: boolean
+  fetchNpmMeta?: boolean
   /**
    * Enable publint
    *
@@ -78,10 +81,19 @@ export type ServerFunctionsDump = Omit<
   RemoveVoidKeysFromObject<{
     [K in keyof ServerFunctions]: Awaited<ReturnType<ServerFunctions[K]>>
   }>,
-  'getPublint' | 'getPackagesPublishDate'
+  'getPublint' | 'getPackagesNpmMeta'
 >
 
 export interface ConnectionMeta {
   backend: 'websocket' | 'static'
   websocket?: number
+}
+
+export interface NpmMeta {
+  time: string
+  deprecated?: string
+}
+
+export interface ListPackagesNpmMetaOptions {
+  storageNpmMeta: Storage<NpmMeta>
 }

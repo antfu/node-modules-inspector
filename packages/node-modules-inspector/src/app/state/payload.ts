@@ -2,7 +2,7 @@ import type { PackageNode } from 'node-modules-tools'
 import { CLUSTER_DEP_DEV, CLUSTER_DEP_OPTIONAL, CLUSTER_DEP_PROD } from 'node-modules-tools/constants'
 import { computed, reactive, watch } from 'vue'
 import { buildVersionToPackagesMap } from '../utils/maps'
-import { rawPayload, rawPublishDates, rawReferencePayload } from './data'
+import { rawNpmMeta, rawPayload, rawReferencePayload } from './data'
 import { filters, filterSelectPredicate, filtersExcludePredicate } from './filters'
 
 export type ComputedPayload = ReturnType<typeof createComputedPayload>
@@ -208,11 +208,9 @@ export function getPublishTime(input: PackageNode | string) {
   const pkg = payloads.main.get(input)
   if (!pkg)
     return null
-  if (pkg.resolved.publishTime)
-    return new Date(pkg.resolved.publishTime)
-  const date = rawPublishDates.value?.get(pkg.spec)
-  if (date)
-    return new Date(date)
+  const time = pkg.resolved.npmMeta?.time || rawNpmMeta.value?.get(pkg.spec)?.time
+  if (time)
+    return new Date(time)
   return null
 }
 

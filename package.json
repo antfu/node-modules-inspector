@@ -61,6 +61,7 @@
   "resolutions": {
     "@nuxt/devtools": "catalog:devtools",
     "nitropack": "catalog:build",
+    "nuxt": "catalog:build",
     "rollup": "catalog:build",
     "vite": "catalog:build"
   },

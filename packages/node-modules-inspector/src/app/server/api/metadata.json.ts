@@ -1,13 +1,13 @@
 import process from 'node:process'
 import { consola } from 'consola'
-import { storagePublint, storagePublishDates } from '~~/node/storage'
-import { createWsServer } from '~~/node/ws'
+import { storageNpmMeta, storagePublint } from '../../../node/storage'
+import { createWsServer } from '../../../node/ws'
 
 consola.restoreAll()
 
 const ws = createWsServer({
   cwd: process.cwd(),
-  storagePublishDates,
+  storageNpmMeta,
   storagePublint,
   mode: 'dev',
 }).then((ws) => {
