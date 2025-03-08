@@ -25,14 +25,14 @@ const deprecation = computed(() => getDeprecatedInfo(props.pkg))
       v-tooltip="deprecation?.latest ? `Package is deprecated: ${deprecation.latest}` : undefined"
       :name="props.pkg.name"
       :pkg="props.pkg"
-      :class="{ 'text-red line-through': deprecation?.latest }"
+      :class="!deprecation?.latest ? undefined : deprecation?.type === 'future' ? 'text-orange line-through' : 'text-red line-through'"
     />
     <DisplayVersion
       v-tooltip="deprecation?.current ? `Current version is deprecated: ${deprecation.current}` : undefined"
       op50
       :version="props.pkg.version"
       prefix="@"
-      :class="{ 'text-red line-through op75!': deprecation?.current }"
+      :class="{ 'text-red line-through': deprecation?.current }"
     />
   </span>
 </template>

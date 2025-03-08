@@ -6,10 +6,9 @@ import { getBackend } from '~/backends'
 import { selectedNode } from '~/state/current'
 import { fetchPublintMessages, rawPublintMessages } from '~/state/data'
 import { filters } from '~/state/filters'
-import { getNpmMetaLatest, getPublishTime, payloads } from '~/state/payload'
+import { getDeprecatedInfo, getNpmMetaLatest, getPublishTime, payloads } from '~/state/payload'
 import { query } from '~/state/query'
 import { settings } from '~/state/settings'
-import DisplayDeprecatedBadge from '../display/DeprecatedBadge.vue'
 
 const props = defineProps<{
   pkg: PackageNode
@@ -112,6 +111,7 @@ function getShallowestDependents(pkg: PackageNode) {
 }
 
 const latestMeta = computed(() => getNpmMetaLatest(props.pkg))
+const deprecation = computed(() => getDeprecatedInfo(props.pkg))
 </script>
 
 <template>
@@ -129,9 +129,11 @@ const latestMeta = computed(() => getNpmMetaLatest(props.pkg))
     </div>
 
     <div flex="~ col gap-2" p5 pb2>
-      <div font-mono text-2xl flex="~ wrap items-center gap-2" pr20>
-        <span>{{ pkg.name }}</span>
-      </div>
+      <DisplayPackageName
+        :name="pkg.name"
+        font-mono text-2xl flex="~ wrap items-center gap-2" pr20
+        :class="deprecation?.latest ? deprecation.type === 'future' ? 'text-orange line-through' : 'text-red line-through' : ''"
+      />
       <div flex="~ items-center wrap gap-2">
         <DisplayVersionWithUpdates
           :version="pkg.version"
@@ -243,11 +245,8 @@ const latestMeta = computed(() => getNpmMetaLatest(props.pkg))
     </div>
     <div v-if="cluster.length" px4 my2 flex="~ gap-2 wrap items-center">
       <DisplayClusterBadge v-for="c of cluster" :key="c" flex="~ items-center gap-1" :cluster="c" />
-      <DisplayDeprecatedBadge :pkg="pkg" />
     </div>
-    <div v-else px4 my2 flex="~ gap-2 wrap items-center">
-      <DisplayDeprecatedBadge :pkg="pkg" />
-    </div>
+    <DisplayDeprecationMessage :pkg="pkg" mt2 border-y-2 border-dashed />
     <div grid="~ cols-3 gap-2 items-center" p2>
       <button
         v-tooltip="'Focus on this package and the dependencies it brings'"

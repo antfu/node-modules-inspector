@@ -46,18 +46,16 @@ const titleMap = {
   current: 'Current Versions Deprecated',
   future: 'Future Deprecations',
 }
-
-function getDeprecationMessage(pkg: PackageNode): string {
-  const deprecation = getDeprecatedInfo(pkg)!
-  return deprecation.current ?? deprecation.latest ?? 'Deprecated'
-}
 </script>
 
 <template>
   <template v-if="groups.all.length">
-    <div badge-color-red flex="~ gap-2 items-center" rounded-lg p2 my2 px3>
+    <div badge-color-orange flex="~ gap-2 items-center" rounded-lg p2 my2 mt5 px3>
       <div i-ph-warning-duotone flex-none />
-      <span>Let's work together to improve the ecosystem by updating or replacing these deprecated packages</span>
+      <span>
+        Deprecations in packages usually indicate security risks or misbehaviors.
+        Please upgrade to the supported versions or migrate to alternatives.
+      </span>
     </div>
 
     <template v-for="[key, pkgs] of Object.entries(groups.types)" :key="key">
@@ -87,14 +85,10 @@ function getDeprecationMessage(pkg: PackageNode): string {
                 <div i-ph-graph-duotone text-lg />
               </button>
             </div>
-            <div flex="~ col gap-3" p3 h-full>
-              <div text-red9 dark:text-red2 text-sm px1>
-                {{ getDeprecationMessage(pkg) }}
-              </div>
-              <div flex="~ justify-between items-end w-full" mt-auto>
-                <DisplayDateBadge :pkg rounded-full text-xs />
-                <DisplayModuleType :pkg text-xs />
-              </div>
+            <DisplayDeprecationMessage :pkg="pkg" class="bg-transparent!" pointer-events-none />
+            <div flex="~ justify-between items-end w-full" mt-auto p2>
+              <DisplayDateBadge :pkg rounded-full text-xs />
+              <DisplayModuleType :pkg text-xs />
             </div>
           </div>
         </div>
