@@ -1,22 +1,13 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
 import { computed } from 'vue'
+import { getDeprecatedInfo } from '~/state/payload'
 
 const props = defineProps<{
   pkg: PackageNode
 }>()
 
-const isCurrentDeprecated = computed(() => props.pkg?.resolved?.deprecatedInfo?.current?.deprecated || false)
-
-const deprecationTitle = computed(() => {
-  if (isCurrentDeprecated.value) {
-    const currentInfo = props.pkg?.resolved?.deprecatedInfo?.current
-    if (currentInfo?.deprecated) {
-      return `${props.pkg.name}@${props.pkg.version} is deprecated: ${currentInfo.deprecated}`
-    }
-  }
-  return ''
-})
+const deprecation = computed(() => getDeprecatedInfo(props.pkg))
 </script>
 
 <template>
@@ -30,13 +21,18 @@ const deprecationTitle = computed(() => {
         i-catppuccin-folder-packages-open icon-catppuccin mr2 absolute left-0 top-0
       />
     </span>
-    <DisplayPackageName :name="props.pkg.name" :pkg="props.pkg" />
+    <DisplayPackageName
+      v-tooltip="deprecation?.latest ? `Package is deprecated: ${deprecation.latest}` : undefined"
+      :name="props.pkg.name"
+      :pkg="props.pkg"
+      :class="{ 'text-red line-through': deprecation?.latest }"
+    />
     <DisplayVersion
-      v-tooltip="deprecationTitle"
+      v-tooltip="deprecation?.current ? `Current version is deprecated: ${deprecation.current}` : undefined"
       op50
       :version="props.pkg.version"
       prefix="@"
-      :class="{ 'text-red-500 line-through': isCurrentDeprecated }"
+      :class="{ 'text-red line-through op75!': deprecation?.current }"
     />
   </span>
 </template>
