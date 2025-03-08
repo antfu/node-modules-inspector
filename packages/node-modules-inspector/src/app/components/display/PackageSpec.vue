@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
+import { computed } from 'vue'
+import { getDeprecatedInfo } from '~/state/payload'
 
 const props = defineProps<{
   pkg: PackageNode
 }>()
+
+const deprecation = computed(() => getDeprecatedInfo(props.pkg))
 </script>
 
 <template>
@@ -17,7 +21,18 @@ const props = defineProps<{
         i-catppuccin-folder-packages-open icon-catppuccin mr2 absolute left-0 top-0
       />
     </span>
-    <DisplayPackageName :name="props.pkg.name" />
-    <DisplayVersion op50 :version="props.pkg.version" prefix="@" />
+    <DisplayPackageName
+      v-tooltip="deprecation?.latest ? `Package is deprecated: ${deprecation.latest}` : undefined"
+      :name="props.pkg.name"
+      :pkg="props.pkg"
+      :class="!deprecation?.latest ? undefined : deprecation?.type === 'future' ? 'text-orange line-through' : 'text-red line-through'"
+    />
+    <DisplayVersion
+      v-tooltip="deprecation?.current ? `Current version is deprecated: ${deprecation.current}` : undefined"
+      op50
+      :version="props.pkg.version"
+      prefix="@"
+      :class="{ 'text-red line-through': deprecation?.current }"
+    />
   </span>
 </template>
