@@ -1,4 +1,4 @@
-import type { NpmMeta } from 'node-modules-tools'
+import type { NpmMeta, NpmMetaLatest } from 'node-modules-tools'
 import type { NodeModulesInspectorPayload } from '../../shared/types'
 import type { Backend } from '../types/backend'
 import { WebContainer } from '@webcontainer/api'
@@ -9,7 +9,7 @@ import { createStorage } from 'unstorage'
 import driverIndexedDb from 'unstorage/drivers/indexedb'
 import { shallowRef } from 'vue'
 import { WEBCONTAINER_STDOUT_PREFIX } from '../../shared/constants'
-import { getPackagesNpmMeta } from '../../shared/version-info'
+import { getPackagesNpmMeta, getPackagesNpmMetaLatest } from '../../shared/version-info'
 import { terminal } from '../state/terminal'
 import { CODE_PACKAGE_JSON, CODE_SERVER } from './constants'
 
@@ -91,6 +91,11 @@ export async function install(
       base: 'nmi:npm-meta',
     }),
   })
+  const storageNpmMetaLatest = createStorage<NpmMetaLatest>({
+    driver: driverIndexedDb({
+      base: 'nmi:npm-meta-latest',
+    }),
+  })
 
   return {
     name: 'webcontainer',
@@ -114,6 +119,9 @@ export async function install(
       },
       getPackagesNpmMeta(deps) {
         return getPackagesNpmMeta(deps, { storageNpmMeta })
+      },
+      getPackagesNpmMetaLatest(pkgNames) {
+        return getPackagesNpmMetaLatest(pkgNames, { storageNpmMetaLatest })
       },
     },
   }

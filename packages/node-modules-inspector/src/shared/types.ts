@@ -12,8 +12,8 @@ export interface NodeModulesInspectorPayload extends ListPackageDependenciesResu
 
 export interface ServerFunctions {
   getPayload: (force?: boolean) => Promise<NodeModulesInspectorPayload>
-  getPackagesNpmMeta: (specs: string[]) => Promise<Map<string, NpmMeta>>
-  getPackagesNpmMetaLatest: (pkgNames: string[]) => Promise<Map<string, NpmMetaLatest>>
+  getPackagesNpmMeta: (specs: string[]) => Promise<Map<string, NpmMeta | null>>
+  getPackagesNpmMetaLatest: (pkgNames: string[]) => Promise<Map<string, NpmMetaLatest | null>>
   getPublint: (pkg: Pick<PackageNode, 'private' | 'workspace' | 'spec' | 'filepath'>) => Promise<PublintMessage[] | null>
   openInEditor: (filename: string) => void
   openInFinder: (filename: string) => void
