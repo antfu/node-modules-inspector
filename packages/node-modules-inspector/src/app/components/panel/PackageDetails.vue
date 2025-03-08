@@ -6,7 +6,7 @@ import { getBackend } from '~/backends'
 import { selectedNode } from '~/state/current'
 import { fetchPublintMessages, rawPublintMessages } from '~/state/data'
 import { filters } from '~/state/filters'
-import { getPublishTime, payloads } from '~/state/payload'
+import { getDeprecatedInfo, getNpmMetaLatest, getPublishTime, payloads } from '~/state/payload'
 import { query } from '~/state/query'
 import { settings } from '~/state/settings'
 
@@ -109,6 +109,9 @@ function getShallowestDependents(pkg: PackageNode) {
   const minDepth = Math.min(...dependents.map(x => x.depth))
   return dependents.filter(x => x.depth === minDepth)
 }
+
+const latestMeta = computed(() => getNpmMetaLatest(props.pkg))
+const deprecation = computed(() => getDeprecatedInfo(props.pkg))
 </script>
 
 <template>
@@ -126,11 +129,16 @@ function getShallowestDependents(pkg: PackageNode) {
     </div>
 
     <div flex="~ col gap-2" p5 pb2>
-      <div font-mono text-2xl flex="~ wrap items-center gap-2" pr20>
-        <span>{{ pkg.name }}</span>
-      </div>
+      <DisplayPackageName
+        :name="pkg.name"
+        font-mono text-2xl flex="~ wrap items-center gap-2" pr20
+        :class="deprecation?.latest ? deprecation.type === 'future' ? 'text-orange line-through' : 'text-red line-through' : ''"
+      />
       <div flex="~ items-center wrap gap-2">
-        <DisplayVersion :version="pkg.version" op75 />
+        <DisplayVersionWithUpdates
+          :version="pkg.version"
+          :latest="latestMeta"
+        />
         <DisplayModuleType text-sm :pkg :force="true" />
         <div v-if="pkg.private" badge-color-gray px2 rounded text-sm border="~ base dashed">
           Private
@@ -238,6 +246,7 @@ function getShallowestDependents(pkg: PackageNode) {
     <div v-if="cluster.length" px4 my2 flex="~ gap-2 wrap items-center">
       <DisplayClusterBadge v-for="c of cluster" :key="c" flex="~ items-center gap-1" :cluster="c" />
     </div>
+    <DisplayDeprecationMessage :pkg="pkg" mt2 border-y-2 border-dashed />
     <div grid="~ cols-3 gap-2 items-center" p2>
       <button
         v-tooltip="'Focus on this package and the dependencies it brings'"

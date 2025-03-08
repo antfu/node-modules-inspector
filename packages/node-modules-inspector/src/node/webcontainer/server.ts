@@ -6,6 +6,7 @@
  * The dist will be send to WebConainter to create the server to communicate with the main app.
  */
 
+import type { NpmMeta, NpmMetaLatest } from '../../shared/types'
 import process from 'node:process'
 import { stringify } from 'structured-clone-es'
 import { createStorage } from 'unstorage'
@@ -15,9 +16,8 @@ import { createServerFunctions } from '../rpc'
 
 const rpc = createServerFunctions({
   cwd: process.cwd(),
-  storagePublishDates: createStorage<string>({
-    driver: driverMemory(),
-  }),
+  storageNpmMeta: createStorage<NpmMeta>({ driver: driverMemory() }),
+  storageNpmMetaLatest: createStorage<NpmMetaLatest>({ driver: driverMemory() }),
   mode: 'dev',
 })
 

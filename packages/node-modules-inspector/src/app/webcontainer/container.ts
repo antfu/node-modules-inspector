@@ -1,4 +1,4 @@
-import type { NodeModulesInspectorPayload } from '~~/shared/types'
+import type { NodeModulesInspectorPayload, NpmMeta } from '~~/shared/types'
 import type { Backend } from '~/types/backend'
 import { WebContainer } from '@webcontainer/api'
 import c from 'ansis'
@@ -8,7 +8,7 @@ import { createStorage } from 'unstorage'
 import driverIndexedDb from 'unstorage/drivers/indexedb'
 import { shallowRef } from 'vue'
 import { WEBCONTAINER_STDOUT_PREFIX } from '~~/shared/constants'
-import { getPackagesPublishDate } from '~~/shared/publish-date'
+import { getPackagesNpmMeta } from '~~/shared/version-info'
 import { terminal } from '~/state/terminal'
 import { CODE_PACKAGE_JSON, CODE_SERVER } from './constants'
 
@@ -85,9 +85,9 @@ export async function install(
   })
 
   const error = shallowRef<unknown | undefined>(undefined)
-  const storagePublishDates = createStorage<string>({
+  const storageNpmMeta = createStorage<NpmMeta>({
     driver: driverIndexedDb({
-      base: 'nmi:publish-date',
+      base: 'nmi:npm-meta',
     }),
   })
 
@@ -111,8 +111,8 @@ export async function install(
         }
         return result
       },
-      getPackagesPublishDate(deps) {
-        return getPackagesPublishDate(deps, { storagePublishDates })
+      getPackagesNpmMeta(deps) {
+        return getPackagesNpmMeta(deps, { storageNpmMeta })
       },
     },
   }

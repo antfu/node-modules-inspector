@@ -1,5 +1,6 @@
 import type { PackageJsonExports } from 'pkg-types'
 import type { Message as PublintMessage } from 'publint'
+import type { NpmMeta, NpmMetaLatest } from '~~/shared/types'
 import type { PackageInstallSizeInfo } from './size'
 
 export type PackageModuleTypeSimple = 'cjs' | 'esm'
@@ -59,7 +60,8 @@ export interface PackageNode extends PackageNodeBase {
     homepage?: string
     engines?: Record<string, string>
     installSize?: PackageInstallSizeInfo
-    publishTime?: string
+    npmMeta?: NpmMeta
+    npmMetaLatest?: NpmMetaLatest
     /**
      * Result for publint, null for invalid, undefined for not checked yet, empty array for all good
      */

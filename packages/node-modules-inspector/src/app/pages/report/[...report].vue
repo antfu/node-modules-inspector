@@ -16,6 +16,10 @@ const selected = computed(() => params.report[0] || 'all')
       <div i-ph-link-simple-duotone />
       Dependencies
     </NuxtLink>
+    <NuxtLink btn-action as="button" to="/report/deprecated" active-class="text-red bg-red:5">
+      <div i-ph-warning-duotone />
+      Deprecated
+    </NuxtLink>
     <NuxtLink btn-action as="button" to="/report/multiple-versions" active-class="text-primary bg-primary:5">
       <div i-ph-copy-duotone />
       Multiple Versions
@@ -44,6 +48,7 @@ const selected = computed(() => params.report[0] || 'all')
 
   <ReportTransitiveDeps v-if="selected === 'dependencies' || selected === 'all'" />
   <ReportUsedBy v-if="selected === 'dependencies' || selected === 'all'" />
+  <ReportDeprecated v-if="selected === 'deprecated' || selected === 'all'" />
   <ReportInstallSize v-if="selected === 'install-size' || selected === 'all'" />
   <ReportPublishTime v-if="selected === 'time' || selected === 'all'" />
   <ReportEngines v-if="selected === 'node-engines' || selected === 'all'" />

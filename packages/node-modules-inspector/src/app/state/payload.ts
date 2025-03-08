@@ -1,8 +1,9 @@
 import type { PackageNode } from 'node-modules-tools'
+import type { NpmMeta, NpmMetaLatest } from '~~/shared/types'
 import { CLUSTER_DEP_DEV, CLUSTER_DEP_OPTIONAL, CLUSTER_DEP_PROD } from 'node-modules-tools/constants'
 import { computed, reactive, watch } from 'vue'
 import { buildVersionToPackagesMap } from '../utils/maps'
-import { rawPayload, rawPublishDates, rawReferencePayload } from './data'
+import { rawNpmMeta, rawNpmMetaLatest, rawPayload, rawReferencePayload } from './data'
 import { filters, filterSelectPredicate, filtersExcludePredicate } from './filters'
 
 export type ComputedPayload = ReturnType<typeof createComputedPayload>
@@ -204,16 +205,45 @@ export const payloads = {
   reference: _reference,
 }
 
-export function getPublishTime(input: PackageNode | string) {
+export function getNpmMeta(input: PackageNode | string): NpmMeta | null {
   const pkg = payloads.main.get(input)
   if (!pkg)
     return null
-  if (pkg.resolved.publishTime)
-    return new Date(pkg.resolved.publishTime)
-  const date = rawPublishDates.value?.get(pkg.spec)
-  if (date)
-    return new Date(date)
-  return null
+  return pkg.resolved.npmMeta || rawNpmMeta.value.get(pkg.spec) || null
+}
+
+export function getNpmMetaLatest(input: PackageNode | string): NpmMetaLatest | null {
+  const pkg = payloads.main.get(input)
+  if (!pkg)
+    return null
+  return [pkg.resolved.npmMetaLatest, rawNpmMetaLatest.value.get(pkg.spec)]
+    .filter(x => !!x)
+    .sort((a, b) => b.fetechedAt - a.fetechedAt)[0] || null
+}
+
+export function getPublishTime(input: PackageNode | string) {
+  const time = getNpmMeta(input)?.publishedAt
+  return time ? new Date(time) : null
+}
+
+export type DeprecationType = 'package' | 'current' | 'future'
+
+export function getDeprecatedInfo(input: PackageNode | string) {
+  const meta = getNpmMeta(input)
+  const metaLatest = getNpmMetaLatest(input)
+  if (!meta?.deprecated && !metaLatest?.deprecated)
+    return null
+  const type: DeprecationType = (meta?.deprecated && metaLatest?.deprecated)
+    ? 'package'
+    : (meta?.deprecated && !metaLatest?.deprecated)
+        ? 'current'
+        : 'future'
+  return {
+    type,
+    current: meta?.deprecated,
+    latest: metaLatest?.deprecated,
+    latestVersion: metaLatest?.version,
+  }
 }
 
 export const totalWorkspaceSize = computed(() => {
