@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { onMounted, shallowRef } from 'vue'
-import { backend } from '~/backends'
-import { fetchData, rawPayload } from '~/state/data'
-import { query } from '~/state/query'
-import { openTerminal, showTerminal } from '~/state/terminal'
+import { backend } from '../backends'
 import MainEntry from '../entries/main.vue'
+import { fetchData, rawPayload } from '../state/data'
+import { query } from '../state/query'
+import { openTerminal, showTerminal } from '../state/terminal'
 import { getContainer, install } from './container'
 
 showTerminal.value = true

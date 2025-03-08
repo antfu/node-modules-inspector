@@ -2,7 +2,7 @@
 import type { PackageModuleType, PackageNode } from 'node-modules-tools'
 import { useRoute } from '#app/composables/router'
 import { computed } from 'vue'
-import { payloads } from '~/state/payload'
+import { payloads } from '../../state/payload'
 
 const params = useRoute().params as Record<string, string>
 const tab = computed<'depth' | 'clusters' | 'module-type'>(() => params.grid[0] as any || 'depth')

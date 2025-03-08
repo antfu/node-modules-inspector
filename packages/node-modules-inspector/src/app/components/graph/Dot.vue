@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
-import type { HighlightMode } from '~/state/highlight'
-import { selectedNode } from '~/state/current'
+import type { HighlightMode } from '../../state/highlight'
+import { selectedNode } from '../../state/current'
 
 defineProps<{
   pkg: PackageNode

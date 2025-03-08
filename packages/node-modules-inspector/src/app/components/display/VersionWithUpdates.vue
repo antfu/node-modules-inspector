@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { NpmMetaLatest } from '~~/shared/types'
+import type { NpmMetaLatest } from 'node-modules-tools'
 import { Tooltip } from 'floating-vue'
 import semver from 'semver'
 import { computed } from 'vue'

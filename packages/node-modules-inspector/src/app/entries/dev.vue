@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { shallowRef } from 'vue'
-import { createDevBackend } from '~/backends/dev'
 import { backend } from '../backends'
+import { createDevBackend } from '../backends/dev'
 import { fetchData } from '../state/data'
 import MainEntry from './main.vue'
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
-import type { ComputedPayload } from '~/state/payload'
+import type { ComputedPayload } from '../../state/payload'
 import { ref } from 'vue'
 
 defineProps<{

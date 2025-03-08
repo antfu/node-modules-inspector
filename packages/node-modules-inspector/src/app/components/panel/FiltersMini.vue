@@ -2,9 +2,9 @@
 import type { PackageModuleType } from 'node-modules-tools'
 import type { WritableComputedRef } from 'vue'
 import { computed } from 'vue'
-import { filters, filtersDefault, isDeepEqual } from '~/state/filters'
-import { query } from '~/state/query'
-import { MODULE_TYPES_FULL_SELECT, moduleTypesAvailableSelect } from '~/utils/module-type'
+import { filters, filtersDefault, isDeepEqual } from '../../state/filters'
+import { query } from '../../state/query'
+import { MODULE_TYPES_FULL_SELECT, moduleTypesAvailableSelect } from '../../utils/module-type'
 
 function createModuleTypeRef(name: PackageModuleType) {
   return computed({

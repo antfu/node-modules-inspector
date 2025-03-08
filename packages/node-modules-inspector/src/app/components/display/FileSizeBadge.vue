@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { totalWorkspaceSize } from '~/state/payload'
-import { settings } from '~/state/settings'
+import { totalWorkspaceSize } from '../../state/payload'
+import { settings } from '../../state/settings'
 import { bytesToHumanSize } from '../../utils/format'
 
 const props = withDefaults(

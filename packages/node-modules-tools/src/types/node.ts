@@ -1,7 +1,8 @@
 import type { PackageJsonExports } from 'pkg-types'
 import type { Message as PublintMessage } from 'publint'
-import type { NpmMeta, NpmMetaLatest } from '~~/shared/types'
 import type { PackageInstallSizeInfo } from './size'
+
+export type { PublintMessage }
 
 export type PackageModuleTypeSimple = 'cjs' | 'esm'
 export type PackageModuleType = 'cjs' | 'esm' | 'dual' | 'faux' | 'dts'
@@ -67,4 +68,27 @@ export interface PackageNode extends PackageNodeBase {
      */
     publint?: PublintMessage[] | null
   }
+}
+
+export interface NpmMeta {
+  publishedAt: number
+  deprecated?: string
+}
+
+/**
+ * Npm meta of the latest version of a certain package
+ * Unlike NpmMeta with is immutable, NpmMetaLatest is coupled with time,
+ * so the `vaildUntil` is used to determine if the meta would need to be updated.
+ */
+export interface NpmMetaLatest extends NpmMeta {
+  version: string
+  /**
+   * Date when the meta was fetched
+   */
+  fetechedAt: number
+  /**
+   * We calculate a smart "TTL" based on how open the package updates.
+   * If this timestemp is greater than the current time, the meta should be discarded.
+   */
+  vaildUntil: number
 }

@@ -1,4 +1,4 @@
-import type { SettingsOptions } from '~~/shared/types'
+import type { SettingsOptions } from '../../shared/types'
 import { useLocalStorage } from '@vueuse/core'
 
 export const settings = useLocalStorage<SettingsOptions>(

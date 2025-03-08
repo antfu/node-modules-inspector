@@ -1,4 +1,4 @@
-import type { NpmMetaLatest } from './types'
+import type { NpmMetaLatest } from 'node-modules-tools'
 
 export function isNpmMetaLatestValid(meta?: NpmMetaLatest): boolean {
   if (!meta)

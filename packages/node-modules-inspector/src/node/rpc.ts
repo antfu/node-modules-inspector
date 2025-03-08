@@ -1,5 +1,4 @@
-import type { ListPackageDependenciesOptions, PackageNode } from 'node-modules-tools'
-import type { Message as PublintMessage } from 'publint'
+import type { ListPackageDependenciesOptions, PackageNode, PublintMessage } from 'node-modules-tools'
 import type { Storage } from 'unstorage'
 import type { ListPackagesNpmMetaLatestOptions, ListPackagesNpmMetaOptions, NodeModulesInspectorConfig, NodeModulesInspectorPayload, ServerFunctions } from '../shared/types'
 import process from 'node:process'
@@ -8,7 +7,7 @@ import { constructPackageFilters, listPackageDependencies } from 'node-modules-t
 import { hash as getHash } from 'ohash'
 import pLimit from 'p-limit'
 import { loadConfig } from 'unconfig'
-import { isNpmMetaLatestValid } from '~~/shared/utils'
+import { isNpmMetaLatestValid } from '../shared/utils'
 import {
   getPackagesNpmMeta as _getPackagesNpmMeta,
   getPackagesNpmMetaLatest as _getPackagesNpmMetaLatest,

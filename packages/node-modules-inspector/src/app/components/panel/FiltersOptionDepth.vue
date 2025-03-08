@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { filters } from '~/state/filters'
-import { payloads } from '~/state/payload'
+import { filters } from '../../state/filters'
+import { payloads } from '../../state/payload'
 
 const availableDepths = computed(() => {
   let max = 0

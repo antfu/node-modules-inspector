@@ -1,4 +1,4 @@
-import type { ConnectionMeta } from '~~/shared/types'
+import type { ConnectionMeta } from '../../shared/types'
 import { createStaticBackend } from './static'
 import { createWebSocketBackend } from './websocket'
 

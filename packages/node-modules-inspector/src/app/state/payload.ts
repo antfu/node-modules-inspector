@@ -1,5 +1,4 @@
-import type { PackageNode } from 'node-modules-tools'
-import type { NpmMeta, NpmMetaLatest } from '~~/shared/types'
+import type { NpmMeta, NpmMetaLatest, PackageNode } from 'node-modules-tools'
 import { CLUSTER_DEP_DEV, CLUSTER_DEP_OPTIONAL, CLUSTER_DEP_PROD } from 'node-modules-tools/constants'
 import { computed, reactive, watch } from 'vue'
 import { buildVersionToPackagesMap } from '../utils/maps'

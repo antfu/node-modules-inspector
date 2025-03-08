@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
 import { ref, useTemplateRef } from 'vue'
-import { selectedNode } from '~/state/current'
+import { selectedNode } from '../../state/current'
 
 const input = ref('')
 

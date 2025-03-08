@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
-import { selectedNode } from '~/state/current'
-import { payloads } from '~/state/payload'
-import { settings } from '~/state/settings'
+import { selectedNode } from '../../state/current'
+import { payloads } from '../../state/payload'
+import { settings } from '../../state/settings'
 
 defineProps<{
   pkg: PackageNode

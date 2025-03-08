@@ -1,5 +1,4 @@
-import type { Message as PublintMessage } from 'publint'
-import type { NpmMeta, NpmMetaLatest } from '../shared/types'
+import type { NpmMeta, NpmMetaLatest, PublintMessage } from 'node-modules-tools'
 import process from 'node:process'
 import { join } from 'pathe'
 import { createStorage } from 'unstorage'

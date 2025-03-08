@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { getBackend } from '~/backends'
-import { rawPayload } from '~/state/data'
-import { getDeprecatedInfo, payloads, totalWorkspaceSize } from '~/state/payload'
 import { version } from '../../../../package.json'
+import { getBackend } from '../../backends'
+import { rawPayload } from '../../state/data'
+import { getDeprecatedInfo, payloads, totalWorkspaceSize } from '../../state/payload'
 
 const backend = getBackend()
 

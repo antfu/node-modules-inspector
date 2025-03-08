@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
 import { computed, ref } from 'vue'
-import { selectedNode } from '~/state/current'
-import { payloads } from '~/state/payload'
+import { selectedNode } from '../../state/current'
+import { payloads } from '../../state/payload'
 
 const PERMISSIVE_LICENSES = [
   'MIT',

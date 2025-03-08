@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { getBackend } from '~/backends'
-import { fetchData } from '~/state/data'
-import { settings } from '~/state/settings'
+import { getBackend } from '../../backends'
+import { fetchData } from '../../state/data'
+import { settings } from '../../state/settings'
 
 const backend = getBackend()
 </script>

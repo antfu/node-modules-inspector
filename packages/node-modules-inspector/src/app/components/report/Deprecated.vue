@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
-import type { DeprecationType } from '~/state/payload'
+import type { DeprecationType } from '../../state/payload'
 import { useRouter } from '#app/composables/router'
 import { DisplayDateBadge } from '#components'
 import { computed, nextTick } from 'vue'
-import { selectedNode } from '~/state/current'
-import { filters } from '~/state/filters'
-import { getDeprecatedInfo, payloads } from '~/state/payload'
+import { selectedNode } from '../../state/current'
+import { filters } from '../../state/filters'
+import { getDeprecatedInfo, payloads } from '../../state/payload'
 
 const router = useRouter()
 
@@ -85,7 +85,11 @@ const titleMap = {
                 <div i-ph-graph-duotone text-lg />
               </button>
             </div>
-            <DisplayDeprecationMessage :pkg="pkg" class="bg-transparent!" pointer-events-none />
+            <DisplayDeprecationMessage
+              :pkg="pkg"
+              :show-title="false"
+              class="bg-transparent!" pointer-events-none
+            />
             <div flex="~ justify-between items-end w-full" mt-auto p2>
               <DisplayDateBadge :pkg rounded-full text-xs />
               <DisplayModuleType :pkg text-xs />

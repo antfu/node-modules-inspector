@@ -1,6 +1,6 @@
 import type { PackageNode } from 'node-modules-tools'
-import type { ClientFunctions, ServerFunctions } from '~~/shared/types'
-import type { Backend } from '~/types/backend'
+import type { ClientFunctions, ServerFunctions } from '../../shared/types'
+import type { Backend } from '../types/backend'
 import { createBirpc } from 'birpc'
 import { parse, stringify } from 'structured-clone-es'
 import { ref, shallowRef } from 'vue'

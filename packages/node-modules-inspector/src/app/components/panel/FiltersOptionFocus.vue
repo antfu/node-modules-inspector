@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { filters } from '~/state/filters'
+import { filters } from '../../state/filters'
 </script>
 
 <template>

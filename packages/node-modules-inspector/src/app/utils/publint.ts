@@ -1,4 +1,4 @@
-import type { Message } from 'publint'
+import type { PublintMessage } from 'node-modules-tools'
 
 // TODO: remove this file when publint provides browser consumable `formatMessage`
 
@@ -52,7 +52,7 @@ function replaceLast(str: string, search: string, replace: string): string {
 }
 
 export function formatMessage(
-  m: Message,
+  m: PublintMessage,
   pkg: any,
   // opts: FormatMessageOptions = {},
 ): string | undefined {
