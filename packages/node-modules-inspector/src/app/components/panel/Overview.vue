@@ -7,19 +7,17 @@ import { version } from '../../../../package.json'
 
 const backend = getBackend()
 
-const totalDeprecatedCount = computed(() => {
-  return Array.from(payloads.filtered.packages)
-    .filter((pkg) => {
-      const depreaction = getDeprecatedInfo(pkg)
-      return depreaction?.current || depreaction?.latest
-    },
-    )
-    .length
-})
+const totalDeprecatedCount = computed(() => Array.from(payloads.filtered.packages)
+  .filter(pkg => getDeprecatedInfo(pkg)?.current)
+  .length)
 
-const multipleVersionsCount = computed(() => {
-  return Array.from(payloads.avaliable.versions.values()).filter(v => v.length > 1).length
-})
+const multipleVersionsCount = computed(() => Array.from(payloads.avaliable.versions.values())
+  .filter(v => v.length > 1)
+  .length)
+
+const fundingCount = computed(() => payloads.avaliable.packages
+  .flatMap(p => p.resolved.fundings)
+  .length)
 
 const licensesCount = computed(() => {
   const set = new Set<string>()
@@ -28,8 +26,6 @@ const licensesCount = computed(() => {
   })
   return set.size
 })
-
-const fundingCount = computed(() => payloads.avaliable.packages.flatMap(p => p.resolved.fundings).length)
 
 const mins10 = 10 * 60 * 1000
 const timepassed = computed(() => rawPayload.value?.timestamp ? Date.now() - rawPayload.value.timestamp : 0)
