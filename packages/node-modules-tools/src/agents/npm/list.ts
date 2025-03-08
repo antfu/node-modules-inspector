@@ -100,11 +100,11 @@ export async function listPackageDependencies(
   // Used to link package deps with resolved version
   const packageSpecByLocation = new Map<string, string>()
 
-  packageSpecByLocation.set(rootPackage.location, rootPackage.pkgid)
-  packages.set(rootPackage.pkgid, {
+  packageSpecByLocation.set(rootPackage.location, rootPackage._id)
+  packages.set(rootPackage._id, {
     name: rootPackage.name,
     version: rootPackage.version,
-    spec: rootPackage.pkgid,
+    spec: rootPackage._id,
     private: rootPackage.private,
     filepath: rootPackage.path,
     workspace: true,
@@ -123,7 +123,7 @@ export async function listPackageDependencies(
     }
     const version = pkg.version || '0.0.0'
     const node: PackageNodeRaw = {
-      spec: pkg.pkgid,
+      spec: pkg._id,
       name,
       version,
       filepath: pkg.path,
@@ -140,14 +140,14 @@ export async function listPackageDependencies(
     raw: NpmPackageNode,
     clusters: Iterable<string>,
   ) {
-    if (packages.has(raw.pkgid))
+    if (packages.has(raw._id))
       return
 
-    packageSpecByLocation.set(raw.location, raw.pkgid)
-    packages.set(raw.pkgid, {
+    packageSpecByLocation.set(raw.location, raw._id)
+    packages.set(raw._id, {
       name: raw.name,
       version: raw.version,
-      spec: raw.pkgid,
+      spec: raw._id,
       private: raw.private,
       filepath: raw.path,
       workspace: false,
@@ -174,7 +174,7 @@ export async function listPackageDependencies(
     ...workspaces,
     rootPackage,
   ).forEach((raw) => {
-    const pkg = packages.get(raw.pkgid)
+    const pkg = packages.get(raw._id)
     if (!pkg)
       return
 
