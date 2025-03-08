@@ -2,10 +2,20 @@
 import { computed } from 'vue'
 import { getBackend } from '~/backends'
 import { rawPayload } from '~/state/data'
-import { payloads, totalDeprecatedCount, totalWorkspaceSize } from '~/state/payload'
+import { getDeprecatedInfo, payloads, totalWorkspaceSize } from '~/state/payload'
 import { version } from '../../../../package.json'
 
 const backend = getBackend()
+
+const totalDeprecatedCount = computed(() => {
+  return Array.from(payloads.filtered.packages)
+    .filter((pkg) => {
+      const depreaction = getDeprecatedInfo(pkg)
+      return depreaction?.current || depreaction?.latest
+    },
+    )
+    .length
+})
 
 const multipleVersionsCount = computed(() => {
   return Array.from(payloads.avaliable.versions.values()).filter(v => v.length > 1).length
@@ -69,12 +79,12 @@ const timepassed = computed(() => rawPayload.value?.timestamp ? Date.now() - raw
         <DisplayNumberBadge :number="payloads.avaliable.packages.length" rounded-full text-sm mx--0.2 mt-3px color="badge-color-primary" />
         <span ml--0.5>total packages</span>
       </NuxtLink>
-      <NuxtLink flex="~ gap-2 items-center" to="/report/deprecated">
-        <div i-ph-warning-duotone flex-none />
+      <NuxtLink v-if="totalDeprecatedCount" flex="~ gap-2 items-center" to="/report/deprecated">
+        <div i-ph-warning-duotone flex-none text-red />
         <DisplayNumberBadge :number="totalDeprecatedCount" rounded-full text-sm mx--0.2 mt-3px color="badge-color-red" />
-        <span ml--0.5>deprecated packages</span>
+        <span ml--0.5 text-red>deprecated packages</span>
       </NuxtLink>
-      <NuxtLink flex="~ gap-2 items-center" to="/report/multiple-versions">
+      <NuxtLink v-if="multipleVersionsCount" flex="~ gap-2 items-center" to="/report/multiple-versions">
         <div i-catppuccin-java-enum icon-catppuccin flex-none />
         <DisplayNumberBadge :number="multipleVersionsCount" rounded-full text-sm mx--0.2 mt-3px color="badge-color-orange" />
         <span ml--0.5>libraries with multiple versions</span>

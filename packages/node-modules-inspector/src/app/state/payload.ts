@@ -226,13 +226,26 @@ export function getPublishTime(input: PackageNode | string) {
   return time ? new Date(time) : null
 }
 
+export type DeprecationType = 'package' | 'current' | 'future'
+
+export function getDeprecatedInfo(input: PackageNode | string) {
+  const meta = getNpmMeta(input)
+  const metaLatest = getNpmMetaLatest(input)
+  if (!meta?.deprecated && !metaLatest?.deprecated)
+    return null
+  const type: DeprecationType = (meta?.deprecated && metaLatest?.deprecated)
+    ? 'package'
+    : (meta?.deprecated && !metaLatest?.deprecated)
+        ? 'current'
+        : 'future'
+  return {
+    type,
+    current: meta?.deprecated,
+    latest: metaLatest?.deprecated,
+    latestVersion: metaLatest?.version,
+  }
+}
+
 export const totalWorkspaceSize = computed(() => {
   return Array.from(payloads.avaliable.packages).reduce((acc, pkg) => acc + (pkg.resolved.installSize?.bytes || 0), 0)
-})
-
-export const totalDeprecatedCount = computed(() => {
-  return Array.from(payloads.avaliable.packages).filter(pkg =>
-    pkg.resolved.deprecatedInfo?.current?.deprecated
-    || pkg.resolved.deprecatedInfo?.last?.deprecated,
-  ).length
 })

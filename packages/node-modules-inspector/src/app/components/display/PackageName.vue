@@ -1,20 +1,19 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
 import { computed } from 'vue'
+import { getDeprecatedInfo } from '~/state/payload'
 
 const props = defineProps<{
   name: string
   pkg?: PackageNode
 }>()
 
-const isFutureDeprecated = computed(() => props.pkg?.resolved?.deprecatedInfo?.last?.deprecated || false)
+const deprecation = computed(() => getDeprecatedInfo(props.pkg || props.name))
+const isFutureDeprecated = computed(() => deprecation.value?.latest)
 
 const deprecationTitle = computed(() => {
   if (isFutureDeprecated.value) {
-    const lastInfo = props.pkg?.resolved?.deprecatedInfo?.last
-    if (lastInfo?.deprecated) {
-      return `${props.pkg?.name}@${lastInfo.version} (last version) is deprecated: ${lastInfo.deprecated}`
-    }
+    return `${props.pkg?.name}@${deprecation.value?.latestVersion} (last version) is deprecated: ${isFutureDeprecated.value}`
   }
   return ''
 })
