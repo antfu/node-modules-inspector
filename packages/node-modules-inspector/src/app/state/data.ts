@@ -1,6 +1,7 @@
 import type { PackageNode } from 'node-modules-tools'
-import type { NodeModulesInspectorPayload, NpmMeta, PublintMessage } from '~~/shared/types'
+import type { NodeModulesInspectorPayload, NpmMeta, NpmMetaLatest, PublintMessage } from '~~/shared/types'
 import { ref, shallowRef, toRaw } from 'vue'
+import { isNpmMetaLatestValid } from '~~/shared/utils'
 import { getBackend } from '~/backends'
 import { filters, filtersDefault } from './filters'
 import { settings } from './settings'
@@ -8,6 +9,7 @@ import { settings } from './settings'
 export const rawPayload = shallowRef<NodeModulesInspectorPayload | null>(null)
 export const rawReferencePayload = shallowRef<NodeModulesInspectorPayload | null>(null)
 export const rawNpmMeta = ref<Map<string, NpmMeta | null>>(new Map())
+export const rawNpmMetaLatest = ref<Map<string, NpmMetaLatest | null>>(new Map())
 export const rawPublintMessages = ref<Map<string, readonly PublintMessage[] | null>>(new Map())
 
 export async function fetchData(force = false) {
@@ -25,15 +27,37 @@ export async function fetchData(force = false) {
     Object.assign(settings.value, structuredClone(toRaw(data.config?.defaultSettings || {})))
     Object.assign(filters.state, structuredClone(toRaw(filtersDefault.value)))
 
-    const result = await backend.functions.getPackagesNpmMeta?.(
-      [...data.packages.entries()]
-        .filter(x => !x[1].private && !x[1].workspace && !x[1].resolved.npmMeta?.time)
-        .map(x => x[0]),
-    )
-    if (result) {
-      for (const [spec, meta] of result.entries())
-        rawNpmMeta.value.set(spec, Object.freeze(meta))
+    const promises: Promise<void>[] = []
+
+    const npmMetaSpecs = [...data.packages.entries()]
+      .filter(x => !x[1].private && !x[1].workspace && !x[1].resolved.npmMeta?.publishedAt)
+      .map(x => x[0])
+
+    const npmMetaLatestNames = [...data.packages.entries()]
+      .filter(x => !x[1].private && !x[1].workspace && !isNpmMetaLatestValid(x[1].resolved.npmMetaLatest))
+      .map(x => x[1].name)
+
+    if (backend.functions.getPackagesNpmMeta && npmMetaSpecs.length) {
+      promises.push(backend.functions.getPackagesNpmMeta(npmMetaSpecs)
+        .then((result) => {
+          if (result) {
+            for (const [spec, meta] of result.entries())
+              rawNpmMeta.value.set(spec, Object.freeze(meta))
+          }
+        }))
     }
+
+    if (backend.functions.getPackagesNpmMetaLatest && npmMetaLatestNames.length) {
+      promises.push(backend.functions.getPackagesNpmMetaLatest(npmMetaLatestNames)
+        .then((result) => {
+          if (result) {
+            for (const [spec, meta] of result.entries())
+              rawNpmMetaLatest.value.set(spec, Object.freeze(meta))
+          }
+        }))
+    }
+
+    await Promise.all(promises)
 
     return rawPayload.value
   }

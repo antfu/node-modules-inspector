@@ -6,7 +6,7 @@ import { getBackend } from '~/backends'
 import { selectedNode } from '~/state/current'
 import { fetchPublintMessages, rawPublintMessages } from '~/state/data'
 import { filters } from '~/state/filters'
-import { getPublishTime, payloads } from '~/state/payload'
+import { getNpmMetaLatest, getPublishTime, payloads } from '~/state/payload'
 import { query } from '~/state/query'
 import { settings } from '~/state/settings'
 
@@ -109,6 +109,8 @@ function getShallowestDependents(pkg: PackageNode) {
   const minDepth = Math.min(...dependents.map(x => x.depth))
   return dependents.filter(x => x.depth === minDepth)
 }
+
+const latestMeta = computed(() => getNpmMetaLatest(props.pkg))
 </script>
 
 <template>
@@ -130,7 +132,10 @@ function getShallowestDependents(pkg: PackageNode) {
         <span>{{ pkg.name }}</span>
       </div>
       <div flex="~ items-center wrap gap-2">
-        <DisplayVersion :version="pkg.version" op75 />
+        <DisplayVersionWithUpdates
+          :version="pkg.version"
+          :latest="latestMeta"
+        />
         <DisplayModuleType text-sm :pkg :force="true" />
         <div v-if="pkg.private" badge-color-gray px2 rounded text-sm border="~ base dashed">
           Private

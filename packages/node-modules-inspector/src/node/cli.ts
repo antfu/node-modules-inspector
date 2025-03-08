@@ -13,7 +13,7 @@ import { glob } from 'tinyglobby'
 import { distDir } from '../dirs'
 import { MARK_CHECK, MARK_NODE } from './constants'
 import { createHostServer } from './server'
-import { storageNpmMeta, storagePublint } from './storage'
+import { storageNpmMeta, storageNpmMetaLatest, storagePublint } from './storage'
 
 const cli = cac('node-modules-inspector')
 
@@ -35,6 +35,7 @@ cli
       cwd,
       depth: options.depth,
       storageNpmMeta,
+      storageNpmMetaLatest,
       storagePublint,
       mode: 'build',
     }))
@@ -92,6 +93,7 @@ cli
       cwd: options.root,
       depth: options.depth,
       storageNpmMeta,
+      storageNpmMetaLatest,
       storagePublint,
       mode: 'dev',
     })

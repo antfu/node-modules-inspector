@@ -1,42 +1,37 @@
-import type { ListPackagesNpmMetaOptions, NpmMeta } from './types'
+import type { ResolvedPackageVersion } from 'fast-npm-meta'
+import type { ListPackagesNpmMetaLatestOptions, ListPackagesNpmMetaOptions, NpmMeta, NpmMetaLatest } from './types'
 import { getLatestVersion, getLatestVersionBatch } from 'fast-npm-meta'
 import pLimit from 'p-limit'
+import { isNpmMetaLatestValid } from './utils'
 
-export async function getPackagesNpmMeta(
-  packages: string[],
-  options: ListPackagesNpmMetaOptions,
+const HOUR = 1000 * 60 * 60
+const DAY = HOUR * 24
+
+async function fetchBatch(
+  specs: string[],
+  onResult: (result: ResolvedPackageVersion) => void,
 ) {
-  const { storageNpmMeta: storage } = options
-
-  const map = new Map<string, NpmMeta>()
-
-  const known = await storage.keys()
-  const unknown = packages.filter(p => !known.includes(p))
-
-  const BATCH_SIZE = 10
-  const limit = pLimit(10)
   const promises: Promise<void>[] = []
   const missingSpecs = new Set<string>()
+  const BATCH_SIZE = 10
+  const limit = pLimit(10)
 
-  for (let i = 0; i < unknown.length; i += BATCH_SIZE) {
-    const specs = unknown.slice(i, i + BATCH_SIZE)
+  for (let i = 0; i < specs.length; i += BATCH_SIZE) {
+    const queue = specs.slice(i, i + BATCH_SIZE)
     promises.push(limit(async () => {
       try {
-        const result = await getLatestVersionBatch(specs, { metadata: true })
+        const result = await getLatestVersionBatch(queue, { metadata: true })
         for (const r of result) {
           if (r.publishedAt) {
-            const spec = `${r.name}@${r.version}`
-            const meta: NpmMeta = {
-              time: r.publishedAt,
-              deprecated: r.deprecated,
-            }
-            map.set(spec, meta)
-            await storage.setItem(spec, meta)
+            onResult(r)
+          }
+          else {
+            missingSpecs.add(`${r.name}@${r.version}`)
           }
         }
       }
       catch {
-        for (const spec of specs)
+        for (const spec of queue)
           missingSpecs.add(spec)
       }
     }))
@@ -51,14 +46,8 @@ export async function getPackagesNpmMeta(
         try {
           const result = await getLatestVersion(spec, { metadata: true })
           if (result.publishedAt) {
-            const spec = `${result.name}@${result.version}`
-            const meta: NpmMeta = {
-              time: result.publishedAt,
-              deprecated: result.deprecated,
-            }
-            map.set(spec, meta)
-            await storage.setItem(spec, meta)
             missingSpecs.delete(spec)
+            onResult(result)
           }
         }
         catch {}
@@ -66,8 +55,35 @@ export async function getPackagesNpmMeta(
     )
   }
 
-  if (missingSpecs.size) {
-    console.warn('Failed to get publish date for:', [...missingSpecs])
+  return {
+    missing: missingSpecs,
+  }
+}
+
+export async function getPackagesNpmMeta(
+  packages: string[],
+  options: ListPackagesNpmMetaOptions,
+) {
+  const { storageNpmMeta: storage } = options
+
+  const map = new Map<string, NpmMeta>()
+  const known = await storage.keys()
+  const unknown = packages.filter(p => !known.includes(p))
+
+  const {
+    missing,
+  } = await fetchBatch(unknown, async (r) => {
+    const spec = `${r.name}@${r.version}`
+    const meta: NpmMeta = {
+      publishedAt: new Date(r.publishedAt!).getTime(),
+      deprecated: r.deprecated,
+    }
+    map.set(spec, meta)
+    await storage.setItem(spec, meta)
+  })
+
+  if (missing.size) {
+    console.warn('Failed to get npm meta for:', [...missing])
   }
 
   await Promise.all(packages.map(async (p) => {
@@ -77,6 +93,61 @@ export async function getPackagesNpmMeta(
         map.set(p, date)
     }
   }))
+
+  return map
+}
+
+export async function getPackagesNpmMetaLatest(
+  packages: string[],
+  options: ListPackagesNpmMetaLatestOptions,
+): Promise<Map<string, NpmMetaLatest | null>> {
+  const { storageNpmMetaLatest: storage } = options
+
+  const map = new Map<string, NpmMetaLatest>()
+
+  packages.forEach((p) => {
+    if (p.split(/@/g).length >= 3)
+      throw new Error(`Invalid package name: ${p}`)
+  })
+
+  await Promise.all(packages.map(async (p) => {
+    const meta = await storage.getItem(p)
+    if (!meta)
+      return
+    if (!isNpmMetaLatestValid(meta)) {
+      await storage.removeItem(p)
+      return
+    }
+    map.set(p, meta)
+  }))
+
+  const unknown = packages.filter(p => !map.has(p))
+
+  const {
+    missing,
+  } = await fetchBatch(unknown.map(p => `${p}@latest`), async (r) => {
+    const publishedAt = new Date(r.publishedAt!).getTime()
+    const timePassed = Date.now() - publishedAt
+
+    // TTL is based on how long the package has been published
+    // Min 5 hours, max 15 days
+    // Otherwise it's 3% of the time passed (1 year package will have roughly 10 days TTL)
+    const ttl = Math.min(Math.max(5 * HOUR, timePassed * 0.03), 15 * DAY)
+
+    const meta: NpmMetaLatest = {
+      publishedAt,
+      deprecated: r.deprecated,
+      version: r.version!,
+      fetechedAt: Date.now(),
+      vaildUntil: Date.now() + ttl,
+    }
+    map.set(r.name, meta)
+    await storage.setItem(r.name, meta)
+  })
+
+  if (missing.size) {
+    console.warn('Failed to get npm meta for:', [...missing])
+  }
 
   return map
 }

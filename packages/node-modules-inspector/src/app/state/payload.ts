@@ -1,8 +1,9 @@
 import type { PackageNode } from 'node-modules-tools'
+import type { NpmMeta, NpmMetaLatest } from '~~/shared/types'
 import { CLUSTER_DEP_DEV, CLUSTER_DEP_OPTIONAL, CLUSTER_DEP_PROD } from 'node-modules-tools/constants'
 import { computed, reactive, watch } from 'vue'
 import { buildVersionToPackagesMap } from '../utils/maps'
-import { rawNpmMeta, rawPayload, rawReferencePayload } from './data'
+import { rawNpmMeta, rawNpmMetaLatest, rawPayload, rawReferencePayload } from './data'
 import { filters, filterSelectPredicate, filtersExcludePredicate } from './filters'
 
 export type ComputedPayload = ReturnType<typeof createComputedPayload>
@@ -204,14 +205,25 @@ export const payloads = {
   reference: _reference,
 }
 
-export function getPublishTime(input: PackageNode | string) {
+export function getNpmMeta(input: PackageNode | string): NpmMeta | null {
   const pkg = payloads.main.get(input)
   if (!pkg)
     return null
-  const time = pkg.resolved.npmMeta?.time || rawNpmMeta.value?.get(pkg.spec)?.time
-  if (time)
-    return new Date(time)
-  return null
+  return pkg.resolved.npmMeta || rawNpmMeta.value.get(pkg.spec) || null
+}
+
+export function getNpmMetaLatest(input: PackageNode | string): NpmMetaLatest | null {
+  const pkg = payloads.main.get(input)
+  if (!pkg)
+    return null
+  return [pkg.resolved.npmMetaLatest, rawNpmMetaLatest.value.get(pkg.spec)]
+    .filter(x => !!x)
+    .sort((a, b) => b.fetechedAt - a.fetechedAt)[0] || null
+}
+
+export function getPublishTime(input: PackageNode | string) {
+  const time = getNpmMeta(input)?.publishedAt
+  return time ? new Date(time) : null
 }
 
 export const totalWorkspaceSize = computed(() => {

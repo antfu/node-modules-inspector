@@ -13,7 +13,8 @@ export interface NodeModulesInspectorPayload extends ListPackageDependenciesResu
 
 export interface ServerFunctions {
   getPayload: (force?: boolean) => Promise<NodeModulesInspectorPayload>
-  getPackagesNpmMeta: (deps: string[]) => Promise<Map<string, NpmMeta>>
+  getPackagesNpmMeta: (specs: string[]) => Promise<Map<string, NpmMeta>>
+  getPackagesNpmMetaLatest: (pkgNames: string[]) => Promise<Map<string, NpmMetaLatest>>
   getPublint: (pkg: Pick<PackageNode, 'private' | 'workspace' | 'spec' | 'filepath'>) => Promise<PublintMessage[] | null>
   openInEditor: (filename: string) => void
   openInFinder: (filename: string) => void
@@ -81,7 +82,7 @@ export type ServerFunctionsDump = Omit<
   RemoveVoidKeysFromObject<{
     [K in keyof ServerFunctions]: Awaited<ReturnType<ServerFunctions[K]>>
   }>,
-  'getPublint' | 'getPackagesNpmMeta'
+  'getPublint' | 'getPackagesNpmMeta' | 'getPackagesNpmMetaLatest'
 >
 
 export interface ConnectionMeta {
@@ -90,10 +91,32 @@ export interface ConnectionMeta {
 }
 
 export interface NpmMeta {
-  time: string
+  publishedAt: number
   deprecated?: string
+}
+
+/**
+ * Npm meta of the latest version of a certain package
+ * Unlike NpmMeta with is immutable, NpmMetaLatest is coupled with time,
+ * so the `vaildUntil` is used to determine if the meta would need to be updated.
+ */
+export interface NpmMetaLatest extends NpmMeta {
+  version: string
+  /**
+   * Date when the meta was fetched
+   */
+  fetechedAt: number
+  /**
+   * We calculate a smart "TTL" based on how open the package updates.
+   * If this timestemp is greater than the current time, the meta should be discarded.
+   */
+  vaildUntil: number
 }
 
 export interface ListPackagesNpmMetaOptions {
   storageNpmMeta: Storage<NpmMeta>
+}
+
+export interface ListPackagesNpmMetaLatestOptions {
+  storageNpmMetaLatest: Storage<NpmMetaLatest>
 }

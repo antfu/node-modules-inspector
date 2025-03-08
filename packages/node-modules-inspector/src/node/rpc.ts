@@ -1,21 +1,25 @@
 import type { ListPackageDependenciesOptions, PackageNode } from 'node-modules-tools'
 import type { Message as PublintMessage } from 'publint'
 import type { Storage } from 'unstorage'
-import type { ListPackagesNpmMetaOptions, NodeModulesInspectorConfig, NodeModulesInspectorPayload, ServerFunctions } from '../shared/types'
+import type { ListPackagesNpmMetaLatestOptions, ListPackagesNpmMetaOptions, NodeModulesInspectorConfig, NodeModulesInspectorPayload, ServerFunctions } from '../shared/types'
 import process from 'node:process'
 import c from 'ansis'
 import { constructPackageFilters, listPackageDependencies } from 'node-modules-tools'
 import { hash as getHash } from 'ohash'
 import pLimit from 'p-limit'
 import { loadConfig } from 'unconfig'
-import { getPackagesNpmMeta as _getPackagesNpmMeta } from '../shared/version-info'
+import { isNpmMetaLatestValid } from '~~/shared/utils'
+import {
+  getPackagesNpmMeta as _getPackagesNpmMeta,
+  getPackagesNpmMetaLatest as _getPackagesNpmMetaLatest,
+} from '../shared/version-info'
 import { MARK_CHECK, MARK_NODE } from './constants'
 
 export interface CreateServerFunctionsOptions extends
   Partial<ListPackageDependenciesOptions>,
-  ListPackagesNpmMetaOptions {
+  ListPackagesNpmMetaOptions,
+  ListPackagesNpmMetaLatestOptions {
   mode: 'dev' | 'build'
-
   storagePublint?: Storage<PublintMessage[]>
 }
 
@@ -50,11 +54,28 @@ export function createServerFunctions(options: CreateServerFunctionsOptions): Se
     return result.config
   }
 
-  async function getPackagesNpmMeta(deps: string[]) {
+  async function getPackagesNpmMeta(specs: string[], log = true) {
     const config = await getConfig()
     if (!config.fetchNpmMeta)
       return new Map()
-    return _getPackagesNpmMeta(deps, { storageNpmMeta: options.storageNpmMeta })
+    if (log)
+      console.log(c.cyan`${MARK_NODE} Fetching npm meta for ${specs.length} packages...`)
+    const result = await _getPackagesNpmMeta(specs, { storageNpmMeta: options.storageNpmMeta })
+    if (log)
+      console.log(c.green`${MARK_CHECK} npm meta fetched for ${specs.length} packages`)
+    return result
+  }
+
+  async function getPackagesNpmMetaLatest(pkgNames: string[], log = true) {
+    const config = await getConfig()
+    if (!config.fetchNpmMeta)
+      return new Map()
+    if (log)
+      console.log(c.cyan`${MARK_NODE} Fetching npm meta latest for ${pkgNames.length} packages...`)
+    const result = await _getPackagesNpmMetaLatest(pkgNames, { storageNpmMetaLatest: options.storageNpmMetaLatest })
+    if (log)
+      console.log(c.green`${MARK_CHECK} npm meta latest fetched for ${pkgNames.length} packages`)
+    return result
   }
 
   async function getPublint(pkg: Pick<PackageNode, 'private' | 'workspace' | 'spec' | 'filepath'>, log = true) {
@@ -134,7 +155,10 @@ export function createServerFunctions(options: CreateServerFunctionsOptions): Se
       buildTasks.push((async () => {
         console.log(c.cyan`${MARK_NODE} Fetching npm meta...`)
         try {
-          await getPackagesNpmMeta(Array.from(result.packages.keys()))
+          await Promise.allSettled([
+            getPackagesNpmMeta(Array.from(result.packages.keys()), false),
+            getPackagesNpmMetaLatest(Array.from(new Set(Array.from(result.packages.values()).map(x => x.name))), false),
+          ])
         }
         catch (e) {
           console.error(c.red`${MARK_NODE} Failed to fetch npm meta`)
@@ -152,6 +176,10 @@ export function createServerFunctions(options: CreateServerFunctionsOptions): Se
         const meta = await options.storageNpmMeta.getItem(pkg.spec)
         if (meta)
           pkg.resolved.npmMeta = meta
+
+        const metaLatest = await options.storageNpmMetaLatest.getItem(pkg.name)
+        if (metaLatest && isNpmMetaLatestValid(metaLatest))
+          pkg.resolved.npmMetaLatest = metaLatest
       }))
 
     console.log(c.green`${MARK_CHECK} node_modules read finished`)
@@ -167,6 +195,7 @@ export function createServerFunctions(options: CreateServerFunctionsOptions): Se
   return {
     getPayload,
     getPackagesNpmMeta,
+    getPackagesNpmMetaLatest,
     getPublint,
     async openInEditor(filename: string) {
       await import('launch-editor').then(r => (r.default || r)(filename))
