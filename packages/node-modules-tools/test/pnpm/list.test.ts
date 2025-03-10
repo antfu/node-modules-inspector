@@ -80,13 +80,6 @@ describe('listPnpmPackageDependencies', () => {
         "flatDependents": undefined,
         "name": "debug",
         "resolved": {
-          "author": "Josh Junon (https://github.com/qix-)",
-          "engines": {
-            "node": ">=6.0",
-          },
-          "exports": undefined,
-          "fundings": [],
-          "homepage": undefined,
           "installSize": {
             "bytes": 42798,
             "categories": {
@@ -108,9 +101,44 @@ describe('listPnpmPackageDependencies', () => {
               },
             },
           },
-          "license": "MIT",
           "module": "cjs",
-          "repository": "https://github.com/debug-js/debug",
+          "packageJson": {
+            "author": "Josh Junon (https://github.com/qix-)",
+            "dependencies": {
+              "ms": "^2.1.3",
+            },
+            "description": "Lightweight debugging utility for Node.js and the browser",
+            "devDependencies": {
+              "brfs": "^2.0.1",
+              "browserify": "^16.2.3",
+              "coveralls": "^3.0.2",
+              "istanbul": "^0.4.5",
+              "karma": "^3.1.4",
+              "karma-browserify": "^6.0.0",
+              "karma-chrome-launcher": "^2.2.0",
+              "karma-mocha": "^1.3.0",
+              "mocha": "^5.2.0",
+              "mocha-lcov-reporter": "^1.2.0",
+              "sinon": "^14.0.0",
+              "xo": "^0.23.0",
+            },
+            "engines": {
+              "node": ">=6.0",
+            },
+            "keywords": [
+              "debug",
+              "log",
+              "debugger",
+            ],
+            "license": "MIT",
+            "main": "./src/index.js",
+            "name": "debug",
+            "repository": {
+              "type": "git",
+              "url": "git://github.com/debug-js/debug.git",
+            },
+            "version": "4.4.0",
+          },
         },
         "spec": "debug@4.4.0",
         "version": "4.4.0",
