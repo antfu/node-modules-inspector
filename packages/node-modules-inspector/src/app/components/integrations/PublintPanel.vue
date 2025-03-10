@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { PackageNode, PublintMessage } from 'node-modules-tools'
+import { formatMessage } from 'publint/utils'
 import { computed } from 'vue'
 import { settings } from '../../state/settings'
-import { formatMessage } from '../../utils/publint'
 
 const props = defineProps<{
   pkg: PackageNode
@@ -87,7 +87,7 @@ const messageColors = {
         <div
           rounded line-clamp-3 break-all
           :class="messageColors[message.type]"
-          v-html="formatMessage(message, { ...props.pkg, ...props.pkg.resolved })"
+          v-html="formatMessage(message, { ...props.pkg, ...props.pkg.resolved }, { color: 'html' })"
         />
       </div>
     </a>

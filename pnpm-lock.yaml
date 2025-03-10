@@ -71,8 +71,8 @@ catalogs:
       specifier: ^2.0.3
       version: 2.0.3
     publint:
-      specifier: ^0.3.8
-      version: 0.3.8
+      specifier: ^0.3.9
+      version: 0.3.9
     semver:
       specifier: ^7.7.1
       version: 7.7.1
@@ -408,7 +408,7 @@ importers:
         version: 2.0.3
       publint:
         specifier: catalog:deps
-        version: 0.3.8
+        version: 0.3.9
       structured-clone-es:
         specifier: catalog:deps
         version: 1.0.0
@@ -493,7 +493,7 @@ importers:
         version: 2.1.0
       publint:
         specifier: catalog:deps
-        version: 0.3.8
+        version: 0.3.9
       semver:
         specifier: catalog:deps
         version: 7.7.1
@@ -5071,8 +5071,8 @@ packages:
   protocols@2.0.2:
     resolution: {integrity: sha512-hHVTzba3wboROl0/aWRRG9dMytgH6ow//STBZh43l/wQgmMhYhOFi0EHWAPtoCz9IAUymsyP0TSBHkhgMEGNnQ==}
 
-  publint@0.3.8:
-    resolution: {integrity: sha512-qJyxCpQFf0j0uvlr7GizYZiQgAFgePbAVRV2uecAbNIXniDD/NMSNNBL8+DxLMMjhjgPuLJ3l2GbrB0F9MwvfA==}
+  publint@0.3.9:
+    resolution: {integrity: sha512-irTwfRfYW38vomkxxoiZQtFtUOQKpz5m0p9Z60z4xpXrl1KmvSrX1OMARvnnolB5usOXeNfvLj6d/W3rwXKfBQ==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -11831,7 +11831,7 @@ snapshots:
 
   protocols@2.0.2: {}
 
-  publint@0.3.8:
+  publint@0.3.9:
     dependencies:
       '@publint/pack': 0.1.2
       package-manager-detector: 0.2.11
