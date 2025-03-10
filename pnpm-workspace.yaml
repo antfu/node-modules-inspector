@@ -6,11 +6,11 @@ catalogs:
     '@rollup/plugin-commonjs': ^28.0.3
     '@unocss/nuxt': ^66.0.0
     '@rollup/plugin-node-resolve': ^16.0.0
-    '@vueuse/nuxt': ^12.8.2
-    esbuild: ^0.25.0
+    '@vueuse/nuxt': ^13.0.0
+    esbuild: ^0.25.1
     nitropack: 2.8.1
     nuxt: ~3.15
-    rollup: ^4.34.9
+    rollup: ^4.35.0
     rollup-plugin-esbuild: ^6.2.1
     unbuild: ^3.5.0
     vite: ^6.2.1
@@ -25,7 +25,7 @@ catalogs:
     js-yaml: ^4.1.0
     mrmime: ^2.0.1
     publint: ^0.3.9
-    unconfig: ^7.3.0
+    unconfig: ^7.3.1
     unstorage: ^1.15.0
     ws: ^8.18.1
     ohash: ^2.0.11
@@ -34,14 +34,14 @@ catalogs:
     stream-json: ^1.9.1
     structured-clone-es: ^1.0.0
     launch-editor: ^2.10.0
-    package-manager-detector: ^0.2.11
+    package-manager-detector: ^1.0.0
     pathe: ^2.0.3
     semver: ^7.7.1
     tinyexec: ^0.3.2
   devtools:
     '@antfu/eslint-config': ^4.8.1
     '@nuxt/devtools': ^2.2.1
-    '@nuxt/eslint': ^1.1.0
+    '@nuxt/eslint': ^1.2.0
     '@typescript-eslint/utils': ^8.26.0
     '@unocss/eslint-config': ^66.0.0
     bumpp: ^10.0.3
