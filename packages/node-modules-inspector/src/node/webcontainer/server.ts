@@ -22,7 +22,20 @@ const rpc = createServerFunctions({
 })
 
 async function run() {
-  console.log(WEBCONTAINER_STDOUT_PREFIX + stringify(await rpc.getPayload()))
+  // eslint-disable-next-line unimport/auto-insert
+  const heartbeat = setInterval(() => {
+    console.log(WEBCONTAINER_STDOUT_PREFIX + stringify({ status: 'heartbeat', heartbeat: Date.now() }))
+  }, 100)
+
+  try {
+    console.log(WEBCONTAINER_STDOUT_PREFIX + stringify(await rpc.getPayload()))
+  }
+  catch (err) {
+    console.log(WEBCONTAINER_STDOUT_PREFIX + stringify({ status: 'error', error: err }))
+  }
+  finally {
+    clearInterval(heartbeat)
+  }
 }
 
 run()

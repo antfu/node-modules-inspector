@@ -1,5 +1,5 @@
 import type { NpmMeta, NpmMetaLatest } from 'node-modules-tools'
-import type { NodeModulesInspectorPayload } from '../../shared/types'
+import type { NodeModulesInspectorLog, NodeModulesInspectorPayload } from '../../shared/types'
 import type { Backend } from '../types/backend'
 import { WebContainer } from '@webcontainer/api'
 import c from 'ansis'
@@ -75,12 +75,27 @@ export async function install(
   await exec('pnpm', ['install', ...args])
 
   let result: NodeModulesInspectorPayload | undefined
+  let heartbeat = 0
+  let serverError: any
+
   const _process = exec('node', ['__server.mjs'], false, (chunk) => {
     if (chunk.startsWith(WEBCONTAINER_STDOUT_PREFIX)) {
       const data = chunk.slice(WEBCONTAINER_STDOUT_PREFIX.length)
-      result = parse(data) as NodeModulesInspectorPayload
-      // eslint-disable-next-line no-console
-      console.log('Data fetched', result)
+      const parsed = parse(data) as NodeModulesInspectorLog
+
+      if ('status' in parsed) {
+        if (parsed.status === 'heartbeat') {
+          heartbeat = parsed.heartbeat
+        }
+        else if (parsed.status === 'error') {
+          serverError = parsed.error
+        }
+      }
+      else {
+        result = parsed
+        // eslint-disable-next-line no-console
+        console.log('Data fetched', result)
+      }
       return false
     }
   })
@@ -106,13 +121,18 @@ export async function install(
     },
     functions: {
       async getPayload() {
-        let retries = 50
+        heartbeat = Date.now()
+        serverError = undefined
+
+        // Max 5000ms between heartbeat and now
         // eslint-disable-next-line no-unmodified-loop-condition
-        while (!result && retries > 0) {
-          retries--
+        while (!result && !serverError && Date.now() - heartbeat < 5000) {
           await new Promise(r => setTimeout(r, 100))
         }
         if (!result) {
+          if (serverError)
+            throw serverError
+
           throw new Error('Failed to get dependencies')
         }
         return result

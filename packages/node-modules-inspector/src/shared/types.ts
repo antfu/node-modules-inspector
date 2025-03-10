@@ -10,6 +10,21 @@ export interface NodeModulesInspectorPayload extends ListPackageDependenciesResu
   config?: NodeModulesInspectorConfig
 }
 
+export interface NodeModulesInspectorHeartbeat {
+  status: 'heartbeat'
+  heartbeat: number
+}
+
+export interface NodeModulesInspectorError {
+  status: 'error'
+  error: any
+}
+
+export type NodeModulesInspectorLog =
+  NodeModulesInspectorPayload |
+  NodeModulesInspectorHeartbeat |
+  NodeModulesInspectorError
+
 export interface ServerFunctions {
   getPayload: (force?: boolean) => Promise<NodeModulesInspectorPayload>
   getPackagesNpmMeta: (specs: string[]) => Promise<Map<string, NpmMeta | null>>
