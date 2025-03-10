@@ -14,6 +14,12 @@ const versionDiff = computed(() => {
     return ''
   return semver.diff(props.latest.version, props.version)
 })
+
+const updateAvailable = computed(() => {
+  if (!props.latest || !props.version)
+    return false
+  return semver.gt(props.latest.version, props.version)
+})
 </script>
 
 <template>
@@ -21,7 +27,7 @@ const versionDiff = computed(() => {
     <div flex="~ items-center gap-1">
       <DisplayVersion :version="version" op75 />
       <template v-if="latest">
-        <div v-if="latest.version === version" text-sm op50>
+        <div v-if="latest.version === version || !updateAvailable" text-sm op50>
           <div i-ph-calendar-check-duotone />
         </div>
         <div v-else-if="versionDiff" text-sm>
@@ -36,7 +42,7 @@ const versionDiff = computed(() => {
       <div v-else-if="latest.version === version">
         Up to date, last published at <DisplayDateBadge :time="latest.publishedAt" inline-block />
       </div>
-      <div v-else>
+      <div v-else-if="updateAvailable">
         New {{ versionDiff }} version <DisplayVersion inline-block text-primary :version="latest.version" /> published at <DisplayDateBadge inline-block rounded :time="latest.publishedAt" /> is available
       </div>
     </template>
