@@ -12,7 +12,7 @@ export const rawNpmMeta = ref<Map<string, NpmMeta | null>>(new Map())
 export const rawNpmMetaLatest = ref<Map<string, NpmMetaLatest | null>>(new Map())
 export const rawPublintMessages = ref<Map<string, readonly PublintMessage[] | null>>(new Map())
 
-export async function fetchData(force = false) {
+export async function fetchData(force = false, propagateError = false) {
   rawPayload.value = null
   const backend = getBackend()
   try {
@@ -62,11 +62,16 @@ export async function fetchData(force = false) {
     return rawPayload.value
   }
   catch (err) {
-    console.error(err)
-    if (backend)
-      backend.connectionError.value = err
-    rawPayload.value = null
-    return null
+    if (propagateError) {
+      throw err
+    }
+    else {
+      console.error(err)
+      if (backend)
+        backend.connectionError.value = err
+      rawPayload.value = null
+      return null
+    }
   }
 }
 

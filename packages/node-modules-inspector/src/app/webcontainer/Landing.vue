@@ -24,14 +24,14 @@ async function run() {
   try {
     openTerminal.value = true
     backend.value = await install(input.value.split(' '))
-    await fetchData()
-    openTerminal.value = false
+    await fetchData(false, true)
   }
   catch (e) {
     console.error(e)
     error.value = e
   }
   finally {
+    openTerminal.value = true
     isLoading.value = false
   }
 }
