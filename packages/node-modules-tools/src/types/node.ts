@@ -1,8 +1,8 @@
-import type { PackageJsonExports } from 'pkg-types'
+import type { PackageJson } from 'pkg-types'
 import type { Message as PublintMessage } from 'publint'
 import type { PackageInstallSizeInfo } from './size'
 
-export type { PublintMessage }
+export type { PackageJson, PublintMessage }
 
 export type PackageModuleTypeSimple = 'cjs' | 'esm'
 export type PackageModuleType = 'cjs' | 'esm' | 'dual' | 'faux' | 'dts'
@@ -50,16 +50,7 @@ export interface PackageNodeBase extends PackageNodeRaw {
 export interface PackageNode extends PackageNodeBase {
   resolved: {
     module: PackageModuleType
-    license?: string
-    author?: string
-    repository?: string
-    fundings?: {
-      url: string
-      type?: string
-    }[]
-    exports?: PackageJsonExports
-    homepage?: string
-    engines?: Record<string, string>
+    packageJson: PackageJson
     installSize?: PackageInstallSizeInfo
     npmMeta?: NpmMeta
     npmMetaLatest?: NpmMetaLatest

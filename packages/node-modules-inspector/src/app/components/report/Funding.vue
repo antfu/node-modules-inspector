@@ -1,30 +1,28 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
-import type { ResolvedFunding } from '../../utils/funding'
+import type { ParsedFunding } from 'node-modules-tools/utils'
 import { computed } from 'vue'
 import { selectedNode } from '../../state/current'
 import { payloads } from '../../state/payload'
-import { parseFunding } from '../../utils/funding'
+import { getFundings } from '../../utils/package-json'
 
 const fundingGroup = computed(() => {
   const map = new Map<string, {
-    info: ResolvedFunding
+    info: ParsedFunding
     packages: PackageNode[]
   }>()
   for (const pkg of payloads.filtered.packages) {
     if (pkg.workspace)
       continue
 
-    for (const funding of pkg.resolved.fundings || []) {
-      const resolved = parseFunding(funding.url)
-      if (!resolved)
-        continue
-      const group = map.get(resolved.entry) ?? {
-        info: resolved,
+    const fundings = getFundings(pkg)
+    for (const funding of fundings || []) {
+      const group = map.get(funding.entry) ?? {
+        info: funding,
         packages: [],
       }
       group.packages.push(pkg)
-      map.set(resolved.entry, group)
+      map.set(funding.entry, group)
     }
   }
   return [...map.values()]
@@ -33,7 +31,7 @@ const fundingGroup = computed(() => {
 
 const cols = computed(() => {
   const cols: {
-    info: ResolvedFunding
+    info: ParsedFunding
     packages: PackageNode[]
   }[][] = [
     [],
@@ -60,7 +58,7 @@ const cols = computed(() => {
       <div v-for="pkgs of packages" :key="pkgs.info.url">
         <div>
           <div font-mono mt3 border="x t rounded-t-lg base" w-max bg-base of-hidden>
-            <DisplayFundingEntry :funding="pkgs.info.url" p1 px3 hover="bg-pink/5 text-pink" transition>
+            <DisplayFundingEntry :funding="pkgs.info" p1 px3 hover="bg-pink/5 text-pink" transition>
               <DisplayNumberBadge :number="pkgs.packages.length" rounded-full text-sm />
             </DisplayFundingEntry>
           </div>

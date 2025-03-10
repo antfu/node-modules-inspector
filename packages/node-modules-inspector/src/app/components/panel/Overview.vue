@@ -4,6 +4,7 @@ import { version } from '../../../../package.json'
 import { getBackend } from '../../backends'
 import { rawPayload } from '../../state/data'
 import { getDeprecatedInfo, payloads, totalWorkspaceSize } from '../../state/payload'
+import { getFundings } from '../../utils/package-json'
 
 const backend = getBackend()
 
@@ -16,13 +17,13 @@ const multipleVersionsCount = computed(() => Array.from(payloads.avaliable.versi
   .length)
 
 const fundingCount = computed(() => payloads.avaliable.packages
-  .flatMap(p => p.resolved.fundings)
+  .filter(p => getFundings(p))
   .length)
 
 const licensesCount = computed(() => {
   const set = new Set<string>()
   payloads.avaliable.packages.forEach((p) => {
-    set.add(p.resolved.license || '<Unspecified>')
+    set.add(p.resolved.packageJson.license || '<Unspecified>')
   })
   return set.size
 })

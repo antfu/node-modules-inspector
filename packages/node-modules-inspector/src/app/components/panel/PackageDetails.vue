@@ -9,6 +9,7 @@ import { filters } from '../../state/filters'
 import { getDeprecatedInfo, getNpmMetaLatest, getPublishTime, payloads } from '../../state/payload'
 import { query } from '../../state/query'
 import { settings } from '../../state/settings'
+import { getPackageData } from '../../utils/package-json'
 
 const props = defineProps<{
   pkg: PackageNode
@@ -25,18 +26,7 @@ const duplicated = computed(() => {
 
 const isExcluded = computed(() => payloads.excluded.has(props.pkg))
 
-const resolvedRepository = computed(() => {
-  const { repository } = props.pkg.resolved
-  if (!repository)
-    return undefined
-  if (/https?:\/\//i.test(repository)) {
-    return repository
-  }
-  if (/^[a-z0-9]+(?:[-_.][a-z0-9]+)*\/[a-z0-9]+(?:[-_.][a-z0-9]+)*$/i.test(repository)) {
-    return `https://github.com/${repository}`
-  }
-  return undefined
-})
+const resolved = computed(() => getPackageData(props.pkg))
 
 const cluster = computed(() => [...payloads.avaliable.flatClusters(props.pkg)].filter(i => !i.startsWith('dep:')))
 
@@ -178,8 +168,8 @@ const deprecation = computed(() => getDeprecatedInfo(props.pkg))
             <div i-catppuccin-npm icon-catppuccin ma />
           </NuxtLink>
           <NuxtLink
-            v-if="resolvedRepository"
-            :to="resolvedRepository"
+            v-if="resolved.repository"
+            :to="resolved.repository"
             title="Open Repository"
             target="_blank"
             ml--1 w-8 h-8 rounded-full hover:bg-active flex
@@ -187,8 +177,8 @@ const deprecation = computed(() => getDeprecatedInfo(props.pkg))
             <div i-catppuccin-git icon-catppuccin ma />
           </NuxtLink>
           <NuxtLink
-            v-if="pkg.resolved.homepage"
-            :to="pkg.resolved.homepage"
+            v-if="resolved.homepage"
+            :to="resolved.homepage"
             title="Open Homepage"
             target="_blank"
             ml--1 w-8 h-8 rounded-full hover:bg-active flex
@@ -196,8 +186,8 @@ const deprecation = computed(() => getDeprecatedInfo(props.pkg))
             <div i-catppuccin-http icon-catppuccin ma />
           </NuxtLink>
           <PanelPackageFunding
-            v-if="pkg.resolved.fundings?.length"
-            :fundings="pkg.resolved.fundings"
+            v-if="resolved.fundings?.length"
+            :fundings="resolved.fundings"
           />
           <NuxtLink
             :to="`https://publint.dev/${pkg.spec}`"
@@ -226,16 +216,16 @@ const deprecation = computed(() => getDeprecatedInfo(props.pkg))
         </div>
       </div>
       <div flex="~ gap-2 wrap items-center">
-        <span>{{ pkg.resolved.license }}</span>
-        <template v-if="pkg.resolved.author">
+        <span>{{ resolved.license }}</span>
+        <template v-if="resolved.author">
           <span op50>·</span>
           <span>
-            {{ pkg.resolved.author?.replace(/\<.*\>/, '').replace(/\(.*\)/, '') }}
+            {{ resolved.author.name }}
           </span>
         </template>
-        <template v-if="pkg.resolved.engines?.node">
+        <template v-if="resolved.engines?.node">
           <span op50>·</span>
-          <DisplayNodeVersionRange :range="pkg.resolved.engines?.node" />
+          <DisplayNodeVersionRange :range="resolved.engines?.node" />
         </template>
         <template v-if="getPublishTime(pkg)">
           <span op50>·</span>

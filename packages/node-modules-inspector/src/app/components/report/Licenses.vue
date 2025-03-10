@@ -20,7 +20,7 @@ const licensesGroup = computed(() => {
   for (const pkg of payloads.filtered.packages) {
     if (pkg.workspace)
       continue
-    const key = pkg.resolved.license || '<Unspecified>'
+    const key = pkg.resolved.packageJson.license || '<Unspecified>'
     if (!group.has(key))
       group.set(key, [])
     group.get(key)!.push(pkg)
@@ -119,7 +119,7 @@ const filteredResult = computed(() => {
               target="_blank"
               badge-color-gray px2 rounded-full w-max text-sm h-max
             >
-              {{ pkg.resolved.license }}
+              {{ pkg.resolved.packageJson.license }}
             </a>
             <div w-max>
               <DisplaySourceTypeBadge :pkg mode="both" />

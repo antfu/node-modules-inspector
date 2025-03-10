@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import type { PackageNode } from 'node-modules-tools'
+import type { ParsedFunding } from 'node-modules-tools'
+import { Menu as VMenu } from 'floating-vue'
 
 defineProps<{
-  fundings: PackageNode['resolved']['fundings']
+  fundings: ParsedFunding[]
 }>()
 </script>
 
@@ -22,7 +23,9 @@ defineProps<{
     <template #popper>
       <div flex="~ col" p1>
         <DisplayFundingEntry
-          v-for="funding of fundings" :key="funding.url" :funding="funding.url"
+          v-for="funding of fundings"
+          :key="funding.url"
+          :funding="funding"
           p2 rounded font-mono hover:bg-active
         />
       </div>

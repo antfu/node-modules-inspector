@@ -87,7 +87,7 @@ const messageColors = {
         <div
           rounded line-clamp-3 break-all
           :class="messageColors[message.type]"
-          v-html="formatMessage(message, { ...props.pkg, ...props.pkg.resolved }, { color: 'html' })"
+          v-html="formatMessage(message, pkg.resolved.packageJson, { color: 'html' })"
         />
       </div>
     </a>

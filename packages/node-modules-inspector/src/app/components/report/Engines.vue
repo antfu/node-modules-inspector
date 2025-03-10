@@ -7,8 +7,8 @@ import { compareSemverRange, parseSemverRange } from '../../utils/semver'
 
 const transitiveDeps = computed(() =>
   Array.from(payloads.filtered.packages)
-    .filter(x => x.resolved.engines?.node && parseSemverRange(x.resolved.engines?.node).valid)
-    .sort((a, b) => compareSemverRange(a.resolved.engines!.node, b.resolved.engines!.node)),
+    .filter(x => x.resolved.packageJson.engines?.node && parseSemverRange(x.resolved.packageJson.engines?.node).valid)
+    .sort((a, b) => compareSemverRange(a.resolved.packageJson.engines!.node, b.resolved.packageJson.engines!.node)),
 )
 </script>
 
@@ -35,7 +35,7 @@ const transitiveDeps = computed(() =>
             <DisplayPackageSpec :pkg />
           </button>
           <div flex justify-end>
-            <DisplayNodeVersionRange h-max :range="pkg.resolved.engines?.node" />
+            <DisplayNodeVersionRange h-max :range="pkg.resolved.packageJson.engines?.node" />
           </div>
         </template>
       </div>

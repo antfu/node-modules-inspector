@@ -1,23 +1,20 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { parseFunding } from '../../utils/funding'
+import type { ParsedFunding } from 'node-modules-tools/utils'
 import SafeImage from './SafeImage.vue'
 
-const props = defineProps<{
-  funding?: string
+defineProps<{
+  funding: ParsedFunding
 }>()
-
-const parsed = computed(() => parseFunding(props.funding))
 </script>
 
 <template>
-  <a v-if="parsed" :href="parsed.url" target="_blank" flex="~ gap-2">
+  <a v-if="funding" :href="funding.url" target="_blank" flex="~ gap-2" of-hidden text-ellipsis>
     <SafeImage
-      v-if="parsed.avatar" :src="parsed.avatar"
+      v-if="funding.avatar" :src="funding.avatar"
       bg-active border="~ base rounded-full"
       w6 h6 crossorigin="anonymous"
     />
-    <span>{{ parsed.name }}</span>
+    <span>{{ funding.name }}</span>
     <slot />
   </a>
 </template>
