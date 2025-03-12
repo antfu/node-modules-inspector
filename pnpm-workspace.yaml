@@ -53,7 +53,7 @@ catalogs:
     typescript: ^5.8.2
     vite-plugin-inspect: ^11.0.0
     vue-tsc: ^2.2.8
-  fontend:
+  frontend:
     '@webcontainer/api': ^1.5.1
     '@xterm/addon-fit': ^0.10.0
     '@xterm/xterm': ^5.5.0

@@ -137,7 +137,7 @@ catalogs:
     vue-tsc:
       specifier: ^2.2.8
       version: 2.2.8
-  fontend:
+  frontend:
     '@webcontainer/api':
       specifier: ^1.5.1
       version: 1.5.1
@@ -441,43 +441,43 @@ importers:
         specifier: catalog:build
         version: 13.0.0(magicast@0.3.5)(nuxt@3.16.0(@parcel/watcher@2.5.1)(@types/node@22.13.9)(eslint@9.22.0(jiti@2.4.2))(idb-keyval@6.2.1)(magicast@0.3.5)(optionator@0.9.4)(rollup@4.35.0)(terser@5.39.0)(typescript@5.8.2)(vite@6.2.1(@types/node@22.13.9)(jiti@2.4.2)(terser@5.39.0)(yaml@2.7.0))(vue-tsc@2.2.8(typescript@5.8.2))(yaml@2.7.0))(vue@3.5.13(typescript@5.8.2))
       '@webcontainer/api':
-        specifier: catalog:fontend
+        specifier: catalog:frontend
         version: 1.5.1
       '@xterm/addon-fit':
-        specifier: catalog:fontend
+        specifier: catalog:frontend
         version: 0.10.0(@xterm/xterm@5.5.0)
       '@xterm/xterm':
-        specifier: catalog:fontend
+        specifier: catalog:frontend
         version: 5.5.0
       d3:
-        specifier: catalog:fontend
+        specifier: catalog:frontend
         version: 7.9.0
       d3-hierarchy:
-        specifier: catalog:fontend
+        specifier: catalog:frontend
         version: 3.1.2
       d3-shape:
-        specifier: catalog:fontend
+        specifier: catalog:frontend
         version: 3.2.0
       floating-vue:
-        specifier: catalog:fontend
+        specifier: catalog:frontend
         version: 5.2.2(@nuxt/kit@3.16.0(magicast@0.3.5))(vue@3.5.13(typescript@5.8.2))
       fuse.js:
-        specifier: catalog:fontend
+        specifier: catalog:frontend
         version: 7.1.0
       idb-keyval:
-        specifier: catalog:fontend
+        specifier: catalog:frontend
         version: 6.2.1
       modern-screenshot:
-        specifier: catalog:fontend
+        specifier: catalog:frontend
         version: 4.6.0
       semver:
         specifier: catalog:deps
         version: 7.7.1
       theme-vitesse:
-        specifier: catalog:fontend
+        specifier: catalog:frontend
         version: 0.8.3
       vite-hot-client:
-        specifier: catalog:fontend
+        specifier: catalog:frontend
         version: 2.0.4(vite@6.2.1(@types/node@22.13.9)(jiti@2.4.2)(terser@5.39.0)(yaml@2.7.0))
 
   packages/node-modules-tools:
