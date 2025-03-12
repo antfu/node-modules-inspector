@@ -21,6 +21,7 @@ export default defineNuxtConfig({
     '@unocss/nuxt',
     '@nuxt/eslint',
     'nuxt-eslint-auto-explicit-import',
+    'nuxt-mcp',
     ...isWebContainer ? ['./app/modules/webcontainer'] : [],
   ],
 

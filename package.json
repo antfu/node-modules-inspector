@@ -2,7 +2,7 @@
   "type": "module",
   "version": "0.5.0",
   "private": true,
-  "packageManager": "pnpm@10.6.1",
+  "packageManager": "pnpm@10.6.2",
   "scripts": {
     "build": "pnpm -r run build",
     "build:debug": "NUXT_DEBUG_BUILD=true pnpm -r run build",
@@ -46,6 +46,7 @@
     "node-modules-tools": "workspace:*",
     "nuxt": "catalog:build",
     "nuxt-eslint-auto-explicit-import": "catalog:devtools",
+    "nuxt-mcp": "catalog:build",
     "p-limit": "catalog:deps",
     "rollup": "catalog:build",
     "rollup-plugin-esbuild": "catalog:build",

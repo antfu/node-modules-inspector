@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "nuxt": {
+      "url": "http://localhost:3000/__mcp/sse"
+    }
+  }
+}
