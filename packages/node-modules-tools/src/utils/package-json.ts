@@ -99,6 +99,7 @@ export function normalizePkgAuthors(json: PackageJson) {
         .replace(/<.*>/, '')
         .replace(/\(.*\)/, '')
         .replace(/^https?:\/\//, '')
+        .trim()
 
       return {
         name,

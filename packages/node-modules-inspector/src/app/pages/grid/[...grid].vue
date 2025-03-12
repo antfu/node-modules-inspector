@@ -3,9 +3,10 @@ import type { PackageModuleType, PackageNode } from 'node-modules-tools'
 import { useRoute } from '#app/composables/router'
 import { computed } from 'vue'
 import { payloads } from '../../state/payload'
+import { getAuthors } from '../../utils/package-json'
 
 const params = useRoute().params as Record<string, string>
-const tab = computed<'depth' | 'clusters' | 'module-type'>(() => params.grid[0] as any || 'depth')
+const tab = computed<'depth' | 'clusters' | 'module-type' | 'author' | 'license'>(() => params.grid[0] as any || 'depth')
 
 const MAX_DEPTH = 5
 
@@ -36,7 +37,7 @@ const groups = computed<Group[]>(() => {
         expanded: false,
       }))
   }
-  if (tab.value === 'clusters') {
+  else if (tab.value === 'clusters') {
     const map = new Map<string, PackageNode[]>()
     for (const pkg of payloads.filtered.packages) {
       const clusters = payloads.filtered.flatClusters(pkg)
@@ -52,6 +53,46 @@ const groups = computed<Group[]>(() => {
       .map(([cluster, packages]) => ({
         name: cluster,
         cluster,
+        packages,
+        expanded: false,
+      }))
+  }
+  else if (tab.value === 'author') {
+    const map = new Map<string, PackageNode[]>()
+    for (const pkg of payloads.filtered.packages) {
+      const authors = getAuthors(pkg) || []
+      if (!authors.length)
+        authors.push({ name: '<Unspecified>', url: undefined })
+      for (const author of authors) {
+        if (!map.has(author.name))
+          map.set(author.name, [])
+        map.get(author.name)?.push(pkg)
+      }
+    }
+
+    return [...map.entries()]
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([author, packages]) => ({
+        name: author,
+        author,
+        packages,
+        expanded: false,
+      }))
+  }
+  else if (tab.value === 'license') {
+    const map = new Map<string, PackageNode[]>()
+    for (const pkg of payloads.filtered.packages) {
+      const license = pkg.resolved.packageJson.license || '<Unspecified>'
+      if (!map.has(license))
+        map.set(license, [])
+      map.get(license)?.push(pkg)
+    }
+
+    return [...map.entries()]
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([license, packages]) => ({
+        name: license,
+        license,
         packages,
         expanded: false,
       }))
@@ -96,6 +137,14 @@ const groups = computed<Group[]>(() => {
       <NuxtLink btn-action as="button" to="/grid/clusters" active-class="text-primary bg-primary:5">
         <div i-ph-exclude-duotone />
         Clusters
+      </NuxtLink>
+      <NuxtLink btn-action as="button" to="/grid/author" active-class="text-primary bg-primary:5">
+        <div i-ph-user-circle-duotone />
+        Authors
+      </NuxtLink>
+      <NuxtLink btn-action as="button" to="/grid/license" active-class="text-primary bg-primary:5">
+        <div i-ph-file-text-duotone />
+        License
       </NuxtLink>
     </div>
 
