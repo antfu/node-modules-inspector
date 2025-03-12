@@ -22,12 +22,13 @@ async function fetchBatch(
     promises.push(limit(async () => {
       try {
         const result = await getLatestVersionBatch(queue, { metadata: true })
-        for (const r of result) {
+        for (let i = 0; i < result.length; i++) {
+          const r = result[i]
           if (r.publishedAt) {
             onResult(r)
           }
           else {
-            missingSpecs.add(`${r.name}@${r.version}`)
+            missingSpecs.add('version' in r ? `${r.name}@${r.version}` : queue[i])
           }
         }
       }
