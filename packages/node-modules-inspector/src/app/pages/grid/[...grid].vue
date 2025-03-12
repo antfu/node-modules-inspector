@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import type { PackageModuleType, PackageNode } from 'node-modules-tools'
 import { useRoute } from '#app/composables/router'
+import SafeImage from '@/components/display/SafeImage.vue'
 import { computed } from 'vue'
 import { payloads } from '../../state/payload'
-import { getAuthors } from '../../utils/package-json'
+import { getAuthors, getRepository } from '../../utils/package-json'
 
 const params = useRoute().params as Record<string, string>
-const tab = computed<'depth' | 'clusters' | 'module-type' | 'author' | 'license'>(() => params.grid[0] as any || 'depth')
+const tab = computed<'depth' | 'clusters' | 'module-type' | 'authors' | 'licenses' | 'github'>(() => params.grid[0] as any || 'depth')
 
 const MAX_DEPTH = 5
 
@@ -14,6 +15,7 @@ interface Group {
   name: string
   cluster?: string
   module?: PackageModuleType
+  org?: string
   packages: PackageNode[]
   expanded?: boolean
 }
@@ -57,7 +59,7 @@ const groups = computed<Group[]>(() => {
         expanded: false,
       }))
   }
-  else if (tab.value === 'author') {
+  else if (tab.value === 'authors') {
     const map = new Map<string, PackageNode[]>()
     for (const pkg of payloads.filtered.packages) {
       const authors = getAuthors(pkg) || []
@@ -79,7 +81,7 @@ const groups = computed<Group[]>(() => {
         expanded: false,
       }))
   }
-  else if (tab.value === 'license') {
+  else if (tab.value === 'licenses') {
     const map = new Map<string, PackageNode[]>()
     for (const pkg of payloads.filtered.packages) {
       const license = pkg.resolved.packageJson.license || '<Unspecified>'
@@ -93,6 +95,24 @@ const groups = computed<Group[]>(() => {
       .map(([license, packages]) => ({
         name: license,
         license,
+        packages,
+        expanded: false,
+      }))
+  }
+  else if (tab.value === 'github') {
+    const map = new Map<string, PackageNode[]>()
+    for (const pkg of payloads.filtered.packages) {
+      const org = getRepository(pkg)?.org || '<Unspecified>'
+      if (!map.has(org))
+        map.set(org, [])
+      map.get(org)?.push(pkg)
+    }
+
+    return [...map.entries()]
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([org, packages]) => ({
+        name: org,
+        org,
         packages,
         expanded: false,
       }))
@@ -138,13 +158,17 @@ const groups = computed<Group[]>(() => {
         <div i-ph-exclude-duotone />
         Clusters
       </NuxtLink>
-      <NuxtLink btn-action as="button" to="/grid/author" active-class="text-primary bg-primary:5">
+      <NuxtLink btn-action as="button" to="/grid/authors" active-class="text-primary bg-primary:5">
         <div i-ph-user-circle-duotone />
         Authors
       </NuxtLink>
-      <NuxtLink btn-action as="button" to="/grid/license" active-class="text-primary bg-primary:5">
+      <NuxtLink btn-action as="button" to="/grid/licenses" active-class="text-primary bg-primary:5">
         <div i-ph-file-text-duotone />
         License
+      </NuxtLink>
+      <NuxtLink btn-action as="button" to="/grid/github" active-class="text-primary bg-primary:5">
+        <div i-ph-users-duotone />
+        GitHub Slug
       </NuxtLink>
     </div>
 
@@ -156,6 +180,11 @@ const groups = computed<Group[]>(() => {
     >
       <template #title>
         <div flex="~ items-center gap-1">
+          <SafeImage
+            v-if="group.org" :src="`https://avatars.antfu.dev/gh/${group.org}`"
+            bg-active border="~ base rounded-full"
+            w6 h6 crossorigin="anonymous"
+          />
           <DisplayClusterBadge v-if="group.cluster" :cluster="group.cluster" />
           <DisplayModuleType v-else-if="group.module" :pkg="group.module" />
           <span v-else op75>{{ group.name }}</span>

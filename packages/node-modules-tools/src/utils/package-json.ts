@@ -116,24 +116,56 @@ export function normalizePkgAuthors(json: PackageJson) {
 }
 
 export function normalizePkgRepository(json: PackageJson) {
-  if (!json.repository)
+  if (!json.repository && !json.bugs)
     return undefined
 
   let url = (typeof json.repository === 'string' ? json.repository : json.repository?.url)
-  if (url?.startsWith('git+'))
-    url = url.slice(4)
-  if (url?.endsWith('.git'))
-    url = url.slice(0, -4)
-  if (url?.startsWith('git://'))
-    url = `https://${url.slice(6)}`
+
+  url = url
+    ?.replace(/^github:/, '')
+    .replace(/^git@github\.com:/, '')
+
+  // Bare repository name
+  if (url && /^[a-z0-9][-.\w]*\/[a-z0-9][-.\w]*$/i.test(url))
+    url = `https://github.com/${url}`
+
+  url = url
+    ?.replace(/^git\+/, '')
+    .replace(/\.git$/, '')
+    .replace(/^git:\/\//, 'https://')
+    .replace(/^ssh:\/\//, 'https://')
+    .replace(/git@github\.com/, 'github.com')
+
   if (json.repository && typeof json.repository !== 'string' && json.repository.directory)
     url += `/tree/HEAD/${json.repository.directory}`
 
-  // Bare repository name
-  if (/^[a-z0-9]+(?:[-_.][a-z0-9]+)*\/[a-z0-9]+(?:[-_.][a-z0-9]+)*$/i.test(url))
-    url = `https://github.com/${url}`
+  // Use bugs url to infer repository url
+  if (!url) {
+    const bugsUrl = typeof json.bugs === 'string' ? json.bugs : json.bugs?.url
+    if (bugsUrl && bugsUrl.startsWith('https://github.com/'))
+      url = bugsUrl.replace(/\/issues$/, '')
+  }
+
+  if (!url)
+    return undefined
+
+  url = url.trim()
+
+  let repo: string | undefined
+  let org: string | undefined
+  let repoName: string | undefined
+
+  const gitHubUrlMatch = url.match(/^https?:\/\/(?:www\.)?github\.com\/([^/]+)\/([^/]+)/)
+  if (gitHubUrlMatch) {
+    org = gitHubUrlMatch[1]
+    repoName = gitHubUrlMatch[2]
+    repo = `${org}/${repoName}`
+  }
 
   return {
     url,
+    repo,
+    repoName,
+    org,
   }
 }
