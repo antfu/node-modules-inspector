@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
+import { useRouter } from '#app/composables/router'
 import { Menu as VMenu } from 'floating-vue'
-import { computed, watch } from 'vue'
+import { computed, nextTick, watch } from 'vue'
 import { getBackend } from '../../backends'
 import { selectedNode } from '../../state/current'
 import { fetchPublintMessages, rawPublintMessages } from '../../state/data'
@@ -102,6 +103,16 @@ function getShallowestDependents(pkg: PackageNode) {
 
 const latestMeta = computed(() => getNpmMetaLatest(props.pkg))
 const deprecation = computed(() => getDeprecatedInfo(props.pkg))
+
+const router = useRouter()
+function showDuplicatedGraph(pkgs: PackageNode[]) {
+  filters.state.focus = null
+  filters.state.why = pkgs.map(pkg => pkg.spec)
+  selectedNode.value = pkgs[0]
+  nextTick(() => {
+    router.push({ path: '/graph', hash: location.hash })
+  })
+}
 </script>
 
 <template>
@@ -154,12 +165,22 @@ const deprecation = computed(() => getDeprecatedInfo(props.pkg))
                 <DisplayVersion op75 flex-auto text-left :version="versionNode.version" />
                 <DisplayModuleType :force="true" :pkg="versionNode" :badge="false" text-xs />
               </button>
+              <div border="t base" my1 />
+              <button
+                py1 px2 rounded flex="~ items-center gap-1" min-w-40
+                hover="bg-active"
+                @click="showDuplicatedGraph(duplicated)"
+              >
+                <div i-ph-graph-duotone />
+                <span text-sm> Compare in Graph</span>
+              </button>
             </div>
           </template>
         </VMenu>
         <div flex="~ gap--1 items-center">
           <NuxtLink
             v-if="!pkg.private"
+            v-tooltip="'Open on NPM'"
             :to="`https://www.npmjs.com/package/${pkg.name}/v/${pkg.version}`"
             title="Open on NPM"
             target="_blank"
@@ -169,6 +190,7 @@ const deprecation = computed(() => getDeprecatedInfo(props.pkg))
           </NuxtLink>
           <NuxtLink
             v-if="resolved.repository"
+            v-tooltip="'Open Repository'"
             :to="resolved.repository"
             title="Open Repository"
             target="_blank"
@@ -178,6 +200,7 @@ const deprecation = computed(() => getDeprecatedInfo(props.pkg))
           </NuxtLink>
           <NuxtLink
             v-if="resolved.homepage"
+            v-tooltip="'Open Homepage'"
             :to="resolved.homepage"
             title="Open Homepage"
             target="_blank"
@@ -190,6 +213,7 @@ const deprecation = computed(() => getDeprecatedInfo(props.pkg))
             :fundings="resolved.fundings"
           />
           <NuxtLink
+            v-tooltip="'Open in Publint'"
             :to="`https://publint.dev/${pkg.spec}`"
             title="Open in Publint"
             target="_blank"
@@ -199,6 +223,7 @@ const deprecation = computed(() => getDeprecatedInfo(props.pkg))
           </NuxtLink>
           <button
             v-if="backend?.functions.openInEditor"
+            v-tooltip="'Open Package Folder in Editor'"
             title="Open Package Folder in Editor"
             ml--1 w-8 h-8 rounded-full hover:bg-active flex
             @click="backend.functions.openInEditor(pkg.filepath)"
@@ -207,7 +232,8 @@ const deprecation = computed(() => getDeprecatedInfo(props.pkg))
           </button>
           <button
             v-if="backend?.functions.openInFinder"
-            title="Open Package Folder in Finder"
+            v-tooltip="'Open Package Folder in File Explorer'"
+            title="Open Package Folder in File Explorer"
             ml--1 w-8 h-8 rounded-full hover:bg-active flex
             @click="backend.functions.openInFinder(pkg.filepath)"
           >
@@ -296,6 +322,7 @@ const deprecation = computed(() => getDeprecatedInfo(props.pkg))
         </div>
         <div flex-auto />
         <button
+          v-tooltip="'Toggle file composition'"
           p1 rounded-full hover:bg-active mr--2
           title="Toggle file composition"
           @click="settings.showFileComposition = !settings.showFileComposition"
@@ -338,6 +365,7 @@ const deprecation = computed(() => getDeprecatedInfo(props.pkg))
       </button>
       <div border="b base" pt2 px2>
         <button
+          v-tooltip="'Toggle deep dependencies tree'"
           p1 rounded-full hover:bg-active
           title="Toggle deep dependencies tree"
           @click="settings.deepDependenciesTree = !settings.deepDependenciesTree"

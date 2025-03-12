@@ -48,9 +48,9 @@ const selected = computed(() => params.report[0] || 'all')
 
   <ReportTransitiveDeps v-if="selected === 'dependencies' || selected === 'all'" />
   <ReportUsedBy v-if="selected === 'dependencies' || selected === 'all'" />
-  <ReportDeprecated v-if="selected === 'deprecated' || selected === 'all'" />
   <ReportInstallSize v-if="selected === 'install-size' || selected === 'all'" />
   <ReportPublishTime v-if="selected === 'time' || selected === 'all'" />
+  <ReportDeprecated v-if="selected === 'deprecated' || selected === 'all'" />
   <ReportEngines v-if="selected === 'node-engines' || selected === 'all'" />
   <ReportLicenses v-if="selected === 'licenses' || selected === 'all'" />
   <ReportFunding v-if="selected === 'funding' || selected === 'all'" />

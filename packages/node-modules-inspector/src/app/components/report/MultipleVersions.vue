@@ -52,8 +52,9 @@ function showGraph(pkgs: PackageNode[]) {
             {{ pkgs[0].name }}
           </h2>
           <button
-            p1 rounded-full op50 hover:bg-active hover:text-primary hover:op100 flex="~ items-center"
-            title="Show Graph"
+            v-tooltip="'Compare in Graph'" p1 rounded-full op50 hover:bg-active hover:text-primary hover:op100
+            flex="~ items-center"
+            title="Compare in Graph"
             @click="showGraph(pkgs)"
           >
             <div i-ph-graph-duotone text-lg />

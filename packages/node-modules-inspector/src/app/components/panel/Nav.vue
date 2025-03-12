@@ -92,6 +92,7 @@ function resetPanelState() {
     >
       <template v-for="tab of tabsMeta" :key="tab.value">
         <RouterLink
+          v-tooltip="tab.name"
           w-10 h-10 rounded-full hover:bg-active
           flex="~ items-center justify-center"
           :title="tab.name"

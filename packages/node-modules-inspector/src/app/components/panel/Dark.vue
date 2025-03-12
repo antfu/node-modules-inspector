@@ -8,6 +8,8 @@ import { toggleDark } from '../../composables/dark'
     bg-glass rounded-full border border-base shadow
   >
     <a
+      v-tooltip="'Check source code on GitHub'"
+      title="Check source code on GitHub"
       w-10 h-10 rounded-full hover:bg-active op50 hover:op100
       flex="~ items-center justify-center"
       href="https://github.com/antfu/node-modules-inspector" target="_blank"
@@ -15,6 +17,7 @@ import { toggleDark } from '../../composables/dark'
       <div i-ri-github-fill text-xl />
     </a>
     <button
+      v-tooltip="'Toggle Dark Mode'"
       w-10 h-10 rounded-full hover:bg-active op50 hover:op100
       flex="~ items-center justify-center"
       title="Toggle Dark Mode"

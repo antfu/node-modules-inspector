@@ -57,6 +57,7 @@ onBeforeUnmount(() => {
     bg-glass rounded-full border border-base shadow
   >
     <button
+      v-tooltip="'Toggle Terminal'"
       w-10 h-10 rounded-full hover:bg-active op50 hover:op100
       flex="~ items-center justify-center"
       title="Toggle Terminal"

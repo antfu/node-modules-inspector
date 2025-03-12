@@ -10,8 +10,9 @@ defineProps<{
 <template>
   <NuxtLink
     v-if="fundings?.length === 1"
+    v-tooltip="'Open Funding Page'"
     :to="fundings[0].url"
-    title="Open Funding"
+    title="Open Funding Page"
     target="_blank"
     ml--1 w-8 h-8 rounded-full hover:bg-active flex
   >
@@ -19,7 +20,11 @@ defineProps<{
   </NuxtLink>
 
   <VMenu v-else-if="fundings?.length" ml--1 w-8 h-8 rounded-full hover:bg-active flex>
-    <div i-catppuccin-code-of-conduct icon-catppuccin ma title="Show Fundings" />
+    <div
+      v-tooltip="'Show Fundings'"
+      i-catppuccin-code-of-conduct icon-catppuccin ma
+      title="Show Fundings"
+    />
     <template #popper>
       <div flex="~ col" p1>
         <DisplayFundingEntry

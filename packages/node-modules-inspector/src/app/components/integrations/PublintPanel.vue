@@ -68,6 +68,7 @@ const messageColors = {
       <div flex-auto />
       <button
         v-if="messages.length"
+        v-tooltip="'Toggle file composition'"
         p1 rounded-full hover:bg-active mr--2
         title="Toggle file composition"
       >

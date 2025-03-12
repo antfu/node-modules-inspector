@@ -6,7 +6,8 @@ export default defineConfig({
     'eslint',
   ],
   excludePackages: [
-    '@antfu/eslint-config',
+    '@pnpm/list',
+    '@pnpm/types',
   ],
   defaultFilters: {
     excludes: [
