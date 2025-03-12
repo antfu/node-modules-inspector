@@ -1,4 +1,5 @@
 import type { PackageJson } from '../types'
+import { toArray } from '@antfu/utils'
 
 export interface NormalizedFunding {
   url: string
@@ -82,28 +83,35 @@ export function parseAuthor(author?: string) {
     return undefined
 }
 
-export function normalizePkgAuthor(json: PackageJson) {
-  const author = json.author
-  if (!author)
+export function normalizePkgAuthors(json: PackageJson) {
+  const authors = [
+    ...toArray(json.authors),
+    ...toArray(json.author),
+  ].filter(Boolean)
+
+  if (!authors.length)
     return undefined
 
-  if (typeof author === 'string') {
-    let url: string | undefined
-    const name = author
-      .replace(/<.*>/, '')
-      .replace(/\(.*\)/, '')
-      .replace(/^https?:\/\//, '')
+  return authors.map((author) => {
+    if (typeof author === 'string') {
+      let url: string | undefined
+      const name = author
+        .replace(/<.*>/, '')
+        .replace(/\(.*\)/, '')
+        .replace(/^https?:\/\//, '')
 
-    return {
-      name,
-      url,
+      return {
+        name,
+        url,
+      }
     }
-  }
-
-  return {
-    name: author.name,
-    url: author.url,
-  }
+    else {
+      return {
+        name: author.name,
+        url: author.url,
+      }
+    }
+  })
 }
 
 export function normalizePkgRepository(json: PackageJson) {

@@ -28,8 +28,11 @@ const fuse = computed(() => new Fuse(props.payload.packages, {
   keys: [
     'name',
     'spec',
-    'author',
-    'license',
+    'resolved.packageJson.author',
+    'resolved.packageJson.authors',
+    'resolved.packageJson.funding',
+    'resolved.packageJson.fundings',
+    'resolved.packageJson.license',
   ],
 }))
 

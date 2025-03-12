@@ -7,7 +7,7 @@ import { constructPackageFilters } from 'node-modules-tools/utils'
 import { computed, reactive, toRaw } from 'vue'
 import { FILTERS_SCHEMA } from '../../shared/filters'
 import { getModuleType } from '../utils/module-type'
-import { getAuthor } from '../utils/package-json'
+import { getAuthors } from '../utils/package-json'
 import { parseSearch } from '../utils/search-parser'
 import { rawPayload } from './data'
 
@@ -118,13 +118,14 @@ export const filterSelectPredicate = computed(() => {
         }
       }
       if (parsed.author?.length) {
-        const author = getAuthor(pkg)
-        if (!author)
+        const authors = getAuthors(pkg)
+        if (!authors)
           return false
         for (const re of parsed.author) {
-          if (!re.test(author.name))
-            return false
+          if (authors.some(a => re.test(a.name)))
+            return true
         }
+        return false
       }
       if (parsed.text) {
         // TODO: fuzzy search

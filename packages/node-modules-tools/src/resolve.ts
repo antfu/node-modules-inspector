@@ -11,6 +11,7 @@ import { getPackageInstallSize } from './size'
 // @keep-sorted
 export const PACKAGE_JSON_KEYS = [
   'author',
+  'authors',
   'bin',
   'bugs',
   'dependencies',
@@ -19,6 +20,7 @@ export const PACKAGE_JSON_KEYS = [
   'engines',
   'exports',
   'funding',
+  'fundings',
   'homepage',
   'imports',
   'keywords',

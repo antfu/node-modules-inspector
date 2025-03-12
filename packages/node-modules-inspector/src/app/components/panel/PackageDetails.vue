@@ -243,11 +243,21 @@ function showDuplicatedGraph(pkgs: PackageNode[]) {
       </div>
       <div flex="~ gap-2 wrap items-center">
         <span>{{ resolved.license }}</span>
-        <template v-if="resolved.author">
+        <template v-if="resolved.authors?.length">
           <span op50>·</span>
-          <span>
-            {{ resolved.author.name }}
-          </span>
+          <template
+            v-for="(author, idx) of resolved.authors"
+            :key="author.name"
+          >
+            <span v-if="idx > 0" text-xs op50>&</span>
+            <component
+              :is="author.url ? 'a' : 'span'"
+              :href="author.url"
+              target="_blank"
+            >
+              {{ author.name }}
+            </component>
+          </template>
         </template>
         <template v-if="resolved.engines?.node">
           <span op50>·</span>
