@@ -39,6 +39,7 @@
     "@unocss/eslint-config": "catalog:devtools",
     "ansis": "catalog:deps",
     "bumpp": "catalog:devtools",
+    "esbuild": "catalog:build",
     "eslint": "catalog:devtools",
     "fast-npm-meta": "catalog:deps",
     "lint-staged": "catalog:devtools",

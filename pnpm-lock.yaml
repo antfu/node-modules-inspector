@@ -102,8 +102,8 @@ catalogs:
       version: 8.18.1
   devtools:
     '@antfu/eslint-config':
-      specifier: ^4.9.0
-      version: 4.9.0
+      specifier: ^4.10.0
+      version: 4.10.0
     '@nuxt/eslint':
       specifier: ^1.2.0
       version: 1.2.0
@@ -249,7 +249,7 @@ importers:
     devDependencies:
       '@antfu/eslint-config':
         specifier: catalog:devtools
-        version: 4.9.0(@typescript-eslint/utils@8.26.1(eslint@9.22.0(jiti@2.4.2))(typescript@5.8.2))(@unocss/eslint-plugin@66.0.0(eslint@9.22.0(jiti@2.4.2))(typescript@5.8.2))(@vue/compiler-sfc@3.5.13)(eslint@9.22.0(jiti@2.4.2))(typescript@5.8.2)(vitest@3.0.8(@types/debug@4.1.12)(@types/node@22.13.9)(jiti@2.4.2)(terser@5.39.0)(yaml@2.7.0))
+        version: 4.10.0(@typescript-eslint/utils@8.26.1(eslint@9.22.0(jiti@2.4.2))(typescript@5.8.2))(@unocss/eslint-plugin@66.0.0(eslint@9.22.0(jiti@2.4.2))(typescript@5.8.2))(@vue/compiler-sfc@3.5.13)(eslint@9.22.0(jiti@2.4.2))(typescript@5.8.2)(vitest@3.0.8(@types/debug@4.1.12)(@types/node@22.13.9)(jiti@2.4.2)(terser@5.39.0)(yaml@2.7.0))
       '@antfu/utils':
         specifier: catalog:inlined
         version: 9.1.0
@@ -532,8 +532,8 @@ packages:
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
 
-  '@antfu/eslint-config@4.9.0':
-    resolution: {integrity: sha512-7MMBXs/67OIWE2sojVWl/lk8qoHtOQJuq0ZK2wxpXQMPsO7xAhPrVWPwjQAXs6dgV4bf7mOD4IYScBA/ZZTn3A==}
+  '@antfu/eslint-config@4.10.0':
+    resolution: {integrity: sha512-w9/dkMrA9pMORrvRxVLokWhNwegijbD0cGhOmGlMyoyg1vK2daPM68dpIpJ8HFtGcFAP1KdJUoY/Wmw9o4QuhQ==}
     hasBin: true
     peerDependencies:
       '@eslint-react/eslint-plugin': ^1.19.0
@@ -3505,8 +3505,8 @@ packages:
     peerDependencies:
       eslint: '>=8.45.0'
 
-  eslint-plugin-pnpm@0.2.0:
-    resolution: {integrity: sha512-ROGJ5q5JXJ4xAEFn7B+Z5DqIYiXXbsvoPV//U2o5NBe65shJpgwu+JH0Ee7zFgYnQx5MA6KWIX1Wm6mj7hX7wg==}
+  eslint-plugin-pnpm@0.3.0:
+    resolution: {integrity: sha512-MSmU6O6jC+LZYWX9Mfh7JznSz6GqUpVS0wXMSH3qG6Spr7tQc60CjJ5C6VVEGKtT3/7jLeNl4LSpIe/9KPdaTw==}
     peerDependencies:
       eslint: ^9.0.0
 
@@ -5037,8 +5037,8 @@ packages:
     resolution: {integrity: sha512-Nc3IT5yHzflTfbjgqWcCPpo7DaKy4FnpB0l/zCAW0Tc7jxAiuqSxHasntB3D7887LSrA93kDJ9IXovxJYxyLCA==}
     engines: {node: '>=4'}
 
-  pnpm-workspace-yaml@0.2.0:
-    resolution: {integrity: sha512-LWDk/rDoTPfW9GSsP26VSGlmnY8xel5/VNINmSh7h8svszptWWwzuLS16YT8Pb19Mw1qq7JlSKhgfb+4Pq0lxw==}
+  pnpm-workspace-yaml@0.3.0:
+    resolution: {integrity: sha512-akyhU8XeKUbVqOatMoiFWq9OCvYa8X9gHyZIB0dQEIHV73sXgbnUm7sOf2mpl3AoEFN4p4oFFxIJKQfsoAiuJg==}
 
   postcss-calc@10.1.1:
     resolution: {integrity: sha512-NYEsLHh8DgG/PRH2+G9BTuUdtf9ViS+vdoQ0YA5OQdGsfN4ztiwtDWNtBl9EKeqNMFnIu8IKZ0cLxEQ5r5KVMw==}
@@ -6489,7 +6489,7 @@ snapshots:
       '@jridgewell/gen-mapping': 0.3.8
       '@jridgewell/trace-mapping': 0.3.25
 
-  '@antfu/eslint-config@4.9.0(@typescript-eslint/utils@8.26.1(eslint@9.22.0(jiti@2.4.2))(typescript@5.8.2))(@unocss/eslint-plugin@66.0.0(eslint@9.22.0(jiti@2.4.2))(typescript@5.8.2))(@vue/compiler-sfc@3.5.13)(eslint@9.22.0(jiti@2.4.2))(typescript@5.8.2)(vitest@3.0.8(@types/debug@4.1.12)(@types/node@22.13.9)(jiti@2.4.2)(terser@5.39.0)(yaml@2.7.0))':
+  '@antfu/eslint-config@4.10.0(@typescript-eslint/utils@8.26.1(eslint@9.22.0(jiti@2.4.2))(typescript@5.8.2))(@unocss/eslint-plugin@66.0.0(eslint@9.22.0(jiti@2.4.2))(typescript@5.8.2))(@vue/compiler-sfc@3.5.13)(eslint@9.22.0(jiti@2.4.2))(typescript@5.8.2)(vitest@3.0.8(@types/debug@4.1.12)(@types/node@22.13.9)(jiti@2.4.2)(terser@5.39.0)(yaml@2.7.0))':
     dependencies:
       '@antfu/install-pkg': 1.0.0
       '@clack/prompts': 0.10.0
@@ -6513,7 +6513,7 @@ snapshots:
       eslint-plugin-n: 17.16.2(eslint@9.22.0(jiti@2.4.2))
       eslint-plugin-no-only-tests: 3.3.0
       eslint-plugin-perfectionist: 4.10.1(eslint@9.22.0(jiti@2.4.2))(typescript@5.8.2)
-      eslint-plugin-pnpm: 0.2.0(eslint@9.22.0(jiti@2.4.2))
+      eslint-plugin-pnpm: 0.3.0(eslint@9.22.0(jiti@2.4.2))
       eslint-plugin-regexp: 2.7.0(eslint@9.22.0(jiti@2.4.2))
       eslint-plugin-toml: 0.12.0(eslint@9.22.0(jiti@2.4.2))
       eslint-plugin-unicorn: 57.0.0(eslint@9.22.0(jiti@2.4.2))
@@ -10017,12 +10017,15 @@ snapshots:
       - supports-color
       - typescript
 
-  eslint-plugin-pnpm@0.2.0(eslint@9.22.0(jiti@2.4.2)):
+  eslint-plugin-pnpm@0.3.0(eslint@9.22.0(jiti@2.4.2)):
     dependencies:
       eslint: 9.22.0(jiti@2.4.2)
       find-up-simple: 1.0.1
       jsonc-eslint-parser: 2.4.0
-      pnpm-workspace-yaml: 0.2.0
+      pathe: 2.0.3
+      pnpm-workspace-yaml: 0.3.0
+      tinyglobby: 0.2.12
+      yaml-eslint-parser: 1.3.0
 
   eslint-plugin-regexp@2.7.0(eslint@9.22.0(jiti@2.4.2)):
     dependencies:
@@ -12059,7 +12062,7 @@ snapshots:
 
   pluralize@8.0.0: {}
 
-  pnpm-workspace-yaml@0.2.0:
+  pnpm-workspace-yaml@0.3.0:
     dependencies:
       yaml: 2.7.0
 
