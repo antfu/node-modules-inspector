@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import type { GraphBaseOptions, Tree, TreeNode } from 'nanovis'
+import type { GraphBase, GraphBaseOptions, Tree, TreeNode } from 'nanovis'
 import type { PackageNode } from 'node-modules-tools'
 import { useRoute } from '#app/composables/router'
 import { selectedNode } from '@/state/current'
 import { useMouse } from '@vueuse/core'
 import { createColorGetterSpectrum, createFlamegraph, createSunburst, createTreemap } from 'nanovis'
-import { computed, onUnmounted, reactive, shallowRef, useTemplateRef, watchEffect } from 'vue'
+import { computed, onUnmounted, reactive, shallowRef, useTemplateRef, watch } from 'vue'
 import { isDark } from '../../composables/dark'
 import { payloads } from '../../state/payload'
 import { settings } from '../../state/settings'
@@ -153,21 +153,49 @@ const options = computed<GraphBaseOptions<PackageNode | undefined>>(() => {
   }
 })
 
-watchEffect(() => {
-  dispose?.()
-  if (!el.value)
-    return
+let graph: GraphBase<PackageNode | undefined> | undefined
 
-  const createGraph = chart.value === 'sunburst'
-    ? createSunburst
-    : chart.value === 'frame'
-      ? createFlamegraph
-      : createTreemap
+watch(
+  () => [el.value, chart.value, root.value, options.value],
+  () => {
+    dispose?.()
+    if (!el.value)
+      return
 
-  const map = createGraph(root.value, options.value)
-  el.value!.append(map.el)
-  dispose = () => map.dispose()
-})
+    const createGraph = chart.value === 'sunburst'
+      ? createSunburst
+      : chart.value === 'frame'
+        ? createFlamegraph
+        : createTreemap
+    graph = createGraph(root.value, options.value)
+    el.value!.append(graph.el)
+    dispose = () => graph?.dispose()
+  },
+  {
+    deep: true,
+    immediate: true,
+  },
+)
+
+watch(
+  () => settings.value.chartColoringMode,
+  () => {
+    graph?.draw()
+  },
+)
+
+watch(
+  () => settings.value.collapseSidepanel,
+  () => {
+    const start = Date.now()
+    const run = () => {
+      graph?.resize()
+      if (graph && Date.now() - start < 3000)
+        requestAnimationFrame(run)
+    }
+    requestAnimationFrame(run)
+  },
+)
 
 onUnmounted(() => {
   dispose?.()

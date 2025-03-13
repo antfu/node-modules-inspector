@@ -4,6 +4,7 @@ import { version } from '../../../../package.json'
 import { getBackend } from '../../backends'
 import { rawPayload } from '../../state/data'
 import { getDeprecatedInfo, payloads, totalWorkspaceSize } from '../../state/payload'
+import { settings } from '../../state/settings'
 import { getFundings } from '../../utils/package-json'
 
 const backend = getBackend()
@@ -34,16 +35,31 @@ const timepassed = computed(() => rawPayload.value?.timestamp ? Date.now() - raw
 
 <template>
   <div flex="~ col">
-    <h1 text-lg p5 flex="~ gap-3 items-center">
+    <h1 text-lg p4 flex="~ gap-3 items-center">
       <UiLogo w-9 h-9 alt="Logo" class="hover:animate-spin-reverse" />
       <div flex="~ col gap-0" leading-none>
         <span font-700 text-primary>Node Modules</span>
-        <span op75>Inspector</span>
+        <div flex="~ gap-1 items-end">
+          <div op75>
+            Inspector
+          </div>
+          <div op50 text-xs font-mono>
+            v{{ version }}
+          </div>
+        </div>
       </div>
       <div flex-auto />
-      <span font-mono text-sm flex="~ col items-end">
-        <span op50>v{{ version }}</span>
-      </span>
+      <button
+        v-tooltip="'Collapse sidepanel'"
+        w-10 h-10 mr--2
+        rounded-full op30
+        hover="op100 bg-active"
+        title="Collapse sidepanel"
+        flex="~ items-center justify-center"
+        @click="settings.collapseSidepanel = !settings.collapseSidepanel"
+      >
+        <div i-ph-caret-double-left />
+      </button>
     </h1>
     <div v-if="rawPayload" border="t base" flex="~ col gap-3" p5>
       <div

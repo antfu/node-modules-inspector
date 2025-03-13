@@ -52,7 +52,8 @@ export default defineConfig({
       'color-scale-high': 'text-orange7:95 dark:text-orange:95!',
       'color-scale-critical': 'text-red7:95 dark:text-red:95!',
 
-      'page-padding': 'pt-22 pl-112 pr-8 pb-8',
+      'page-padding': 'pt-24 pl-112 pr-8 pb-8',
+      'page-padding-collapsed': 'pt-24 pl-14 pr-8 pb-8',
     },
     [/^badge-color-(\w+)$/, ([, color]) => `bg-${color}-400:20 dark:bg-${color}-400:10 text-${color}-700 dark:text-${color}-300 border-${color}-600:10 dark:border-${color}-300:10`],
     [/^bg-glass(:\d+)?$/, ([, opacity = ':75']) => `bg-white${opacity} dark:bg-#111${opacity} backdrop-blur-5`],

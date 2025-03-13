@@ -4,6 +4,7 @@ import { computed } from 'vue'
 import { selectedNode } from '../../state/current'
 import { filters } from '../../state/filters'
 import { query } from '../../state/query'
+import { settings } from '../../state/settings'
 
 const route = useRoute()
 const isSettingOpen = computed({
@@ -63,12 +64,20 @@ function resetPanelState() {
   isSettingOpen.value = false
   isFiltersOpen.value = false
 }
+
+function onPanelHover() {
+  if (settings.value.collapseSidepanel)
+    settings.value.collapseSidepanel = false
+}
 </script>
 
 <template>
   <div
     fixed left-4 top-22 w-100 z-panel-content flex="~ gap-4 col" of-hidden
+    transition-transform duration-300
     style="max-height: calc(100vh - 6.5rem);"
+    :class="settings.collapseSidepanel ? 'translate-x--99.5%' : ''"
+    @mouseenter="onPanelHover"
   >
     <div
       bg-glass rounded-1em border border-base shadow of-y-auto

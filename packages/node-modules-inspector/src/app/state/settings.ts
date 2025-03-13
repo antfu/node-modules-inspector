@@ -17,6 +17,7 @@ export const settings = useLocalStorage<SettingsOptions>(
     showPublintMessages: false,
     treatFauxAsESM: false,
     chartColoringMode: 'spectrum',
+    collapseSidepanel: false,
   },
   {
     deep: true,
