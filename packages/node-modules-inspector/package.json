@@ -72,6 +72,7 @@
     "fuse.js": "catalog:frontend",
     "idb-keyval": "catalog:frontend",
     "modern-screenshot": "catalog:frontend",
+    "nanovis": "catalog:frontend",
     "semver": "catalog:deps",
     "theme-vitesse": "catalog:frontend",
     "vite-hot-client": "catalog:frontend"

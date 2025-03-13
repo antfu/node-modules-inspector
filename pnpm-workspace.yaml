@@ -64,6 +64,7 @@ catalogs:
     fuse.js: ^7.1.0
     idb-keyval: ^6.2.1
     modern-screenshot: ^4.6.0
+    nanovis: ^0.0.3
     theme-vitesse: ^0.8.3
     vite-hot-client: ^2.0.4
   icons:

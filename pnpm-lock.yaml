@@ -171,6 +171,9 @@ catalogs:
     modern-screenshot:
       specifier: ^4.6.0
       version: 4.6.0
+    nanovis:
+      specifier: ^0.0.3
+      version: 0.0.3
     theme-vitesse:
       specifier: ^0.8.3
       version: 0.8.3
@@ -476,6 +479,9 @@ importers:
       modern-screenshot:
         specifier: catalog:frontend
         version: 4.6.0
+      nanovis:
+        specifier: catalog:frontend
+        version: 0.0.3
       semver:
         specifier: catalog:deps
         version: 7.7.1
@@ -4844,6 +4850,9 @@ packages:
 
   nanotar@0.2.0:
     resolution: {integrity: sha512-9ca1h0Xjvo9bEkE4UOxgAzLV0jHKe6LMaxo37ND2DAhhAtd0j8pR1Wxz+/goMrZO8AEZTWCmyaOsFI/W5AdpCQ==}
+
+  nanovis@0.0.3:
+    resolution: {integrity: sha512-ukJeiWbKcCDHIFeD+JrDVn7LMbvBi9uOuxvw2vnoOQS6ZkIa2XzgJwZm4StWWW0hgdYrOuSDlrlGBaAvrLoRBg==}
 
   natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
@@ -11678,6 +11687,8 @@ snapshots:
   nanoid@5.1.2: {}
 
   nanotar@0.2.0: {}
+
+  nanovis@0.0.3: {}
 
   natural-compare@1.4.0: {}
 

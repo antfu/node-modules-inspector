@@ -16,6 +16,7 @@ export const settings = useLocalStorage<SettingsOptions>(
     showDependencySourceBadge: 'dev',
     showPublintMessages: false,
     treatFauxAsESM: false,
+    chartColoringMode: 'spectrum',
   },
   {
     deep: true,

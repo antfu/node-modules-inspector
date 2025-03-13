@@ -23,8 +23,10 @@ withDefaults(
     hover="bg-active"
     @click="selectedNode = pkg"
   >
+    <slot name="before" />
     <DisplayModuleType v-if="showModuleType" :pkg />
     <DisplaySourceTypeBadge v-if="showSourceType" :pkg />
     <DisplayPackageSpec :pkg />
+    <slot name="after" />
   </button>
 </template>

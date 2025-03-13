@@ -48,6 +48,11 @@ const tabsMeta = [
     icon: 'i-ph-projector-screen-chart-duotone',
   },
   {
+    name: 'Chart View',
+    path: '/chart',
+    icon: 'i-ph-chart-donut-duotone',
+  },
+  {
     name: 'Compare',
     path: '/compare',
     icon: 'i-ph-flip-horizontal-duotone',
