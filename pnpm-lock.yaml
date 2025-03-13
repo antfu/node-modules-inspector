@@ -172,8 +172,8 @@ catalogs:
       specifier: ^4.6.0
       version: 4.6.0
     nanovis:
-      specifier: ^0.0.3
-      version: 0.0.3
+      specifier: ^0.0.4
+      version: 0.0.4
     theme-vitesse:
       specifier: ^0.8.3
       version: 0.8.3
@@ -486,7 +486,7 @@ importers:
         version: 4.6.0
       nanovis:
         specifier: catalog:frontend
-        version: 0.0.3(patch_hash=6041a2bc6cb425cec70a3ebc953c7df612563195298b2d2f44d2eaedd5606ebb)
+        version: 0.0.4(patch_hash=6041a2bc6cb425cec70a3ebc953c7df612563195298b2d2f44d2eaedd5606ebb)
       semver:
         specifier: catalog:deps
         version: 7.7.1
@@ -4856,8 +4856,8 @@ packages:
   nanotar@0.2.0:
     resolution: {integrity: sha512-9ca1h0Xjvo9bEkE4UOxgAzLV0jHKe6LMaxo37ND2DAhhAtd0j8pR1Wxz+/goMrZO8AEZTWCmyaOsFI/W5AdpCQ==}
 
-  nanovis@0.0.3:
-    resolution: {integrity: sha512-ukJeiWbKcCDHIFeD+JrDVn7LMbvBi9uOuxvw2vnoOQS6ZkIa2XzgJwZm4StWWW0hgdYrOuSDlrlGBaAvrLoRBg==}
+  nanovis@0.0.4:
+    resolution: {integrity: sha512-5kYd23FcDD4hTK2+eiNOXFq5QzANRTPzuf+e3MCO9berl8tXQiG0VAKdeuD2cwcwyK0MiIZ2HghfSiEA+0q1jA==}
 
   natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
@@ -11693,7 +11693,7 @@ snapshots:
 
   nanotar@0.2.0: {}
 
-  nanovis@0.0.3(patch_hash=6041a2bc6cb425cec70a3ebc953c7df612563195298b2d2f44d2eaedd5606ebb): {}
+  nanovis@0.0.4(patch_hash=6041a2bc6cb425cec70a3ebc953c7df612563195298b2d2f44d2eaedd5606ebb): {}
 
   natural-compare@1.4.0: {}
 

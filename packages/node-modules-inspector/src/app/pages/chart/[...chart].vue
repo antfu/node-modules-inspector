@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import type { GraphBase, GraphBaseOptions, Tree } from 'nanovis'
+import type { GraphBase, GraphBaseOptions } from 'nanovis'
 import type { PackageNode } from 'node-modules-tools'
 import type { ChartNode } from '../../types/chart'
 import { useRoute } from '#app/composables/router'
 import { selectedNode } from '@/state/current'
 import { useMouse } from '@vueuse/core'
 import { createColorGetterSpectrum, createFlamegraph, createSunburst, createTreemap } from 'nanovis'
-import { computed, onUnmounted, reactive, shallowRef, useTemplateRef, watch } from 'vue'
+import { computed, nextTick, onUnmounted, reactive, shallowRef, useTemplateRef, watch } from 'vue'
 import { isDark } from '../../composables/dark'
 import { payloads } from '../../state/payload'
 import { settings } from '../../state/settings'
@@ -19,10 +19,10 @@ const chart = computed<'frame' | 'treemap' | 'sunburst'>(() => params.chart[0] a
 const nodeHover = shallowRef<ChartNode | undefined>(undefined)
 const nodeSelected = shallowRef<ChartNode | undefined>(undefined)
 
-const root = computed<Tree<PackageNode | undefined>>(() => {
+const root = computed(() => {
   const packages = payloads.filtered.packages
   const rootDepth = Math.min(...packages.map(i => i.depth))
-  const seen = new Map<string, ChartNode>()
+  const map = new Map<PackageNode, ChartNode>()
 
   let maxDepth = 0
 
@@ -55,13 +55,13 @@ const root = computed<Tree<PackageNode | undefined>>(() => {
       meta: pkg,
       parent,
     }
-    seen.set(pkg.spec, node)
+    map.set(pkg, node)
     const validChildren = payloads.filtered.dependencies(pkg)
-      .filter(i => !seen.has(i.spec))
+      .filter(i => !map.has(i))
 
     tasks.push(() => {
       node.children = validChildren
-        .filter(i => !seen.has(i.spec))
+        .filter(i => !map.has(i))
         .map(pkg => pkgToNode(pkg, node, depth + 1))
     })
 
@@ -90,6 +90,7 @@ const root = computed<Tree<PackageNode | undefined>>(() => {
   macrosTasks.forEach(fn => fn())
 
   return {
+    map,
     root,
     maxDepth,
   }
@@ -115,6 +116,7 @@ const options = computed<GraphBaseOptions<PackageNode | undefined>>(() => {
     },
     onSelect(node) {
       nodeSelected.value = node || undefined
+      selectedNode.value = node?.meta
     },
     palette: {
       stroke: isDark.value ? '#222' : '#555',
@@ -173,6 +175,15 @@ watch(
     nodeSelected.value = root.value.root
     graph = createGraph(root.value, options.value)
     el.value!.append(graph.el)
+
+    nextTick(() => {
+      const selected = selectedNode.value ? root.value.map.get(selectedNode.value) || null : null
+      if (chart.value === 'sunburst')
+        graph?.select(selected)
+      else if (chart.value === 'treemap')
+        graph?.select((selected?.children.length ? selected : selected?.parent) || null)
+    })
+
     dispose = () => graph?.dispose()
   },
   {
@@ -198,6 +209,9 @@ watch(
         requestAnimationFrame(run)
     }
     requestAnimationFrame(run)
+  },
+  {
+    immediate: true,
   },
 )
 
