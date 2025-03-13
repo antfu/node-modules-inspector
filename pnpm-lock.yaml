@@ -249,6 +249,11 @@ overrides:
   rollup: ^4.35.0
   vite: ^6.2.1
 
+patchedDependencies:
+  nanovis:
+    hash: 6041a2bc6cb425cec70a3ebc953c7df612563195298b2d2f44d2eaedd5606ebb
+    path: patches/nanovis.patch
+
 importers:
 
   .:
@@ -481,7 +486,7 @@ importers:
         version: 4.6.0
       nanovis:
         specifier: catalog:frontend
-        version: 0.0.3
+        version: 0.0.3(patch_hash=6041a2bc6cb425cec70a3ebc953c7df612563195298b2d2f44d2eaedd5606ebb)
       semver:
         specifier: catalog:deps
         version: 7.7.1
@@ -11688,7 +11693,7 @@ snapshots:
 
   nanotar@0.2.0: {}
 
-  nanovis@0.0.3: {}
+  nanovis@0.0.3(patch_hash=6041a2bc6cb425cec70a3ebc953c7df612563195298b2d2f44d2eaedd5606ebb): {}
 
   natural-compare@1.4.0: {}
 

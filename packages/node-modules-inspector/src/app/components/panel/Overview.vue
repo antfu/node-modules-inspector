@@ -115,7 +115,7 @@ const timepassed = computed(() => rawPayload.value?.timestamp ? Date.now() - raw
       </NuxtLink>
       <NuxtLink flex="~ gap-2 items-center" to="/report/install-size">
         <div i-catppuccin-binary icon-catppuccin flex-none />
-        <DisplayFileSizeBadge :bytes="totalWorkspaceSize" :precent="false" rounded-full text-sm mx--0.2 mt-3px color="badge-color-primary" />
+        <DisplayFileSizeBadge :bytes="totalWorkspaceSize" :percent="false" rounded-full text-sm mx--0.2 mt-3px color="badge-color-primary" />
         <span ml--0.5>total node_modules size</span>
       </NuxtLink>
       <div v-if="timepassed >= mins10" flex="~ gap-2 items-center">

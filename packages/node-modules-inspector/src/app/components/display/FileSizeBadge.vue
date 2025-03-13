@@ -9,11 +9,11 @@ const props = withDefaults(
     bytes?: number
     colorize?: boolean
     digits?: number
-    precent?: boolean
+    percent?: boolean
     icon?: string
   }>(),
   {
-    precent: true,
+    percent: true,
     colorize: true,
     digits: 2,
   },
@@ -51,7 +51,7 @@ const formatted = computed(() => bytesToHumanSize(props.bytes || 0, props.digits
     <div v-if="icon" :class="icon" class="mr-1" />
     {{ formatted[0] }}<span text-xs op75 ml-0.4>{{ formatted[1] }}</span>
     <slot name="after">
-      <span v-if="precent && ratio > 0.5" text-xs ml1 op50 border="l base" pl1>{{ +(ratio.toFixed(1)) }}%</span>
+      <span v-if="percent && ratio > 0.5" text-xs ml1 op50 border="l base" pl1>{{ +(ratio.toFixed(1)) }}%</span>
     </slot>
   </div>
 </template>

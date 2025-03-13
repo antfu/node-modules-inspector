@@ -1,0 +1,498 @@
+diff --git a/dist/esbuild.d.mts b/dist/esbuild.d.mts
+index 6cee73a0a0b864dacce6b43c3c91e7c5f5f92ef3..c14e89387af7ffd26f428ebddbadd517bd2fdca3 100644
+--- a/dist/esbuild.d.mts
++++ b/dist/esbuild.d.mts
+@@ -1,4 +1,4 @@
+-import { T as Tree, c as TreeNode, C as ColorValue } from './shared/nanovis.BIjKzTCh.mjs';
++import { T as Tree, b as TreeNode, C as ColorValue } from './shared/nanovis.t2La1xRO.mjs';
+ 
+ interface Metafile {
+     inputs: Record<string, InputFile>;
+diff --git a/dist/index.d.mts b/dist/index.d.mts
+index 5020b8f9ef87582c7bd5edc16d9967c6509d82c1..50c3a8a49761bc5f2d02d57457d84526f0f0f4bc 100644
+--- a/dist/index.d.mts
++++ b/dist/index.d.mts
+@@ -1,5 +1,5 @@
+-import { G as GraphBaseOptions, T as Tree, E as Emitter, a as Events, C as ColorValue, b as ColorMapPlain, c as TreeNode, P as Palette } from './shared/nanovis.BIjKzTCh.mjs';
+-export { d as ColorMapping, e as GraphBase } from './shared/nanovis.BIjKzTCh.mjs';
++import { G as GraphBaseOptions, T as Tree, E as Emitter, a as Events, b as TreeNode, C as ColorValue, c as ColorMapPlain, P as Palette } from './shared/nanovis.t2La1xRO.mjs';
++export { d as ColorMapping, e as GraphBase } from './shared/nanovis.t2La1xRO.mjs';
+ 
+ interface CreateFlamegraphOptions<T> extends GraphBaseOptions<T> {
+ }
+@@ -9,6 +9,7 @@ declare function createFlamegraph<T>(tree: Tree<T>, options?: CreateFlamegraphOp
+     draw: () => void;
+     resize: () => void;
+     dispose: () => void;
++    select: (node: TreeNode<T> | null) => void;
+     [Symbol.dispose]: () => void;
+ };
+ 
+@@ -20,6 +21,7 @@ declare function createSunburst<T>(tree: Tree<T>, options?: CreateSunburstOption
+     draw: () => void;
+     resize: () => void;
+     dispose: () => void;
++    select: (node: TreeNode<T> | null) => void;
+     [Symbol.dispose]: () => void;
+ };
+ 
+@@ -30,6 +32,7 @@ declare function createTreemap<T>(tree: Tree<T>, options?: TreemapOptions<T>): {
+     events: Emitter<Events<T>>;
+     resize: () => void;
+     draw: () => void;
++    select: (node: TreeNode<T> | null) => void;
+     dispose: () => void;
+     [Symbol.dispose]: () => void;
+ };
+diff --git a/dist/index.mjs b/dist/index.mjs
+index f379b3e7096fba147479d611a652ed51aa0cc064..c215c2b959aeb70262ffd78603f82772efb26fcb 100644
+--- a/dist/index.mjs
++++ b/dist/index.mjs
+@@ -59,6 +59,8 @@ function createGraphContext(tree, options = {}) {
+     events.on("hover", options.onHover);
+   if (options.onLeave)
+     events.on("leave", options.onLeave);
++  if (options.onSelect)
++    events.on("select", options.onSelect);
+   function dispose() {
+     disposables.forEach((disposable) => disposable());
+     disposables.length = 0;
+@@ -121,13 +123,11 @@ function createFlamegraph(tree, options = {}) {
+   const boldFont = "bold " + normalFont, normalWidthCache = {};
+   let ellipsisWidth = 0;
+   let currentWidthCache = normalWidthCache;
+-  const changeHoveredNode = (node, e) => {
++  const changeHoveredNode = (node) => {
+     if (hoveredNode !== node) {
+       hoveredNode = node;
++      events.emit("select", node);
+       canvas.style.cursor = node && !node.children.length ? "pointer" : "auto";
+-      if (!node) {
+-        events.emit("hover", null, e);
+-      }
+       invalidate();
+     }
+   };
+@@ -321,7 +321,7 @@ function createFlamegraph(tree, options = {}) {
+   };
+   const updateHover = (e) => {
+     const node = hitTestNode(e);
+-    changeHoveredNode(node, e);
++    changeHoveredNode(node);
+     events.emit("hover", node, e);
+   };
+   let didDrag = false;
+@@ -349,14 +349,14 @@ function createFlamegraph(tree, options = {}) {
+   canvas.onmousemove = (e) => {
+     updateHover(e);
+   };
+-  canvas.onmouseout = (e) => {
+-    changeHoveredNode(null, e);
++  canvas.onmouseout = () => {
++    changeHoveredNode(null);
+   };
+   canvas.onclick = (e) => {
+     if (didDrag)
+       return;
+     const node = hitTestNode(e);
+-    changeHoveredNode(node, e);
++    changeHoveredNode(node);
+     if (node && !node.children.length) {
+       events.emit("click", node, e);
+     }
+@@ -385,6 +385,9 @@ function createFlamegraph(tree, options = {}) {
+     draw,
+     resize,
+     dispose,
++    select: (node) => {
++      changeHoveredNode(node);
++    },
+     [Symbol.dispose]: dispose
+   };
+ }
+@@ -435,11 +438,12 @@ function createSunburst(tree, options = {}) {
+   }
+   let currentNode = tree.root;
+   let hoveredNode;
+-  const changeCurrentNode = (node, e) => {
++  const changeCurrentNode = (node) => {
++    node = node || tree.root;
+     if (currentNode !== node) {
+       currentNode = node;
+       updateSunburst();
+-      events.emit("click", node, e);
++      events.emit("select", node);
+     }
+   };
+   const changeHoveredNode = (node) => {
+@@ -638,12 +642,12 @@ function createSunburst(tree, options = {}) {
+       node = historyStack.pop();
+       stack = historyStack.slice();
+     }
++    events.emit("click", node, e);
+     if (node.children.length > 0) {
+-      changeCurrentNode(node, e);
++      changeCurrentNode(node);
+       historyStack = stack;
+     } else {
+       e.preventDefault();
+-      events.emit("click", node, e);
+     }
+   };
+   const updateSunburst = () => {
+@@ -694,6 +698,7 @@ function createSunburst(tree, options = {}) {
+     sourceStartAngle = animatedStartAngle;
+     sourceSweepAngle = animatedSweepAngle;
+     targetNode = currentNode;
++    events.emit("select", currentNode);
+   };
+   el.append(canvas);
+   return {
+@@ -702,6 +707,9 @@ function createSunburst(tree, options = {}) {
+     draw,
+     resize,
+     dispose,
++    select: (node) => {
++      changeCurrentNode(node);
++    },
+     [Symbol.dispose]: dispose
+   };
+ }
+@@ -1029,6 +1037,7 @@ function createTreemap(tree, options = {}) {
+   let changeHoveredNode = (node) => {
+     if (hoveredNode !== node) {
+       hoveredNode = node;
++      events.emit("select", node);
+       canvas.style.cursor = node && !node.children.length ? "pointer" : "auto";
+       invalidate();
+     }
+@@ -1088,6 +1097,9 @@ function createTreemap(tree, options = {}) {
+     events,
+     resize,
+     draw,
++    select: (node) => {
++      changeCurrentNode(node ? searchFor(layoutNodes, node) : null);
++    },
+     dispose,
+     [Symbol.dispose]: dispose
+   };
+diff --git a/dist/shared/nanovis.DLN3NOhf.d.mts b/dist/shared/nanovis.DLN3NOhf.d.mts
+new file mode 100644
+index 0000000000000000000000000000000000000000..3aaa20621959636ba921ebc9b85c263d9d53e7e1
+--- /dev/null
++++ b/dist/shared/nanovis.DLN3NOhf.d.mts
+@@ -0,0 +1,114 @@
++interface EventsMap {
++  [event: string]: any
++}
++
++interface DefaultEvents extends EventsMap {
++  [event: string]: (...args: any) => void
++}
++
++interface Unsubscribe {
++  (): void
++}
++
++interface Emitter<Events extends EventsMap = DefaultEvents> {
++  /**
++   * Calls each of the listeners registered for a given event.
++   *
++   * ```js
++   * ee.emit('tick', tickType, tickDuration)
++   * ```
++   *
++   * @param event The event name.
++   * @param args The arguments for listeners.
++   */
++  emit<K extends keyof Events>(
++    this: this,
++    event: K,
++    ...args: Parameters<Events[K]>
++  ): void
++
++  /**
++   * Event names in keys and arrays with listeners in values.
++   *
++   * ```js
++   * emitter1.events = emitter2.events
++   * emitter2.events = { }
++   * ```
++   */
++  events: Partial<{ [E in keyof Events]: Events[E][] }>
++
++  /**
++   * Add a listener for a given event.
++   *
++   * ```js
++   * const unbind = ee.on('tick', (tickType, tickDuration) => {
++   *   count += 1
++   * })
++   *
++   * disable () {
++   *   unbind()
++   * }
++   * ```
++   *
++   * @param event The event name.
++   * @param cb The listener function.
++   * @returns Unbind listener from event.
++   */
++  on<K extends keyof Events>(this: this, event: K, cb: Events[K]): Unsubscribe
++}
++
++type ColorValue = string | readonly [string, string];
++type ColorMapPlain = Record<string, ColorValue | undefined>;
++interface ColorMapping<T> {
++    get: (node: TreeNode<T>) => ColorValue | undefined;
++}
++interface Palette {
++    fallback: string;
++    stroke: string;
++    hover: string;
++    shadow: string;
++    text: string;
++    fg: string;
++    bg: string;
++}
++
++interface TreeNode<T> {
++    id: string;
++    text: string;
++    subtext?: string;
++    size: number;
++    color?: ColorValue;
++    children: TreeNode<T>[];
++    parent?: TreeNode<T>;
++    meta?: T;
++}
++interface Events<T> {
++    hover: (node: TreeNode<T> | null, e?: MouseEvent) => void;
++    click: (node: TreeNode<T>, e: MouseEvent) => void;
++    select: (node: TreeNode<T> | null) => void;
++    leave: (e?: MouseEvent) => void;
++}
++interface Tree<T> {
++    root: TreeNode<T>;
++    maxDepth: number;
++}
++interface GraphBaseOptions<T> {
++    getColor?: (node: TreeNode<T>) => ColorValue | undefined;
++    getText?: (node: TreeNode<T>) => string | undefined;
++    getSubtext?: (node: TreeNode<T>) => string | undefined;
++    palette?: Partial<Palette>;
++    onHover?: Events<T>['hover'];
++    onClick?: Events<T>['click'];
++    onLeave?: Events<T>['leave'];
++    onSelect?: Events<T>['select'];
++}
++interface GraphBase<T> {
++    el: HTMLElement;
++    events: Emitter<Events<T>>;
++    draw: () => void;
++    resize: () => void;
++    dispose: () => void;
++    [Symbol.dispose]: () => void;
++}
++
++export type { ColorValue as C, Emitter as E, GraphBaseOptions as G, Palette as P, Tree as T, Events as a, ColorMapPlain as b, TreeNode as c, ColorMapping as d, GraphBase as e };
+diff --git a/dist/shared/nanovis.t2La1xRO.d.mts b/dist/shared/nanovis.t2La1xRO.d.mts
+new file mode 100644
+index 0000000000000000000000000000000000000000..03c8a645cf820bcd3f38d2ad6a56ba05f434ed99
+--- /dev/null
++++ b/dist/shared/nanovis.t2La1xRO.d.mts
+@@ -0,0 +1,115 @@
++interface EventsMap {
++  [event: string]: any
++}
++
++interface DefaultEvents extends EventsMap {
++  [event: string]: (...args: any) => void
++}
++
++interface Unsubscribe {
++  (): void
++}
++
++interface Emitter<Events extends EventsMap = DefaultEvents> {
++  /**
++   * Calls each of the listeners registered for a given event.
++   *
++   * ```js
++   * ee.emit('tick', tickType, tickDuration)
++   * ```
++   *
++   * @param event The event name.
++   * @param args The arguments for listeners.
++   */
++  emit<K extends keyof Events>(
++    this: this,
++    event: K,
++    ...args: Parameters<Events[K]>
++  ): void
++
++  /**
++   * Event names in keys and arrays with listeners in values.
++   *
++   * ```js
++   * emitter1.events = emitter2.events
++   * emitter2.events = { }
++   * ```
++   */
++  events: Partial<{ [E in keyof Events]: Events[E][] }>
++
++  /**
++   * Add a listener for a given event.
++   *
++   * ```js
++   * const unbind = ee.on('tick', (tickType, tickDuration) => {
++   *   count += 1
++   * })
++   *
++   * disable () {
++   *   unbind()
++   * }
++   * ```
++   *
++   * @param event The event name.
++   * @param cb The listener function.
++   * @returns Unbind listener from event.
++   */
++  on<K extends keyof Events>(this: this, event: K, cb: Events[K]): Unsubscribe
++}
++
++type ColorValue = string | readonly [string, string];
++type ColorMapPlain = Record<string, ColorValue | undefined>;
++interface ColorMapping<T> {
++    get: (node: TreeNode<T>) => ColorValue | undefined;
++}
++interface Palette {
++    fallback: string;
++    stroke: string;
++    hover: string;
++    shadow: string;
++    text: string;
++    fg: string;
++    bg: string;
++}
++
++interface TreeNode<T> {
++    id: string;
++    text: string;
++    subtext?: string;
++    size: number;
++    color?: ColorValue;
++    children: TreeNode<T>[];
++    parent?: TreeNode<T>;
++    meta?: T;
++}
++interface Events<T> {
++    hover: (node: TreeNode<T> | null, e?: MouseEvent) => void;
++    click: (node: TreeNode<T>, e: MouseEvent) => void;
++    select: (node: TreeNode<T> | null) => void;
++    leave: (e?: MouseEvent) => void;
++}
++interface Tree<T> {
++    root: TreeNode<T>;
++    maxDepth: number;
++}
++interface GraphBaseOptions<T> {
++    getColor?: (node: TreeNode<T>) => ColorValue | undefined;
++    getText?: (node: TreeNode<T>) => string | undefined;
++    getSubtext?: (node: TreeNode<T>) => string | undefined;
++    palette?: Partial<Palette>;
++    onHover?: Events<T>['hover'];
++    onClick?: Events<T>['click'];
++    onLeave?: Events<T>['leave'];
++    onSelect?: Events<T>['select'];
++}
++interface GraphBase<T> {
++    el: HTMLElement;
++    events: Emitter<Events<T>>;
++    draw: () => void;
++    resize: () => void;
++    select: (node: TreeNode<T> | null) => void;
++    dispose: () => void;
++    [Symbol.dispose]: () => void;
++}
++
++export type { ColorValue as C, Emitter as E, GraphBaseOptions as G, Palette as P, Tree as T, Events as a, TreeNode as b, ColorMapPlain as c, ColorMapping as d, GraphBase as e };
+diff --git a/package.json b/package.json
+index 80974db9d7a3348c2550e935188ea7964eae6f2c..9775ad397473fa6e2de2d088d578dadf98eaf34f 100644
+--- a/package.json
++++ b/package.json
+@@ -26,26 +26,26 @@
+     "dist"
+   ],
+   "devDependencies": {
+-    "@antfu/eslint-config": "^4.10.1",
+-    "@antfu/ni": "^24.1.0",
+-    "@antfu/utils": "^9.1.0",
+-    "@types/node": "^22.13.10",
+-    "bumpp": "^10.1.0",
+-    "esbuild": "^0.25.1",
+-    "eslint": "^9.22.0",
+-    "lint-staged": "^15.5.0",
+-    "nanoevents": "^9.1.0",
+-    "simple-git-hooks": "^2.11.1",
+-    "tinyexec": "^0.3.2",
+-    "tsx": "^4.19.3",
+-    "typescript": "^5.8.2",
+-    "unbuild": "^3.5.0",
+-    "vite": "^6.2.1",
+-    "vitest": "^3.0.8",
+-    "vitest-package-exports": "^0.1.1",
+-    "vue": "^3.5.13",
+-    "vue-tsc": "^2.2.4",
+-    "yaml": "^2.7.0"
++    "@antfu/eslint-config": "catalog:cli",
++    "@antfu/ni": "catalog:cli",
++    "@antfu/utils": "catalog:inlined",
++    "@types/node": "catalog:types",
++    "bumpp": "catalog:cli",
++    "esbuild": "catalog:cli",
++    "eslint": "catalog:cli",
++    "lint-staged": "catalog:cli",
++    "nanoevents": "catalog:frontend",
++    "simple-git-hooks": "catalog:cli",
++    "tinyexec": "catalog:utils",
++    "tsx": "catalog:cli",
++    "typescript": "catalog:cli",
++    "unbuild": "catalog:cli",
++    "vite": "catalog:cli",
++    "vitest": "catalog:testing",
++    "vitest-package-exports": "catalog:testing",
++    "vue": "catalog:playground",
++    "vue-tsc": "catalog:playground",
++    "yaml": "catalog:testing"
+   },
+   "simple-git-hooks": {
+     "pre-commit": "pnpm i --frozen-lockfile --ignore-scripts --offline && npx lint-staged"
+@@ -62,5 +62,27 @@
+     "start": "tsx src/index.ts",
+     "test": "vitest",
+     "typecheck": "vue-tsc --noEmit"
++  },
++  "dependencies": {
++    "@antfu/eslint-config": "catalog:cli",
++    "@antfu/ni": "catalog:cli",
++    "@antfu/utils": "catalog:inlined",
++    "@types/node": "catalog:types",
++    "bumpp": "catalog:cli",
++    "esbuild": "catalog:cli",
++    "eslint": "catalog:cli",
++    "lint-staged": "catalog:cli",
++    "nanoevents": "catalog:frontend",
++    "simple-git-hooks": "catalog:cli",
++    "tinyexec": "catalog:utils",
++    "tsx": "catalog:cli",
++    "typescript": "catalog:cli",
++    "unbuild": "catalog:cli",
++    "vite": "catalog:cli",
++    "vitest": "catalog:testing",
++    "vitest-package-exports": "catalog:testing",
++    "vue": "catalog:playground",
++    "vue-tsc": "catalog:playground",
++    "yaml": "catalog:testing"
+   }
+ }

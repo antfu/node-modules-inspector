@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import type { GraphBase, GraphBaseOptions, Tree, TreeNode } from 'nanovis'
+import type { GraphBase, GraphBaseOptions, Tree } from 'nanovis'
 import type { PackageNode } from 'node-modules-tools'
+import type { ChartNode } from '../../types/chart'
 import { useRoute } from '#app/composables/router'
 import { selectedNode } from '@/state/current'
 import { useMouse } from '@vueuse/core'
@@ -15,18 +16,17 @@ import { getModuleType } from '../../utils/module-type'
 const mouse = reactive(useMouse())
 const params = useRoute().params as Record<string, string>
 const chart = computed<'frame' | 'treemap' | 'sunburst'>(() => params.chart[0] as any || 'treemap')
-const hoverNode = shallowRef<Node | undefined>(undefined)
-
-type Node = TreeNode<PackageNode | undefined>
+const nodeHover = shallowRef<ChartNode | undefined>(undefined)
+const nodeSelected = shallowRef<ChartNode | undefined>(undefined)
 
 const root = computed<Tree<PackageNode | undefined>>(() => {
   const packages = payloads.filtered.packages
   const rootDepth = Math.min(...packages.map(i => i.depth))
-  const seen = new Map<string, Node>()
+  const seen = new Map<string, ChartNode>()
 
   let maxDepth = 0
 
-  const root: Node = {
+  const root: ChartNode = {
     id: 'root',
     text: 'Root',
     size: 0,
@@ -43,11 +43,11 @@ const root = computed<Tree<PackageNode | undefined>>(() => {
     root.children.sort((a, b) => b.size - a.size || a.id.localeCompare(b.id))
   })
 
-  function pkgToNode(pkg: PackageNode, parent: Node | undefined, depth: number): Node {
+  function pkgToNode(pkg: PackageNode, parent: ChartNode | undefined, depth: number): ChartNode {
     if (depth > maxDepth)
       maxDepth = depth
 
-    const node: Node = {
+    const node: ChartNode = {
       id: pkg.spec,
       text: pkg.name,
       size: pkg.resolved.installSize?.bytes || 0,
@@ -102,16 +102,19 @@ const options = computed<GraphBaseOptions<PackageNode | undefined>>(() => {
   return {
     onClick(node) {
       if (node)
-        hoverNode.value = node
+        nodeHover.value = node
       if (node.meta)
         selectedNode.value = node.meta
     },
     onHover(node) {
       if (node)
-        hoverNode.value = node
+        nodeHover.value = node
     },
     onLeave() {
-      hoverNode.value = undefined
+      nodeHover.value = undefined
+    },
+    onSelect(node) {
+      nodeSelected.value = node || undefined
     },
     palette: {
       stroke: isDark.value ? '#222' : '#555',
@@ -167,6 +170,7 @@ watch(
       : chart.value === 'frame'
         ? createFlamegraph
         : createTreemap
+    nodeSelected.value = root.value.root
     graph = createGraph(root.value, options.value)
     el.value!.append(graph.el)
     dispose = () => graph?.dispose()
@@ -197,6 +201,8 @@ watch(
   },
 )
 
+const containerClass = computed(() => chart.value === 'sunburst' ? 'grid grid-cols-[500px_1fr]' : '')
+
 onUnmounted(() => {
   dispose?.()
 })
@@ -225,9 +231,17 @@ onUnmounted(() => {
       :titles="['Spectrum', 'Module']"
     />
   </div>
-  <div ref="el" mt5 />
+  <div :class="containerClass" mt5>
+    <div ref="el" />
+    <ChartSunburstSide
+      v-if="chart === 'sunburst'"
+      :options="options"
+      :selected="nodeSelected"
+      @select="x => graph?.select(x)"
+    />
+  </div>
   <div
-    v-if="hoverNode?.meta"
+    v-if="nodeHover?.meta"
     bg-glass fixed z-panel-nav border="~ base rounded" p2 text-sm
     flex="~ col gap-2"
     :style="{
@@ -235,12 +249,16 @@ onUnmounted(() => {
       top: `${mouse.y + 10}px`,
     }"
   >
-    <DisplayPackageSpec :pkg="hoverNode.meta" text-base />
     <div flex="~ gap-1 items-center">
-      <DisplayFileSizeBadge :bytes="hoverNode.meta.resolved.installSize?.bytes" />
-      <span op50>/</span>
-      <DisplayFileSizeBadge :bytes="hoverNode.size" />
+      <DisplayPackageSpec :pkg="nodeHover.meta" text-base />
+      <DisplayModuleType :pkg="nodeHover.meta" />
     </div>
-    <DisplayModuleType :pkg="hoverNode.meta" />
+    <div flex="~ gap-1 items-center">
+      <DisplayFileSizeBadge :bytes="nodeHover.meta.resolved.installSize?.bytes" :percent="false" />
+      <template v-if="nodeHover.meta.resolved.installSize?.bytes !== nodeHover.size">
+        <span op50>/</span>
+        <DisplayFileSizeBadge :bytes="nodeHover.size" :percent="false" />
+      </template>
+    </div>
   </div>
 </template>
