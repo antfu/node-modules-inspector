@@ -60,7 +60,7 @@ function toggleFilters() {
     fixed left-4 top-22 w-100 z-panel-content flex="~ gap-4 col" of-hidden
     transition-transform duration-300
     style="max-height: calc(100vh - 6.5rem);"
-    :class="isSidepanelCollapsed ? 'translate-x--99.8' : ''"
+    :class="isSidepanelCollapsed ? 'translate-x--99.9' : ''"
     @mouseenter="onPanelHover"
   >
     <div

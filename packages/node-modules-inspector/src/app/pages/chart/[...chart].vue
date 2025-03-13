@@ -176,6 +176,13 @@ const options = computed<GraphBaseOptions<PackageNode | undefined>>(() => {
 
 let graph: GraphBase<PackageNode | undefined> | undefined
 
+function selectNode(node: ChartNode | null, animate = true) {
+  selectedNode.value = node?.meta
+  if (!node?.children.length)
+    node = node?.parent || null
+  graph?.select(node, animate)
+}
+
 watch(
   () => [el.value, chart.value, root.value, options.value],
   () => {
@@ -194,10 +201,7 @@ watch(
 
     nextTick(() => {
       const selected = selectedNode.value ? root.value.map.get(selectedNode.value) || null : null
-      if (chart.value === 'sunburst')
-        graph?.select(selected, false)
-      else if (chart.value === 'treemap')
-        graph?.select((selected?.children.length ? selected : selected?.parent) || null, false)
+      selectNode(selected, false)
     })
 
     dispose = () => graph?.dispose()
@@ -267,7 +271,7 @@ onUnmounted(() => {
       v-if="chart === 'sunburst'"
       :options="options"
       :selected="nodeSelected"
-      @select="x => graph?.select(x)"
+      @select="x => selectNode(x)"
     />
   </div>
   <div
