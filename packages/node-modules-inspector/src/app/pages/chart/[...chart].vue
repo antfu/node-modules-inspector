@@ -66,7 +66,19 @@ const root = computed(() => {
     })
 
     macrosTasks.unshift(() => {
+      const selfSize = node.size
       node.size += node.children.reduce((acc, i) => acc + i.size, 0)
+      if (node.children.length && selfSize / node.size > 0.3) {
+        node.children.push({
+          id: `${node.id}-self`,
+          text: '',
+          size: selfSize,
+          subtext: bytesToHumanSize(selfSize).join(' '),
+          children: [],
+          meta: node.meta,
+          parent: node,
+        })
+      }
       node.subtext = bytesToHumanSize(node.size).join(' ')
       node.children.sort((a, b) => b.size - a.size || a.id.localeCompare(b.id))
     })
