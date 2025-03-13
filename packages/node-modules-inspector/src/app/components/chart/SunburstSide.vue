@@ -63,7 +63,7 @@ const parentStack = computed(() => {
               width: `${child.size / selected.size * 100}%`,
             }"
           />
-          <DisplayFileSizeBadge text-xs :bytes="child.size" :percent="false" />
+          <DisplayFileSizeBadge text-xs :bytes="child.size" :total="selected.size" :percent-ratio="3" />
           <div
             v-if="child.children.length > 0"
             v-tooltip="`${child.children.length} dependencies`"
