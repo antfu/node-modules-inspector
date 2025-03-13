@@ -40,14 +40,14 @@ catalogs:
     unstorage: ^1.15.0
     ws: ^8.18.1
   devtools:
-    '@antfu/eslint-config': ^4.10.0
+    '@antfu/eslint-config': ^4.10.1
     '@nuxt/devtools': ^2.2.1
     '@nuxt/eslint': ^1.2.0
     '@typescript-eslint/utils': ^8.26.1
     '@unocss/eslint-config': ^66.0.0
     bumpp: ^10.1.0
     eslint: ^9.22.0
-    lint-staged: ^15.4.3
+    lint-staged: ^15.5.0
     nuxt-eslint-auto-explicit-import: ^0.1.1
     simple-git-hooks: ^2.11.1
     typescript: ^5.8.2
