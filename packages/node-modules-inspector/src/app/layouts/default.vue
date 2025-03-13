@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useRuntimeHook } from '#app/composables/runtime-hook'
 import { ref } from 'vue'
-import { settings } from '../state/settings'
+import { isSidepanelCollapsed } from '../state/ui'
 
 const isLoading = ref(false)
 
@@ -22,7 +22,7 @@ useRuntimeHook('page:finish', () => {
     flex="~ items-center justify-center" h-full bg-glass:50
     absolute left-0 top-0 w-full z-49
     animate-fade-in animate-delay-200 animate-fill-both animate-duration-0
-    :class="settings.collapseSidepanel ? 'page-padding-collapsed' : 'page-padding'"
+    :class="isSidepanelCollapsed ? 'page-padding-collapsed' : 'page-padding'"
   >
     <UiLogo
       w-30 h-30 transition-all duration-300
@@ -31,7 +31,7 @@ useRuntimeHook('page:finish', () => {
   </div>
   <div
     transition-all duration-300
-    :class="$route.meta.noOffset ? 'transition-none!' : settings.collapseSidepanel ? 'page-padding-collapsed' : 'page-padding'"
+    :class="$route.meta.noOffset ? 'transition-none!' : isSidepanelCollapsed ? 'page-padding-collapsed' : 'page-padding'"
   >
     <slot />
   </div>

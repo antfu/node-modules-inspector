@@ -46,7 +46,8 @@ const parentStack = computed(() => {
           hover="bg-active" rounded px2
           @click="emit('select', child)"
         >
-          <DisplayPackageSpec v-if="child.meta" :pkg="child.meta" />
+          <span v-if="child.meta && child.meta === selected?.meta" text-primary>(self)</span>
+          <DisplayPackageSpec v-else-if="child.meta" :pkg="child.meta" />
           <span v-else>{{ child.id }}</span>
         </button>
 

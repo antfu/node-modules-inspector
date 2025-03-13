@@ -4,6 +4,7 @@ import type { PackageNode } from 'node-modules-tools'
 import type { ChartNode } from '../../types/chart'
 import { useRoute } from '#app/composables/router'
 import { selectedNode } from '@/state/current'
+import { isSidepanelCollapsed } from '@/state/ui'
 import { useMouse } from '@vueuse/core'
 import { createColorGetterSpectrum, createFlamegraph, createSunburst, createTreemap } from 'nanovis'
 import { computed, nextTick, onUnmounted, reactive, shallowRef, useTemplateRef, watch } from 'vue'
@@ -68,7 +69,10 @@ const root = computed(() => {
     macrosTasks.unshift(() => {
       const selfSize = node.size
       node.size += node.children.reduce((acc, i) => acc + i.size, 0)
-      if (node.children.length && selfSize / node.size > 0.3) {
+      node.subtext = bytesToHumanSize(node.size).join(' ')
+
+      // If the node itself is more than 10% of the total size, we add a self node to make it more visible
+      if (node.children.length && selfSize / node.size > 0.1) {
         node.children.push({
           id: `${node.id}-self`,
           text: '',
@@ -79,7 +83,7 @@ const root = computed(() => {
           parent: node,
         })
       }
-      node.subtext = bytesToHumanSize(node.size).join(' ')
+
       node.children.sort((a, b) => b.size - a.size || a.id.localeCompare(b.id))
     })
 
@@ -191,9 +195,9 @@ watch(
     nextTick(() => {
       const selected = selectedNode.value ? root.value.map.get(selectedNode.value) || null : null
       if (chart.value === 'sunburst')
-        graph?.select(selected)
+        graph?.select(selected, false)
       else if (chart.value === 'treemap')
-        graph?.select((selected?.children.length ? selected : selected?.parent) || null)
+        graph?.select((selected?.children.length ? selected : selected?.parent) || null, false)
     })
 
     dispose = () => graph?.dispose()
@@ -212,7 +216,7 @@ watch(
 )
 
 watch(
-  () => settings.value.collapseSidepanel,
+  () => isSidepanelCollapsed.value,
   () => {
     const start = Date.now()
     const run = () => {

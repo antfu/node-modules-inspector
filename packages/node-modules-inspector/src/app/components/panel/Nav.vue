@@ -1,35 +1,11 @@
 <script setup lang="ts">
 import { useRoute } from '#app/composables/router'
-import { computed } from 'vue'
 import { selectedNode } from '../../state/current'
 import { filters } from '../../state/filters'
-import { query } from '../../state/query'
 import { settings } from '../../state/settings'
+import { isFiltersOpen, isSettingOpen, isSidepanelCollapsed } from '../../state/ui'
 
 const route = useRoute()
-const isSettingOpen = computed({
-  get() {
-    return query.selected === '~settings'
-  },
-  set(value) {
-    if (!value && query.selected === '~settings')
-      query.selected = ''
-    else if (value)
-      query.selected = '~settings'
-  },
-})
-const isFiltersOpen = computed({
-  get() {
-    return query.selected === '~filters'
-  },
-  set(value) {
-    if (!value && query.selected === '~filters')
-      query.selected = ''
-    else if (value)
-      query.selected = '~filters'
-  },
-})
-
 const location = window.location
 
 const tabsMeta = [
@@ -66,8 +42,16 @@ function resetPanelState() {
 }
 
 function onPanelHover() {
-  if (settings.value.collapseSidepanel)
+  if (isSidepanelCollapsed.value)
     settings.value.collapseSidepanel = false
+}
+
+function toggleSetting() {
+  isSettingOpen.value = !isSettingOpen.value
+}
+
+function toggleFilters() {
+  isFiltersOpen.value = !isFiltersOpen.value
 }
 </script>
 
@@ -76,7 +60,7 @@ function onPanelHover() {
     fixed left-4 top-22 w-100 z-panel-content flex="~ gap-4 col" of-hidden
     transition-transform duration-300
     style="max-height: calc(100vh - 6.5rem);"
-    :class="settings.collapseSidepanel ? 'translate-x--99.5%' : ''"
+    :class="isSidepanelCollapsed ? 'translate-x--99.8' : ''"
     @mouseenter="onPanelHover"
   >
     <div
@@ -126,7 +110,7 @@ function onPanelHover() {
           flex="~ items-center justify-center"
           title="Filters"
           :class="isFiltersOpen ? 'text-primary' : 'op50'"
-          @click="isFiltersOpen = !isFiltersOpen"
+          @click="toggleFilters()"
         >
           <div i-ph-funnel-duotone text-xl />
         </button>
@@ -139,7 +123,7 @@ function onPanelHover() {
         flex="~ items-center justify-center"
         title="Settings"
         :class="isSettingOpen ? 'text-primary' : 'op50'"
-        @click="isSettingOpen = !isSettingOpen"
+        @click="toggleSetting()"
       >
         <div i-ph-gear-six-duotone text-xl />
       </button>
