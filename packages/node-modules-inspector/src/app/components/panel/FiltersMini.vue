@@ -63,7 +63,17 @@ const moduleTypes = Object.fromEntries(
     >
       <div i-ph-exclude-duotone />
       <div flex="~ gap-1 wrap">
-        <DisplayClusterBadge v-for="cluster of filters.state.clusters" :key="cluster" :cluster="cluster" />
+        <DisplayClusterBadge
+          v-for="cluster of filters.state.clusters?.slice(0, 3)"
+          :key="cluster"
+          :cluster="cluster"
+        />
+        <DisplayNumberBadge
+          v-if="filters.state.clusters?.length && filters.state.clusters.length > 3"
+          :number="filters.state.clusters.length - 3"
+          suffix="+"
+          rounded-full text-xs
+        />
       </div>
     </div>
     <div v-if="!isDeepEqual(filters.state.depths, filtersDefault.depths)" border="l base" flex="~ gap-1 items-center" px2>

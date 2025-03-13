@@ -47,6 +47,10 @@ function createClusterRef(name: string) {
   })
 }
 
+function selectOnly(cluster: string) {
+  filters.state.clusters = [cluster]
+}
+
 const clusters = Object.fromEntries(
   clustersAvailableSelect.value.map(x => [x, createClusterRef(x)] as const),
 ) as Record<string, WritableComputedRef<boolean>>
@@ -82,7 +86,8 @@ const clusters = Object.fromEntries(
       <label
         v-for="type of clustersAvailableSelect"
         :key="type"
-        flex="~ gap-1 items-center"
+        flex="~ gap-1 items-center" select-none
+        @dblclick.prevent="selectOnly(type)"
       >
         <OptionCheckbox
           v-model="clusters[type].value"

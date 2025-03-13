@@ -131,8 +131,12 @@ function calculateGraph() {
   for (const link of _links) {
     linksMap.set(link.id, link)
   }
+
+  // Add additional links from root packages
   for (const pkg of rootPackages) {
     for (const dep of payload.dependencies(pkg)) {
+      if (rootPackages.includes(dep))
+        continue
       const id = `${pkg.spec}|${dep.spec}`
       if (!linksMap.has(id)) {
         const source = nodesMap.get(pkg.spec)!
@@ -143,6 +147,7 @@ function calculateGraph() {
       }
     }
   }
+
   links.value = _links
 
   nextTick(() => {

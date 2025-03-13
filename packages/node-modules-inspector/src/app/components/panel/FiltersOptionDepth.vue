@@ -35,6 +35,10 @@ function createDepthRef(value: number) {
   })
 }
 
+function selectOnly(depth: number) {
+  filters.state.depths = [depth]
+}
+
 const depthsRefs = computed(() => availableDepths.value.map(i => createDepthRef(i)))
 const depthsRefsAll = computed({
   get() {
@@ -79,7 +83,8 @@ const depthGridRows = computed(() => Math.ceil(availableDepths.value.length / 3)
       <label
         v-for="depth of availableDepths"
         :key="depth"
-        flex="~ gap-1 items-center"
+        flex="~ gap-1 items-center" select-none
+        @dblclick.prevent="selectOnly(depth)"
       >
         <OptionCheckbox
           v-model="depthsRefs[depth].value"

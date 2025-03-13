@@ -7,6 +7,7 @@ const props = withDefaults(
     color?: string
     icon?: string
     prefix?: string
+    suffix?: string
     format?: 'locale' | 'percent'
   }>(),
   {
@@ -30,7 +31,7 @@ const formatted = computed(() => {
 <template>
   <div :class="color" class="px-0.4em py-0.2em font-mono line-height-none flex items-center">
     <div v-if="icon" :class="icon" class="mr-1" />
-    {{ prefix || '' }}{{ formatted }}
+    {{ prefix || '' }}{{ formatted }}{{ suffix || '' }}
     <slot name="after" />
   </div>
 </template>
