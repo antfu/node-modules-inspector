@@ -144,6 +144,14 @@ describe('listPnpmPackageDependencies', () => {
             "version": "4.4.0",
           },
         },
+        "shallowestDependent": Set {
+          "rollup-plugin-esbuild@6.2.1",
+          "vitest@3.0.8",
+          "eslint@9.22.0",
+          "vite-plugin-inspect@11.0.0",
+          "lint-staged@15.5.0",
+          "nuxt-mcp@0.0.1",
+        },
         "spec": "debug@4.4.0",
         "version": "4.4.0",
       }

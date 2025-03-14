@@ -39,6 +39,8 @@ export interface PackageNodeBase extends PackageNodeRaw {
   dependents: Set<string>
   /** The lowest depth of this package */
   depth: number
+  /** The shallowest dependent of this package */
+  shallowestDependent: Set<string> | undefined
   /** All nested dependencies of this package */
   flatDependencies: Set<string>
   /** All nested  dependents of this package */

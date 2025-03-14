@@ -69,8 +69,14 @@ function populateRawResult(input: ListPackageDependenciesRawResult): ListPackage
             depNode.flatClusters.add(cluster)
           }
         }
-        if (depNode.depth > level)
+        if (depNode.depth > level) {
           depNode.depth = level
+          depNode.shallowestDependent?.clear()
+        }
+        if (depNode.depth === level) {
+          depNode.shallowestDependent ||= new Set()
+          depNode.shallowestDependent.add(node.spec)
+        }
 
         if (seen.has(depNode))
           continue

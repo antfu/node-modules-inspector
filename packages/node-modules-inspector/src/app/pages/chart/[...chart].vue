@@ -3,14 +3,15 @@ import type { GraphBase, GraphBaseOptions } from 'nanovis'
 import type { PackageNode } from 'node-modules-tools'
 import type { ChartNode } from '../../types/chart'
 import { useRoute } from '#app/composables/router'
-import { selectedNode } from '@/state/current'
-import { isSidepanelCollapsed } from '@/state/ui'
+import { partition } from '@antfu/utils'
 import { useMouse } from '@vueuse/core'
 import { createColorGetterSpectrum, createFlamegraph, createSunburst, createTreemap } from 'nanovis'
 import { computed, nextTick, onUnmounted, reactive, shallowRef, useTemplateRef, watch } from 'vue'
 import { isDark } from '../../composables/dark'
+import { selectedNode } from '../../state/current'
 import { payloads } from '../../state/payload'
 import { settings } from '../../state/settings'
+import { isSidepanelCollapsed } from '../../state/ui'
 import { bytesToHumanSize } from '../../utils/format'
 import { getModuleType } from '../../utils/module-type'
 
@@ -44,7 +45,10 @@ const root = computed(() => {
     root.children.sort((a, b) => b.size - a.size || a.id.localeCompare(b.id))
   })
 
-  function pkgToNode(pkg: PackageNode, parent: ChartNode | undefined, depth: number): ChartNode {
+  function pkgToNode(pkg: PackageNode, parent: ChartNode | undefined, depth: number): ChartNode | undefined {
+    if (map.has(pkg))
+      return undefined
+
     if (depth > maxDepth)
       maxDepth = depth
 
@@ -60,10 +64,27 @@ const root = computed(() => {
     const validChildren = payloads.filtered.dependencies(pkg)
       .filter(i => !map.has(i))
 
+    const [
+      shallowest,
+      others,
+    ] = partition(validChildren, i => i.shallowestDependent?.has(pkg.spec))
+
+    // Shallowest dependencies goes first
+    tasks.unshift(() => {
+      node.children.push(
+        ...shallowest
+          .map(pkg => pkgToNode(pkg, node, depth + 1))
+          .filter(x => !!x),
+      )
+    })
+
+    // Other dependencies goes last
     tasks.push(() => {
-      node.children = validChildren
-        .filter(i => !map.has(i))
-        .map(pkg => pkgToNode(pkg, node, depth + 1))
+      node.children.push(
+        ...others
+          .map(pkg => pkgToNode(pkg, node, depth + 1))
+          .filter(x => !!x),
+      )
     })
 
     macrosTasks.unshift(() => {
@@ -93,6 +114,7 @@ const root = computed(() => {
   root.children = packages
     .filter(i => i.depth === rootDepth)
     .map(pkg => pkgToNode(pkg, root, 1))
+    .filter(x => !!x)
 
   function runTasks() {
     const clone = [...tasks]
