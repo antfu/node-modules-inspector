@@ -3,9 +3,8 @@ import type { GraphBaseOptions } from 'nanovis'
 import type { PackageNode } from 'node-modules-tools'
 import type { ChartNode } from '../../types/chart'
 import { colorToCssBackground } from 'nanovis'
-import { computed } from 'vue'
 
-const props = defineProps<{
+defineProps<{
   selected?: ChartNode
   options: GraphBaseOptions<PackageNode | undefined>
 }>()
@@ -13,32 +12,16 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'select', node: ChartNode | null): void
 }>()
-
-const parentStack = computed(() => {
-  const stack: ChartNode[] = []
-  let current = props.selected
-  while (current) {
-    stack.unshift(current)
-    current = current.parent
-  }
-  return stack
-})
 </script>
 
 <template>
   <div flex="~ col gap-4">
-    <div flex="~ gap-2 items-center wrap" border="b base" py2>
-      <template v-for="node, idx of parentStack" :key="node.id">
-        <div v-if="idx > 0" i-ph-arrow-right-bold text-sm op50 />
-        <button
-          hover="bg-active" rounded px2
-          @click="emit('select', node)"
-        >
-          <DisplayPackageSpec v-if="node.meta" :pkg="node.meta" />
-          <span v-else>{{ node.id }}</span>
-        </button>
-      </template>
-    </div>
+    <ChartNavBreadcrumb
+      border="b base" py2
+      :selected="selected"
+      :options="options"
+      @select="emit('select', $event)"
+    />
     <div v-if="selected" grid="~ cols-[250px_1fr] gap-1">
       <template v-for="child of selected.children" :key="child.id">
         <button

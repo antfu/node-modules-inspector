@@ -6,7 +6,7 @@ import { useRoute } from '#app/composables/router'
 import { partition } from '@antfu/utils'
 import { useMouse } from '@vueuse/core'
 import { createColorGetterSpectrum, createFlamegraph, createSunburst, createTreemap } from 'nanovis'
-import { computed, nextTick, onUnmounted, reactive, shallowRef, useTemplateRef, watch } from 'vue'
+import { computed, nextTick, onUnmounted, reactive, shallowRef, watch } from 'vue'
 import { isDark } from '../../composables/dark'
 import { selectedNode } from '../../state/current'
 import { payloads } from '../../state/payload'
@@ -29,8 +29,8 @@ const root = computed(() => {
   let maxDepth = 0
 
   const root: ChartNode = {
-    id: 'root',
-    text: 'Root',
+    id: '~root',
+    text: 'Project',
     size: 0,
     children: [],
   }
@@ -134,7 +134,6 @@ const root = computed(() => {
   }
 })
 
-const el = useTemplateRef('el')
 let dispose: () => void | undefined
 
 const options = computed<GraphBaseOptions<PackageNode | undefined>>(() => {
@@ -156,6 +155,7 @@ const options = computed<GraphBaseOptions<PackageNode | undefined>>(() => {
       nodeSelected.value = node || undefined
       selectedNode.value = node?.meta
     },
+    animate: settings.value.chartAnimation,
     palette: {
       stroke: isDark.value ? '#222' : '#555',
       fg: isDark.value ? '#fff' : '#000',
@@ -196,37 +196,45 @@ const options = computed<GraphBaseOptions<PackageNode | undefined>>(() => {
   }
 })
 
-let graph: GraphBase<PackageNode | undefined> | undefined
+const graph = shallowRef<GraphBase<PackageNode | undefined> | undefined>(undefined)
 
-function selectNode(node: ChartNode | null, animate = true) {
+function selectNode(node: ChartNode | null, animate?: boolean) {
   selectedNode.value = node?.meta
   if (!node?.children.length)
     node = node?.parent || null
-  graph?.select(node, animate)
+  graph.value?.select(node, animate)
 }
 
 watch(
-  () => [el.value, chart.value, root.value, options.value],
+  () => [chart.value, root.value, options.value],
   () => {
     dispose?.()
-    if (!el.value)
-      return
 
-    const createGraph = chart.value === 'sunburst'
-      ? createSunburst
-      : chart.value === 'frame'
-        ? createFlamegraph
-        : createTreemap
     nodeSelected.value = root.value.root
-    graph = createGraph(root.value, options.value)
-    el.value!.append(graph.el)
+    switch (chart.value) {
+      case 'sunburst':
+        graph.value = createSunburst(root.value, options.value)
+        break
+      case 'frame':
+        graph.value = createFlamegraph(root.value, options.value)
+        break
+      default:
+        graph.value = createTreemap(root.value, {
+          ...options.value,
+          selectedPaddingRatio: 0,
+        })
+    }
 
     nextTick(() => {
       const selected = selectedNode.value ? root.value.map.get(selectedNode.value) || null : null
-      selectNode(selected, false)
+      if (selected)
+        selectNode(selected, false)
     })
 
-    dispose = () => graph?.dispose()
+    dispose = () => {
+      graph.value?.dispose()
+      graph.value = undefined
+    }
   },
   {
     deep: true,
@@ -237,7 +245,7 @@ watch(
 watch(
   () => settings.value.chartColoringMode,
   () => {
-    graph?.draw()
+    graph.value?.draw()
   },
 )
 
@@ -246,8 +254,8 @@ watch(
   () => {
     const start = Date.now()
     const run = () => {
-      graph?.resize()
-      if (graph && Date.now() - start < 3000)
+      graph.value?.resize()
+      if (graph.value && Date.now() - start < 3000)
         requestAnimationFrame(run)
     }
     requestAnimationFrame(run)
@@ -256,8 +264,6 @@ watch(
     immediate: true,
   },
 )
-
-const containerClass = computed(() => chart.value === 'sunburst' ? 'grid grid-cols-[500px_1fr]' : '')
 
 onUnmounted(() => {
   dispose?.()
@@ -287,11 +293,22 @@ onUnmounted(() => {
       :titles="['Spectrum', 'Module']"
     />
   </div>
-  <div :class="containerClass" mt5>
-    <div ref="el" />
-    <ChartSunburstSide
-      v-if="chart === 'sunburst'"
-      :options="options"
+  <div mt5>
+    <ChartFramegraph
+      v-if="chart === 'frame' && graph"
+      :graph="graph"
+      :selected="nodeSelected"
+      @select="x => selectNode(x)"
+    />
+    <ChartTreemap
+      v-if="chart === 'treemap' && graph"
+      :graph="graph"
+      :selected="nodeSelected"
+      @select="x => selectNode(x)"
+    />
+    <ChartSunburst
+      v-if="chart === 'sunburst' && graph"
+      :graph="graph"
       :selected="nodeSelected"
       @select="x => selectNode(x)"
     />

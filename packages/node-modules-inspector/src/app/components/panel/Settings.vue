@@ -31,6 +31,9 @@ const backend = getBackend()
       <OptionItem title="Colorize size badge" description="Colorize package size badge">
         <OptionCheckbox v-model="settings.colorizePackageSize" />
       </OptionItem>
+      <OptionItem title="Animate chart" description="Animate chart">
+        <OptionCheckbox v-model="settings.chartAnimation" />
+      </OptionItem>
       <OptionItem title="Dependency source badge" description="Show a badge of the source type">
         <OptionSelectGroup
           v-model="settings.showDependencySourceBadge"

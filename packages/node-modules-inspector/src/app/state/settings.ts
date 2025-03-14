@@ -18,6 +18,7 @@ export const settings = useLocalStorage<SettingsOptions>(
     treatFauxAsESM: false,
     chartColoringMode: 'spectrum',
     collapseSidepanel: false,
+    chartAnimation: true,
   },
   {
     deep: true,
