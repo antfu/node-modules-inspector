@@ -21,7 +21,7 @@ const chart = computed<'frame' | 'treemap' | 'sunburst'>(() => params.chart[0] a
 const nodeHover = shallowRef<ChartNode | undefined>(undefined)
 const nodeSelected = shallowRef<ChartNode | undefined>(undefined)
 
-const root = computed(() => {
+const tree = computed(() => {
   const packages = payloads.filtered.packages
   const rootDepth = Math.min(...packages.map(i => i.depth))
   const map = new Map<PackageNode, ChartNode>()
@@ -32,6 +32,7 @@ const root = computed(() => {
     id: '~root',
     text: 'Project',
     size: 0,
+    sizeSelf: 0,
     children: [],
   }
 
@@ -55,6 +56,7 @@ const root = computed(() => {
     const node: ChartNode = {
       id: pkg.spec,
       text: pkg.name,
+      sizeSelf: pkg.resolved.installSize?.bytes || 0,
       size: pkg.resolved.installSize?.bytes || 0,
       children: [],
       meta: pkg,
@@ -98,6 +100,7 @@ const root = computed(() => {
           id: `${node.id}-self`,
           text: '',
           size: selfSize,
+          sizeSelf: selfSize,
           subtext: bytesToHumanSize(selfSize).join(' '),
           children: [],
           meta: node.meta,
@@ -180,7 +183,7 @@ const options = computed<GraphBaseOptions<PackageNode | undefined>>(() => {
           }
         }
       : createColorGetterSpectrum(
-          root.value,
+          tree.value.root,
           isDark.value ? 0.8 : 0.9,
           isDark.value ? 1 : 1.1,
         ),
@@ -206,27 +209,27 @@ function selectNode(node: ChartNode | null, animate?: boolean) {
 }
 
 watch(
-  () => [chart.value, root.value, options.value],
+  () => [chart.value, tree.value, options.value],
   () => {
     dispose?.()
 
-    nodeSelected.value = root.value.root
+    nodeSelected.value = tree.value.root
     switch (chart.value) {
       case 'sunburst':
-        graph.value = new Sunburst(root.value, options.value)
+        graph.value = new Sunburst(tree.value.root, options.value)
         break
       case 'frame':
-        graph.value = new Flamegraph(root.value, options.value)
+        graph.value = new Flamegraph(tree.value.root, options.value)
         break
       default:
-        graph.value = new Treemap(root.value, {
+        graph.value = new Treemap(tree.value.root, {
           ...options.value,
           selectedPaddingRatio: 0,
         })
     }
 
     nextTick(() => {
-      const selected = selectedNode.value ? root.value.map.get(selectedNode.value) || null : null
+      const selected = selectedNode.value ? tree.value.map.get(selectedNode.value) || null : null
       if (selected)
         selectNode(selected, false)
     })
