@@ -5,7 +5,7 @@ import type { ChartNode } from '../../types/chart'
 import { useRoute } from '#app/composables/router'
 import { partition } from '@antfu/utils'
 import { useMouse } from '@vueuse/core'
-import { createColorGetterSpectrum, createFlamegraph, createSunburst, createTreemap } from 'nanovis'
+import { createColorGetterSpectrum, Flamegraph, Sunburst, Treemap } from 'nanovis'
 import { computed, nextTick, onUnmounted, reactive, shallowRef, watch } from 'vue'
 import { isDark } from '../../composables/dark'
 import { selectedNode } from '../../state/current'
@@ -196,7 +196,7 @@ const options = computed<GraphBaseOptions<PackageNode | undefined>>(() => {
   }
 })
 
-const graph = shallowRef<GraphBase<PackageNode | undefined> | undefined>(undefined)
+const graph = shallowRef<GraphBase<PackageNode | undefined, GraphBaseOptions<PackageNode | undefined>> | undefined>(undefined)
 
 function selectNode(node: ChartNode | null, animate?: boolean) {
   selectedNode.value = node?.meta
@@ -213,13 +213,13 @@ watch(
     nodeSelected.value = root.value.root
     switch (chart.value) {
       case 'sunburst':
-        graph.value = createSunburst(root.value, options.value)
+        graph.value = new Sunburst(root.value, options.value)
         break
       case 'frame':
-        graph.value = createFlamegraph(root.value, options.value)
+        graph.value = new Flamegraph(root.value, options.value)
         break
       default:
-        graph.value = createTreemap(root.value, {
+        graph.value = new Treemap(root.value, {
           ...options.value,
           selectedPaddingRatio: 0,
         })
