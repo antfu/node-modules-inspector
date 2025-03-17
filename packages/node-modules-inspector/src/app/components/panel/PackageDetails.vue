@@ -113,6 +113,83 @@ function showDuplicatedGraph(pkgs: PackageNode[]) {
     router.push({ path: '/graph', hash: location.hash })
   })
 }
+
+const thirdPartyServices = computed(() => {
+  const links: {
+    name: string
+    description: string
+    url: string
+    icon?: string
+    iconClass?: string
+  }[] = []
+
+  links.push({
+    name: 'publint',
+    description: 'Lint if a package is published right',
+    url: `https://publint.dev/${props.pkg.spec}`,
+    icon: '/3rd-parties/publint.svg',
+  })
+
+  links.push({
+    name: 'arethetypeswrong',
+    description: 'Check the types of the published package',
+    url: `https://arethetypeswrong.github.io/?p=${encodeURIComponent(props.pkg.spec)}`,
+    icon: '/3rd-parties/arethetypeswrong.png',
+  })
+
+  links.push({
+    name: 'pkg-size.dev',
+    description: 'Find the true size of an npm package. It also includes the bundle size of each exports.',
+    url: `https://pkg-size.dev/${props.pkg.spec}`,
+    icon: '/3rd-parties/pkg-size.svg',
+  })
+
+  links.push({
+    name: 'snyk',
+    description: 'Find vulnerabilities in your dependencies',
+    url: `https://snyk.io/advisor/npm-package/${props.pkg.name}`,
+    icon: '/3rd-parties/synk.png',
+  })
+
+  links.push({
+    name: 'packagephobia',
+    description: 'Find the size of an npm package',
+    url: `https://packagephobia.com/result?p=${encodeURIComponent(props.pkg.spec)}`,
+    icon: '/3rd-parties/packagephobia.png',
+  })
+
+  links.push({
+    name: 'socket.dev',
+    description: 'Secure your dependencies.',
+    url: `https://socket.dev/npm/package/${props.pkg.name}/overview/${props.pkg.version}`,
+    icon: '/3rd-parties/socket-dev.png',
+  })
+
+  links.push({
+    name: 'npmgraph',
+    description: 'Visualize the dependencies of an npm package',
+    url: `https://npmgraph.js.org/?q=${encodeURIComponent(props.pkg.spec)}`,
+    icon: '/3rd-parties/npmgraph.png',
+    iconClass: 'dark:invert',
+  })
+
+  links.push({
+    name: 'bundlejs',
+    description: 'a quick npm package size checker',
+    url: `https://bundlejs.com/?q=${encodeURIComponent(props.pkg.spec)}`,
+    icon: '/3rd-parties/bundlejs.svg',
+  })
+
+  links.push({
+    name: 'bundlephobia',
+    description: 'find the cost of adding a npm package to your bundle',
+    url: `https://bundlephobia.com/package/${props.pkg.spec}`,
+    icon: '/3rd-parties/bundlephobia.png',
+    iconClass: 'dark:invert',
+  })
+
+  return links
+})
 </script>
 
 <template>
@@ -212,15 +289,6 @@ function showDuplicatedGraph(pkgs: PackageNode[]) {
             v-if="resolved.fundings?.length"
             :fundings="resolved.fundings"
           />
-          <NuxtLink
-            v-tooltip="'Open in Publint'"
-            :to="`https://publint.dev/${pkg.spec}`"
-            title="Open in Publint"
-            target="_blank"
-            ml--1 w-8 h-8 rounded-full hover:bg-active flex
-          >
-            <div i-catppuccin-lib icon-catppuccin ma />
-          </NuxtLink>
           <button
             v-if="backend?.functions.openInEditor"
             v-tooltip="'Open Package Folder in Editor'"
@@ -345,6 +413,42 @@ function showDuplicatedGraph(pkgs: PackageNode[]) {
           File Composition
         </div>
         <UiPercentageFileCategories :pkg="pkg" />
+      </div>
+    </div>
+
+    <div v-if="thirdPartyServices.length" flex="~ col gap-2" p4 border="t base">
+      <div
+        flex="~ gap-3 wrap items-center"
+        @click="settings.showThirdPartyServices = !settings.showThirdPartyServices"
+      >
+        <div v-if="sizeInstall" flex="~ items-center gap-1">
+          <div text-sm op50>
+            Learn more in other tools
+          </div>
+        </div>
+        <div flex-auto />
+        <button
+          v-tooltip="'Toggle third party services'"
+          p1 rounded-full hover:bg-active mr--2
+          title="Toggle third party services"
+        >
+          <div i-ph-caret-down transition duration-300 :class="settings.showFileComposition ? 'op75' : 'rotate-90 op25'" />
+        </button>
+      </div>
+      <div v-if="settings.showThirdPartyServices" flex="~ gap-2 wrap">
+        <a
+          v-for="service of thirdPartyServices" :key="service.name"
+          :href="service.url"
+          target="_blank"
+          flex="~ items-center gap-1"
+          bg-active rounded-full px2
+          op75 hover:op100
+        >
+          <img v-if="service.icon" :src="service.icon" w-4 h-4 rounded-sm :class="service.iconClass">
+          <div v-tooltip="service.description" op75>
+            {{ service.name }}
+          </div>
+        </a>
       </div>
     </div>
 
