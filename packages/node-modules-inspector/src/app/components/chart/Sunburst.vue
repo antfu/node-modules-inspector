@@ -18,8 +18,8 @@ watchEffect(() => el.value?.append(props.graph.el))
 </script>
 
 <template>
-  <div grid="~ cols-[500px_1fr]">
-    <div ref="el" />
+  <div grid="~ cols-[max-content_1fr]">
+    <div ref="el" w-500px />
     <ChartSunburstSide
       :options="graph.options"
       :selected="selected"
