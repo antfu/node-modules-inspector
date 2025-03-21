@@ -385,7 +385,10 @@ const thirdPartyServices = computed(() => {
     </div>
 
     <div v-if="pkg.resolved.installSize" p4 border="t base" flex="~ col gap-1">
-      <div flex="~ gap-3 wrap items-center">
+      <div
+        flex="~ gap-3 wrap items-center" select-none
+        @click="settings.showFileComposition = !settings.showFileComposition"
+      >
         <div v-if="sizeInstall" flex="~ items-center gap-1">
           <div text-sm op50>
             Install
@@ -403,7 +406,6 @@ const thirdPartyServices = computed(() => {
           v-tooltip="'Toggle file composition'"
           p1 rounded-full hover:bg-active mr--2
           title="Toggle file composition"
-          @click="settings.showFileComposition = !settings.showFileComposition"
         >
           <div i-ph-caret-down transition duration-300 :class="settings.showFileComposition ? 'op75' : 'rotate-90 op25'" />
         </button>
@@ -418,7 +420,7 @@ const thirdPartyServices = computed(() => {
 
     <div v-if="thirdPartyServices.length" flex="~ col gap-2" p4 border="t base">
       <div
-        flex="~ gap-3 wrap items-center"
+        flex="~ gap-3 wrap items-center" select-none
         @click="settings.showThirdPartyServices = !settings.showThirdPartyServices"
       >
         <div v-if="sizeInstall" flex="~ items-center gap-1">
@@ -432,7 +434,7 @@ const thirdPartyServices = computed(() => {
           p1 rounded-full hover:bg-active mr--2
           title="Toggle third party services"
         >
-          <div i-ph-caret-down transition duration-300 :class="settings.showFileComposition ? 'op75' : 'rotate-90 op25'" />
+          <div i-ph-caret-down transition duration-300 :class="settings.showThirdPartyServices ? 'op75' : 'rotate-90 op25'" />
         </button>
       </div>
       <div v-if="settings.showThirdPartyServices" flex="~ gap-2 wrap">

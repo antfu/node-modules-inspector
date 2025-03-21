@@ -2,7 +2,7 @@
   "type": "module",
   "version": "0.5.6",
   "private": true,
-  "packageManager": "pnpm@10.6.3",
+  "packageManager": "pnpm@10.6.5",
   "scripts": {
     "build": "pnpm -r run build",
     "build:debug": "NUXT_DEBUG_BUILD=true pnpm -r run build",
