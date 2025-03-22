@@ -6,13 +6,15 @@ export default defineNuxtModule({
   meta: {
     name: 'webcontainer-setup',
   },
-  setup() {
-    addTemplate({
-      filename: 'webcontainer-server-code',
-      getContents: async () => {
-        const content = await fs.readFile(fileURLToPath(new URL('../../../runtime/webcontainer-server.mjs', import.meta.url)), 'utf-8')
-        return `export const WEBCONTAINER_SERVER_CODE = ${JSON.stringify(content)}`
-      },
-    })
+  setup(_, nuxt) {
+    if (!nuxt.options._prepare) {
+      addTemplate({
+        filename: 'webcontainer-server-code',
+        getContents: async () => {
+          const content = await fs.readFile(fileURLToPath(new URL('../../../runtime/webcontainer-server.mjs', import.meta.url)), 'utf-8')
+          return `export const WEBCONTAINER_SERVER_CODE = ${JSON.stringify(content)}`
+        },
+      })
+    }
   },
 })
