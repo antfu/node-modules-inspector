@@ -12,8 +12,15 @@ import {
 } from 'unocss'
 
 export default defineConfig({
+  // rules: [
+  //   [/^badge-color-(\w+)$/, ([, name]) => {
+  //     return `badge-${name} > [op50] { color: color-mix(in srgb, ${theme['--c-primary']}, black 25%); }`
+  //   }],
+  // ],
   shortcuts: [
     {
+      // wcag-colors:
+      'op50': 'op65 dark:op60',
       'color-base': 'color-neutral-800 dark:color-neutral-300',
       'bg-base': 'bg-white dark:bg-#111',
       'bg-secondary': 'bg-#eee dark:bg-#222',
@@ -55,7 +62,7 @@ export default defineConfig({
       'page-padding': 'pt-24 pl-112 pr-8 pb-8',
       'page-padding-collapsed': 'pt-24 pl-14 pr-8 pb-8',
     },
-    [/^badge-color-(\w+)$/, ([, color]) => `bg-${color}-400:20 dark:bg-${color}-400:10 text-${color}-700 dark:text-${color}-300 border-${color}-600:10 dark:border-${color}-300:10`],
+    [/^badge-color-(\w+)$/, ([, color]) => `bg-${color}-400:10 dark:bg-${color}-400:10 text-${color}-700 dark:text-${color}-300 border-${color}-600:10 dark:border-${color}-300:10`],
     [/^bg-glass(:\d+)?$/, ([, opacity = ':75']) => `bg-white${opacity} dark:bg-#111${opacity} backdrop-blur-5`],
   ],
   theme: {
