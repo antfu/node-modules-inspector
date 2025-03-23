@@ -6,6 +6,7 @@ import YAML from 'js-yaml'
 import { dirname, join, relative } from 'pathe'
 import { x } from 'tinyexec'
 import { CLUSTER_DEP_DEV, CLUSTER_DEP_PROD } from '../../constants'
+import { JsonParseStreamError } from '../../json-parse-stream'
 
 type PnpmPackageNode = Pick<ProjectManifest, 'description' | 'license' | 'author' | 'homepage'> & {
   alias: string | undefined
@@ -87,7 +88,18 @@ async function getDependenciesTree(options: ListPackageDependenciesOptions): Pro
   })
 
   const json = await import('../../json-parse-stream')
-    .then(r => r.parseJsonStreamWithConcatArrays<PnpmDependencyHierarchy>(process.process!.stdout!))
+    .then(r => r.parseJsonStreamWithConcatArrays<PnpmDependencyHierarchy>(process.process!.stdout!, 'pnpm ls'))
+    .catch((err) => {
+      if (err instanceof JsonParseStreamError) {
+        try {
+          if (err.data.error?.message === 'Invalid string length') {
+            console.error(`pnpm ls output is too large to parse, please try using the --depth=${String(Math.ceil(options.depth / 3 * 2))} option to limit the depth of the dependency tree`)
+          }
+        }
+        catch {}
+      }
+      throw err
+    })
 
   if (!Array.isArray(json))
     throw new Error(`Failed to parse \`pnpm ls\` output, expected an array but got: ${String(json)}`)

@@ -62,7 +62,7 @@ async function queryDependencies(options: ListPackageDependenciesOptions, query:
   })
 
   const json = await import('../../json-parse-stream')
-    .then(r => r.parseJsonStreamWithConcatArrays<NpmPackageNode>(process.process!.stdout!))
+    .then(r => r.parseJsonStreamWithConcatArrays<NpmPackageNode>(process.process!.stdout!, 'npm query'))
 
   if (!Array.isArray(json))
     throw new Error(`Failed to parse \`npm query\` output, expected an array but got: ${String(json)}`)
