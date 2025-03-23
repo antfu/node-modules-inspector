@@ -122,7 +122,7 @@ export function createServerFunctions(options: CreateServerFunctionsOptions): Se
     console.log(c.cyan`${MARK_NODE} Reading node_modules...`)
     const result = await listPackageDependencies({
       cwd: process.cwd(),
-      depth: 25,
+      depth: 8,
       monorepo: true,
       ...options,
       traverseFilter(node) {
