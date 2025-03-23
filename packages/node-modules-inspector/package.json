@@ -25,7 +25,7 @@
     "dist"
   ],
   "scripts": {
-    "dev": "pnpm run -r stub && cd src && nuxi dev",
+    "dev": "pnpm run -r stub && nuxi dev src",
     "stub": "unbuild --stub",
     "build": "pnpm run wc:prepare && nuxi build src && unbuild",
     "build:debug": "NUXT_DEBUG_BUILD=true pnpm run build",
