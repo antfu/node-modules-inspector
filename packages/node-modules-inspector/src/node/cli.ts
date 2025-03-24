@@ -20,7 +20,8 @@ const cli = cac('node-modules-inspector')
 cli
   .command('build', 'Build inspector with current config file for static hosting')
   .option('--root <root>', 'Root directory', { default: process.cwd() })
-  .option('--depth <depth>', 'Max depth to list dependencies', { default: 25 })
+  .option('--config <config>', 'Config file')
+  .option('--depth <depth>', 'Max depth to list dependencies', { default: 8 })
   // Build specific options
   .option('--base <baseURL>', 'Base URL for deployment', { default: '/' })
   .option('--outDir <dir>', 'Output directory', { default: '.node-modules-inspector' })
@@ -37,6 +38,7 @@ cli
       storageNpmMeta,
       storageNpmMetaLatest,
       storagePublint,
+      configFile: options.config,
       mode: 'build',
     }))
     const rpcDump: ServerFunctionsDump = {
@@ -77,7 +79,8 @@ cli
 cli
   .command('', 'Start dev inspector')
   .option('--root <root>', 'Root directory', { default: process.cwd() })
-  .option('--depth <depth>', 'Max depth to list dependencies', { default: 25 })
+  .option('--config <config>', 'Config file')
+  .option('--depth <depth>', 'Max depth to list dependencies', { default: 8 })
   // Dev specific options
   .option('--host <host>', 'Host', { default: process.env.HOST || '127.0.0.1' })
   .option('--port <port>', 'Port', { default: process.env.PORT || 9999 })
@@ -95,6 +98,7 @@ cli
       storageNpmMeta,
       storageNpmMetaLatest,
       storagePublint,
+      configFile: options.config,
       mode: 'dev',
     })
 

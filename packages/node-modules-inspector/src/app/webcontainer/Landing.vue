@@ -64,6 +64,15 @@ async function run() {
           This will run a pnpm install inside your browser with <a href="https://webcontainers.io/" target="_blank" hover:underline>WebContainer</a>.
         </div>
 
+        <div v-if="error" h-20 text-red rounded p2 flex="~ col items-center">
+          <div font-bold>
+            Failed to Connect to the Backend
+          </div>
+          <div text-red5 dark:text-red3>
+            {{ error }}
+          </div>
+        </div>
+
         <div p2 mt3 text-center flex="~ col gap-2">
           <div>
             <span op35>Or run in your local project with</span> <a href="https://github.com/antfu/node-modules-inspector" target="_blank"><code badge-color-gray important-bg-gray:3 font-mono px2 py1 rounded>pnpx <span text-primary:90>node-modules-inspector</span></code></a>
@@ -74,15 +83,6 @@ async function run() {
         </div>
         <div absolute left-0 right-0 bottom-0 flex="~ col items-center gap-2" p4>
           <UiCredits />
-        </div>
-
-        <div v-if="error" h-20 text-red rounded p2 flex="~ col items-center">
-          <div font-bold>
-            Failed to Connect to the Backend
-          </div>
-          <div text-red5 dark:text-red3>
-            {{ error }}
-          </div>
         </div>
       </div>
     </div>

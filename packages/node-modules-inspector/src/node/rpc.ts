@@ -20,6 +20,7 @@ export interface CreateServerFunctionsOptions extends
   ListPackagesNpmMetaLatestOptions {
   mode: 'dev' | 'build'
   storagePublint?: Storage<PublintMessage[]>
+  configFile?: string
 }
 
 export function createServerFunctions(options: CreateServerFunctionsOptions): ServerFunctions {
@@ -39,7 +40,7 @@ export function createServerFunctions(options: CreateServerFunctionsOptions): Se
       cwd: options.cwd,
       sources: [
         {
-          files: 'node-modules-inspector.config',
+          files: options.configFile || 'node-modules-inspector.config',
         },
       ],
       defaults: {
@@ -121,7 +122,7 @@ export function createServerFunctions(options: CreateServerFunctionsOptions): Se
     console.log(c.cyan`${MARK_NODE} Reading node_modules...`)
     const result = await listPackageDependencies({
       cwd: process.cwd(),
-      depth: 25,
+      depth: 8,
       monorepo: true,
       ...options,
       traverseFilter(node) {
