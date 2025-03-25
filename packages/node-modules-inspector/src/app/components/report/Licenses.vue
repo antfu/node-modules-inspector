@@ -11,6 +11,7 @@ const PERMISSIVE_LICENSES = [
   'BSD-2-Clause',
   'BSD-3-Clause',
   'CC0-1.0',
+  '0BSD',
 ]
 
 const selected = ref<string[]>([])
