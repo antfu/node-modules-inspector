@@ -25,6 +25,7 @@ export const PACKAGE_JSON_KEYS = [
   'imports',
   'keywords',
   'license',
+  'licenses',
   'main',
   'module',
   'name',
