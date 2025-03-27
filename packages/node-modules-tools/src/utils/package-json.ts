@@ -66,21 +66,19 @@ export function normalizePkgLicense(json: PackageJson): ParsedLicense | undefine
     type: string
     url?: string
   }
-  const _json = json as (PackageJson | { license?: LegacyLicense | LegacyLicense[] })
+
+  const _json = json as (PackageJson | { license?: LegacyLicense, licenses?: LegacyLicense[] })
   switch (typeof _json.license) {
     case 'string':
       return _json.license
     case 'object':
-      if (!Array.isArray(_json.license)) {
-        return _json.license.type
-      }
-      if (!_json.license.length)
-        return
-      if (_json.license.length === 1) {
-        return _json.license[0].type
-      }
-      return `(${_json.license.map(l => l.type).join(' OR ')})`
-    default:
+      return _json.license.type
+  }
+
+  if (Array.isArray(_json.licenses)) {
+    if (!_json.licenses.length)
+      return
+    return `(${_json.licenses.map(l => l.type).join(' OR ')})`
   }
 }
 

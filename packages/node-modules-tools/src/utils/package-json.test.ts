@@ -8,9 +8,9 @@ describe('normalize', () => {
       expect(normalizePkgLicense({ license: { type: 'MIT', url: 'dontcare' } } as unknown as PackageJson)).toMatchInlineSnapshot(`"MIT"`)
     })
     it('should parse legacy array format', () => {
-      expect(normalizePkgLicense({ license: [] } as unknown as PackageJson)).toMatchInlineSnapshot(`undefined`)
-      expect(normalizePkgLicense({ license: [{ type: 'MIT', url: 'dontcare' }] } as unknown as PackageJson)).toMatchInlineSnapshot(`"MIT"`)
-      expect(normalizePkgLicense({ license: [{ type: 'MIT', url: 'dontcare' }, { type: 'ISC', url: 'dontcare' }] } as unknown as PackageJson)).toMatchInlineSnapshot(`"(MIT OR ISC)"`)
+      expect(normalizePkgLicense({ licenses: [] } as unknown as PackageJson)).toMatchInlineSnapshot(`undefined`)
+      expect(normalizePkgLicense({ licenses: [{ type: 'MIT', url: 'dontcare' }] } as unknown as PackageJson)).toMatchInlineSnapshot(`"MIT"`)
+      expect(normalizePkgLicense({ licenses: [{ type: 'MIT', url: 'dontcare' }, { type: 'ISC', url: 'dontcare' }] } as unknown as PackageJson)).toMatchInlineSnapshot(`"(MIT OR ISC)"`)
     })
   })
 })
