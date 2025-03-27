@@ -1,5 +1,5 @@
 import type { PackageNode } from 'node-modules-tools'
-import { normalizePkgAuthors, normalizePkgFundings, normalizePkgRepository } from 'node-modules-tools/utils'
+import { normalizePkgAuthors, normalizePkgFundings, normalizePkgLicense, normalizePkgRepository } from 'node-modules-tools/utils'
 
 function weakCachedFunction<T extends WeakKey, R>(fn: (arg: T) => R): (arg: T) => R {
   const cache = new WeakMap<T, R>()
@@ -16,10 +16,11 @@ function weakCachedFunction<T extends WeakKey, R>(fn: (arg: T) => R): (arg: T) =
 export const getAuthors = weakCachedFunction((pkg: PackageNode) => normalizePkgAuthors(pkg.resolved.packageJson))
 export const getRepository = weakCachedFunction((pkg: PackageNode) => normalizePkgRepository(pkg.resolved.packageJson))
 export const getFundings = weakCachedFunction((pkg: PackageNode) => normalizePkgFundings(pkg.resolved.packageJson))
+export const getLicense = weakCachedFunction((pkg: PackageNode) => normalizePkgLicense(pkg.resolved.packageJson))
 
 export const getPackageData = weakCachedFunction((pkg: PackageNode) => {
   return {
-    license: pkg.resolved.packageJson.license,
+    license: getLicense(pkg),
     homepage: pkg.resolved.packageJson.homepage,
     engines: pkg.resolved.packageJson.engines,
     authors: getAuthors(pkg),

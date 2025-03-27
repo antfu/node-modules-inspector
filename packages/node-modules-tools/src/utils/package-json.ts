@@ -59,6 +59,31 @@ export function parseFunding(funding: NormalizedFunding): ParsedFunding {
   }
 }
 
+export type ParsedLicense = string
+
+export function normalizePkgLicense(json: PackageJson): ParsedLicense | undefined {
+  interface LegacyLicense {
+    type: string
+    url?: string
+  }
+  const _json = json as (PackageJson | { license?: LegacyLicense | LegacyLicense[] })
+  switch (typeof _json.license) {
+    case 'string':
+      return _json.license
+    case 'object':
+      if (!Array.isArray(_json.license)) {
+        return _json.license.type
+      }
+      if (!_json.license.length)
+        return
+      if (_json.license.length === 1) {
+        return _json.license[0].type
+      }
+      return `(${_json.license.map(l => l.type).join(' OR ')})`
+    default:
+  }
+}
+
 export function normalizePkgFundings(json: PackageJson): ParsedFunding[] | undefined {
   type RawFunding = string | NormalizedFunding
   const rawFunding: RawFunding | RawFunding[] | undefined = json.funding
