@@ -14,8 +14,10 @@ import {
 export default defineConfig({
   shortcuts: [
     {
-      // wcag-colors:
+      // wcag-colors
       'op50': 'op65 dark:op60',
+      'text-deprecated': 'text-op85 text-[#b71c1c] dark:text-[#f87171]',
+      // end wcag-colors
       'color-base': 'color-neutral-800 dark:color-neutral-300',
       'bg-base': 'bg-white dark:bg-#111',
       'bg-secondary': 'bg-#eee dark:bg-#222',
