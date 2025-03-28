@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
+import { getPackageData } from '@/utils/package-json'
 import { computed, ref } from 'vue'
 import { selectedNode } from '../../state/current'
 import { payloads } from '../../state/payload'
@@ -21,7 +22,7 @@ const licensesGroup = computed(() => {
   for (const pkg of payloads.filtered.packages) {
     if (pkg.workspace)
       continue
-    const key = pkg.resolved.packageJson.license || '<Unspecified>'
+    const key = getPackageData(pkg).license || '<Unspecified>'
     if (!group.has(key))
       group.set(key, [])
     group.get(key)!.push(pkg)
@@ -120,7 +121,7 @@ const filteredResult = computed(() => {
               target="_blank"
               badge-color-gray px2 rounded-full w-max text-sm h-max
             >
-              {{ pkg.resolved.packageJson.license }}
+              {{ getPackageData(pkg).license }}
             </a>
             <div w-max>
               <DisplaySourceTypeBadge :pkg mode="both" />
