@@ -51,7 +51,7 @@ const cols = computed(() => {
     <DisplayNumberBadge v-if="fundingGroup.length" :number="fundingGroup.length" rounded-full text-sm />
   </UiSubTitle>
   <div op50>
-    The following packages you use are requesting for funding. Consider supporting them to help them sustainable.
+    The following packages you use are requesting funding. Consider supporting them to help keep them sustainable.
   </div>
   <div grid="~ cols-3 gap-4" mt4>
     <div v-for="packages, idx of cols" :key="idx">
