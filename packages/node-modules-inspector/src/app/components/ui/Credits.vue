@@ -1,5 +1,5 @@
 <template>
-  <div flex="~ gap-1.1 items-center" p3 pl5 pr4 text-hex-888e>
+  <div flex="~ gap-1.1 items-center" p3 pl5 pr4 op65 dark:op100 text-color-374151 dark:text-hex-888e>
     Made with
     <a href="https://nuxt.com" target="_blank" rel="noopener" flex="~ gap-1.1 items-center">
       <div i-logos-nuxt-icon text-0.6rem mr--0.6 />
