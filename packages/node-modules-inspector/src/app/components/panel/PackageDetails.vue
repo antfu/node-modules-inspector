@@ -533,6 +533,7 @@ const thirdPartyServices = computed(() => {
             :list="payloads.avaliable.flatDependencies(pkg)"
             :max-depth="getDepth(payloads.avaliable.flatDependencies(pkg).length)"
             type="dependencies"
+            :sort-by="settings.deepDependenciesTree ? 'depth' : 'name'"
           />
         </template>
         <div v-else op25 italic text-center pb4>
