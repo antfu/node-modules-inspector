@@ -23,11 +23,11 @@ async function fetchBatch(
       try {
         const result = await getLatestVersionBatch(queue, { metadata: true })
         for (const r of result) {
-          if (r.publishedAt) {
-            onResult(r)
+          if ('error' in r || !r.publishedAt) {
+            missingSpecs.add(r.name)
           }
           else {
-            missingSpecs.add(`${r.name}@${r.version}`)
+            onResult(r)
           }
         }
       }
@@ -46,10 +46,12 @@ async function fetchBatch(
       Array.from(missingSpecs).map(spec => limit(async () => {
         try {
           const result = await getLatestVersion(spec, { metadata: true })
-          if (result.publishedAt) {
-            missingSpecs.delete(spec)
-            onResult(result)
+          if ('error' in result || !result.publishedAt) {
+            return
           }
+
+          missingSpecs.delete(spec)
+          onResult(result)
         }
         catch {}
       })),
