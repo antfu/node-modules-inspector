@@ -4,7 +4,7 @@ import { useRoute } from '#app/composables/router'
 import SafeImage from '@/components/display/SafeImage.vue'
 import { computed } from 'vue'
 import { payloads } from '../../state/payload'
-import { getAuthors, getRepository } from '../../utils/package-json'
+import { getAuthors, getPackageData, getRepository } from '../../utils/package-json'
 
 const params = useRoute().params as Record<string, string>
 const tab = computed<'depth' | 'clusters' | 'module-type' | 'authors' | 'licenses' | 'github'>(() => params.grid[0] as any || 'depth')
@@ -84,7 +84,7 @@ const groups = computed<Group[]>(() => {
   else if (tab.value === 'licenses') {
     const map = new Map<string, PackageNode[]>()
     for (const pkg of payloads.filtered.packages) {
-      const license = pkg.resolved.packageJson.license || '<Unspecified>'
+      const license = getPackageData(pkg).license || '<Unspecified>'
       if (!map.has(license))
         map.set(license, [])
       map.get(license)?.push(pkg)

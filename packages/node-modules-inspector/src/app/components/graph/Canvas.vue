@@ -375,7 +375,7 @@ onMounted(() => {
     </div>
 
     <div
-      fixed right-4 bottom-4 z-panel-nav flex="~ col gap-4 items-center"
+      fixed right-4 bottom-4 z-panel-nav flex="~ col gap-2 items-center"
     >
       <div w-10 flex="~ items-center justify-center">
         <UiTimeoutView :content="`${Math.round(scale * 100)}%`" class="text-sm" />
@@ -383,7 +383,7 @@ onMounted(() => {
 
       <div bg-glass rounded-full border border-base shadow>
         <button
-          v-tooltip="'Zoom In (Ctrl + =)'"
+          v-tooltip.left="'Zoom In (Ctrl + =)'"
           :disabled="scale >= ZOOM_MAX"
           w-10 h-10 rounded-full hover:bg-active op-fade
           hover:op100 disabled:op20 disabled:bg-none
@@ -395,7 +395,7 @@ onMounted(() => {
           <div i-ph-magnifying-glass-plus-duotone />
         </button>
         <button
-          v-tooltip="'Zoom Out (Ctrl + -)'"
+          v-tooltip.left="'Zoom Out (Ctrl + -)'"
           :disabled="scale <= ZOOM_MIN"
           w-10 h-10 rounded-full hover:bg-active op-fade hover:op100
           disabled:op20 disabled:bg-none disabled:cursor-not-allowed
@@ -409,7 +409,7 @@ onMounted(() => {
 
       <div bg-glass rounded-full border border-base shadow>
         <button
-          v-tooltip="'Toggle Graph Render Mode'"
+          v-tooltip.left="'Toggle Graph Render Mode'"
           w-10 h-10 rounded-full hover:bg-active op-fade hover:op100
           flex="~ items-center justify-center"
           title="Toggle Graph Render Mode"
@@ -422,7 +422,7 @@ onMounted(() => {
 
       <div bg-glass rounded-full border border-base shadow>
         <button
-          v-tooltip="'Download Screenshot as PNG'"
+          v-tooltip.left="'Download Screenshot as PNG'"
           w-10 h-10 rounded-full hover:bg-active op-fade hover:op100
           flex="~ items-center justify-center"
           title="Download Screenshot as PNG"

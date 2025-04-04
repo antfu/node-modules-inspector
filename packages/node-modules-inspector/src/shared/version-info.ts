@@ -22,14 +22,15 @@ async function fetchBatch(
     promises.push(limit(async () => {
       try {
         const result = await getLatestVersionBatch(queue, { metadata: true })
-        for (const r of result) {
-          if (r.publishedAt) {
+        result.forEach((r, idx) => {
+          if ('publishedAt' in r && r.publishedAt) {
             onResult(r)
           }
           else {
-            missingSpecs.add(`${r.name}@${r.version}`)
+            console.warn('Failed to get publishedAt for:', r)
+            missingSpecs.add(queue[idx])
           }
-        }
+        })
       }
       catch {
         for (const spec of queue)
@@ -46,7 +47,7 @@ async function fetchBatch(
       Array.from(missingSpecs).map(spec => limit(async () => {
         try {
           const result = await getLatestVersion(spec, { metadata: true })
-          if (result.publishedAt) {
+          if ('publishedAt' in result && result.publishedAt) {
             missingSpecs.delete(spec)
             onResult(result)
           }

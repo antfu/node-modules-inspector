@@ -33,6 +33,7 @@ const fuse = computed(() => new Fuse(props.payload.packages, {
     'resolved.packageJson.funding',
     'resolved.packageJson.fundings',
     'resolved.packageJson.license',
+    'resolved.packageJson.license.type',
   ],
 }))
 
