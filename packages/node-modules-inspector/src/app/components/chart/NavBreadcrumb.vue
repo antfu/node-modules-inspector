@@ -27,7 +27,7 @@ const parentStack = computed(() => {
 <template>
   <div flex="~ gap-1 items-center wrap">
     <template v-for="node, idx of parentStack" :key="node.id">
-      <div v-if="idx > 0" i-ph-arrow-right-bold text-sm op50 />
+      <div v-if="idx > 0" i-ph-arrow-right-bold text-sm op-fade />
       <button
         hover="bg-active" rounded px1
         @click="emit('select', node)"

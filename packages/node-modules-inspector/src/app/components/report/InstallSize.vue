@@ -19,10 +19,10 @@ const sorted = computed(() =>
     <template #default="{ items }">
       <div grid="~ cols-[max-content_max-content_1fr] gap-x-4 gap-y-1">
         <div />
-        <div text-sm op50 text-center>
+        <div text-sm op-fade text-center>
           Install Size
         </div>
-        <div text-sm op50 text-right>
+        <div text-sm op-fade text-right>
           Files Composition
         </div>
 

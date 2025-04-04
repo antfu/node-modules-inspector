@@ -44,7 +44,7 @@ const outdatedPackages = computed(() =>
       <template #default="{ items }">
         <div grid="~ cols-[1fr_max-content] gap-x-4 gap-y-1">
           <div />
-          <div text-sm op50 text-right>
+          <div text-sm op-fade text-right>
             Publish Time
           </div>
 
@@ -73,19 +73,19 @@ const outdatedPackages = computed(() =>
       <template #default="{ items }">
         <div grid="~ cols-[max-content_1fr_1fr_1fr_1fr_max-content] gap-x-4 gap-y-1">
           <div />
-          <div text-sm op50 text-right>
+          <div text-sm op-fade text-right>
             Current
           </div>
-          <div text-sm op50>
+          <div text-sm op-fade>
             Published
           </div>
-          <div text-sm op50 text-right>
+          <div text-sm op-fade text-right>
             Latest
           </div>
-          <div text-sm op50>
+          <div text-sm op-fade>
             Lastest Publish
           </div>
-          <div text-sm op50>
+          <div text-sm op-fade>
             In Between
           </div>
 

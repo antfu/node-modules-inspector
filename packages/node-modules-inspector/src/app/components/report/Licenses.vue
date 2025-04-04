@@ -104,14 +104,14 @@ const filteredResult = computed(() => {
         </div>
       </div>
       <div border="l base" pl4>
-        <div v-if="!filteredResult.length" text-center py10 px5 op50 italic>
+        <div v-if="!filteredResult.length" text-center py10 px5 op-fade italic>
           Select licenses on the left to show packages
         </div>
         <div v-else grid="~ cols-[max-content_max-content_1fr] gap-x-4 gap-y-1 items-center">
-          <div text-sm op50 text-center>
+          <div text-sm op-fade text-center>
             License
           </div>
-          <div text-sm op50 text-center>
+          <div text-sm op-fade text-center>
             Source
           </div>
           <div />

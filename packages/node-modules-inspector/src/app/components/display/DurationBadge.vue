@@ -69,6 +69,6 @@ const color = computed(() => {
     class="px-0.4em py-0.2em line-height-none bg-gray:5 text-sm"
   >
     <span font-mono>{{ timeAgo[0] }}</span>
-    <span op50 text-xs ml0.5>{{ timeAgo[1] }}</span>
+    <span op-fade text-xs ml0.5>{{ timeAgo[1] }}</span>
   </div>
 </template>

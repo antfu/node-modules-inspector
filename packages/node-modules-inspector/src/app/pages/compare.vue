@@ -57,7 +57,7 @@ function reset() {
       <h1 text-2xl font-bold>
         Select packages to compare
       </h1>
-      <p op50>
+      <p op-fade>
         Use the filters to select packages to compare
       </p>
     </div>
@@ -72,7 +72,7 @@ function reset() {
           </template>
         </OptionPackageMultiSelectInput>
       </div>
-      <div p2 rounded op50 py13>
+      <div p2 rounded op-fade py13>
         vs
       </div>
       <div>
@@ -89,7 +89,7 @@ function reset() {
 
     <button
       :disabled="!selectedA.size || !selectedB.size"
-      class="disabled:op25 disabled:pointer-events-none"
+      class="disabled:op-mute disabled:pointer-events-none"
       px5 py1 text-lg border="~ base rounded-full" hover="bg-active op100"
       @click="compare"
     >
@@ -107,7 +107,7 @@ function reset() {
       fixed top-4 left="50%" transform="-50%" bg-glass shadow of-hidden
     >
       <button
-        px5 py1 text-lg hover="bg-active op100" op50
+        px5 py1 text-lg hover="bg-active op100" op-fade
         @click="reset"
       >
         Start a new compare

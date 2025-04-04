@@ -56,7 +56,7 @@ const tree = computed(() => {
           />
         </RenderNextTick>
         <div v-else-if="props.maxDepth > 2" ml6>
-          <span op50 px2 bg-active rounded text-sm>
+          <span op-fade px2 bg-active rounded text-sm>
             {{ children?.length }} more ···
           </span>
         </div>

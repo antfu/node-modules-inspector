@@ -8,7 +8,7 @@ import { filters } from '../../state/filters'
       <div i-ph-arrows-in-cardinal-duotone flex-none />
       <div>
         <div>Focus On</div>
-        <div op50 text-sm mt--0.5>
+        <div op-fade text-sm mt--0.5>
           Filter specific packages and their dependencies
         </div>
       </div>
@@ -23,8 +23,8 @@ import { filters } from '../../state/filters'
         <div font-mono text-sm>
           {{ spec }}
         </div>
-        <button op50 hover:op100 @click="filters.focus.toggle(spec, false)">
-          <div i-ph-x op50 />
+        <button op-fade hover:op100 @click="filters.focus.toggle(spec, false)">
+          <div i-ph-x op-fade />
         </button>
       </div>
     </div>

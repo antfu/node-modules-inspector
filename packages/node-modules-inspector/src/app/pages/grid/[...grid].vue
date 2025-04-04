@@ -143,7 +143,7 @@ const groups = computed<Group[]>(() => {
 <template>
   <div flex="~ col gap-2">
     <div flex="~ gap-2 items-center wrap" mb4>
-      <div op50>
+      <div op-fade>
         Group by
       </div>
       <NuxtLink btn-action as="button" to="/grid/depth" active-class="text-primary bg-primary:5">

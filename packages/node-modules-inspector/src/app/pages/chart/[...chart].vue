@@ -332,7 +332,7 @@ onUnmounted(() => {
     <div flex="~ gap-1 items-center">
       <DisplayFileSizeBadge :bytes="nodeHover.meta.resolved.installSize?.bytes" :percent="false" />
       <template v-if="nodeHover.meta.resolved.installSize?.bytes !== nodeHover.size">
-        <span op50>/</span>
+        <span op-fade>/</span>
         <DisplayFileSizeBadge :bytes="nodeHover.size" :percent="false" />
       </template>
     </div>

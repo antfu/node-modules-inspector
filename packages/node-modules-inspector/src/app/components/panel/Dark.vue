@@ -10,7 +10,7 @@ import { toggleDark } from '../../composables/dark'
     <a
       v-tooltip="'Check source code on GitHub'"
       title="Check source code on GitHub"
-      w-10 h-10 rounded-full hover:bg-active op50 hover:op100
+      w-10 h-10 rounded-full hover:bg-active op-fade hover:op100
       flex="~ items-center justify-center"
       href="https://github.com/antfu/node-modules-inspector" target="_blank"
     >
@@ -18,7 +18,7 @@ import { toggleDark } from '../../composables/dark'
     </a>
     <button
       v-tooltip="'Toggle Dark Mode'"
-      w-10 h-10 rounded-full hover:bg-active op50 hover:op100
+      w-10 h-10 rounded-full hover:bg-active op-fade hover:op100
       flex="~ items-center justify-center"
       title="Toggle Dark Mode"
       @click="toggleDark()"

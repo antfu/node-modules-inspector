@@ -50,11 +50,11 @@ const formatted = computed(() => bytesToHumanSize(props.bytes || 0, props.digits
 </script>
 
 <template>
-  <div v-if="bytes" :class="color" class="px-0.4em py-0.2em font-mono line-height-none bg-gray:5 flex items-center">
+  <div v-if="bytes" :class="color" class="px-0.4em py-0.2em font-mono line-height-none bg-gray:5 dark:bg-gray:4 flex items-center">
     <div v-if="icon" :class="icon" class="mr-1" />
     {{ formatted[0] }}<span text-xs op75 ml-0.4>{{ formatted[1] }}</span>
     <slot name="after">
-      <span v-if="percent && ratio > percentRatio" text-xs ml1 op50 border="l base" pl1>{{ +(ratio.toFixed(1)) }}%</span>
+      <span v-if="percent && ratio > percentRatio" text-xs ml1 op-fade border="l base" pl1>{{ +(ratio.toFixed(1)) }}%</span>
     </slot>
   </div>
 </template>

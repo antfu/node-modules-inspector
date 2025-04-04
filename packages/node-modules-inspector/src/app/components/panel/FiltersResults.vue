@@ -11,15 +11,15 @@ import { payloads } from '../../state/payload'
     <div p3 flex="~ col gap-2 ">
       <div flex="~ items-center gap-2">
         <DisplayNumberBadge :number="payloads.filtered.packages.length" rounded-full color="badge-color-primary" />
-        <span op50>of</span>
+        <span op-fade>of</span>
         <DisplayNumberBadge :number="payloads.avaliable.packages.length" rounded-full />
-        <span op50>packages filtered</span>
+        <span op-fade>packages filtered</span>
       </div>
       <div v-if="payloads.excluded.packages.length" flex="~ items-center gap-1" text-0.85rem>
-        <span op25>(</span>
+        <span op-mute>(</span>
         <DisplayNumberBadge :number="payloads.excluded.packages.length" rounded-full />
-        <span op50>packages excluded</span>
-        <span op25>)</span>
+        <span op-fade>packages excluded</span>
+        <span op-mute>)</span>
       </div>
     </div>
     <UiPercentageModuleType :packages="payloads.filtered.packages" :rounded="false" />

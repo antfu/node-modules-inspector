@@ -27,7 +27,7 @@ const updateAvailable = computed(() => {
     <div flex="~ items-center gap-1">
       <DisplayVersion :version="version" op75 />
       <template v-if="latest">
-        <div v-if="latest.version === version || !updateAvailable" text-sm op50>
+        <div v-if="latest.version === version || !updateAvailable" text-sm op-fade>
           <div i-ph-calendar-check-duotone />
         </div>
         <div v-else-if="versionDiff" text-sm>

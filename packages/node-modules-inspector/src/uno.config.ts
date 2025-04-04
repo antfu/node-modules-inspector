@@ -24,7 +24,7 @@ export default defineConfig({
 
       'bg-gradient-more': 'bg-gradient-to-t from-white via-white:80 to-white:0 dark:from-#111 dark:via-#111:80 dark:to-#111:0',
 
-      'color-active': 'color-primary-600 dark:color-primary-400',
+      'color-active': 'color-primary-600 dark:color-primary-300',
       'border-active': 'border-primary-600/25 dark:border-primary-400/25',
       'bg-active': 'bg-#8881',
 
@@ -45,6 +45,10 @@ export default defineConfig({
       'z-panel-nav': 'z-60',
       'z-panel-goto': 'z-70',
       'z-panel-terminal': 'z-80',
+
+      'op-fade': 'op65 dark:op55',
+      'op-mute': 'op30 dark:op25',
+      'color-deprecated': 'text-op85 text-[#b71c1c] dark:text-[#f87171]',
 
       'color-scale-neutral': 'text-gray7:75 dark:text-gray:75!',
       'color-scale-low': 'text-lime7:75 dark:text-lime:75! dark:saturate-50',

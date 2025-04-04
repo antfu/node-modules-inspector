@@ -51,7 +51,7 @@ const emit = defineEmits<{
             v-if="child.children.length > 0"
             v-tooltip="`${child.children.length} dependencies`"
             :title="`${child.children.length} dependencies`"
-            text-xs op50
+            text-xs op-fade
           >
             ({{ child.children.length }})
           </div>

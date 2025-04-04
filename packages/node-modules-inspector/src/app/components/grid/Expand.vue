@@ -18,7 +18,7 @@ const value = defineModel('moduleValue', {
     @toggle="value = ($event as any).target.open"
   >
     <summary text-xl flex="~ wrap items-center gap-2" cursor-pointer select-none hover:bg-active rounded p1>
-      <div i-ph-caret-down transition duration-300 op50 ml--5 text-base :class="value ? '' : 'rotate--90'" />
+      <div i-ph-caret-down transition duration-300 op-fade ml--5 text-base :class="value ? '' : 'rotate--90'" />
       <slot name="title" />
     </summary>
     <GridContainer v-if="value" :packages="packages" mb4 />
