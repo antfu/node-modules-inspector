@@ -74,7 +74,7 @@ async function getPnpmVersion(options: ListPackageDependenciesOptions) {
 }
 
 async function getDependenciesTree(options: ListPackageDependenciesOptions): Promise<PnpmDependencyHierarchy[]> {
-  const args = ['ls', '--json', '--no-optional', '--depth', String(options.depth)]
+  const args = ['ls', '--json', '--depth', String(options.depth)]
   if (options.monorepo)
     args.push('--recursive')
   if (options.workspace === false)
