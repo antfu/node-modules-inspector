@@ -78,7 +78,7 @@ const titleMap = {
                 <DisplayPackageSpec :pkg="pkg" />
               </h2>
               <button
-                p1 rounded-full op50 hover:bg-active hover:text-primary hover:op100 flex="~ items-center"
+                p1 rounded-full op-fade hover:bg-active hover:text-primary hover:op100 flex="~ items-center"
                 title="Show Graph"
                 @click="showGraph(pkg)"
               >

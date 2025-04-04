@@ -385,7 +385,7 @@ onMounted(() => {
         <button
           v-tooltip="'Zoom In (Ctrl + =)'"
           :disabled="scale >= ZOOM_MAX"
-          w-10 h-10 rounded-full hover:bg-active op50
+          w-10 h-10 rounded-full hover:bg-active op-fade
           hover:op100 disabled:op20 disabled:bg-none
           disabled:cursor-not-allowed
           flex="~ items-center justify-center"
@@ -397,7 +397,7 @@ onMounted(() => {
         <button
           v-tooltip="'Zoom Out (Ctrl + -)'"
           :disabled="scale <= ZOOM_MIN"
-          w-10 h-10 rounded-full hover:bg-active op50 hover:op100
+          w-10 h-10 rounded-full hover:bg-active op-fade hover:op100
           disabled:op20 disabled:bg-none disabled:cursor-not-allowed
           flex="~ items-center justify-center"
           title="Zoom Out (Ctrl + -)"
@@ -410,7 +410,7 @@ onMounted(() => {
       <div bg-glass rounded-full border border-base shadow>
         <button
           v-tooltip="'Toggle Graph Render Mode'"
-          w-10 h-10 rounded-full hover:bg-active op50 hover:op100
+          w-10 h-10 rounded-full hover:bg-active op-fade hover:op100
           flex="~ items-center justify-center"
           title="Toggle Graph Render Mode"
           @click="toggleRender"
@@ -423,7 +423,7 @@ onMounted(() => {
       <div bg-glass rounded-full border border-base shadow>
         <button
           v-tooltip="'Download Screenshot as PNG'"
-          w-10 h-10 rounded-full hover:bg-active op50 hover:op100
+          w-10 h-10 rounded-full hover:bg-active op-fade hover:op100
           flex="~ items-center justify-center"
           title="Download Screenshot as PNG"
           @click="takeScreenshot"

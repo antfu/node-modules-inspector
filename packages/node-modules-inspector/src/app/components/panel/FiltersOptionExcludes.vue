@@ -31,12 +31,12 @@ import { filters } from '../../state/filters'
         <div font-mono text-sm>
           {{ spec }}
         </div>
-        <button op50 hover:op100 @click="filters.excludes.toggle(spec, false)">
-          <div i-ph-x op50 />
+        <button op-fade hover:op100 @click="filters.excludes.toggle(spec, false)">
+          <div i-ph-x op-fade />
         </button>
       </div>
     </div>
-    <div v-else op50 text-sm italic>
+    <div v-else op-fade text-sm italic>
       To exclude a specific package, select from its menu
     </div>
     <div mt2 flex="~ col gap-1">

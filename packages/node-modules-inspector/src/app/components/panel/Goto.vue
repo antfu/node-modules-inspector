@@ -27,7 +27,7 @@ function onCommitted(node: PackageNode) {
           flex="~ items-center gap-1.5"
           hover:bg-active
         >
-          <div i-ph-magnifying-glass-duotone text-lg :class="input ? 'text-primary' : 'op50'" flex-none />
+          <div i-ph-magnifying-glass-duotone text-lg :class="input ? 'text-primary' : 'op-fade'" flex-none />
           <input
             ref="el"
             v-model="input"
@@ -40,7 +40,7 @@ function onCommitted(node: PackageNode) {
             :class="input ? '' : 'op0'"
             @click="input = ''"
           >
-            <div i-ph-x ma op50 />
+            <div i-ph-x ma op-fade />
           </button>
         </label>
       </template>

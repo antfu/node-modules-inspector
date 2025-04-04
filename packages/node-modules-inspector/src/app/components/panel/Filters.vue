@@ -20,7 +20,7 @@ import { filters } from '../../state/filters'
         flex="~ items-center gap-1.5"
         hover:bg-active
       >
-        <div i-ph-text-t-duotone text-lg :class="filters.search ? 'text-primary' : 'op50'" flex-none />
+        <div i-ph-text-t-duotone text-lg :class="filters.search ? 'text-primary' : 'op-fade'" flex-none />
         <input
           v-model="filters.state.search"
           placeholder="Filter by Text"
@@ -31,7 +31,7 @@ import { filters } from '../../state/filters'
           :class="filters.state.search ? '' : 'op0'"
           @click="filters.state.search = ''"
         >
-          <div i-ph-x ma op50 />
+          <div i-ph-x ma op-fade />
         </button>
       </label>
     </div>

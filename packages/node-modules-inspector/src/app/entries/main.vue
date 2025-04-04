@@ -40,11 +40,11 @@ const isLoading = computed(() => Boolean(!backend.value || backend.value?.status
         </div>
         <div
           v-else-if="backend?.status.value === 'connected'"
-          flex="~ gap-2 items-center" text-lg op50
+          flex="~ gap-2 items-center" text-lg op-fade
         >
           Fetching data...
         </div>
-        <div v-else flex="~ gap-2 items-center" text-lg op50>
+        <div v-else flex="~ gap-2 items-center" text-lg op-fade>
           Connecting...
         </div>
       </div>

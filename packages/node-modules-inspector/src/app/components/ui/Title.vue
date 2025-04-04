@@ -22,10 +22,10 @@ defineProps<{
       <span font-700 text-primary transition-all duration-300 :class="hasError ? 'hue-rotate--105' : ''">Node Modules</span>
       <span op75>Inspector</span>
       <span font-mono text-sm flex="~ col items-center" mr--14>
-        <span op50>v{{ version }}</span>
+        <span op-fade>v{{ version }}</span>
       </span>
     </div>
-    <div op50 text-center>
+    <div op-fade text-center>
       Visualize your node_modules, inspect dependencies, and more.
     </div>
   </h1>

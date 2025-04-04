@@ -43,7 +43,7 @@ function onCommitted(node: PackageNode) {
               :class="input ? '' : 'op0'"
               @click="input = ''"
             >
-              <div i-ph-x ma op50 />
+              <div i-ph-x ma op-fade />
             </button>
           </label>
         </template>
@@ -58,7 +58,7 @@ function onCommitted(node: PackageNode) {
       >
         <TreeItem :pkg="pkg" flex-auto :show-module-type="false" />
         <button
-          flex-none op50 rounded-full p1 hover="op100 bg-active"
+          flex-none op-fade rounded-full p1 hover="op100 bg-active"
           @click="selected.delete(pkg)"
         >
           <div i-ph-x />
