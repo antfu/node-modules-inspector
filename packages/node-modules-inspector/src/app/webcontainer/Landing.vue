@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, shallowRef } from 'vue'
+import { onMounted, ref, shallowRef } from 'vue'
 import { backend } from '../backends'
 import MainEntry from '../entries/main.vue'
 import { fetchData, rawPayload } from '../state/data'
@@ -11,6 +11,14 @@ showTerminal.value = true
 const input = shallowRef(query.install?.trim().replace(/\+/g, ' ') || '')
 const error = shallowRef<any>()
 const isLoading = shallowRef(false)
+const isComposing = ref(false)
+
+function handleCompositionEnd(_event: CompositionEvent) {
+  isComposing.value = false
+  if (input.value) {
+    setTimeout(() => run(), 0)
+  }
+}
 
 onMounted(() => {
   getContainer()
@@ -57,7 +65,9 @@ async function run() {
             :disabled="isLoading"
             w-120 px1 py2 font-mono bg-transparent outline-none
             placeholder-gray:40
-            @keydown.enter="run"
+            @keydown.enter="!isComposing && run()"
+            @compositionstart="isComposing = true"
+            @compositionend="handleCompositionEnd"
           >
         </label>
         <div text-center transition duration-500 italic :class="input ? 'op35' : 'op0'">
