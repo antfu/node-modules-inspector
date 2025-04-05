@@ -16,7 +16,7 @@ const isComposing = ref(false)
 function handleCompositionEnd(_event: CompositionEvent) {
   isComposing.value = false
   if (input.value) {
-    setTimeout(() => run(), 0)
+    run()
   }
 }
 
