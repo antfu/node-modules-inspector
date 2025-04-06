@@ -15,18 +15,20 @@ const isComposing = ref(false)
 
 function handleCompositionEnd(_event: CompositionEvent) {
   isComposing.value = false
-  if (input.value) {
-    run()
-  }
+  run()
 }
 
 onMounted(() => {
   getContainer()
-  if (input.value)
-    run()
+  run()
 })
 
 async function run() {
+  if (!input.value?.trim()) {
+    input.value = ''
+    return
+  }
+
   isLoading.value = true
   query.install = input.value.replace(/\s+/g, '+')
   try {
