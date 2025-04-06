@@ -44,4 +44,10 @@ const transitiveDeps = computed(() =>
       </div>
     </template>
   </ReportExpendableContainer>
+  <template v-else>
+    <UiEmptyState
+      title="No Transitive Dependencies"
+      message="No packages with transitive dependencies found"
+    />
+  </template>
 </template>

@@ -76,4 +76,10 @@ function showGraph(pkgs: PackageNode[]) {
       </div>
     </div>
   </template>
+  <template v-else>
+    <UiEmptyState
+      title="No Multiple Versions"
+      message="Great! You don't have any packages with multiple versions"
+    />
+  </template>
 </template>

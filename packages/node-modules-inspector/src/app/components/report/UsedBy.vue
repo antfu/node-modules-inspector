@@ -53,5 +53,11 @@ const transitiveDeps = computed(() =>
         </div>
       </template>
     </ReportExpendableContainer>
+    <template v-else>
+      <UiEmptyState
+        title="No Used By Packages"
+        message="No packages are being used by other dependencies"
+      />
+    </template>
   </div>
 </template>

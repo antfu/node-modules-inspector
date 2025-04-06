@@ -46,4 +46,10 @@ const sorted = computed(() =>
       </div>
     </template>
   </ReportExpendableContainer>
+  <template v-else>
+    <UiEmptyState
+      title="No Install Size Information"
+      message="No install size information available for packages"
+    />
+  </template>
 </template>

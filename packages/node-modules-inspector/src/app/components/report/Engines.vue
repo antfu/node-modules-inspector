@@ -41,4 +41,10 @@ const transitiveDeps = computed(() =>
       </div>
     </template>
   </ReportExpendableContainer>
+  <template v-else>
+    <UiEmptyState
+      title="No Node.js Engines Requirements"
+      message="No packages with Node.js engine requirements found"
+    />
+  </template>
 </template>
