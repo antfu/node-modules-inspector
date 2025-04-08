@@ -84,6 +84,7 @@ const cols = computed(() => {
   </template>
   <template v-else>
     <UiEmptyState
+      type="info"
       title="No Funding Requests"
       message="None of your packages are requesting funding"
     />

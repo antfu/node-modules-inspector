@@ -101,6 +101,7 @@ const titleMap = {
   </template>
   <template v-else>
     <UiEmptyState
+      type="checkmark"
       title="No Deprecated Packages"
       message="Great! None of your packages are deprecated"
     />
