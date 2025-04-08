@@ -128,7 +128,6 @@ function toggleFilters() {
         <div i-ph-gear-six-duotone text-xl />
       </button>
     </div>
-    <PanelFiltersMini />
     <PanelGoto />
   </div>
 </template>

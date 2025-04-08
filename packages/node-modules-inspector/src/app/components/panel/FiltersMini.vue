@@ -36,7 +36,6 @@ const moduleTypes = Object.fromEntries(
 <template>
   <div
     v-if="filters.select.activated.length"
-    fixed right-28 top-5 z-panel-nav
     bg-glass rounded-3xl border border-base shadow
     flex="~"
   >
