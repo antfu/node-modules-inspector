@@ -290,7 +290,7 @@ const thirdPartyServices = computed(() => {
             :fundings="resolved.fundings"
           />
           <button
-            v-if="backend?.functions.openInEditor"
+            v-if="backend?.functions.openInEditor && pkg.filepath"
             v-tooltip="'Open Package Folder in Editor'"
             title="Open Package Folder in Editor"
             ml--1 w-8 h-8 rounded-full hover:bg-active flex
@@ -299,7 +299,7 @@ const thirdPartyServices = computed(() => {
             <div i-catppuccin-folder-vscode hover:i-catppuccin-folder-vscode-open icon-catppuccin ma />
           </button>
           <button
-            v-if="backend?.functions.openInFinder"
+            v-if="backend?.functions.openInFinder && pkg.filepath"
             v-tooltip="'Open Package Folder in File Explorer'"
             title="Open Package Folder in File Explorer"
             ml--1 w-8 h-8 rounded-full hover:bg-active flex

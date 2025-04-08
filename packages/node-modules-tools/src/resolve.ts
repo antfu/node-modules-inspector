@@ -1,7 +1,8 @@
 import type { AgentName } from 'package-manager-detector'
 import type { PackageJson } from 'pkg-types'
 import type { BaseOptions, PackageNode, PackageNodeBase } from './types'
-import fs from 'node:fs/promises'
+import { existsSync } from 'node:fs'
+import { readFile } from 'node:fs/promises'
 import { objectPick } from '@antfu/utils'
 import { join } from 'pathe'
 import { analyzePackageModuleType } from './analyze-esm'
@@ -49,13 +50,25 @@ export async function resolvePackage(
   const _pkg = pkg as unknown as PackageNode
   if (_pkg.resolved)
     return _pkg
-  const content = await fs.readFile(join(pkg.filepath, 'package.json'), 'utf-8')
-  const json = JSON.parse(stripBomTag(content)) as PackageJson
 
-  _pkg.resolved = {
-    module: analyzePackageModuleType(json),
-    packageJson: objectPick(json, PACKAGE_JSON_KEYS),
-    installSize: await getPackageInstallSize(_pkg),
+  const path = join(pkg.filepath, 'package.json')
+  if (existsSync(path)) {
+    // In cases like optional dependencies, the package might not be installed.
+    const content = await readFile(path, 'utf-8')
+    const json = JSON.parse(stripBomTag(content)) as PackageJson
+
+    _pkg.resolved = {
+      module: analyzePackageModuleType(json),
+      packageJson: objectPick(json, PACKAGE_JSON_KEYS),
+      installSize: await getPackageInstallSize(_pkg),
+    }
+  }
+  else {
+    _pkg.filepath = ''
+    _pkg.resolved = {
+      module: 'unknown',
+      packageJson: {},
+    }
   }
   return _pkg
 }
