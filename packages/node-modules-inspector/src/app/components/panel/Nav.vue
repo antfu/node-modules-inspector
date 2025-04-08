@@ -10,6 +10,11 @@ const location = window.location
 
 const tabsMeta = [
   {
+    name:'home',
+    path:'/',
+    icon:'i-ph-house-duotone'
+  },
+  {
     name: 'Graph View',
     path: '/graph',
     icon: 'i-ph-tree-structure-duotone',
