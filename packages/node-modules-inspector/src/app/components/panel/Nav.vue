@@ -1,16 +1,18 @@
 <script setup lang="ts">
-import { useRoute } from '#app/composables/router'
+import { useRoute,useRouter } from '#app/composables/router'
 import { selectedNode } from '../../state/current'
 import { filters } from '../../state/filters'
 import { settings } from '../../state/settings'
 import { isFiltersOpen, isSettingOpen, isSidepanelCollapsed } from '../../state/ui'
+import type {NavItem} from "@/types/nav";
 
 const route = useRoute()
+const router = useRouter()
 const location = window.location
 
-const tabsMeta = [
+const tabsMeta:NavItem[] = [
   {
-    name:'home',
+    name:'Home',
     path:'/',
     icon:'i-ph-house-duotone'
   },
@@ -58,6 +60,15 @@ function toggleSetting() {
 function toggleFilters() {
   isFiltersOpen.value = !isFiltersOpen.value
 }
+function switchRouter(route:NavItem){
+  if(route.path === '/'){
+    location.replace("/")
+  }
+  router.push({
+    path: route.path,
+    hash: location.hash
+  })
+}
 </script>
 
 <template>
@@ -94,17 +105,16 @@ function toggleFilters() {
       flex="~ items-center gap-1" w-max
     >
       <template v-for="tab of tabsMeta" :key="tab.value">
-        <RouterLink
+        <div
           v-tooltip="tab.name"
           w-10 h-10 rounded-full hover:bg-active
           flex="~ items-center justify-center"
           :title="tab.name"
-          :class="route.path.startsWith(tab.path) ? 'text-primary' : 'op-fade'"
-          :to="{ path: tab.path, hash: location.hash }"
+          :class="route.path === tab.path ? 'text-primary' : 'op-fade'"
           @click="resetPanelState()"
         >
-          <div :class="tab.icon" text-xl />
-        </RouterLink>
+          <div @click="switchRouter(tab)" :class="tab.icon" text-xl />
+        </div>
       </template>
 
       <!-- Filters -->
