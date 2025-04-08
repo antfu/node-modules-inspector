@@ -112,5 +112,12 @@ const outdatedPackages = computed(() =>
         </div>
       </template>
     </ReportExpendableContainer>
+
+    <template v-if="!packages.length && !outdatedPackages.length">
+      <UiEmptyState
+        title="No Publish Time Information"
+        message="No publish time information available for packages"
+      />
+    </template>
   </div>
 </template>
