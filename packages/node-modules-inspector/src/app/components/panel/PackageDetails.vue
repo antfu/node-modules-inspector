@@ -212,7 +212,9 @@ const thirdPartyServices = computed(() => {
         font-mono text-2xl flex="~ wrap items-center gap-2" pr20
         :class="deprecation?.latest ? deprecation.type === 'future' ? 'text-orange line-through' : 'text-red line-through' : ''"
       />
-      <p>{{ pkg.resolved?.packageJson?.description }}</p>
+      <div text-sm op-fade line-clamp-3 text-ellipsis mt--1 mb1>
+        {{ pkg.resolved?.packageJson?.description }}
+      </div>
       <div flex="~ items-center wrap gap-2">
         <DisplayVersionWithUpdates
           :version="pkg.version"
