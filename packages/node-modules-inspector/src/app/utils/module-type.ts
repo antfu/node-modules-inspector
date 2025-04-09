@@ -12,6 +12,7 @@ export const MODULE_TYPES_COLOR_BADGE = {
   cjs: 'badge-color-yellow',
   faux: 'badge-color-lime',
   dts: 'badge-color-gray',
+  unknown: 'badge-color-gray',
 }
 
 export function getModuleType(node: PackageNode | PackageModuleType) {

@@ -90,7 +90,7 @@ export async function fetchPublintMessages(pkg: PackageNode) {
 
 async function _fetchPublintMessages(pkg: PackageNode): Promise<PublintMessage[] | null> {
   const backend = getBackend()
-  if (backend.functions.getPublint) {
+  if (pkg.filepath && backend.functions.getPublint) {
     const result = await backend.functions.getPublint({
       private: pkg.private,
       workspace: pkg.workspace,

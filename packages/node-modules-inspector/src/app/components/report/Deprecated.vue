@@ -78,7 +78,7 @@ const titleMap = {
                 <DisplayPackageSpec :pkg="pkg" />
               </h2>
               <button
-                p1 rounded-full op50 hover:bg-active hover:text-primary hover:op100 flex="~ items-center"
+                p1 rounded-full op-fade hover:bg-active hover:text-primary hover:op100 flex="~ items-center"
                 title="Show Graph"
                 @click="showGraph(pkg)"
               >
@@ -100,12 +100,10 @@ const titleMap = {
     </template>
   </template>
   <template v-else>
-    <UiSubTitle>
-      No Deprecated Packages
-    </UiSubTitle>
-    <div badge-color-green flex="~ gap-2 items-center" rounded-lg p2 my2 px3>
-      <div i-ph-check-circle-duotone flex-none />
-      <span>Great! None of your packages are deprecated</span>
-    </div>
+    <UiEmptyState
+      type="checkmark"
+      title="No Deprecated Packages"
+      message="Great! None of your packages are deprecated"
+    />
   </template>
 </template>

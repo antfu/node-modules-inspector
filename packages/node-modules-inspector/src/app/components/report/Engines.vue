@@ -21,7 +21,7 @@ const transitiveDeps = computed(() =>
     <template #default="{ items }">
       <div grid="~ cols-[1fr_max-content] gap-x-4 gap-y-1">
         <div />
-        <div text-sm op50 text-right>
+        <div text-sm op-fade text-right>
           Engines
         </div>
 
@@ -41,4 +41,10 @@ const transitiveDeps = computed(() =>
       </div>
     </template>
   </ReportExpendableContainer>
+  <template v-else>
+    <UiEmptyState
+      title="No Node.js Engines Requirements"
+      message="No packages with Node.js engine requirements found"
+    />
+  </template>
 </template>

@@ -36,12 +36,11 @@ const moduleTypes = Object.fromEntries(
 <template>
   <div
     v-if="filters.select.activated.length"
-    fixed right-28 top-5 z-panel-nav
     bg-glass rounded-3xl border border-base shadow
     flex="~"
   >
     <button relative pl2 pr1 @click="query.selected = '~filters'">
-      <div i-ph-funnel-duotone text-xl op50 />
+      <div i-ph-funnel-duotone text-xl op-fade />
       <div v-if="filters.select.activated.length" absolute top--2 right--2 w-4 h-4 bg-primary-600 shadow text-white rounded-full flex text-0.6rem>
         <span ma>{{ filters.select.activated.length }}</span>
       </div>
@@ -114,7 +113,7 @@ const moduleTypes = Object.fromEntries(
 
     <button
       v-tooltip="'Clear Filters'"
-      w8 h8 rounded-full hover:bg-active op50 hover:op100 flex="~ items-center justify-center"
+      w8 h8 rounded-full hover:bg-active op-fade hover:op100 flex="~ items-center justify-center"
       title="Clear Filters"
       @click="filters.select.reset()"
     >

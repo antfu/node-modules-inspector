@@ -290,7 +290,7 @@ const thirdPartyServices = computed(() => {
             :fundings="resolved.fundings"
           />
           <button
-            v-if="backend?.functions.openInEditor"
+            v-if="backend?.functions.openInEditor && pkg.filepath"
             v-tooltip="'Open Package Folder in Editor'"
             title="Open Package Folder in Editor"
             ml--1 w-8 h-8 rounded-full hover:bg-active flex
@@ -299,7 +299,7 @@ const thirdPartyServices = computed(() => {
             <div i-catppuccin-folder-vscode hover:i-catppuccin-folder-vscode-open icon-catppuccin ma />
           </button>
           <button
-            v-if="backend?.functions.openInFinder"
+            v-if="backend?.functions.openInFinder && pkg.filepath"
             v-tooltip="'Open Package Folder in File Explorer'"
             title="Open Package Folder in File Explorer"
             ml--1 w-8 h-8 rounded-full hover:bg-active flex
@@ -312,12 +312,12 @@ const thirdPartyServices = computed(() => {
       <div flex="~ gap-2 wrap items-center">
         <span>{{ resolved.license }}</span>
         <template v-if="resolved.authors?.length">
-          <span op50>·</span>
+          <span op-fade>·</span>
           <template
             v-for="(author, idx) of resolved.authors"
             :key="author.name"
           >
-            <span v-if="idx > 0" text-xs op50>&</span>
+            <span v-if="idx > 0" text-xs op-fade>&</span>
             <component
               :is="author.url ? 'a' : 'span'"
               :href="author.url"
@@ -328,11 +328,11 @@ const thirdPartyServices = computed(() => {
           </template>
         </template>
         <template v-if="resolved.engines?.node">
-          <span op50>·</span>
+          <span op-fade>·</span>
           <DisplayNodeVersionRange :range="resolved.engines?.node" />
         </template>
         <template v-if="getPublishTime(pkg)">
-          <span op50>·</span>
+          <span op-fade>·</span>
           <DisplayDateBadge :pkg rounded-full text-sm />
         </template>
       </div>
@@ -346,7 +346,7 @@ const thirdPartyServices = computed(() => {
         v-tooltip="'Focus on this package and the dependencies it brings'"
         flex="~ items-center gap-1 justify-center"
         px4 py1 rounded hover:bg-active
-        :class="selectionMode === 'focus' ? 'text-teal bg-teal:10!' : 'op50'"
+        :class="selectionMode === 'focus' ? 'text-teal bg-teal:10!' : 'op-fade'"
         @click="selectionMode = selectionMode === 'focus' ? 'none' : 'focus'"
       >
         <div i-ph-arrows-in-cardinal-duotone flex-none />
@@ -356,7 +356,7 @@ const thirdPartyServices = computed(() => {
         v-tooltip="'Focus on the packages that brings this package'"
         flex="~ items-center gap-1 justify-center"
         px4 py1 rounded hover:bg-active
-        :class="selectionMode === 'why' ? 'text-orange bg-orange:10!' : 'op50'"
+        :class="selectionMode === 'why' ? 'text-orange bg-orange:10!' : 'op-fade'"
         @click="selectionMode = selectionMode === 'why' ? 'none' : 'why'"
       >
         <div i-ph-seal-question-duotone flex-none />
@@ -371,7 +371,7 @@ const thirdPartyServices = computed(() => {
             ? 'text-purple bg-purple:10!'
             : isExcluded
               ? 'border-dashed! border-purple:50!'
-              : 'op50',
+              : 'op-fade',
         ]"
         @click="selectionMode = selectionMode === 'exclude' ? 'none' : 'exclude'"
       >
@@ -390,13 +390,13 @@ const thirdPartyServices = computed(() => {
         @click="settings.showFileComposition = !settings.showFileComposition"
       >
         <div v-if="sizeInstall" flex="~ items-center gap-1">
-          <div text-sm op50>
+          <div text-sm op-fade>
             Install
           </div>
           <DisplayFileSizeBadge :bytes="sizeInstall" rounded-lg />
         </div>
         <div v-if="sizeTotal" flex="~ items-center gap-1">
-          <div text-sm op50>
+          <div text-sm op-fade>
             Total
           </div>
           <DisplayFileSizeBadge :bytes="sizeTotal" rounded-lg />
@@ -407,11 +407,11 @@ const thirdPartyServices = computed(() => {
           p1 rounded-full hover:bg-active mr--2
           title="Toggle file composition"
         >
-          <div i-ph-caret-down transition duration-300 :class="settings.showFileComposition ? 'op75' : 'rotate-90 op25'" />
+          <div i-ph-caret-down transition duration-300 :class="settings.showFileComposition ? 'op75' : 'rotate-90 op-mute'" />
         </button>
       </div>
       <div v-if="settings.showFileComposition" flex="~ gap-1 col">
-        <div op50 text-sm mt2>
+        <div op-fade text-sm mt2>
           File Composition
         </div>
         <UiPercentageFileCategories :pkg="pkg" />
@@ -423,8 +423,8 @@ const thirdPartyServices = computed(() => {
         flex="~ gap-3 wrap items-center" select-none
         @click="settings.showThirdPartyServices = !settings.showThirdPartyServices"
       >
-        <div v-if="sizeInstall" flex="~ items-center gap-1">
-          <div text-sm op50>
+        <div flex="~ items-center gap-1">
+          <div text-sm op-fade>
             Learn more in other tools
           </div>
         </div>
@@ -434,7 +434,7 @@ const thirdPartyServices = computed(() => {
           p1 rounded-full hover:bg-active mr--2
           title="Toggle third party services"
         >
-          <div i-ph-caret-down transition duration-300 :class="settings.showThirdPartyServices ? 'op75' : 'rotate-90 op25'" />
+          <div i-ph-caret-down transition duration-300 :class="settings.showThirdPartyServices ? 'op75' : 'rotate-90 op-mute'" />
         </button>
       </div>
       <div v-if="settings.showThirdPartyServices" flex="~ gap-2 wrap">
@@ -511,13 +511,13 @@ const thirdPartyServices = computed(() => {
             type="dependents"
           />
         </template>
-        <div v-else op25 italic text-center py3>
+        <div v-else op-mute italic text-center py3>
           No dependents
         </div>
       </template>
       <template v-else-if="settings.packageDetailsTab === 'dependencies'">
         <div p4 flex="~ col gap-1">
-          <div op50 text-sm mt1>
+          <div op-fade text-sm mt1>
             Dependency Composition
           </div>
           <UiPercentageModuleType
@@ -535,7 +535,7 @@ const thirdPartyServices = computed(() => {
             type="dependencies"
           />
         </template>
-        <div v-else op25 italic text-center pb4>
+        <div v-else op-mute italic text-center pb4>
           No dependencies
         </div>
       </template>

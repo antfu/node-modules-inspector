@@ -20,6 +20,7 @@ const params = useRoute().params as Record<string, string>
 const chart = computed<'frame' | 'treemap' | 'sunburst'>(() => params.chart[0] as any || 'treemap')
 const nodeHover = shallowRef<ChartNode | undefined>(undefined)
 const nodeSelected = shallowRef<ChartNode | undefined>(undefined)
+const location = window.location
 
 const tree = computed(() => {
   const packages = payloads.filtered.packages
@@ -275,15 +276,27 @@ onUnmounted(() => {
 
 <template>
   <div flex="~ gap-2 items-center wrap">
-    <NuxtLink btn-action as="button" to="/chart/treemap" active-class="text-primary bg-primary:5">
+    <NuxtLink
+      btn-action as="button"
+      :to="{ path: '/chart/treemap', hash: location.hash }"
+      active-class="text-primary bg-primary:5"
+    >
       <div i-ph-checkerboard-duotone />
       Treemap
     </NuxtLink>
-    <NuxtLink btn-action as="button" to="/chart/sunburst" active-class="text-primary bg-primary:5">
+    <NuxtLink
+      btn-action as="button"
+      :to="{ path: '/chart/sunburst', hash: location.hash }"
+      active-class="text-primary bg-primary:5"
+    >
       <div i-ph-chart-donut-duotone />
       Sunburst
     </NuxtLink>
-    <NuxtLink btn-action as="button" to="/chart/frame" active-class="text-primary bg-primary:5">
+    <NuxtLink
+      btn-action as="button"
+      :to="{ path: '/chart/frame', hash: location.hash }"
+      active-class="text-primary bg-primary:5"
+    >
       <div i-ph-chart-bar-horizontal-duotone />
       Framegraph
     </NuxtLink>
@@ -332,7 +345,7 @@ onUnmounted(() => {
     <div flex="~ gap-1 items-center">
       <DisplayFileSizeBadge :bytes="nodeHover.meta.resolved.installSize?.bytes" :percent="false" />
       <template v-if="nodeHover.meta.resolved.installSize?.bytes !== nodeHover.size">
-        <span op50>/</span>
+        <span op-fade>/</span>
         <DisplayFileSizeBadge :bytes="nodeHover.size" :percent="false" />
       </template>
     </div>

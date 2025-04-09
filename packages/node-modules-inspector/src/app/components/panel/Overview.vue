@@ -5,7 +5,7 @@ import { getBackend } from '../../backends'
 import { rawPayload } from '../../state/data'
 import { getDeprecatedInfo, payloads, totalWorkspaceSize } from '../../state/payload'
 import { settings } from '../../state/settings'
-import { getFundings } from '../../utils/package-json'
+import { getFundings, getPackageData } from '../../utils/package-json'
 
 const backend = getBackend()
 
@@ -24,7 +24,7 @@ const fundingCount = computed(() => payloads.avaliable.packages
 const licensesCount = computed(() => {
   const set = new Set<string>()
   payloads.avaliable.packages.forEach((p) => {
-    set.add(p.resolved.packageJson.license || '<Unspecified>')
+    set.add(getPackageData(p).license || '<Unspecified>')
   })
   return set.size
 })
@@ -43,7 +43,7 @@ const timepassed = computed(() => rawPayload.value?.timestamp ? Date.now() - raw
           <div op75>
             Inspector
           </div>
-          <div op50 text-xs font-mono>
+          <div op-fade text-xs font-mono>
             v{{ version }}
           </div>
         </div>
@@ -94,9 +94,9 @@ const timepassed = computed(() => rawPayload.value?.timestamp ? Date.now() - raw
         <span ml--0.5>total packages</span>
       </NuxtLink>
       <NuxtLink v-if="totalDeprecatedCount" flex="~ gap-2 items-center" to="/report/deprecated">
-        <div i-ph-warning-duotone flex-none text-red />
-        <DisplayNumberBadge :number="totalDeprecatedCount" rounded-full text-sm mx--0.2 mt-3px color="badge-color-red" />
-        <span ml--0.5 text-red>deprecated packages</span>
+        <div i-ph-warning-duotone flex-none color-deprecated />
+        <DisplayNumberBadge :number="totalDeprecatedCount" rounded-full text-sm mx--0.2 mt-3px color="badge-color-red" color-deprecated />
+        <span ml--0.5 color-deprecated>deprecated packages</span>
       </NuxtLink>
       <NuxtLink v-if="multipleVersionsCount" flex="~ gap-2 items-center" to="/report/multiple-versions">
         <div i-catppuccin-java-enum icon-catppuccin flex-none />

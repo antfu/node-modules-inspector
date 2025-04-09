@@ -4,7 +4,7 @@ import { useRoute } from '#app/composables/router'
 import SafeImage from '@/components/display/SafeImage.vue'
 import { computed } from 'vue'
 import { payloads } from '../../state/payload'
-import { getAuthors, getRepository } from '../../utils/package-json'
+import { getAuthors, getPackageData, getRepository } from '../../utils/package-json'
 
 const params = useRoute().params as Record<string, string>
 const tab = computed<'depth' | 'clusters' | 'module-type' | 'authors' | 'licenses' | 'github'>(() => params.grid[0] as any || 'depth')
@@ -84,7 +84,7 @@ const groups = computed<Group[]>(() => {
   else if (tab.value === 'licenses') {
     const map = new Map<string, PackageNode[]>()
     for (const pkg of payloads.filtered.packages) {
-      const license = pkg.resolved.packageJson.license || '<Unspecified>'
+      const license = getPackageData(pkg).license || '<Unspecified>'
       if (!map.has(license))
         map.set(license, [])
       map.get(license)?.push(pkg)
@@ -143,7 +143,7 @@ const groups = computed<Group[]>(() => {
 <template>
   <div flex="~ col gap-2">
     <div flex="~ gap-2 items-center wrap" mb4>
-      <div op50>
+      <div op-fade>
         Group by
       </div>
       <NuxtLink btn-action as="button" to="/grid/depth" active-class="text-primary bg-primary:5">

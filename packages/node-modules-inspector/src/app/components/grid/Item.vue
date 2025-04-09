@@ -49,12 +49,12 @@ defineProps<{
       <DisplaySourceTypeBadge :pkg />
 
       <!--
-      <span op25>·</span>
+      <span op-mute>·</span>
       <div op75>
         {{ pkg.resolved.license }}
       </div> -->
       <!-- <template v-if="pkg.resolved.author">
-        <span op25>·</span>
+        <span op-mute>·</span>
         <div op75>
           {{ pkg.resolved.author?.replace(/\<.*\>/, '').replace(/\(.*\)/, '') }}
         </div>

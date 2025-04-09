@@ -38,7 +38,7 @@ function showGraph(pkgs: PackageNode[]) {
     </UiSubTitle>
     <div badge-color-primary flex="~ gap-2 items-center" rounded-lg p2 my2 px3>
       <div i-ph-lightbulb-duotone flex-none />
-      <span>Run <code color-primary bg-primary:10 rounded px1 py0.5>{{ rawPayload?.packageManager }} dedupe</code> to de-duplicate packages that satisfies with the ranges</span>
+      <span>Run <code color-active bg-primary:10 rounded px1 py0.5>{{ rawPayload?.packageManager }} dedupe</code> to de-duplicate packages that satisfies with the ranges</span>
     </div>
     <div grid="~ cols-minmax-200px gap-4">
       <div
@@ -52,7 +52,7 @@ function showGraph(pkgs: PackageNode[]) {
             {{ pkgs[0].name }}
           </h2>
           <button
-            v-tooltip="'Compare in Graph'" p1 rounded-full op50 hover:bg-active hover:text-primary hover:op100
+            v-tooltip="'Compare in Graph'" p1 rounded-full op-fade hover:bg-active hover:text-primary hover:op100
             flex="~ items-center"
             title="Compare in Graph"
             @click="showGraph(pkgs)"
@@ -75,5 +75,12 @@ function showGraph(pkgs: PackageNode[]) {
         </div>
       </div>
     </div>
+  </template>
+  <template v-else>
+    <UiEmptyState
+      type="checkmark"
+      title="No Multiple Versions"
+      message="Great! You don't have any packages with multiple versions"
+    />
   </template>
 </template>

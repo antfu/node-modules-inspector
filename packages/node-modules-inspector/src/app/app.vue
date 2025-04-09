@@ -17,5 +17,5 @@ setupQuery()
 <template>
   <Entry />
   <UiNoMobile />
-  <PanelDark />
+  <PanelNavRight />
 </template>

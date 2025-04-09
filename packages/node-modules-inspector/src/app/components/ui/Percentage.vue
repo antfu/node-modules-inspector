@@ -32,7 +32,7 @@ const total = computed(() => props.nodes.reduce((acc, { value }) => acc + value,
       text-center text-xs px1.5 py1 flex gap-x-0.5 cursor-default
     >
       <span>{{ node.name }}</span>
-      <span v-if="percentage" op50>{{ `${+(node.value * 100 / total).toFixed(1)}%` }}</span>
+      <span v-if="percentage" op-fade>{{ `${+(node.value * 100 / total).toFixed(1)}%` }}</span>
     </div>
   </div>
 </template>

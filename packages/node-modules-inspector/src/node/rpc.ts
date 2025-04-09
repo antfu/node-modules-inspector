@@ -79,7 +79,7 @@ export function createServerFunctions(options: CreateServerFunctionsOptions): Se
   }
 
   async function getPublint(pkg: Pick<PackageNode, 'private' | 'workspace' | 'spec' | 'filepath'>, log = true) {
-    if (pkg.workspace || pkg.private)
+    if (pkg.workspace || pkg.private || !pkg.filepath)
       return null
     if (log)
       console.log(c.cyan`${MARK_NODE} Running publint for ${pkg.spec}...`)

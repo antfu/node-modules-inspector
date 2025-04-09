@@ -37,7 +37,7 @@ const messageColors = {
 <template>
   <div v-if="messages" block>
     <button flex="~ gap-2 items-center" w-full p4 select-none @click="settings.showPublintMessages = !settings.showPublintMessages">
-      <span op50 text-sm>publint</span>
+      <span op-fade text-sm>publint</span>
       <template v-if="!messages.length">
         <div badge-color-green rounded-full text-sm py0.5 px2 flex="~ items-center gap-1">
           <div i-ph-checks-bold />
@@ -47,21 +47,21 @@ const messageColors = {
       <template v-if="counter.error">
         <DisplayNumberBadge :number="counter.error" rounded-full text-sm color="badge-color-red">
           <template #after>
-            <span text-xs ml1 op50>error{{ counter.error > 1 ? 's' : '' }}</span>
+            <span text-xs ml1 op-fade>error{{ counter.error > 1 ? 's' : '' }}</span>
           </template>
         </DisplayNumberBadge>
       </template>
       <template v-if="counter.warning">
         <DisplayNumberBadge :number="counter.warning" rounded-full text-sm color="badge-color-amber">
           <template #after>
-            <span text-xs ml1 op50>warning{{ counter.warning > 1 ? 's' : '' }}</span>
+            <span text-xs ml1 op-fade>warning{{ counter.warning > 1 ? 's' : '' }}</span>
           </template>
         </DisplayNumberBadge>
       </template>
       <template v-if="counter.suggestion">
         <DisplayNumberBadge :number="counter.suggestion" rounded-full text-sm color="badge-color-blue">
           <template #after>
-            <span text-xs ml1 op50>suggestion{{ counter.suggestion > 1 ? 's' : '' }}</span>
+            <span text-xs ml1 op-fade>suggestion{{ counter.suggestion > 1 ? 's' : '' }}</span>
           </template>
         </DisplayNumberBadge>
       </template>
@@ -72,7 +72,7 @@ const messageColors = {
         p1 rounded-full hover:bg-active mr--2
         title="Toggle file composition"
       >
-        <div i-ph-caret-down transition duration-300 :class="settings.showPublintMessages ? 'op75' : 'rotate-90 op25'" />
+        <div i-ph-caret-down transition duration-300 :class="settings.showPublintMessages ? 'op75' : 'rotate-90 op-mute'" />
       </button>
     </button>
     <a

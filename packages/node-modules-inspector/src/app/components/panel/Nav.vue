@@ -94,7 +94,7 @@ function toggleFilters() {
           w-10 h-10 rounded-full hover:bg-active
           flex="~ items-center justify-center"
           :title="tab.name"
-          :class="route.path.startsWith(tab.path) ? 'text-primary' : 'op50'"
+          :class="route.path.startsWith(tab.path) ? 'text-primary' : 'op-fade'"
           :to="{ path: tab.path, hash: location.hash }"
           @click="resetPanelState()"
         >
@@ -109,7 +109,7 @@ function toggleFilters() {
           w-10 h-10 rounded-full hover:bg-active
           flex="~ items-center justify-center"
           title="Filters"
-          :class="isFiltersOpen ? 'text-primary' : 'op50'"
+          :class="isFiltersOpen ? 'text-primary' : 'op-fade'"
           @click="toggleFilters()"
         >
           <div i-ph-funnel-duotone text-xl />
@@ -122,13 +122,12 @@ function toggleFilters() {
         w-10 h-10 rounded-full hover:bg-active
         flex="~ items-center justify-center"
         title="Settings"
-        :class="isSettingOpen ? 'text-primary' : 'op50'"
+        :class="isSettingOpen ? 'text-primary' : 'op-fade'"
         @click="toggleSetting()"
       >
         <div i-ph-gear-six-duotone text-xl />
       </button>
     </div>
-    <PanelFiltersMini />
     <PanelGoto />
   </div>
 </template>
