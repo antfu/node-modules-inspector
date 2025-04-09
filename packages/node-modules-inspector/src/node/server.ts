@@ -20,7 +20,7 @@ export async function createHostServer(options: CreateWsServerOptions) {
     return fileMap.get(id)
   }
 
-  app.use('api/metadata.json', eventHandler(async (event) => {
+  app.use('/api/metadata.json', eventHandler(async (event) => {
     event.node.res.setHeader('Content-Type', 'application/json')
     return event.node.res.end(JSON.stringify(await ws.getMetadata()))
   }))
