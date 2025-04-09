@@ -14,6 +14,7 @@ import { distDir } from '../dirs'
 import { MARK_CHECK, MARK_NODE } from './constants'
 import { createHostServer } from './server'
 import { storageNpmMeta, storageNpmMetaLatest, storagePublint } from './storage'
+import path from 'node:path'
 
 const cli = cac('node-modules-inspector')
 
@@ -28,10 +29,9 @@ cli
   // Action
   .action(async (options) => {
     console.log(c.cyan`${MARK_NODE} Building static Node Modules Inspector...`)
-
-    const cwd = process.cwd()
-    const outDir = resolve(cwd, options.outDir)
-
+    
+    const cwd = process.cwd();
+    const serveDir = resolve(cwd, options.outDir);
     const rpc = await import('./rpc').then(r => r.createServerFunctions({
       cwd,
       depth: options.depth,
@@ -51,6 +51,8 @@ cli
     if (!baseURL.startsWith('/'))
       baseURL = `/${baseURL}`
     baseURL = baseURL.replace(/\/+/g, '/')
+
+    const outDir = path.join(cwd, options.outDir, baseURL);
 
     if (existsSync(outDir))
       await fs.rm(outDir, { recursive: true })
@@ -73,7 +75,7 @@ cli
     await fs.writeFile(resolve(outDir, 'api/rpc-dump.json'), stringify(rpcDump), 'utf-8')
 
     console.log(c.green`${MARK_CHECK} Built to ${relative(cwd, outDir)}`)
-    console.log(c.green`${MARK_NODE} You can use static server like \`npx serve ${relative(cwd, outDir)}\` to serve the inspector`)
+    console.log(c.green`${MARK_NODE} You can use static server like "npx serve ${relative(cwd, serveDir)}" to serve the inspector`)
   })
 
 cli
