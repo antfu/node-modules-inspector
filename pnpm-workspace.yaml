@@ -14,12 +14,12 @@ catalogs:
     rollup: ^4.39.0
     rollup-plugin-esbuild: ^6.2.1
     unbuild: ^3.5.0
-    vite: ^6.2.5
+    vite: ^6.2.6
   deps:
     ansis: ^3.17.0
     birpc: ^2.3.0
     cac: ^6.7.14
-    fast-npm-meta: ^0.4.1
+    fast-npm-meta: ^0.4.2
     get-port-please: ^3.1.2
     h3: ^1.15.1
     js-yaml: ^4.1.0

@@ -1,4 +1,4 @@
-import type { ResolvedPackageVersion } from 'fast-npm-meta'
+import type { ResolvedPackageVersionWithMetadata } from 'fast-npm-meta'
 import type { NpmMeta, NpmMetaLatest } from 'node-modules-tools'
 import type { ListPackagesNpmMetaLatestOptions, ListPackagesNpmMetaOptions } from './types'
 import { getLatestVersion, getLatestVersionBatch } from 'fast-npm-meta'
@@ -10,7 +10,7 @@ const DAY = HOUR * 24
 
 async function fetchBatch(
   specs: string[],
-  onResult: (result: ResolvedPackageVersion) => void,
+  onResult: (result: ResolvedPackageVersionWithMetadata) => void,
 ) {
   const promises: Promise<void>[] = []
   const missingSpecs = new Set<string>()
