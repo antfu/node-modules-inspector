@@ -6,7 +6,7 @@ import { ref } from 'vue'
 export function createStaticBackend(): Backend {
   const status: Backend['status'] = ref('connecting')
   const error = ref<Error | undefined>(undefined)
-  const getDump = fetch('api/rpc-dump.json')
+  const getDump = fetch('/api/rpc-dump.json')
     .then(res => res.text())
     .then(text => parse(text) as ServerFunctionsDump)
     .then((dump) => {
