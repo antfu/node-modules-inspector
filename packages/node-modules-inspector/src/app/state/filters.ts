@@ -45,6 +45,8 @@ export function filtersExcludePredicate(pkg: PackageNode) {
     return true
   if (state.excludeDts && pkg.resolved.module === 'dts')
     return true
+  if (state.excludeOptional && !pkg.filepath)
+    return true
   if (state.excludePrivate && pkg.private)
     return true
   if (state.excludes?.length) {

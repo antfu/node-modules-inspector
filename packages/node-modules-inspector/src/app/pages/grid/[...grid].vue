@@ -4,6 +4,7 @@ import { useRoute } from '#app/composables/router'
 import SafeImage from '@/components/display/SafeImage.vue'
 import { computed } from 'vue'
 import { payloads } from '../../state/payload'
+import { getModuleType } from '../../utils/module-type'
 import { getAuthors, getPackageData, getRepository } from '../../utils/package-json'
 
 const params = useRoute().params as Record<string, string>
@@ -24,7 +25,7 @@ const groups = computed<Group[]>(() => {
   if (tab.value === 'module-type') {
     const map = new Map<string, PackageNode[]>()
     for (const pkg of payloads.filtered.packages) {
-      const type = pkg.resolved.module
+      const type = getModuleType(pkg)
       if (!map.has(type))
         map.set(type, [])
       map.get(type)?.push(pkg)

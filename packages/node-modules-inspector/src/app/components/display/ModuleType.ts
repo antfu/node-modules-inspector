@@ -3,7 +3,7 @@ import type { PropType } from 'vue'
 import { Tooltip as FloatingTooltip } from 'floating-vue'
 import { computed, defineComponent, h } from 'vue'
 import { settings } from '../../state/settings'
-import { getModuleType, MODULE_TYPES_COLOR_BADGE } from '../../utils/module-type'
+import { getModuleType, MODULE_TYPES_COLOR_BADGE, MODULE_TYPES_NAME } from '../../utils/module-type'
 
 // @unocss-include
 
@@ -64,7 +64,7 @@ export default defineComponent({
             MODULE_TYPES_COLOR_BADGE[type.value],
             props.badge ? 'w-11 flex-none text-center px1 rounded text-sm' : 'bg-transparent! w-auto!',
           ],
-        }, type.value.toUpperCase()),
+        }, MODULE_TYPES_NAME[type.value]),
         popper: () => h('div', { class: 'text-sm' }, description.value),
       })
     }

@@ -15,6 +15,15 @@ export const MODULE_TYPES_COLOR_BADGE = {
   unknown: 'badge-color-gray',
 }
 
+export const MODULE_TYPES_NAME = {
+  esm: 'ESM',
+  dual: 'DUAL',
+  cjs: 'CJS',
+  faux: 'FAUX',
+  dts: 'DTS',
+  unknown: '?',
+}
+
 export function getModuleType(node: PackageNode | PackageModuleType) {
   const type = typeof node === 'string' ? node : node.resolved.module
 
