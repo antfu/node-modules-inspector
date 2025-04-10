@@ -73,7 +73,7 @@ cli
     await fs.writeFile(resolve(outDir, 'api/rpc-dump.json'), stringify(rpcDump), 'utf-8')
 
     console.log(c.green`${MARK_CHECK} Built to ${relative(cwd, outDir)}`)
-    console.log(c.green`${MARK_NODE} You can use static server like \`npx serve ${relative(cwd, outDir)}\` to serve the inspector`)
+    console.log(c.blue`${MARK_NODE} You can use static server like \`npx serve ${relative(cwd, outDir)}\` to serve the inspector`)
   })
 
 cli
