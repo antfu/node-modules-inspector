@@ -25,16 +25,16 @@
     "dist"
   ],
   "scripts": {
-    "dev": "pnpm run -r stub && nuxi dev src",
+    "dev": "pnpm run -r stub && ROLLDOWN_OPTIONS_VALIDATION=loose nuxi dev src",
     "stub": "unbuild --stub",
-    "build": "pnpm run wc:prepare && nuxi build src && unbuild",
-    "build:debug": "NUXT_DEBUG_BUILD=true pnpm run build",
+    "build": "pnpm run wc:prepare && ROLLDOWN_OPTIONS_VALIDATION=loose nuxi build src && unbuild",
+    "build:debug": "ROLLDOWN_OPTIONS_VALIDATION=loose NUXT_DEBUG_BUILD=true pnpm run build",
     "start": "node ./bin.mjs",
     "prepack": "pnpm build",
     "dev:prepare": "nuxi prepare src && pnpm wc:prepare",
     "wc:prepare": "rollup -c",
-    "wc:build": "pnpm run wc:prepare && NMI_BACKEND=webcontainer nuxi build src && unbuild",
-    "wc:dev": "pnpm run -r stub && pnpm run wc:prepare && cd src && NMI_BACKEND=webcontainer nuxi dev"
+    "wc:build": "pnpm run wc:prepare && NMI_BACKEND=webcontainer ROLLDOWN_OPTIONS_VALIDATION=loose nuxi build src && unbuild",
+    "wc:dev": "pnpm run -r stub && pnpm run wc:prepare && cd src && NMI_BACKEND=webcontainer ROLLDOWN_OPTIONS_VALIDATION=loose nuxi dev"
   },
   "dependencies": {
     "ansis": "catalog:deps",

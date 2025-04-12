@@ -1,5 +1,6 @@
 packages:
   - packages/*
+
 catalogs:
   build:
     '@rollup/plugin-alias': ^5.1.1
@@ -8,13 +9,13 @@ catalogs:
     '@unocss/nuxt': ^66.1.0-beta.10
     '@vueuse/nuxt': ^13.1.0
     esbuild: ^0.25.2
-    nitropack: ^2.11.8
+    nitropack: ^2.11.9
     nuxt: ^3.16.2
-    nuxt-mcp: ^0.1.0
+    nuxt-mcp: ^0.1.1
     rollup: ^4.39.0
     rollup-plugin-esbuild: ^6.2.1
     unbuild: ^3.5.0
-    vite: ^6.2.6
+    vite: npm:rolldown-vite@latest
   deps:
     ansis: ^3.17.0
     birpc: ^2.3.0
@@ -47,7 +48,7 @@ catalogs:
     '@unocss/eslint-config': ^66.1.0-beta.10
     bumpp: ^10.1.0
     eslint: ^9.24.0
-    lint-staged: ^15.5.0
+    lint-staged: ^15.5.1
     nuxt-eslint-auto-explicit-import: ^0.1.1
     simple-git-hooks: ^2.12.1
     typescript: ^5.8.3
@@ -90,7 +91,9 @@ catalogs:
     '@types/stream-json': ^1.7.8
     '@types/ws': ^8.18.1
     pkg-types: ^2.1.0
+
 onlyBuiltDependencies:
   - '@parcel/watcher'
   - esbuild
+  - rolldown
   - simple-git-hooks
