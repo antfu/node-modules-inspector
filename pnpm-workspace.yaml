@@ -6,7 +6,7 @@ catalogs:
     '@rollup/plugin-alias': ^5.1.1
     '@rollup/plugin-commonjs': ^28.0.3
     '@rollup/plugin-node-resolve': ^16.0.1
-    '@unocss/nuxt': ^66.1.0-beta.10
+    '@unocss/nuxt': ^66.1.0-beta.11
     '@vueuse/nuxt': ^13.1.0
     esbuild: ^0.25.2
     nitropack: ^2.11.9
@@ -45,7 +45,7 @@ catalogs:
     '@nuxt/devtools': ^2.3.2
     '@nuxt/eslint': ^1.3.0
     '@typescript-eslint/utils': ^8.29.1
-    '@unocss/eslint-config': ^66.1.0-beta.10
+    '@unocss/eslint-config': ^66.1.0-beta.11
     bumpp: ^10.1.0
     eslint: ^9.24.0
     lint-staged: ^15.5.1
