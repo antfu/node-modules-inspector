@@ -121,9 +121,13 @@ export default defineNuxtConfig({
         output: {
           entryFileNames: '_nuxt/[name].[hash].js',
           chunkFileNames: '_nuxt/chunks/[name].[hash].js',
-          manualChunks: (id) => {
-            if (id.includes('@webcontainer'))
-              return 'webcontainer-vendor'
+          advancedChunks: {
+            groups: [
+              {
+                name: 'webcontainer-vendor',
+                test: /@webcontainer/,
+              },
+            ],
           },
         },
       },
