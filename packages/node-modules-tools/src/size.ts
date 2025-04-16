@@ -5,7 +5,7 @@ import { join, relative } from 'node:path'
 export async function getPackageInstallSize(
   pkg: PackageNodeRaw,
 ): Promise<PackageInstallSizeInfo | undefined> {
-  if (pkg.workspace)
+  if (pkg.workspace || !pkg.name || !pkg.version)
     return
   if (pkg.name.startsWith('#'))
     return
