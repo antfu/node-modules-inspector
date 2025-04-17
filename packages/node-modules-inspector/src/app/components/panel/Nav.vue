@@ -115,7 +115,7 @@ function toggleFilters() {
           <div i-ph-funnel-duotone text-xl />
         </button>
         <div v-if="filters.select.activated.length" absolute top--1 right--1 w-4 h-4 bg-primary-600 shadow text-white rounded-full flex text-0.6rem>
-          <span ma>{{ filters.select.activated.length }}</span>
+          <span ma line-height-none>{{ filters.select.activated.length }}</span>
         </div>
       </div>
       <button
