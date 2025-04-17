@@ -42,7 +42,7 @@ const moduleTypes = Object.fromEntries(
     <button relative pl2 pr1 @click="query.selected = '~filters'">
       <div i-ph-funnel-duotone text-xl op-fade />
       <div v-if="filters.select.activated.length" absolute top--2 right--2 w-4 h-4 bg-primary-600 shadow text-white rounded-full flex text-0.6rem>
-        <span ma>{{ filters.select.activated.length }}</span>
+        <span ma line-height-none>{{ filters.select.activated.length }}</span>
       </div>
     </button>
 
