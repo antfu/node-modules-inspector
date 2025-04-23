@@ -85,6 +85,8 @@ export async function install(
 
       if ('status' in parsed) {
         if (parsed.status === 'heartbeat') {
+          // eslint-disable-next-line no-console
+          console.log('Heartbeat', parsed.heartbeat)
           heartbeat = parsed.heartbeat
         }
         else if (parsed.status === 'error') {
@@ -124,9 +126,12 @@ export async function install(
         heartbeat = Date.now()
         serverError = undefined
 
-        // Max 5000ms between heartbeat and now
+        // Max 10000 ms between heartbeat and now
         // eslint-disable-next-line no-unmodified-loop-condition
-        while (!result && !serverError && Date.now() - heartbeat < 5000) {
+        while (!result && !serverError) {
+          if (Date.now() - heartbeat > 10000) {
+            throw new Error('Server heartbeat timeout')
+          }
           await new Promise(r => setTimeout(r, 100))
         }
         if (!result) {
