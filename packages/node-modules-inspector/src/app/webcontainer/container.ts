@@ -85,8 +85,6 @@ export async function install(
 
       if ('status' in parsed) {
         if (parsed.status === 'heartbeat') {
-          // eslint-disable-next-line no-console
-          console.log('Heartbeat', parsed.heartbeat)
           heartbeat = parsed.heartbeat
         }
         else if (parsed.status === 'error') {
