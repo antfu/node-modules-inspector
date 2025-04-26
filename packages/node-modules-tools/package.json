@@ -49,6 +49,6 @@
     "@types/js-yaml": "catalog:types",
     "@types/stream-json": "catalog:types",
     "stream-json": "catalog:deps",
-    "unbuild": "catalog:build"
+    "unbuild": "catalog:bundling"
   }
 }

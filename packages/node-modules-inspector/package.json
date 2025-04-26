@@ -60,8 +60,8 @@
   },
   "devDependencies": {
     "@types/semver": "catalog:types",
-    "@unocss/nuxt": "catalog:build",
-    "@vueuse/nuxt": "catalog:build",
+    "@unocss/nuxt": "catalog:bundling",
+    "@vueuse/nuxt": "catalog:bundling",
     "@webcontainer/api": "catalog:frontend",
     "@xterm/addon-fit": "catalog:frontend",
     "@xterm/xterm": "catalog:frontend",
