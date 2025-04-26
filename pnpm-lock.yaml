@@ -100,34 +100,10 @@ catalogs:
     ws:
       specifier: ^8.18.1
       version: 8.18.1
-  devtools:
-    '@antfu/eslint-config':
-      specifier: ^4.12.0
-      version: 4.12.0
-    '@nuxt/eslint':
-      specifier: ^1.3.0
-      version: 1.3.0
-    '@typescript-eslint/utils':
-      specifier: ^8.31.0
-      version: 8.31.0
-    '@unocss/eslint-config':
-      specifier: ^66.1.0-beta.12
-      version: 66.1.0-beta.12
+  dev:
     bumpp:
       specifier: ^10.1.0
       version: 10.1.0
-    eslint:
-      specifier: ^9.25.1
-      version: 9.25.1
-    lint-staged:
-      specifier: ^15.5.1
-      version: 15.5.1
-    nuxt-eslint-auto-explicit-import:
-      specifier: ^0.1.1
-      version: 0.1.1
-    simple-git-hooks:
-      specifier: ^2.13.0
-      version: 2.13.0
     typescript:
       specifier: ^5.8.3
       version: 5.8.3
@@ -200,6 +176,31 @@ catalogs:
     '@antfu/utils':
       specifier: ^9.2.0
       version: 9.2.0
+  lint:
+    '@antfu/eslint-config':
+      specifier: ^4.12.0
+      version: 4.12.0
+    '@nuxt/eslint':
+      specifier: ^1.3.0
+      version: 1.3.0
+    '@typescript-eslint/utils':
+      specifier: ^8.31.0
+      version: 8.31.0
+    '@unocss/eslint-config':
+      specifier: ^66.1.0-beta.12
+      version: 66.1.0-beta.12
+    eslint:
+      specifier: ^9.25.1
+      version: 9.25.1
+    lint-staged:
+      specifier: ^15.5.1
+      version: 15.5.1
+    nuxt-eslint-auto-explicit-import:
+      specifier: ^0.1.1
+      version: 0.1.1
+    simple-git-hooks:
+      specifier: ^2.13.0
+      version: 2.13.0
   testing:
     mlly:
       specifier: ^1.7.4
@@ -252,7 +253,7 @@ importers:
   .:
     devDependencies:
       '@antfu/eslint-config':
-        specifier: catalog:devtools
+        specifier: catalog:lint
         version: 4.12.0(@unocss/eslint-plugin@66.0.0(eslint@9.25.1(jiti@2.4.2))(typescript@5.8.3))(@vue/compiler-sfc@3.5.13)(eslint@9.25.1(jiti@2.4.2))(typescript@5.8.3)(vitest@3.1.2(@types/debug@4.1.12)(@types/node@22.13.9)(esbuild@0.25.3)(jiti@2.4.2)(terser@5.39.0)(typescript@5.8.3)(yaml@2.7.0))
       '@antfu/utils':
         specifier: catalog:inlined
@@ -279,7 +280,7 @@ importers:
         specifier: ^2.4.0
         version: 2.4.0(rolldown-vite@6.3.0-beta.6(@types/node@22.13.9)(esbuild@0.25.3)(jiti@2.4.2)(terser@5.39.0)(typescript@5.8.3)(yaml@2.7.0))(vue@3.5.13(typescript@5.8.3))
       '@nuxt/eslint':
-        specifier: catalog:devtools
+        specifier: catalog:lint
         version: 1.3.0(@vue/compiler-sfc@3.5.13)(eslint@9.25.1(jiti@2.4.2))(magicast@0.3.5)(rolldown-vite@6.3.0-beta.6(@types/node@22.13.9)(esbuild@0.25.3)(jiti@2.4.2)(terser@5.39.0)(typescript@5.8.3)(yaml@2.7.0))(typescript@5.8.3)
       '@rollup/plugin-alias':
         specifier: catalog:bundling
@@ -303,28 +304,28 @@ importers:
         specifier: catalog:types
         version: 8.18.1
       '@typescript-eslint/utils':
-        specifier: catalog:devtools
+        specifier: catalog:lint
         version: 8.31.0(eslint@9.25.1(jiti@2.4.2))(typescript@5.8.3)
       '@unocss/eslint-config':
-        specifier: catalog:devtools
+        specifier: catalog:lint
         version: 66.1.0-beta.12(eslint@9.25.1(jiti@2.4.2))(typescript@5.8.3)
       ansis:
         specifier: catalog:deps
         version: 3.17.0
       bumpp:
-        specifier: catalog:devtools
+        specifier: catalog:dev
         version: 10.1.0(magicast@0.3.5)
       esbuild:
         specifier: ^0.25.3
         version: 0.25.3
       eslint:
-        specifier: catalog:devtools
+        specifier: catalog:lint
         version: 9.25.1(jiti@2.4.2)
       fast-npm-meta:
         specifier: catalog:deps
         version: 0.4.2
       lint-staged:
-        specifier: catalog:devtools
+        specifier: catalog:lint
         version: 15.5.1
       node-modules-inspector:
         specifier: workspace:*
@@ -336,7 +337,7 @@ importers:
         specifier: ^3.16.2
         version: 3.16.2(@parcel/watcher@2.5.1)(@types/node@22.13.9)(db0@0.3.1)(eslint@9.25.1(jiti@2.4.2))(idb-keyval@6.2.1)(ioredis@5.6.0)(magicast@0.3.5)(optionator@0.9.4)(rolldown-vite@6.3.0-beta.6(@types/node@22.13.9)(esbuild@0.25.3)(jiti@2.4.2)(terser@5.39.0)(typescript@5.8.3)(yaml@2.7.0))(rollup@4.40.0)(terser@5.39.0)(typescript@5.8.3)(vue-tsc@2.2.10(typescript@5.8.3))(yaml@2.7.0)
       nuxt-eslint-auto-explicit-import:
-        specifier: catalog:devtools
+        specifier: catalog:lint
         version: 0.1.1(eslint@9.25.1(jiti@2.4.2))(magicast@0.3.5)(rollup@4.40.0)(typescript@5.8.3)
       nuxt-mcp:
         specifier: catalog:bundling
@@ -351,10 +352,10 @@ importers:
         specifier: catalog:bundling
         version: 6.2.1(esbuild@0.25.3)(rollup@4.40.0)
       simple-git-hooks:
-        specifier: catalog:devtools
+        specifier: catalog:lint
         version: 2.13.0
       typescript:
-        specifier: catalog:devtools
+        specifier: catalog:dev
         version: 5.8.3
       unbuild:
         specifier: catalog:bundling
@@ -366,13 +367,13 @@ importers:
         specifier: npm:rolldown-vite@latest
         version: rolldown-vite@6.3.0-beta.6(@types/node@22.13.9)(esbuild@0.25.3)(jiti@2.4.2)(terser@5.39.0)(typescript@5.8.3)(yaml@2.7.0)
       vite-plugin-inspect:
-        specifier: catalog:devtools
+        specifier: catalog:dev
         version: 11.0.1(@nuxt/kit@3.16.2(magicast@0.3.5))(rolldown-vite@6.3.0-beta.6(@types/node@22.13.9)(esbuild@0.25.3)(jiti@2.4.2)(terser@5.39.0)(typescript@5.8.3)(yaml@2.7.0))
       vitest:
         specifier: catalog:testing
         version: 3.1.2(@types/debug@4.1.12)(@types/node@22.13.9)(esbuild@0.25.3)(jiti@2.4.2)(terser@5.39.0)(typescript@5.8.3)(yaml@2.7.0)
       vue-tsc:
-        specifier: catalog:devtools
+        specifier: catalog:dev
         version: 2.2.10(typescript@5.8.3)
 
   packages/node-modules-inspector:
@@ -937,20 +938,12 @@ packages:
     resolution: {integrity: sha512-gFHJ+xBOo4G3WRlR1e/3G8A6/KZAH6zcE/hkLRCZTi/B9avAG365QhFA8uOGzTMqgTghpn7/fSnscW++dpMSAw==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@eslint/core@0.12.0':
-    resolution: {integrity: sha512-cmrR6pytBuSMTaBweKoGMwu3EiHiEC+DoyupPmlZ0HxBJBtIxwe+j/E4XPIKNx+Q74c8lXKPwYawBf5glsTkHg==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-
   '@eslint/core@0.13.0':
     resolution: {integrity: sha512-yfkgDw1KR66rkT5A8ci4irzDysN7FRpq3ttJolR88OqQikAWqwA8j5VZyas+vjyBNFIJ7MfybJ9plMILI2UrCw==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
   '@eslint/eslintrc@3.3.1':
     resolution: {integrity: sha512-gtF186CXhIl1p4pJNGZw8Yc6RlshoePRvE0X91oPGb3vZ8pM3qOS9W9NGPat9LziaBV7XrJWGylNQXkGcnM3IQ==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-
-  '@eslint/js@9.24.0':
-    resolution: {integrity: sha512-uIY/y3z0uvOGX8cp1C2fiC4+ZmBhp6yZWkojtHL1YEMnRt1Y63HB9TM17proGEmeG7HeUY+UP36F0aknKYTpYA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
   '@eslint/js@9.25.1':
@@ -963,10 +956,6 @@ packages:
 
   '@eslint/object-schema@2.1.6':
     resolution: {integrity: sha512-RBMg5FRL0I0gs51M/guSAj5/e14VQ4tpZnQNWwuDT66P14I43ItmPfIZRhO9fUVIPOAQXU47atlywZ/czoqFPA==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-
-  '@eslint/plugin-kit@0.2.7':
-    resolution: {integrity: sha512-JubJ5B2pJ4k4yGxaNLdbjrnk9d/iDz6/q8wOilpIowd6PJPgaxCuHBnBszq7Ce2TyMrywm5r4PnKm6V3iiZF+g==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
   '@eslint/plugin-kit@0.2.8':
@@ -1122,11 +1111,6 @@ packages:
 
   '@nuxt/devalue@2.0.2':
     resolution: {integrity: sha512-GBzP8zOc7CGWyFQS6dv1lQz8VVpz5C2yRszbXufwG/9zhStTIH50EtD87NmWbTMwXDvZLNg8GIpb1UFdH93JCA==}
-
-  '@nuxt/devtools-kit@2.3.2':
-    resolution: {integrity: sha512-K0citnz9bSecPCLl4jGfE5I5St+E9XtDmOvYqq3ranGZGZ2Mvs5RwgUkaOrn4rulvUmBGBl7Exwh5YX9PONrEQ==}
-    peerDependencies:
-      vite: '>=6.0'
 
   '@nuxt/devtools-kit@2.4.0':
     resolution: {integrity: sha512-GdxdxEDN1f6uxJOPooYQTLC6X1QUe5kRs83A0PVH/uD0sqoXCjpKHOw+H0vdhkHOwOIsVIsbL+TdaF4k++p9TA==}
@@ -4837,10 +4821,6 @@ packages:
     resolution: {integrity: sha512-VXJjc87FScF88uafS3JllDgvAm+c/Slfz06lorj2uAY34rlUu0Nt+v8wreiImcrgAjjIHp1rXpTDlLOGw29WwQ==}
     engines: {node: '>=18'}
 
-  open@10.1.0:
-    resolution: {integrity: sha512-mnkeQ1qP5Ue2wd+aivTD3NHd/lZ96Lu0jgf0pwktLPtx6cTZiH7tyeGRRHs0zX0rbrahXPnXlUnbeXyaBBuIaw==}
-    engines: {node: '>=18'}
-
   open@10.1.1:
     resolution: {integrity: sha512-zy1wx4+P3PfhXSEPJNtZmJXfhkkIaxU1VauWIrDZw1O7uJRDRJtKr9n3Ic4NgbA16KyOxOXO2ng9gYwCdXuSXA==}
     engines: {node: '>=18'}
@@ -6758,7 +6738,7 @@ snapshots:
     dependencies:
       '@types/eslint': 9.6.1
       '@types/estree': 1.0.7
-      '@typescript-eslint/types': 8.29.1
+      '@typescript-eslint/types': 8.31.0
       comment-parser: 1.4.1
       esquery: 1.6.0
       jsdoc-type-pratt-parser: 4.1.0
@@ -6880,8 +6860,8 @@ snapshots:
       h3: 1.15.1
       mlly: 1.7.4
       mrmime: 2.0.1
-      open: 10.1.0
-      tinyglobby: 0.2.12
+      open: 10.1.1
+      tinyglobby: 0.2.13
       ws: 8.18.1
     transitivePeerDependencies:
       - bufferutil
@@ -6889,10 +6869,6 @@ snapshots:
       - utf-8-validate
 
   '@eslint/core@0.10.0':
-    dependencies:
-      '@types/json-schema': 7.0.15
-
-  '@eslint/core@0.12.0':
     dependencies:
       '@types/json-schema': 7.0.15
 
@@ -6914,14 +6890,12 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@eslint/js@9.24.0': {}
-
   '@eslint/js@9.25.1': {}
 
   '@eslint/markdown@6.3.0':
     dependencies:
       '@eslint/core': 0.10.0
-      '@eslint/plugin-kit': 0.2.7
+      '@eslint/plugin-kit': 0.2.8
       mdast-util-from-markdown: 2.0.2
       mdast-util-gfm: 3.1.0
       micromark-extension-gfm: 3.0.0
@@ -6929,11 +6903,6 @@ snapshots:
       - supports-color
 
   '@eslint/object-schema@2.1.6': {}
-
-  '@eslint/plugin-kit@0.2.7':
-    dependencies:
-      '@eslint/core': 0.12.0
-      levn: 0.4.1
 
   '@eslint/plugin-kit@0.2.8':
     dependencies:
@@ -7147,15 +7116,6 @@ snapshots:
 
   '@nuxt/devalue@2.0.2': {}
 
-  '@nuxt/devtools-kit@2.3.2(magicast@0.3.5)(rolldown-vite@6.3.0-beta.6(@types/node@22.13.9)(esbuild@0.25.3)(jiti@2.4.2)(terser@5.39.0)(typescript@5.8.3)(yaml@2.7.0))':
-    dependencies:
-      '@nuxt/kit': 3.16.2(magicast@0.3.5)
-      '@nuxt/schema': 3.16.2
-      execa: 8.0.1
-      vite: rolldown-vite@6.3.0-beta.6(@types/node@22.13.9)(esbuild@0.25.3)(jiti@2.4.2)(terser@5.39.0)(typescript@5.8.3)(yaml@2.7.0)
-    transitivePeerDependencies:
-      - magicast
-
   '@nuxt/devtools-kit@2.4.0(magicast@0.3.5)(rolldown-vite@6.3.0-beta.6(@types/node@22.13.9)(esbuild@0.25.3)(jiti@2.4.2)(terser@5.39.0)(typescript@5.8.3)(yaml@2.7.0))':
     dependencies:
       '@nuxt/kit': 3.16.2(magicast@0.3.5)
@@ -7271,7 +7231,7 @@ snapshots:
     dependencies:
       '@antfu/install-pkg': 1.0.0
       '@clack/prompts': 0.10.1
-      '@eslint/js': 9.24.0
+      '@eslint/js': 9.25.1
       '@nuxt/eslint-plugin': 1.3.0(eslint@9.25.1(jiti@2.4.2))(typescript@5.8.3)
       '@stylistic/eslint-plugin': 4.2.0(eslint@9.25.1(jiti@2.4.2))(typescript@5.8.3)
       '@typescript-eslint/eslint-plugin': 8.29.1(@typescript-eslint/parser@8.29.1(eslint@9.25.1(jiti@2.4.2))(typescript@5.8.3))(eslint@9.25.1(jiti@2.4.2))(typescript@5.8.3)
@@ -7297,7 +7257,7 @@ snapshots:
 
   '@nuxt/eslint-plugin@1.3.0(eslint@9.25.1(jiti@2.4.2))(typescript@5.8.3)':
     dependencies:
-      '@typescript-eslint/types': 8.29.1
+      '@typescript-eslint/types': 8.31.0
       '@typescript-eslint/utils': 8.31.0(eslint@9.25.1(jiti@2.4.2))(typescript@5.8.3)
       eslint: 9.25.1(jiti@2.4.2)
     transitivePeerDependencies:
@@ -7307,7 +7267,7 @@ snapshots:
   '@nuxt/eslint@1.3.0(@vue/compiler-sfc@3.5.13)(eslint@9.25.1(jiti@2.4.2))(magicast@0.3.5)(rolldown-vite@6.3.0-beta.6(@types/node@22.13.9)(esbuild@0.25.3)(jiti@2.4.2)(terser@5.39.0)(typescript@5.8.3)(yaml@2.7.0))(typescript@5.8.3)':
     dependencies:
       '@eslint/config-inspector': 1.0.2(eslint@9.25.1(jiti@2.4.2))
-      '@nuxt/devtools-kit': 2.3.2(magicast@0.3.5)(rolldown-vite@6.3.0-beta.6(@types/node@22.13.9)(esbuild@0.25.3)(jiti@2.4.2)(terser@5.39.0)(typescript@5.8.3)(yaml@2.7.0))
+      '@nuxt/devtools-kit': 2.4.0(magicast@0.3.5)(rolldown-vite@6.3.0-beta.6(@types/node@22.13.9)(esbuild@0.25.3)(jiti@2.4.2)(terser@5.39.0)(typescript@5.8.3)(yaml@2.7.0))
       '@nuxt/eslint-config': 1.3.0(@vue/compiler-sfc@3.5.13)(eslint@9.25.1(jiti@2.4.2))(typescript@5.8.3)
       '@nuxt/eslint-plugin': 1.3.0(eslint@9.25.1(jiti@2.4.2))(typescript@5.8.3)
       '@nuxt/kit': 3.16.2(magicast@0.3.5)
@@ -8356,7 +8316,7 @@ snapshots:
 
   '@unocss/eslint-plugin@66.0.0(eslint@9.25.1(jiti@2.4.2))(typescript@5.8.3)':
     dependencies:
-      '@typescript-eslint/utils': 8.29.1(eslint@9.25.1(jiti@2.4.2))(typescript@5.8.3)
+      '@typescript-eslint/utils': 8.31.0(eslint@9.25.1(jiti@2.4.2))(typescript@5.8.3)
       '@unocss/config': 66.0.0
       '@unocss/core': 66.0.0
       '@unocss/rule-utils': 66.0.0
@@ -9174,10 +9134,10 @@ snapshots:
       cac: 6.7.14
       escalade: 3.2.0
       jsonc-parser: 3.3.1
-      package-manager-detector: 1.1.0
+      package-manager-detector: 1.2.0
       semver: 7.7.1
       tinyexec: 0.3.2
-      tinyglobby: 0.2.12
+      tinyglobby: 0.2.13
       yaml: 2.7.0
     transitivePeerDependencies:
       - magicast
@@ -9943,7 +9903,7 @@ snapshots:
 
   eslint-plugin-perfectionist@4.11.0(eslint@9.25.1(jiti@2.4.2))(typescript@5.8.3):
     dependencies:
-      '@typescript-eslint/types': 8.29.1
+      '@typescript-eslint/types': 8.31.0
       '@typescript-eslint/utils': 8.31.0(eslint@9.25.1(jiti@2.4.2))(typescript@5.8.3)
       eslint: 9.25.1(jiti@2.4.2)
       natural-orderby: 5.0.0
@@ -9958,7 +9918,7 @@ snapshots:
       jsonc-eslint-parser: 2.4.0
       pathe: 2.0.3
       pnpm-workspace-yaml: 0.3.1
-      tinyglobby: 0.2.12
+      tinyglobby: 0.2.13
       yaml-eslint-parser: 1.3.0
 
   eslint-plugin-regexp@2.7.0(eslint@9.25.1(jiti@2.4.2)):
@@ -9986,7 +9946,7 @@ snapshots:
     dependencies:
       '@babel/helper-validator-identifier': 7.25.9
       '@eslint-community/eslint-utils': 4.5.1(eslint@9.25.1(jiti@2.4.2))
-      '@eslint/plugin-kit': 0.2.7
+      '@eslint/plugin-kit': 0.2.8
       ci-info: 4.2.0
       clean-regexp: 1.0.0
       core-js-compat: 3.41.0
@@ -10005,7 +9965,7 @@ snapshots:
 
   eslint-plugin-unimport@0.1.2(eslint@9.25.1(jiti@2.4.2))(rollup@4.40.0)(typescript@5.8.3):
     dependencies:
-      '@typescript-eslint/scope-manager': 8.29.1
+      '@typescript-eslint/scope-manager': 8.31.0
       '@typescript-eslint/utils': 8.31.0(eslint@9.25.1(jiti@2.4.2))(typescript@5.8.3)
       debug: 4.4.0
       eslint: 9.25.1(jiti@2.4.2)
@@ -11829,13 +11789,6 @@ snapshots:
     dependencies:
       mimic-function: 5.0.1
 
-  open@10.1.0:
-    dependencies:
-      default-browser: 5.2.1
-      define-lazy-prop: 3.0.0
-      is-inside-container: 1.0.0
-      is-wsl: 3.1.0
-
   open@10.1.1:
     dependencies:
       default-browser: 5.2.1
@@ -13313,7 +13266,7 @@ snapshots:
       debug: 4.4.0
       error-stack-parser-es: 1.0.5
       ohash: 2.0.11
-      open: 10.1.0
+      open: 10.1.1
       perfect-debounce: 1.0.0
       sirv: 3.0.1
       unplugin-utils: 0.2.4
@@ -13330,7 +13283,7 @@ snapshots:
       debug: 4.4.0
       error-stack-parser-es: 1.0.5
       ohash: 2.0.11
-      open: 10.1.0
+      open: 10.1.1
       perfect-debounce: 1.0.0
       sirv: 3.0.1
       unplugin-utils: 0.2.4
