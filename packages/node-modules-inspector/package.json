@@ -1,7 +1,7 @@
 {
   "name": "node-modules-inspector",
   "type": "module",
-  "version": "0.6.6",
+  "version": "0.6.7",
   "description": "A Node Modules Inspector",
   "author": "Anthony Fu <anthonyfu117@hotmail.com>",
   "license": "MIT",
@@ -60,8 +60,8 @@
   },
   "devDependencies": {
     "@types/semver": "catalog:types",
-    "@unocss/nuxt": "catalog:build",
-    "@vueuse/nuxt": "catalog:build",
+    "@unocss/nuxt": "catalog:bundling",
+    "@vueuse/nuxt": "catalog:bundling",
     "@webcontainer/api": "catalog:frontend",
     "@xterm/addon-fit": "catalog:frontend",
     "@xterm/xterm": "catalog:frontend",

@@ -1,7 +1,7 @@
 {
   "name": "node-modules-tools",
   "type": "module",
-  "version": "0.6.6",
+  "version": "0.6.7",
   "description": "Tools for inspecting node_modules",
   "author": "Anthony Fu <anthonyfu117@hotmail.com>",
   "license": "MIT",
@@ -49,6 +49,6 @@
     "@types/js-yaml": "catalog:types",
     "@types/stream-json": "catalog:types",
     "stream-json": "catalog:deps",
-    "unbuild": "catalog:build"
+    "unbuild": "catalog:bundling"
   }
 }
