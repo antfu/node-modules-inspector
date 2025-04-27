@@ -8,6 +8,7 @@ import { getModuleType } from '../../utils/module-type'
 import { getAuthors, getPackageData, getRepository } from '../../utils/package-json'
 
 const params = useRoute().params as Record<string, string>
+
 const tab = computed<'depth' | 'clusters' | 'module-type' | 'authors' | 'licenses' | 'github'>(() => params.grid[0] as any || 'depth')
 
 const MAX_DEPTH = 5
@@ -147,7 +148,7 @@ const groups = computed<Group[]>(() => {
       <div op-fade>
         Group by
       </div>
-      <NuxtLink btn-action as="button" to="/grid/depth" active-class="text-primary bg-primary:5">
+      <NuxtLink btn-action as="button" to="/grid/depth" :class="{ 'bg-primary:5 text-primary': tab === 'depth' }" active-class="text-primary bg-primary:5">
         <div i-ph-stack-simple-duotone />
         Depth
       </NuxtLink>
