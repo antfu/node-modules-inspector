@@ -2,45 +2,47 @@
 import { useRoute } from '#app/composables/router'
 import { computed } from 'vue'
 
+const location = window.location
+
 const params = useRoute().params as Record<string, string>
 const selected = computed(() => params.report[0] || 'all')
 </script>
 
 <template>
   <div flex="~ gap-2 items-center wrap">
-    <NuxtLink btn-action as="button" to="/report/funding" active-class="text-rose bg-rose:5">
+    <NuxtLink btn-action as="button" :to="{ path: '/report/funding', hash: location.hash }" active-class="text-rose bg-rose:5">
       <div i-ph-heart-duotone />
       Funding
     </NuxtLink>
-    <NuxtLink btn-action as="button" to="/report/dependencies" active-class="text-primary bg-primary:5">
+    <NuxtLink btn-action as="button" :to="{ path: '/report/dependencies', hash: location.hash }" active-class="text-primary bg-primary:5">
       <div i-ph-link-simple-duotone />
       Dependencies
     </NuxtLink>
-    <NuxtLink btn-action as="button" to="/report/deprecated" active-class="text-red bg-red:5">
+    <NuxtLink btn-action as="button" :to="{ path: '/report/deprecated', hash: location.hash }" active-class="text-red bg-red:5">
       <div i-ph-warning-duotone />
       Deprecated
     </NuxtLink>
-    <NuxtLink btn-action as="button" to="/report/multiple-versions" active-class="text-primary bg-primary:5">
+    <NuxtLink btn-action as="button" :to="{ path: '/report/multiple-versions', hash: location.hash }" active-class="text-primary bg-primary:5">
       <div i-ph-copy-duotone />
       Multiple Versions
     </NuxtLink>
-    <NuxtLink btn-action as="button" to="/report/install-size" active-class="text-primary bg-primary:5">
+    <NuxtLink btn-action as="button" :to="{ path: '/report/install-size', hash: location.hash }" active-class="text-primary bg-primary:5">
       <div i-ph-package-duotone />
       Install Size
     </NuxtLink>
-    <NuxtLink btn-action as="button" to="/report/time" active-class="text-primary bg-primary:5">
+    <NuxtLink btn-action as="button" :to="{ path: '/report/time', hash: location.hash }" active-class="text-primary bg-primary:5">
       <div i-ph-clock-duotone />
       Publish Time
     </NuxtLink>
-    <NuxtLink btn-action as="button" to="/report/node-engines" active-class="text-primary bg-primary:5">
+    <NuxtLink btn-action as="button" :to="{ path: '/report/node-engines', hash: location.hash }" active-class="text-primary bg-primary:5">
       <div i-ph-hexagon-duotone />
       Node Engines
     </NuxtLink>
-    <NuxtLink btn-action as="button" to="/report/licenses" active-class="text-primary bg-primary:5">
+    <NuxtLink btn-action as="button" :to="{ path: '/report/licenses', hash: location.hash }" active-class="text-primary bg-primary:5">
       <div i-ph-scales-duotone />
       Licenses
     </NuxtLink>
-    <NuxtLink btn-action as="button" to="/report" active-class="text-primary bg-primary:5">
+    <NuxtLink btn-action as="button" :to="{ path: '/report', hash: location.hash }" active-class="text-primary bg-primary:5">
       <div i-ph-grid-four-duotone />
       All
     </NuxtLink>
