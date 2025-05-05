@@ -169,7 +169,7 @@ const groups = computed<Group[]>(() => {
         <div i-ph-file-text-duotone />
         License
       </NuxtLink>
-      <NuxtLink btn-action as="button" to="/grid/github" active-class="text-primary bg-primary:5">
+      <NuxtLink btn-action as="button" :to="{ path: '/grid/github', hash: location.hash }" active-class="text-primary bg-primary:5">
         <div i-ph-users-duotone />
         GitHub Slug
       </NuxtLink>

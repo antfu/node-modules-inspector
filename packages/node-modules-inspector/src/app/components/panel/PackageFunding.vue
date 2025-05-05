@@ -14,6 +14,7 @@ defineProps<{
     :to="fundings[0].url"
     title="Open Funding Page"
     target="_blank"
+    external
     ml--1 w-8 h-8 rounded-full hover:bg-active flex
   >
     <div i-catppuccin-code-of-conduct icon-catppuccin ma />
