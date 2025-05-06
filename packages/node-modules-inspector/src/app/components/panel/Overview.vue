@@ -90,7 +90,7 @@ const timepassed = computed(() => rawPayload.value?.timestamp ? Date.now() - raw
         <DisplayNumberBadge :number="payloads.workspace.packages.length" rounded-full text-sm mx--0.2 mt-3px color="badge-color-yellow" />
         <span ml--0.5>workspace packages</span>
       </div>
-      <NuxtLink flex="~ gap-2 items-center" :to="{ path: '/grid', hash: location.hash }">
+      <NuxtLink flex="~ gap-2 items-center" :to="{ path: '/grid/depth', hash: location.hash }">
         <div i-catppuccin-java-class icon-catppuccin flex-none />
         <DisplayNumberBadge :number="payloads.avaliable.packages.length" rounded-full text-sm mx--0.2 mt-3px color="badge-color-primary" />
         <span ml--0.5>total packages</span>
