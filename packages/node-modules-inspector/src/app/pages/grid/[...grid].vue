@@ -11,6 +11,8 @@ const params = useRoute().params as Record<string, string>
 
 const tab = computed<'depth' | 'clusters' | 'module-type' | 'authors' | 'licenses' | 'github'>(() => params.grid[0] as any || 'depth')
 
+const location = window.location
+
 const MAX_DEPTH = 5
 
 interface Group {
@@ -148,27 +150,27 @@ const groups = computed<Group[]>(() => {
       <div op-fade>
         Group by
       </div>
-      <NuxtLink btn-action as="button" to="/grid/depth" :class="{ 'bg-primary:5 text-primary': tab === 'depth' }" active-class="text-primary bg-primary:5">
+      <NuxtLink btn-action as="button" :to="{ path: '/grid', hash: location.hash }" active-class="text-primary bg-primary:5">
         <div i-ph-stack-simple-duotone />
         Depth
       </NuxtLink>
-      <NuxtLink btn-action as="button" to="/grid/module-type" active-class="text-primary bg-primary:5">
+      <NuxtLink btn-action as="button" :to="{ path: '/grid/module-type', hash: location.hash }" active-class="text-primary bg-primary:5">
         <div i-ph-file-code-duotone />
         Module Type
       </NuxtLink>
-      <NuxtLink btn-action as="button" to="/grid/clusters" active-class="text-primary bg-primary:5">
+      <NuxtLink btn-action as="button" :to="{ path: '/grid/clusters', hash: location.hash }" active-class="text-primary bg-primary:5">
         <div i-ph-exclude-duotone />
         Clusters
       </NuxtLink>
-      <NuxtLink btn-action as="button" to="/grid/authors" active-class="text-primary bg-primary:5">
+      <NuxtLink btn-action as="button" :to="{ path: '/grid/authors', hash: location.hash }" active-class="text-primary bg-primary:5">
         <div i-ph-user-circle-duotone />
         Authors
       </NuxtLink>
-      <NuxtLink btn-action as="button" to="/grid/licenses" active-class="text-primary bg-primary:5">
+      <NuxtLink btn-action as="button" :to="{ path: '/grid/licenses', hash: location.hash }" active-class="text-primary bg-primary:5">
         <div i-ph-file-text-duotone />
         License
       </NuxtLink>
-      <NuxtLink btn-action as="button" to="/grid/github" active-class="text-primary bg-primary:5">
+      <NuxtLink btn-action as="button" :to="{ path: '/grid/github', hash: location.hash }" active-class="text-primary bg-primary:5">
         <div i-ph-users-duotone />
         GitHub Slug
       </NuxtLink>

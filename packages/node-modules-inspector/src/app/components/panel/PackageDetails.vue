@@ -264,6 +264,7 @@ const thirdPartyServices = computed(() => {
             :to="`https://www.npmjs.com/package/${pkg.name}/v/${pkg.version}`"
             title="Open on NPM"
             target="_blank"
+            external
             w-8 h-8 rounded-full hover:bg-active flex
           >
             <div i-catppuccin-npm icon-catppuccin ma />
@@ -274,6 +275,7 @@ const thirdPartyServices = computed(() => {
             :to="resolved.repository"
             title="Open Repository"
             target="_blank"
+            external
             ml--1 w-8 h-8 rounded-full hover:bg-active flex
           >
             <div i-catppuccin-git icon-catppuccin ma />
@@ -284,6 +286,7 @@ const thirdPartyServices = computed(() => {
             :to="resolved.homepage"
             title="Open Homepage"
             target="_blank"
+            external
             ml--1 w-8 h-8 rounded-full hover:bg-active flex
           >
             <div i-catppuccin-http icon-catppuccin ma />

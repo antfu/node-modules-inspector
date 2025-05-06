@@ -7,6 +7,8 @@ import { getDeprecatedInfo, payloads, totalWorkspaceSize } from '../../state/pay
 import { settings } from '../../state/settings'
 import { getFundings, getPackageData } from '../../utils/package-json'
 
+const location = window.location
+
 const backend = getBackend()
 
 const totalDeprecatedCount = computed(() => Array.from(payloads.filtered.packages)
@@ -88,32 +90,32 @@ const timepassed = computed(() => rawPayload.value?.timestamp ? Date.now() - raw
         <DisplayNumberBadge :number="payloads.workspace.packages.length" rounded-full text-sm mx--0.2 mt-3px color="badge-color-yellow" />
         <span ml--0.5>workspace packages</span>
       </div>
-      <NuxtLink flex="~ gap-2 items-center" to="/grid">
+      <NuxtLink flex="~ gap-2 items-center" :to="{ path: '/grid', hash: location.hash }">
         <div i-catppuccin-java-class icon-catppuccin flex-none />
         <DisplayNumberBadge :number="payloads.avaliable.packages.length" rounded-full text-sm mx--0.2 mt-3px color="badge-color-primary" />
         <span ml--0.5>total packages</span>
       </NuxtLink>
-      <NuxtLink v-if="totalDeprecatedCount" flex="~ gap-2 items-center" to="/report/deprecated">
+      <NuxtLink v-if="totalDeprecatedCount" flex="~ gap-2 items-center" :to="{ path: '/report/deprecated', hash: location.hash }">
         <div i-ph-warning-duotone flex-none color-deprecated />
         <DisplayNumberBadge :number="totalDeprecatedCount" rounded-full text-sm mx--0.2 mt-3px color="badge-color-red" color-deprecated />
         <span ml--0.5 color-deprecated>deprecated packages</span>
       </NuxtLink>
-      <NuxtLink v-if="multipleVersionsCount" flex="~ gap-2 items-center" to="/report/multiple-versions">
+      <NuxtLink v-if="multipleVersionsCount" flex="~ gap-2 items-center" :to="{ path: '/report/multiple-versions', hash: location.hash }">
         <div i-catppuccin-java-enum icon-catppuccin flex-none />
         <DisplayNumberBadge :number="multipleVersionsCount" rounded-full text-sm mx--0.2 mt-3px color="badge-color-orange" />
         <span ml--0.5>libraries with multiple versions</span>
       </NuxtLink>
-      <NuxtLink flex="~ gap-2 items-center" to="/report/licenses">
+      <NuxtLink flex="~ gap-2 items-center" :to="{ path: '/report/licenses', hash: location.hash }">
         <div i-catppuccin-license icon-catppuccin flex-none />
         <DisplayNumberBadge :number="licensesCount" rounded-full text-sm mx--0.2 mt-3px color="badge-color-amber" />
         <span ml--0.5>type of licenses</span>
       </NuxtLink>
-      <NuxtLink flex="~ gap-2 items-center" to="/report/funding">
+      <NuxtLink flex="~ gap-2 items-center" :to="{ path: '/report/funding', hash: location.hash }">
         <div i-catppuccin-code-of-conduct icon-catppuccin flex-none />
         <DisplayNumberBadge :number="fundingCount" rounded-full text-sm mx--0.2 mt-3px color="badge-color-pink" />
         <span ml--0.5>packages request for funding</span>
       </NuxtLink>
-      <NuxtLink flex="~ gap-2 items-center" to="/report/install-size">
+      <NuxtLink flex="~ gap-2 items-center" :to="{ path: '/report/install-size', hash: location.hash }">
         <div i-catppuccin-binary icon-catppuccin flex-none />
         <DisplayFileSizeBadge :bytes="totalWorkspaceSize" :percent="false" rounded-full text-sm mx--0.2 mt-3px color="badge-color-primary" />
         <span ml--0.5>total node_modules size</span>

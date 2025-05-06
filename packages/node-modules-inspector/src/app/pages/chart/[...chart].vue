@@ -278,8 +278,7 @@ onUnmounted(() => {
   <div flex="~ gap-2 items-center wrap">
     <NuxtLink
       btn-action as="button"
-      :to="{ path: '/chart/treemap', hash: location.hash }"
-      :class="{ 'bg-primary:5 text-primary': chart === 'treemap' }"
+      :to="{ path: '/chart', hash: location.hash }"
       active-class="text-primary bg-primary:5"
     >
       <div i-ph-checkerboard-duotone />
