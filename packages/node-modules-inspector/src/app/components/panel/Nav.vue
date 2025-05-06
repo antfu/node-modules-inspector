@@ -16,7 +16,7 @@ const tabsMeta = [
   },
   {
     name: 'Grid View',
-    path: '/grid',
+    path: '/grid/depth',
     icon: 'i-ph-grid-nine-duotone',
   },
   {
