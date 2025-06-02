@@ -9,7 +9,7 @@ import type { ListPackageDependenciesBaseResult, ListPackageDependenciesOptions,
 export async function listPackageDependenciesRaw(
   manager: AgentName,
   options: ListPackageDependenciesOptions,
-): Promise<ListPackageDependenciesRawResult> {
+): Promise<ListPackageDependenciesBaseResult> {
   let result: ListPackageDependenciesRawResult
   if (manager === 'pnpm')
     result = await import('../agents/pnpm').then(r => r.listPackageDependencies(options))
@@ -52,7 +52,7 @@ function populateRawResult(input: ListPackageDependenciesRawResult): ListPackage
     }
   }
 
-  function resloveFlatDependencies(pkg: PackageNodeBase) {
+  function resolveFlatDependencies(pkg: PackageNodeBase) {
     const postTasks: (() => void)[] = []
 
     function traverseDependencies(
@@ -111,7 +111,7 @@ function populateRawResult(input: ListPackageDependenciesRawResult): ListPackage
   }
 
   for (const pkg of result.packages.values())
-    resloveFlatDependencies(pkg)
+    resolveFlatDependencies(pkg)
 
   return result
 }
