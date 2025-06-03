@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
 import { computed } from 'vue'
-import { getDeprecatedInfo } from '../../state/payload'
+import { getDeprecatedInfo, getVulnerability } from '../../state/payload'
 
 const props = defineProps<{
   pkg: PackageNode
 }>()
 
 const deprecation = computed(() => getDeprecatedInfo(props.pkg))
+const vulnerability = computed(() => getVulnerability(props.pkg))
 </script>
 
 <template>
@@ -32,7 +33,12 @@ const deprecation = computed(() => getDeprecatedInfo(props.pkg))
       op-fade
       :version="props.pkg.version"
       prefix="@"
-      :class="{ 'text-red line-through': deprecation?.current }"
+      :class="{
+        'text-red line-through': deprecation?.current || vulnerability?.level === 'critical',
+        'text-orange line-through': vulnerability?.level === 'high',
+        'text-yellow line-through': vulnerability?.level === 'moderate',
+        'text-gray line-through': vulnerability?.level === 'low',
+      }"
     />
   </span>
 </template>
