@@ -84,8 +84,10 @@ export async function getPackagesNpmMeta(
     map.set(spec, meta)
     await storage.setItem(spec, meta)
   })
-  await addPackagesNpmVulnerabilityMeta(packages, options)
-
+  // /advisories/bulk has CORP issue.
+  if (import.meta.env.BACKEND !== 'webcontainer') {
+    await addPackagesNpmVulnerabilityMeta(packages, options)
+  }
   if (missing.size) {
     console.warn('Failed to get npm meta for:', [...missing])
   }

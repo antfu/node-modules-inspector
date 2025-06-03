@@ -22,7 +22,8 @@ const selected = computed(() => params.report?.[0] || 'all')
       <div i-ph-warning-duotone />
       Deprecated
     </NuxtLink>
-    <NuxtLink btn-action as="button" :to="{ path: '/report/vulnerabilities', hash: location.hash }" active-class="text-red bg-red:5">
+    <!-- npm /advisories/bulk has CORP issue. -->
+    <NuxtLink v-if="import.meta.env.BACKEND !== 'webcontainer'" btn-action as="button" :to="{ path: '/report/vulnerabilities', hash: location.hash }" active-class="text-red bg-red:5">
       <div i-ph-warning-duotone />
       Vulnerabilities
     </NuxtLink>
@@ -55,7 +56,7 @@ const selected = computed(() => params.report?.[0] || 'all')
   <ReportTransitiveDeps v-if="selected === 'dependencies' || selected === 'all'" />
   <ReportUsedBy v-if="selected === 'dependencies' || selected === 'all'" />
   <ReportInstallSize v-if="selected === 'install-size' || selected === 'all'" />
-  <ReportVulnerability v-if="selected === 'vulnerabilities' || selected === 'all'" />
+  <ReportVulnerability v-if="import.meta.env.BACKEND !== 'webcontainer' && (selected === 'vulnerabilities' || selected === 'all')" />
   <ReportPublishTime v-if="selected === 'time' || selected === 'all'" />
   <ReportDeprecated v-if="selected === 'deprecated' || selected === 'all'" />
   <ReportEngines v-if="selected === 'node-engines' || selected === 'all'" />
