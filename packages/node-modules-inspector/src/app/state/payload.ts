@@ -245,6 +245,11 @@ export function getDeprecatedInfo(input: PackageNode | string) {
   }
 }
 
+export function getVulnerability(input: PackageNode | string) {
+  const meta = getNpmMeta(input)
+  return meta?.vulnerability || null
+}
+
 export const totalWorkspaceSize = computed(() => {
   return Array.from(payloads.avaliable.packages).reduce((acc, pkg) => acc + (pkg.resolved.installSize?.bytes || 0), 0)
 })
