@@ -23,7 +23,7 @@ const labelMap = {
   <a
     v-if="deprecation"
     px3 py2 block
-    :href="deprecation.type === 'current' ? `https://npmjs.com/package/${pkg.spec}` : `https://npmjs.com/package/${pkg.name}`"
+    :href="deprecation.type === 'current' ? `https://npmjs.com/package/${pkg.name}/v/${pkg.version}` : `https://npmjs.com/package/${pkg.name}`"
     :class="deprecation.type === 'future' ? 'badge-color-orange' : 'badge-color-red'"
     target="_blank"
   >
