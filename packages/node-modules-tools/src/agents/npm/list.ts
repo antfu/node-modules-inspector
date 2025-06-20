@@ -67,7 +67,15 @@ async function queryDependencies(options: ListPackageDependenciesOptions, query:
   if (!Array.isArray(json))
     throw new Error(`Failed to parse \`npm query\` output, expected an array but got: ${String(json)}`)
 
-  return json
+  return json.filter((pkg): pkg is NpmPackageNode => {
+    return (
+      pkg
+      && typeof pkg === 'object'
+      && typeof pkg._id === 'string'
+      && typeof pkg.name === 'string'
+      && typeof pkg.version === 'string'
+    )
+  })
 }
 
 export async function listPackageDependencies(
