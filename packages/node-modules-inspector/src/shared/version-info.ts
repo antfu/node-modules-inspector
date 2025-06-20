@@ -100,7 +100,7 @@ export async function getPackagesNpmMeta(
 }
 
 export async function getPackagesNpmMetaLatest(
-  packages: string[],
+  packages: (string | undefined)[],
   options: ListPackagesNpmMetaLatestOptions,
 ): Promise<Map<string, NpmMetaLatest | null>> {
   const { storageNpmMetaLatest: storage } = options
@@ -108,11 +108,15 @@ export async function getPackagesNpmMetaLatest(
   const map = new Map<string, NpmMetaLatest>()
 
   packages.forEach((p) => {
+    if (!p)
+      throw new Error('Package name cannot be empty')
     if (p.split(/@/g).length >= 3)
       throw new Error(`Invalid package name: ${p}`)
   })
 
   await Promise.all(packages.map(async (p) => {
+    if (!p)
+      return
     const meta = await storage.getItem(p)
     if (!meta)
       return
@@ -123,7 +127,7 @@ export async function getPackagesNpmMetaLatest(
     map.set(p, meta)
   }))
 
-  const unknown = packages.filter(p => !map.has(p))
+  const unknown = packages.filter(p => p && !map.has(p))
 
   const {
     missing,
