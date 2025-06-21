@@ -25,6 +25,9 @@ it('types only', async () => {
 it('dual', async () => {
   expect(analyzePackageModuleType(await getPackageJsonPath('h3')))
     .toEqual('dual')
+
+  expect(analyzePackageModuleType(await getPackageJsonPath('rollup-plugin-esbuild')))
+    .toEqual('dual')
 })
 
 it('cjs', async () => {
