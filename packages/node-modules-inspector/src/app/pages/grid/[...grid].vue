@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { PackageModuleType, PackageNode } from 'node-modules-tools'
 import { useRoute } from '#app/composables/router'
-import SafeImage from '@/components/display/SafeImage.vue'
 import { computed } from 'vue'
+import SafeImage from '@/components/display/SafeImage.vue'
 import { payloads } from '../../state/payload'
 import { getModuleType } from '../../utils/module-type'
 import { getAuthors, getPackageData, getRepository } from '../../utils/package-json'

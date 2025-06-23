@@ -18,9 +18,9 @@ type PnpmPackageNode = Pick<ProjectManifest, 'description' | 'license' | 'author
   dependencies?: Record<string, PnpmPackageNode>
 }
 
-type PnpmDependencyHierarchy = Pick<PackageDependencyHierarchy, 'name' | 'version' | 'path'> &
-  Required<Pick<PackageDependencyHierarchy, 'private'>> &
-  {
+type PnpmDependencyHierarchy = Pick<PackageDependencyHierarchy, 'name' | 'version' | 'path'>
+  & Required<Pick<PackageDependencyHierarchy, 'private'>>
+  & {
     dependencies?: Record<string, PnpmPackageNode>
     devDependencies?: Record<string, PnpmPackageNode>
     optionalDependencies?: Record<string, PnpmPackageNode>
