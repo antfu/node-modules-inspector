@@ -14,4 +14,17 @@ describe('listNpmPackageDependencies', () => {
     expect(list.packageManager).toBe('npm')
     expect(list.packages.size).toBe(2)
   })
+
+  it('ignores leftover directories npm fails to clean up', async () => {
+    const list = await listPackageDependencies({
+      cwd: fileURLToPath(new URL('./fixtures/broken-install', import.meta.url)),
+      depth: 25,
+      monorepo: true,
+      workspace: false,
+    })
+
+    expect(list.packageManager).toBe('npm')
+    expect(list.packages.size).toBe(2)
+    expect(Array.from(list.packages.values()).every(i => i.name)).toBe(true)
+  })
 })
