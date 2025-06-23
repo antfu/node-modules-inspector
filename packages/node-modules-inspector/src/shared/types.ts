@@ -20,10 +20,10 @@ export interface NodeModulesInspectorError {
   error: any
 }
 
-export type NodeModulesInspectorLog =
-  NodeModulesInspectorPayload |
-  NodeModulesInspectorHeartbeat |
-  NodeModulesInspectorError
+export type NodeModulesInspectorLog
+  = NodeModulesInspectorPayload
+    | NodeModulesInspectorHeartbeat
+    | NodeModulesInspectorError
 
 export interface ServerFunctions {
   getPayload: (force?: boolean) => Promise<NodeModulesInspectorPayload>

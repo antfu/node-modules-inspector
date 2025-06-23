@@ -8,10 +8,10 @@ export interface ReferencePayloadFunctions {
   removeReferencePayload?: (hash: string) => Promise<void>
 }
 
-export type Functions =
-  & Partial<ServerFunctions>
-  & Pick<ServerFunctions, 'getPayload'>
-  & ReferencePayloadFunctions
+export type Functions
+  = & Partial<ServerFunctions>
+    & Pick<ServerFunctions, 'getPayload'>
+    & ReferencePayloadFunctions
 
 export interface Backend {
   name: string

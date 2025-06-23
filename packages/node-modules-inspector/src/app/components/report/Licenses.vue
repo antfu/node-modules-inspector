@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
-import { getPackageData } from '@/utils/package-json'
 import { computed, ref } from 'vue'
+import { getPackageData } from '@/utils/package-json'
 import { selectedNode } from '../../state/current'
 import { payloads } from '../../state/payload'
 
