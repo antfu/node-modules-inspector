@@ -4,6 +4,7 @@ import type { ListPackagesNpmMetaLatestOptions, ListPackagesNpmMetaOptions } fro
 import { getLatestVersion, getLatestVersionBatch } from 'fast-npm-meta'
 import pLimit from 'p-limit'
 import { isNpmMetaLatestValid } from './utils'
+import { addPackagesNpmVulnerabilityMeta } from './vulnerable-info'
 
 const HOUR = 1000 * 60 * 60
 const DAY = HOUR * 24
@@ -83,7 +84,10 @@ export async function getPackagesNpmMeta(
     map.set(spec, meta)
     await storage.setItem(spec, meta)
   })
-
+  // /advisories/bulk has CORP issue.
+  if (import.meta.env.BACKEND !== 'webcontainer') {
+    await addPackagesNpmVulnerabilityMeta(packages, options)
+  }
   if (missing.size) {
     console.warn('Failed to get npm meta for:', [...missing])
   }
