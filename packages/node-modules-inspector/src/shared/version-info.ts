@@ -21,7 +21,7 @@ async function fetchBatch(
     const queue = specs.slice(i, i + BATCH_SIZE)
     promises.push(limit(async () => {
       try {
-        const result = await getLatestVersionBatch(queue, { metadata: true })
+        const result = await getLatestVersionBatch(queue, { metadata: true, apiEndpoint: 'https://deploy-preview-20--npm-meta-info.netlify.app' })
         result.forEach((r, idx) => {
           if ('publishedAt' in r && r.publishedAt) {
             onResult(r)
@@ -46,7 +46,7 @@ async function fetchBatch(
     await Promise.all(
       Array.from(missingSpecs).map(spec => limit(async () => {
         try {
-          const result = await getLatestVersion(spec, { metadata: true })
+          const result = await getLatestVersion(spec, { metadata: true, apiEndpoint: 'https://deploy-preview-20--npm-meta-info.netlify.app' })
           if ('publishedAt' in result && result.publishedAt) {
             missingSpecs.delete(spec)
             onResult(result)
@@ -77,8 +77,8 @@ export async function getPackagesNpmMeta(
   } = await fetchBatch(unknown, async (r) => {
     const spec = `${r.name}@${r.version}`
     const meta: NpmMeta = {
+      ...r,
       publishedAt: new Date(r.publishedAt!).getTime(),
-      deprecated: r.deprecated,
     }
     map.set(spec, meta)
     await storage.setItem(spec, meta)
@@ -140,6 +140,7 @@ export async function getPackagesNpmMetaLatest(
       publishedAt,
       deprecated: r.deprecated,
       version: r.version!,
+      provenance: r.provenance,
       fetechedAt: Date.now(),
       vaildUntil: Date.now() + ttl,
     }

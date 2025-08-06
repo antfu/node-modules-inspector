@@ -41,8 +41,8 @@ catalogs:
       specifier: ^6.7.14
       version: 6.7.14
     fast-npm-meta:
-      specifier: ^0.4.3
-      version: 0.4.3
+      specifier: /Users/kevin/Developer/open-source/fast-npm-meta/package/fast-npm-meta-0.4.4.tgz
+      version: 0.4.4
     get-port-please:
       specifier: ^3.1.2
       version: 3.1.2
@@ -323,7 +323,7 @@ importers:
         version: 9.29.0(jiti@2.4.2)
       fast-npm-meta:
         specifier: catalog:deps
-        version: 0.4.3
+        version: file:../fast-npm-meta/package/fast-npm-meta-0.4.4.tgz
       lint-staged:
         specifier: catalog:lint
         version: 16.1.2
@@ -389,7 +389,7 @@ importers:
         version: 6.7.14
       fast-npm-meta:
         specifier: catalog:deps
-        version: 0.4.3
+        version: file:../fast-npm-meta/package/fast-npm-meta-0.4.4.tgz
       get-port-please:
         specifier: catalog:deps
         version: 3.1.2
@@ -3976,8 +3976,12 @@ packages:
   fast-levenshtein@2.0.6:
     resolution: {integrity: sha512-DCXu6Ifhqcks7TZKY3Hxp3y6qphY5SJZmrWMDrKcERSOXWQdMhU9Ig/PYrzyw/ul9jOIyh0N4M0tbC5hodg8dw==}
 
-  fast-npm-meta@0.4.3:
-    resolution: {integrity: sha512-eUzR/uVx61fqlHBjG/eQx5mQs7SQObehMTTdq8FAkdCB4KuZSQ6DiZMIrAq4kcibB3WFLQ9c4dT26Vwkix1RKg==}
+  fast-npm-meta@0.4.4:
+    resolution: {integrity: sha512-cq8EVW3jpX1U3dO1AYanz2BJ6n9ITQgCwE1xjNwI5jO2a9erE369OZNO8Wt/Wbw8YHhCD/dimH9BxRsY+6DinA==}
+
+  fast-npm-meta@file:../fast-npm-meta/package/fast-npm-meta-0.4.4.tgz:
+    resolution: {integrity: sha512-S+u9croQcEr/ZHnRrtlti+kLJQ6n9M6ftPydeFeVpI5aOYRgZQdmIaMUCkMwGfz7gREFGpSOm92eMLT42SO1jg==, tarball: file:../fast-npm-meta/package/fast-npm-meta-0.4.4.tgz}
+    version: 0.4.4
 
   fast-safe-stringify@2.1.1:
     resolution: {integrity: sha512-W+KJc2dmILlPplD/H4K9l9LcAHAfPtP6BY84uVLXQ6Evcz9Lcg33Y2z1IVblT6xdY54PXYVHEv+0Wpq8Io6zkA==}
@@ -6855,10 +6859,6 @@ packages:
   webidl-conversions@3.0.1:
     resolution: {integrity: sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==}
 
-  webpack-sources@3.2.3:
-    resolution: {integrity: sha512-/DyMEOrDgLKKIG0fmvtz+4dUX/3Ghozwgm6iPp8KRhvn+eQf9+Q7GWxVNMk3+uCPWfdXYC4ExGBckIXdFEfH1w==}
-    engines: {node: '>=10.13.0'}
-
   webpack-sources@3.3.3:
     resolution: {integrity: sha512-yd1RBzSGanHkitROoPFd6qsrxt+oFhg/129YzheDGqeustzX0vTZJZsSsQjVQC4yzBQ56K55XU8gaNCtIzOnTg==}
     engines: {node: '>=10.13.0'}
@@ -7831,7 +7831,7 @@ snapshots:
       destr: 2.0.5
       error-stack-parser-es: 1.0.5
       execa: 8.0.1
-      fast-npm-meta: 0.4.3
+      fast-npm-meta: 0.4.4
       get-port-please: 3.1.2
       hookable: 5.5.3
       image-meta: 0.2.1
@@ -7872,7 +7872,7 @@ snapshots:
       destr: 2.0.5
       error-stack-parser-es: 1.0.5
       execa: 8.0.1
-      fast-npm-meta: 0.4.3
+      fast-npm-meta: 0.4.4
       get-port-please: 3.1.2
       hookable: 5.5.3
       image-meta: 0.2.1
@@ -8809,11 +8809,11 @@ snapshots:
   '@types/eslint-scope@3.7.7':
     dependencies:
       '@types/eslint': 9.6.1
-      '@types/estree': 1.0.7
+      '@types/estree': 1.0.8
 
   '@types/eslint@9.6.1':
     dependencies:
-      '@types/estree': 1.0.7
+      '@types/estree': 1.0.8
       '@types/json-schema': 7.0.15
 
   '@types/estree@1.0.7': {}
@@ -11204,7 +11204,9 @@ snapshots:
 
   fast-levenshtein@2.0.6: {}
 
-  fast-npm-meta@0.4.3: {}
+  fast-npm-meta@0.4.4: {}
+
+  fast-npm-meta@file:../fast-npm-meta/package/fast-npm-meta-0.4.4.tgz: {}
 
   fast-safe-stringify@2.1.1: {}
 
@@ -14609,8 +14611,6 @@ snapshots:
 
   webidl-conversions@3.0.1: {}
 
-  webpack-sources@3.2.3: {}
-
   webpack-sources@3.3.3: {}
 
   webpack-virtual-modules@0.6.2: {}
@@ -14618,11 +14618,11 @@ snapshots:
   webpack@5.98.0(esbuild@0.25.5):
     dependencies:
       '@types/eslint-scope': 3.7.7
-      '@types/estree': 1.0.7
+      '@types/estree': 1.0.8
       '@webassemblyjs/ast': 1.14.1
       '@webassemblyjs/wasm-edit': 1.14.1
       '@webassemblyjs/wasm-parser': 1.14.1
-      acorn: 8.14.1
+      acorn: 8.15.0
       browserslist: 4.25.0
       chrome-trace-event: 1.0.4
       enhanced-resolve: 5.18.1
@@ -14639,7 +14639,7 @@ snapshots:
       tapable: 2.2.1
       terser-webpack-plugin: 5.3.11(esbuild@0.25.5)(webpack@5.98.0(esbuild@0.25.5))
       watchpack: 2.4.2
-      webpack-sources: 3.2.3
+      webpack-sources: 3.3.3
     transitivePeerDependencies:
       - '@swc/core'
       - esbuild
