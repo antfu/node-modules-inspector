@@ -8,7 +8,7 @@ import { getModuleType } from '../../utils/module-type'
 import { getAuthors, getPackageData, getRepository } from '../../utils/package-json'
 
 const params = useRoute().params as Record<string, string>
-const tab = computed<'depth' | 'clusters' | 'module-type' | 'authors' | 'licenses' | 'github'>(() => params.grid[0] as any || 'depth')
+const tab = computed<'depth' | 'clusters' | 'module-type' | 'authors' | 'licenses' | 'github' | 'provenance'>(() => params.grid[0] as any || 'depth')
 
 const location = window.location
 
@@ -120,6 +120,25 @@ const groups = computed<Group[]>(() => {
         expanded: false,
       }))
   }
+  else if (tab.value === 'provenance') {
+    const map = new Map<'Trusted Publisher' | 'Provenance' | 'None', PackageNode[]>([
+      ['Trusted Publisher', []],
+      ['Provenance', []],
+      ['None', []],
+    ])
+    for (const pkg of payloads.filtered.packages) {
+      const provenance = pkg.resolved.npmMeta?.provenance === 'trustedPublisher' ? 'Trusted Publisher' : pkg.resolved.npmMeta?.provenance === true ? 'Provenance' : 'None'
+      map.get(provenance)!.push(pkg)
+    }
+
+    return [...map.entries()]
+      .map(([provenance, packages]) => ({
+        name: provenance,
+        provenance,
+        packages,
+        expanded: provenance !== 'None',
+      }))
+  }
   else {
     const map = new Map<number, PackageNode[]>()
 
@@ -172,6 +191,10 @@ const groups = computed<Group[]>(() => {
       <NuxtLink btn-action as="button" :to="{ path: '/grid/github', hash: location.hash }" active-class="text-primary bg-primary:5">
         <div i-ph-users-duotone />
         GitHub Slug
+      </NuxtLink>
+      <NuxtLink btn-action as="button" :to="{ path: '/grid/provenance', hash: location.hash }" active-class="text-primary bg-primary:5">
+        <div i-ph:circle-wavy-check-duotone />
+        Provenance
       </NuxtLink>
     </div>
 
