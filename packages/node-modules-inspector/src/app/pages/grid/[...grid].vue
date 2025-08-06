@@ -3,7 +3,7 @@ import type { PackageModuleType, PackageNode } from 'node-modules-tools'
 import { useRoute } from '#app/composables/router'
 import { computed } from 'vue'
 import SafeImage from '@/components/display/SafeImage.vue'
-import { payloads } from '../../state/payload'
+import { getNpmMeta, payloads } from '../../state/payload'
 import { getModuleType } from '../../utils/module-type'
 import { getAuthors, getPackageData, getRepository } from '../../utils/package-json'
 
@@ -127,7 +127,10 @@ const groups = computed<Group[]>(() => {
       ['None', []],
     ])
     for (const pkg of payloads.filtered.packages) {
-      const provenance = pkg.resolved.npmMeta?.provenance === 'trustedPublisher' ? 'Trusted Publisher' : pkg.resolved.npmMeta?.provenance === true ? 'Provenance' : 'None'
+      const meta = getNpmMeta(pkg)
+      const provenance = meta?.provenance === 'trustedPublisher'
+        ? 'Trusted Publisher'
+        : meta?.provenance === true ? 'Provenance' : 'None'
       map.get(provenance)!.push(pkg)
     }
 
