@@ -21,7 +21,7 @@ async function fetchBatch(
     const queue = specs.slice(i, i + BATCH_SIZE)
     promises.push(limit(async () => {
       try {
-        const result = await getLatestVersionBatch(queue, { metadata: true, apiEndpoint: 'https://deploy-preview-20--npm-meta-info.netlify.app' })
+        const result = await getLatestVersionBatch(queue, { metadata: true })
         result.forEach((r, idx) => {
           if ('publishedAt' in r && r.publishedAt) {
             onResult(r)
@@ -46,7 +46,7 @@ async function fetchBatch(
     await Promise.all(
       Array.from(missingSpecs).map(spec => limit(async () => {
         try {
-          const result = await getLatestVersion(spec, { metadata: true, apiEndpoint: 'https://deploy-preview-20--npm-meta-info.netlify.app' })
+          const result = await getLatestVersion(spec, { metadata: true })
           if ('publishedAt' in result && result.publishedAt) {
             missingSpecs.delete(spec)
             onResult(result)
