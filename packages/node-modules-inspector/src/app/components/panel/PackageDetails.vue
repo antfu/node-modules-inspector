@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
 import { useRouter } from '#app/composables/router'
-import { Menu as VMenu } from 'floating-vue'
+import { Tooltip, Menu as VMenu } from 'floating-vue'
 import { computed, nextTick, watch } from 'vue'
 import { getBackend } from '../../backends'
 import { selectedNode } from '../../state/current'
 import { fetchPublintMessages, rawPublintMessages } from '../../state/data'
 import { filters } from '../../state/filters'
-import { getDeprecatedInfo, getNpmMetaLatest, getPublishTime, payloads } from '../../state/payload'
+import { getDeprecatedInfo, getNpmMeta, getNpmMetaLatest, getPublishTime, payloads } from '../../state/payload'
 import { query } from '../../state/query'
 import { settings } from '../../state/settings'
 import { getPackageData } from '../../utils/package-json'
@@ -101,6 +101,7 @@ function getShallowestDependents(pkg: PackageNode) {
   return dependents.filter(x => x.depth === minDepth)
 }
 
+const meta = computed(() => getNpmMeta(props.pkg))
 const latestMeta = computed(() => getNpmMetaLatest(props.pkg))
 const deprecation = computed(() => getDeprecatedInfo(props.pkg))
 
@@ -207,11 +208,23 @@ const thirdPartyServices = computed(() => {
     </div>
 
     <div flex="~ col gap-2" p5 pb2>
-      <DisplayPackageName
-        :name="pkg.name"
-        font-mono text-2xl flex="~ wrap items-center gap-2" pr20
-        :class="deprecation?.latest ? deprecation.type === 'future' ? 'text-orange line-through' : 'text-red line-through' : ''"
-      />
+      <div flex gap2 items-center>
+        <DisplayPackageName
+          :name="pkg.name"
+          :provenance="meta?.provenance"
+          font-mono text-2xl flex="~ wrap items-center gap-2"
+          :class="deprecation?.latest ? deprecation.type === 'future' ? 'text-orange line-through' : 'text-red line-through' : ''"
+        />
+
+        <Tooltip v-if="meta?.provenance">
+          <div i-ph:circle-wavy-check-duotone text-primary-400 text-sm />
+          <template #popper>
+            This package is built and signed
+            {{ meta.provenance === 'trustedPublisher' ? 'by trusted publisher' : 'with provenance' }}
+          </template>
+        </Tooltip>
+      </div>
+
       <div text-sm op-fade line-clamp-3 text-ellipsis mt--1 mb1>
         {{ pkg.resolved?.packageJson?.description }}
       </div>

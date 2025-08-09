@@ -66,6 +66,7 @@ export interface PackageNode extends PackageNodeBase {
 export interface NpmMeta {
   publishedAt: number
   deprecated?: string
+  provenance?: 'trustedPublisher' | boolean
 }
 
 /**

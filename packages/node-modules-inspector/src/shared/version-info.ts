@@ -77,8 +77,8 @@ export async function getPackagesNpmMeta(
   } = await fetchBatch(unknown, async (r) => {
     const spec = `${r.name}@${r.version}`
     const meta: NpmMeta = {
+      ...r,
       publishedAt: new Date(r.publishedAt!).getTime(),
-      deprecated: r.deprecated,
     }
     map.set(spec, meta)
     await storage.setItem(spec, meta)
@@ -140,6 +140,7 @@ export async function getPackagesNpmMetaLatest(
       publishedAt,
       deprecated: r.deprecated,
       version: r.version!,
+      provenance: r.provenance,
       fetechedAt: Date.now(),
       vaildUntil: Date.now() + ttl,
     }
