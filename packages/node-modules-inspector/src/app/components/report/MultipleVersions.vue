@@ -42,14 +42,14 @@ function showGraph(pkgs: PackageNode[]) {
     </div>
     <div grid="~ cols-minmax-200px gap-4">
       <div
-        v-for="pkgs of sorted" :key="pkgs[0].spec"
+        v-for="pkgs of sorted" :key="pkgs[0]!.spec"
         border="~ base rounded-lg" bg-glass
         flex="~ col"
         :class="selectedNode && pkgs.includes(selectedNode) ? 'border-primary ring-4 ring-primary:20' : ''"
       >
         <div flex="~ items-center gap-2" border="b base" px2 py1>
           <h2 font-mono flex-auto pl2>
-            {{ pkgs[0].name }}
+            {{ pkgs[0]!.name }}
           </h2>
           <button
             v-tooltip="'Compare in Graph'" p1 rounded-full op-fade hover:bg-active hover:text-primary hover:op100

@@ -90,13 +90,13 @@ const clusters = Object.fromEntries(
         @dblclick.prevent="selectOnly(type)"
       >
         <OptionCheckbox
-          v-model="clusters[type].value"
+          v-model="clusters[type]!.value"
         />
         <DisplayClusterBadge
           select-none
           :cluster="type"
           :force="true"
-          :class="clusters[type].value ? '' : 'saturate-0 op75'"
+          :class="clusters[type]!.value ? '' : 'saturate-0 op75'"
         />
       </label>
     </div>

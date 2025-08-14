@@ -22,20 +22,20 @@ export function parseFunding(funding: NormalizedFunding): ParsedFunding {
 
   let match = url.match(/^(?:https?:\/\/)?(?:www\.)?github\.com\/sponsors\/([\w.-]+)/i)
   if (match) {
-    name = match[1]
+    name = match[1]!
     type = 'github'
   }
   if (!name) {
     match = url.match(/^(?:https?:\/\/)?(?:www\.)?github\.com\/([\w.-]+)/i)
     if (match) {
-      name = match[1]
+      name = match[1]!
       type = 'github'
     }
   }
   if (!name) {
     match = url.match(/^(?:https?:\/\/)?(?:www\.)?opencollective\.com\/([\w.-]+)/i)
     if (match) {
-      name = match[1]
+      name = match[1]!
       type = 'opencollective'
     }
   }
@@ -182,8 +182,8 @@ export function normalizePkgRepository(json: PackageJson) {
 
   const gitHubUrlMatch = url.match(/^https?:\/\/(?:www\.)?github\.com\/([^/]+)\/([^/]+)/)
   if (gitHubUrlMatch) {
-    org = gitHubUrlMatch[1]
-    repoName = gitHubUrlMatch[2]
+    org = gitHubUrlMatch[1]!
+    repoName = gitHubUrlMatch[2]!
     repo = `${org}/${repoName}`
   }
 

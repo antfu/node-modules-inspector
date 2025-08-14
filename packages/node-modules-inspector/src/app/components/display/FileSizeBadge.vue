@@ -41,7 +41,7 @@ const color = computed(() => {
     if (bytes < limit)
       return color
   }
-  return colorScale[colorScale.length - 1][1]
+  return colorScale[colorScale.length - 1]![1]
 })
 
 const ratio = computed(() => (props.bytes || 0) * 100 / (props.total ?? totalWorkspaceSize.value))

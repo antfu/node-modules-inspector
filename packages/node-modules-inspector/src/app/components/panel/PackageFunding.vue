@@ -11,7 +11,7 @@ defineProps<{
   <NuxtLink
     v-if="fundings?.length === 1"
     v-tooltip="'Open Funding Page'"
-    :to="fundings[0].url"
+    :to="fundings[0]!.url"
     title="Open Funding Page"
     target="_blank"
     external

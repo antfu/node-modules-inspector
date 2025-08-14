@@ -87,7 +87,7 @@ const depthGridRows = computed(() => Math.ceil(availableDepths.value.length / 3)
         @dblclick.prevent="selectOnly(depth)"
       >
         <OptionCheckbox
-          v-model="depthsRefs[depth].value"
+          v-model="depthsRefs[depth]!.value"
         />
         <div font-mono>
           #{{ depth }}

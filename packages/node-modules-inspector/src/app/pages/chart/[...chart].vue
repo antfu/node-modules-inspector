@@ -17,7 +17,7 @@ import { getModuleType } from '../../utils/module-type'
 
 const mouse = reactive(useMouse())
 const params = useRoute().params as Record<string, string>
-const chart = computed<'frame' | 'treemap' | 'sunburst'>(() => params.chart[0] as any || 'treemap')
+const chart = computed<'frame' | 'treemap' | 'sunburst'>(() => params.chart?.[0] as any || 'treemap')
 const nodeHover = shallowRef<ChartNode | undefined>(undefined)
 const nodeSelected = shallowRef<ChartNode | undefined>(undefined)
 const location = window.location
@@ -314,7 +314,7 @@ onUnmounted(() => {
       v-if="chart === 'frame' && graph"
       :graph="graph"
       :selected="nodeSelected"
-      @select="x => selectNode(x)"
+      @select="(x: ChartNode | null) => selectNode(x)"
     />
     <ChartTreemap
       v-if="chart === 'treemap' && graph"

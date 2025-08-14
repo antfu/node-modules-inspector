@@ -28,7 +28,7 @@ async function fetchBatch(
           }
           else {
             console.warn('Failed to get publishedAt for:', r)
-            missingSpecs.add(queue[idx])
+            missingSpecs.add(queue[idx]!)
           }
         })
       }

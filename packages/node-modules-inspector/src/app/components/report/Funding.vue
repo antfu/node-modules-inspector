@@ -39,7 +39,7 @@ const cols = computed(() => {
     [],
   ]
   fundingGroup.value.forEach((group, idx) => {
-    cols[idx % 3].push(group)
+    cols[idx % 3]?.push(group)
   })
   return cols
 })

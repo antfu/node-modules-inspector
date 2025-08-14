@@ -5,7 +5,7 @@ import { computed } from 'vue'
 const location = window.location
 
 const params = useRoute().params as Record<string, string>
-const selected = computed(() => params.report[0] || 'all')
+const selected = computed(() => params.report?.[0] || 'all')
 </script>
 
 <template>

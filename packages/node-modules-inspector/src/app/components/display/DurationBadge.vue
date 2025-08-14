@@ -58,7 +58,7 @@ const color = computed(() => {
       return color
   }
 
-  return colorScale[colorScale.length - 1][1]
+  return colorScale[colorScale.length - 1]![1]
 })
 </script>
 

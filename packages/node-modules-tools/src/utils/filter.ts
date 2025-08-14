@@ -15,7 +15,7 @@ export interface PackageNodeLike {
  * - *eslint* -> Any version that matches the wildcard
  */
 export function constructPackageFilter(range: string): (pkg: PackageNodeLike) => boolean {
-  const [name, version = '*'] = range.split(/\b@/)
+  const [name, version = '*'] = range.split(/\b@/) as [string, string]
   const hasWildcard = name?.includes('*')
   const nameMatch = hasWildcard
     ? new RegExp(`^${Array.from(name).map(char => char === '*' ? '.*' : char === '.' ? '\\.' : char).join('')}$`)

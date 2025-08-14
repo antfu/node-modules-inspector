@@ -8,7 +8,7 @@ import { getModuleType } from '../../utils/module-type'
 import { getAuthors, getPackageData, getRepository } from '../../utils/package-json'
 
 const params = useRoute().params as Record<string, string>
-const tab = computed<'depth' | 'clusters' | 'module-type' | 'authors' | 'licenses' | 'github' | 'provenance'>(() => params.grid[0] as any || 'depth')
+const tab = computed<'depth' | 'clusters' | 'module-type' | 'authors' | 'licenses' | 'github' | 'provenance'>(() => params.grid?.[0] as any || 'depth')
 
 const location = window.location
 

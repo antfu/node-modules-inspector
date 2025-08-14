@@ -31,7 +31,7 @@ export function parseSearch(input: string) {
   }
 
   for (const match of text.matchAll(RE_COLLON_FIELDS) || []) {
-    let [_, field, value] = match
+    let [_, field, value] = match as unknown as [string, string, string]
 
     // de-quote
     if (value.startsWith('"') && value.endsWith('"'))

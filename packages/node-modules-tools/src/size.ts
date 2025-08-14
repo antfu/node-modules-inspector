@@ -38,11 +38,11 @@ export async function getPackageInstallSize(
 
   let bytes = 0
   for (let i = 0; i < files.length; i++) {
-    bytes += sizes[i]
-    const type = types[i]
+    bytes += sizes[i]!
+    const type = types[i]!
     if (!categories[type])
       categories[type] = { bytes: 0, count: 0 }
-    categories[type].bytes += sizes[i]
+    categories[type].bytes += sizes[i]!
     categories[type].count += 1
   }
 
