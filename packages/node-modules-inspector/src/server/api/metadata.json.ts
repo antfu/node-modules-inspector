@@ -1,7 +1,7 @@
 import process from 'node:process'
 import { consola } from 'consola'
-import { storageNpmMeta, storageNpmMetaLatest, storagePublint } from '../../../node/storage'
-import { createWsServer } from '../../../node/ws'
+import { storageNpmMeta, storageNpmMetaLatest, storagePublint } from '../../node/storage'
+import { createWsServer } from '../../node/ws'
 
 consola.restoreAll()
 

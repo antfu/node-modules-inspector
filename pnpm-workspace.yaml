@@ -5,28 +5,28 @@ catalogs:
     '@rollup/plugin-alias': ^5.1.1
     '@rollup/plugin-commonjs': ^28.0.6
     '@rollup/plugin-node-resolve': ^16.0.1
-    '@unocss/nuxt': ^66.2.3
-    '@vueuse/nuxt': ^13.4.0
-    esbuild: ^0.25.5
-    nitropack: ^2.11.12
-    nuxt: ^3.17.5
-    nuxt-mcp: ^0.2.3
-    rollup: ^4.44.0
+    '@unocss/nuxt': ^66.4.2
+    '@vueuse/nuxt': ^13.6.0
+    esbuild: ^0.25.9
+    nitropack: ^2.12.4
+    nuxt: ^4.0.3
+    nuxt-mcp: ^0.2.4
+    rollup: ^4.46.2
     rollup-plugin-esbuild: ^6.2.1
-    unbuild: ^3.5.0
+    unbuild: ^3.6.0
     vite: npm:rolldown-vite@latest
   deps:
     ansis: ^4.1.0
-    birpc: ^2.4.0
+    birpc: ^2.5.0
     cac: ^6.7.14
     fast-npm-meta: ^0.4.6
-    get-port-please: ^3.1.2
-    h3: ^1.15.3
+    get-port-please: ^3.2.0
+    h3: ^1.15.4
     js-yaml: ^4.1.0
-    launch-editor: ^2.10.0
+    launch-editor: ^2.11.1
     mrmime: ^2.0.1
     ohash: ^2.0.11
-    open: ^10.1.2
+    open: ^10.2.0
     p-limit: ^6.2.0
     package-manager-detector: ^1.3.0
     pathe: ^2.0.3
@@ -37,14 +37,14 @@ catalogs:
     tinyexec: ^1.0.1
     tinyglobby: ^0.2.14
     unconfig: ^7.3.2
-    unstorage: ^1.16.0
-    ws: ^8.18.2
+    unstorage: ^1.16.1
+    ws: ^8.18.3
   dev:
-    '@nuxt/devtools': ^2.5.0
-    bumpp: ^10.2.0
-    typescript: ^5.8.3
-    vite-plugin-inspect: ^11.2.0
-    vue-tsc: ^2.2.10
+    '@nuxt/devtools': ^2.6.2
+    bumpp: ^10.2.3
+    typescript: ^5.9.2
+    vite-plugin-inspect: ^11.3.2
+    vue-tsc: ^3.0.5
   frontend:
     '@webcontainer/api': ^1.6.1
     '@xterm/addon-fit': ^0.10.0
@@ -55,34 +55,34 @@ catalogs:
     floating-vue: ^5.2.2
     fuse.js: ^7.1.0
     idb-keyval: ^6.2.2
-    modern-screenshot: ^4.6.4
+    modern-screenshot: ^4.6.5
     nanovis: ^0.1.3
-    theme-vitesse: ^0.8.3
-    vite-hot-client: ^2.0.4
+    theme-vitesse: ^1.0.0
+    vite-hot-client: ^2.1.0
   icons:
-    '@iconify-json/carbon': ^1.2.10
-    '@iconify-json/catppuccin': ^1.2.11
-    '@iconify-json/logos': ^1.2.4
+    '@iconify-json/carbon': ^1.2.13
+    '@iconify-json/catppuccin': ^1.2.15
+    '@iconify-json/logos': ^1.2.9
     '@iconify-json/ph': ^1.2.2
     '@iconify-json/ri': ^1.2.5
-    '@iconify-json/simple-icons': ^1.2.39
+    '@iconify-json/simple-icons': ^1.2.47
   inlined:
     '@antfu/utils': ^9.2.0
   lint:
-    '@antfu/eslint-config': ^4.15.0
-    '@nuxt/eslint': ^1.4.1
-    '@typescript-eslint/utils': ^8.34.1
-    '@unocss/eslint-config': ^66.2.3
-    eslint: ^9.29.0
-    lint-staged: ^16.1.2
+    '@antfu/eslint-config': ^5.2.1
+    '@nuxt/eslint': ^1.8.0
+    '@typescript-eslint/utils': ^8.39.1
+    '@unocss/eslint-config': ^66.4.2
+    eslint: ^9.33.0
+    lint-staged: ^16.1.5
     nuxt-eslint-auto-explicit-import: ^0.1.1
-    simple-git-hooks: ^2.13.0
+    simple-git-hooks: ^2.13.1
   testing:
     mlly: ^1.7.4
     vitest: ^3.2.4
   types:
-    '@pnpm/list': ^1000.0.19
-    '@pnpm/types': ^1000.6.0
+    '@pnpm/list': ^1000.0.22
+    '@pnpm/types': ^1000.7.0
     '@types/connect': ^3.4.38
     '@types/d3': ^7.4.3
     '@types/d3-hierarchy': ^3.1.7
@@ -90,7 +90,7 @@ catalogs:
     '@types/semver': ^7.7.0
     '@types/stream-json': ^1.7.8
     '@types/ws': ^8.18.1
-    pkg-types: ^2.1.0
+    pkg-types: ^2.2.0
 onlyBuiltDependencies:
   - '@parcel/watcher'
   - esbuild
