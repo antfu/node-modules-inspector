@@ -11,6 +11,7 @@ const PERMISSIVE_LICENSES = [
   'Apache-2.0',
   'BSD-2-Clause',
   'BSD-3-Clause',
+  'UPL-1.0',
   'CC0-1.0',
   '0BSD',
 ]
