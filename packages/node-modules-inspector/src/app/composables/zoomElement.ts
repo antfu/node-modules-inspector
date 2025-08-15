@@ -42,13 +42,20 @@ export function useZoomElement(
   }
 
   function handleWheel(event: WheelEvent) {
-    if (!toValue(wheel))
-      return
+    if (toValue(wheel)) {
+      // Use control + wheel
+      event.preventDefault()
 
-    event.preventDefault()
+      const zoomFactor = 0.2
+      zoom(event.deltaY < 0 ? zoomFactor : zoomFactor * -1, event.clientX, event.clientY)
+    }
+    else if (event.ctrlKey) {
+      // Use touchpad zoom
+      event.preventDefault()
 
-    const zoomFactor = 0.2
-    zoom(event.deltaY < 0 ? zoomFactor : zoomFactor * -1, event.clientX, event.clientY)
+      const zoomFactor = 0.004
+      zoom(event.deltaY * zoomFactor * -1, event.clientX, event.clientY)
+    }
   }
 
   function zoomIn(factor = 0.2) {
