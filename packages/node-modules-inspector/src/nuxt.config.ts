@@ -35,6 +35,10 @@ export default defineNuxtConfig({
   logLevel: 'verbose',
   srcDir: 'app',
 
+  dir: {
+    public: './app/public',
+  },
+
   eslint: {
     config: {
       standalone: false,
