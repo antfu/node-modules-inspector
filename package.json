@@ -2,7 +2,7 @@
   "type": "module",
   "version": "1.1.1",
   "private": true,
-  "packageManager": "pnpm@10.14.0",
+  "packageManager": "pnpm@10.17.1",
   "scripts": {
     "build": "pnpm -r run build",
     "build:debug": "NUXT_DEBUG_BUILD=true pnpm -r run build",
@@ -14,7 +14,7 @@
     "prepare": "npx simple-git-hooks && pnpm -C packages/node-modules-inspector run dev:prepare",
     "lint": "pnpm -C packages/node-modules-inspector run dev:prepare && eslint .",
     "test": "vitest",
-    "release": "bumpp -r && pnpm publish -r",
+    "release": "bumpp -r",
     "typecheck": "vue-tsc --noEmit"
   },
   "devDependencies": {
