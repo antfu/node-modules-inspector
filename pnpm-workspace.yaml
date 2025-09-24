@@ -46,6 +46,7 @@ catalogs:
     unstorage: ^1.17.1
     ws: ^8.18.3
   dev:
+    '@antfu/ni': ^26.0.1
     '@nuxt/devtools': ^2.6.5
     bumpp: ^10.2.3
     typescript: ^5.9.2

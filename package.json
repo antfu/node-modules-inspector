@@ -19,6 +19,7 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "catalog:lint",
+    "@antfu/ni": "catalog:dev",
     "@antfu/utils": "catalog:inlined",
     "@iconify-json/carbon": "catalog:icons",
     "@iconify-json/catppuccin": "catalog:icons",
