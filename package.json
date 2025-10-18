@@ -53,6 +53,7 @@
     "rollup": "catalog:bundling",
     "rollup-plugin-esbuild": "catalog:bundling",
     "simple-git-hooks": "catalog:lint",
+    "type-fest": "catalog:testing",
     "typescript": "catalog:dev",
     "unbuild": "catalog:bundling",
     "unstorage": "catalog:deps",
