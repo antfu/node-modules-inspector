@@ -36,9 +36,19 @@ function showGraph(pkgs: PackageNode[]) {
       Multi-Versions Packages
       <DisplayNumberBadge :number="sorted.length" rounded-full text-sm />
     </UiSubTitle>
-    <div badge-color-primary flex="~ gap-2 items-center" rounded-lg p2 my2 px3>
+    <!-- Bun does not provide a `bun dedupe` command yet: https://github.com/oven-sh/bun/issues/1343 -->
+    <div
+      v-if="rawPayload?.packageManager !== 'bun'"
+      badge-color-primary
+      flex="~ gap-2 items-center"
+      rounded-lg p2 my2 px3
+    >
       <div i-ph-lightbulb-duotone flex-none />
-      <span>Run <code color-active bg-primary:10 rounded px1 py0.5>{{ rawPayload?.packageManager }} dedupe</code> to de-duplicate packages that satisfies with the ranges</span>
+      <span>
+        Run
+        <code color-active bg-primary:10 rounded px1 py0.5>{{ rawPayload?.packageManager }} dedupe</code>
+        to de-duplicate packages that satisfies with the ranges
+      </span>
     </div>
     <div grid="~ cols-minmax-200px gap-4">
       <div

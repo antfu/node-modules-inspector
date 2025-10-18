@@ -12,7 +12,7 @@ Visualize your node_modules, inspect dependencies, and more.
 
 ### Quick Start
 
-Try it by running following command under your `pnpm`/`npm` project.
+Try it by running following command under your `pnpm`/`npm`/`bun` project.
 
 ```bash
 pnpx node-modules-inspector
@@ -20,8 +20,11 @@ pnpx node-modules-inspector
 ```bash
 npx node-modules-inspector
 ```
+```bash
+bunx node-modules-inspector
+```
 
-> Currently only support `pnpm` and `npm` projects. We are counting on the community to bring support for other package managers.
+> Currently supports `pnpm`, `npm`, and `bun` projects. We are counting on the community to bring support for other package managers.
 
 ### Online Version
 
@@ -60,6 +63,9 @@ pnpx node-modules-inspector build
 ```
 ```bash
 npx node-modules-inspector build
+```
+```bash
+bunx node-modules-inspector build
 ```
 
 Then you can host the `.node-modules-inspector` folder with any static file server.

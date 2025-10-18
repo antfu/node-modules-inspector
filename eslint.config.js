@@ -13,6 +13,12 @@ export default antfu({
     },
   })
   .append({
+    files: ['packages/node-modules-tools/test/bun/fixtures/**/package.json'],
+    rules: {
+      'pnpm/json-valid-catalog': 'off',
+    },
+  })
+  .append({
     files: ['pnpm-workspace.yaml'],
     name: 'antfu/yaml/pnpm-workspace',
     rules: {
