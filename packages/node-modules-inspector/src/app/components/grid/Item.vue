@@ -21,14 +21,14 @@ defineProps<{
     <div flex="~ wrap gap-2 items-center" text-sm>
       <DisplayModuleType :pkg />
       <DisplayNumberBadge
-        v-if="payloads.avaliable.flatDependents(pkg).length"
-        :number="payloads.avaliable.flatDependents(pkg).length"
+        v-if="payloads.available.flatDependents(pkg).length"
+        :number="payloads.available.flatDependents(pkg).length"
         icon="i-ph-arrow-elbow-down-right-duotone text-xs"
         rounded-full text-sm
       />
       <DisplayNumberBadge
-        v-if="payloads.avaliable.flatDependencies(pkg).length"
-        :number="payloads.avaliable.flatDependencies(pkg).length"
+        v-if="payloads.available.flatDependencies(pkg).length"
+        :number="payloads.available.flatDependencies(pkg).length"
         icon="i-ph-lego-duotone text-xs"
         rounded-full text-sm
       />

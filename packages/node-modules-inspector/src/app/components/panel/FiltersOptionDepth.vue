@@ -5,7 +5,7 @@ import { payloads } from '../../state/payload'
 
 const availableDepths = computed(() => {
   let max = 0
-  for (const pkg of payloads.avaliable.packages) {
+  for (const pkg of payloads.available.packages) {
     if (pkg.depth > max) {
       max = pkg.depth
     }
@@ -74,7 +74,7 @@ const depthGridRows = computed(() => Math.ceil(availableDepths.value.length / 3)
           All
         </div>
         <DisplayNumberBadge
-          :number="payloads.avaliable.packages.length"
+          :number="payloads.available.packages.length"
           rounded-full text-xs
         />
       </label>
@@ -93,7 +93,7 @@ const depthGridRows = computed(() => Math.ceil(availableDepths.value.length / 3)
           #{{ depth }}
         </div>
         <DisplayNumberBadge
-          :number="payloads.avaliable.packages.filter(p => p.depth === depth).length"
+          :number="payloads.available.packages.filter(p => p.depth === depth).length"
           rounded-full text-xs
         />
       </label>

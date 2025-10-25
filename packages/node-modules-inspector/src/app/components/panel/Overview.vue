@@ -15,17 +15,17 @@ const totalDeprecatedCount = computed(() => Array.from(payloads.filtered.package
   .filter(pkg => getDeprecatedInfo(pkg)?.current)
   .length)
 
-const multipleVersionsCount = computed(() => Array.from(payloads.avaliable.versions.values())
+const multipleVersionsCount = computed(() => Array.from(payloads.available.versions.values())
   .filter(v => v.length > 1)
   .length)
 
-const fundingCount = computed(() => payloads.avaliable.packages
+const fundingCount = computed(() => payloads.available.packages
   .filter(p => getFundings(p))
   .length)
 
 const licensesCount = computed(() => {
   const set = new Set<string>()
-  payloads.avaliable.packages.forEach((p) => {
+  payloads.available.packages.forEach((p) => {
     set.add(getPackageData(p).license || '<Unspecified>')
   })
   return set.size
@@ -92,7 +92,7 @@ const timepassed = computed(() => rawPayload.value?.timestamp ? Date.now() - raw
       </div>
       <NuxtLink flex="~ gap-2 items-center" :to="{ path: '/grid/depth', hash: location.hash }">
         <div i-catppuccin-java-class icon-catppuccin flex-none />
-        <DisplayNumberBadge :number="payloads.avaliable.packages.length" rounded-full text-sm mx--0.2 mt-3px color="badge-color-primary" />
+        <DisplayNumberBadge :number="payloads.available.packages.length" rounded-full text-sm mx--0.2 mt-3px color="badge-color-primary" />
         <span ml--0.5>total packages</span>
       </NuxtLink>
       <NuxtLink v-if="totalDeprecatedCount" flex="~ gap-2 items-center" :to="{ path: '/report/deprecated', hash: location.hash }">
@@ -127,7 +127,7 @@ const timepassed = computed(() => rawPayload.value?.timestamp ? Date.now() - raw
       </div>
     </div>
     <div>
-      <UiPercentageModuleType :packages="payloads.avaliable.packages" :rounded="false" />
+      <UiPercentageModuleType :packages="payloads.available.packages" :rounded="false" />
     </div>
     <UiCredits border="t base" />
   </div>

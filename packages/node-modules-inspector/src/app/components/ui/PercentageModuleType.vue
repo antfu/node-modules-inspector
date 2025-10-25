@@ -22,8 +22,8 @@ const nodes = computed(() => {
     ? [
         props.pkg,
         ...props.flat
-          ? payloads.avaliable.flatDependencies(props.pkg)
-          : payloads.avaliable.dependencies(props.pkg),
+          ? payloads.available.flatDependencies(props.pkg)
+          : payloads.available.dependencies(props.pkg),
       ]
     : props.packages ?? []
 

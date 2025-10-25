@@ -13,7 +13,7 @@ const props = withDefaults(
     mode?: SettingsOptions['showDependencySourceBadge']
   }>(),
   {
-    payload: () => payloads.avaliable,
+    payload: () => payloads.available,
   },
 )
 
