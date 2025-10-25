@@ -170,7 +170,7 @@ export function createServerFunctions(options: CreateServerFunctionsOptions): Se
 
     await Promise.all(buildTasks)
 
-    // Fullfill the npm meta
+    // Fulfill the npm meta
     await Promise.all(Array.from(result.packages.values())
       .map(async (pkg) => {
         const meta = await options.storageNpmMeta.getItem(pkg.spec)

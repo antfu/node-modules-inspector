@@ -83,7 +83,7 @@ const outdatedPackages = computed(() =>
             Latest
           </div>
           <div text-sm op-fade>
-            Lastest Publish
+            Latest Publish
           </div>
           <div text-sm op-fade>
             In Between
