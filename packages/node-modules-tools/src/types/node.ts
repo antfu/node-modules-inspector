@@ -81,8 +81,8 @@ export interface NpmMetaLatest extends NpmMeta {
    */
   fetechedAt: number
   /**
-   * We calculate a smart "TTL" based on how open the package updates.
-   * If this timestemp is greater than the current time, the meta should be discarded.
+   * We calculate a smart "TTL" based on how often the package updates.
+   * If this timestamp is greater than the current time, the meta should be discarded.
    */
   vaildUntil: number
 }
