@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
 import { useRouter } from '#app/composables/router'
-import { Tooltip, Menu as VMenu } from 'floating-vue'
+import { Menu as VMenu } from 'floating-vue'
 import { computed, nextTick, watch } from 'vue'
 import { getBackend } from '../../backends'
 import { selectedNode } from '../../state/current'
@@ -216,13 +216,9 @@ const thirdPartyServices = computed(() => {
           :class="deprecation?.latest ? deprecation.type === 'future' ? 'text-orange line-through' : 'text-red line-through' : ''"
         />
 
-        <Tooltip v-if="meta?.provenance">
-          <div i-ph:circle-wavy-check-duotone text-primary-400 text-sm />
-          <template #popper>
-            This package is built and signed
-            {{ meta.provenance === 'trustedPublisher' ? 'by trusted publisher' : 'with provenance' }}
-          </template>
-        </Tooltip>
+        <DisplayProvenanceBadge
+          :pkg="pkg"
+        />
       </div>
 
       <div text-sm op-fade line-clamp-3 text-ellipsis mt--1 mb1>

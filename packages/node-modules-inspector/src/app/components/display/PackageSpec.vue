@@ -11,7 +11,7 @@ const deprecation = computed(() => getDeprecatedInfo(props.pkg))
 </script>
 
 <template>
-  <span>
+  <div flex gap-2 items-center>
     <span
       v-if="pkg.workspace"
       h-1em w-1.5em relative of-visible inline-block
@@ -21,18 +21,23 @@ const deprecation = computed(() => getDeprecatedInfo(props.pkg))
         i-catppuccin-folder-packages-open icon-catppuccin mr2 absolute left-0 top-0
       />
     </span>
-    <DisplayPackageName
-      v-tooltip="deprecation?.latest ? `Package is deprecated: ${deprecation.latest}` : undefined"
-      :name="props.pkg.name"
+    <span>
+      <DisplayPackageName
+        v-tooltip="deprecation?.latest ? `Package is deprecated: ${deprecation.latest}` : undefined"
+        :name="props.pkg.name"
+        :pkg="props.pkg"
+        :class="!deprecation?.latest ? undefined : deprecation?.type === 'future' ? 'text-orange line-through' : 'text-red line-through'"
+      />
+      <DisplayVersion
+        v-tooltip="deprecation?.current ? `Current version is deprecated: ${deprecation.current}` : undefined"
+        op-fade
+        :version="props.pkg.version"
+        prefix="@"
+        :class="{ 'text-red line-through': deprecation?.current }"
+      />
+    </span>
+    <DisplayProvenanceBadge
       :pkg="props.pkg"
-      :class="!deprecation?.latest ? undefined : deprecation?.type === 'future' ? 'text-orange line-through' : 'text-red line-through'"
     />
-    <DisplayVersion
-      v-tooltip="deprecation?.current ? `Current version is deprecated: ${deprecation.current}` : undefined"
-      op-fade
-      :version="props.pkg.version"
-      prefix="@"
-      :class="{ 'text-red line-through': deprecation?.current }"
-    />
-  </span>
+  </div>
 </template>
