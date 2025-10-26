@@ -55,6 +55,9 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
 
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v1
+
       - name: Setup
         run: npm i -g @antfu/ni
 
