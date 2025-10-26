@@ -12,7 +12,7 @@ import { payloads } from '../../state/payload'
       <div flex="~ items-center gap-2">
         <DisplayNumberBadge :number="payloads.filtered.packages.length" rounded-full color="badge-color-primary" />
         <span op-fade>of</span>
-        <DisplayNumberBadge :number="payloads.avaliable.packages.length" rounded-full />
+        <DisplayNumberBadge :number="payloads.available.packages.length" rounded-full />
         <span op-fade>packages filtered</span>
       </div>
       <div v-if="payloads.excluded.packages.length" flex="~ items-center gap-1" text-0.85rem>

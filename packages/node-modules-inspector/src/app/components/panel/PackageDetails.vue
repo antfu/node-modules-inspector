@@ -29,7 +29,7 @@ const isExcluded = computed(() => payloads.excluded.has(props.pkg))
 
 const resolved = computed(() => getPackageData(props.pkg))
 
-const cluster = computed(() => [...payloads.avaliable.flatClusters(props.pkg)].filter(i => !i.startsWith('dep:')))
+const cluster = computed(() => [...payloads.available.flatClusters(props.pkg)].filter(i => !i.startsWith('dep:')))
 
 const selectionMode = computed<'focus' | 'why' | 'exclude' | 'none'>({
   get() {
@@ -87,14 +87,14 @@ const sizeInstall = computed(() => {
 })
 
 const sizeTotal = computed(() => {
-  const deps = payloads.avaliable.flatDependencies(props.pkg)
+  const deps = payloads.available.flatDependencies(props.pkg)
   if (!deps.length)
     return 0
   return [props.pkg, ...deps].reduce((acc, x) => acc + (x.resolved.installSize?.bytes || 0), 0)
 })
 
 function getShallowestDependents(pkg: PackageNode) {
-  const dependents = payloads.avaliable.flatDependents(pkg)
+  const dependents = payloads.available.flatDependents(pkg)
   if (!dependents.length)
     return []
   const minDepth = Math.min(...dependents.map(x => x.depth))
@@ -483,7 +483,7 @@ const thirdPartyServices = computed(() => {
         <span :class="settings.packageDetailsTab === 'dependents' ? '' : 'op30'">Used by</span>
         <DisplayNumberBadge
           text-xs rounded-full
-          :number="settings.deepDependenciesTree ? payloads.avaliable.flatDependents(pkg).length : payloads.avaliable.dependents(pkg).length"
+          :number="settings.deepDependenciesTree ? payloads.available.flatDependents(pkg).length : payloads.available.dependents(pkg).length"
         />
       </button>
       <div border="b base" w-2 />
@@ -495,7 +495,7 @@ const thirdPartyServices = computed(() => {
         <span :class="settings.packageDetailsTab === 'dependencies' ? '' : 'op30'">Deps on</span>
         <DisplayNumberBadge
           text-xs rounded-full
-          :number="settings.deepDependenciesTree ? payloads.avaliable.flatDependencies(pkg).length : payloads.avaliable.dependencies(pkg).length"
+          :number="settings.deepDependenciesTree ? payloads.available.flatDependencies(pkg).length : payloads.available.dependencies(pkg).length"
         />
       </button>
       <div border="b base" pt2 px2>
@@ -512,21 +512,21 @@ const thirdPartyServices = computed(() => {
 
     <div flex="~ col gap-1" flex-auto of-auto>
       <template v-if="settings.packageDetailsTab === 'dependents'">
-        <template v-if="payloads.avaliable.flatDependents(pkg).length">
+        <template v-if="payloads.available.flatDependents(pkg).length">
           <TreeDependencies
             v-if="settings.deepDependenciesTree"
             py5 px4
             :currents="getShallowestDependents(pkg)"
-            :list="payloads.avaliable.flatDependents(pkg)"
-            :max-depth="getDepth(payloads.avaliable.flatDependents(pkg).length, 2)"
+            :list="payloads.available.flatDependents(pkg)"
+            :max-depth="getDepth(payloads.available.flatDependents(pkg).length, 2)"
             type="dependents"
           />
           <TreeDependencies
             v-else
             py5 px4
-            :currents="payloads.avaliable.dependents(pkg)"
-            :list="payloads.avaliable.dependents(pkg)"
-            :max-depth="getDepth(payloads.avaliable.dependents(pkg).length, 2)"
+            :currents="payloads.available.dependents(pkg)"
+            :list="payloads.available.dependents(pkg)"
+            :max-depth="getDepth(payloads.available.dependents(pkg).length, 2)"
             type="dependents"
           />
         </template>
@@ -545,12 +545,12 @@ const thirdPartyServices = computed(() => {
           />
         </div>
 
-        <template v-if="payloads.avaliable.flatDependencies(pkg).length">
+        <template v-if="payloads.available.flatDependencies(pkg).length">
           <TreeDependencies
             py5 pt2 px4
-            :currents="payloads.avaliable.dependencies(pkg)"
-            :list="payloads.avaliable.flatDependencies(pkg)"
-            :max-depth="getDepth(payloads.avaliable.flatDependencies(pkg).length)"
+            :currents="payloads.available.dependencies(pkg)"
+            :list="payloads.available.flatDependencies(pkg)"
+            :max-depth="getDepth(payloads.available.flatDependencies(pkg).length)"
             type="dependencies"
           />
         </template>

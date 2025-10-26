@@ -5,8 +5,8 @@ import { payloads } from '../../state/payload'
 
 const transitiveDeps = computed(() =>
   Array.from(payloads.filtered.packages)
-    .filter(x => !x.workspace && payloads.avaliable.flatDependents(x).length)
-    .sort((a, b) => payloads.avaliable.flatDependents(b).length - payloads.avaliable.flatDependents(a).length),
+    .filter(x => !x.workspace && payloads.available.flatDependents(x).length)
+    .sort((a, b) => payloads.available.flatDependents(b).length - payloads.available.flatDependents(a).length),
 )
 </script>
 
@@ -38,13 +38,13 @@ const transitiveDeps = computed(() =>
             </button>
             <div flex="~ justify-end items-center gap-1">
               <DisplayNumberBadge
-                :number="payloads.avaliable.dependents(pkg).length"
+                :number="payloads.available.dependents(pkg).length"
                 rounded-full text-sm h-max
               />
             </div>
             <div flex="~ justify-end items-center gap-1">
               <DisplayNumberBadge
-                :number="payloads.avaliable.flatDependents(pkg).length"
+                :number="payloads.available.flatDependents(pkg).length"
                 rounded-full text-sm h-max
               />
             </div>

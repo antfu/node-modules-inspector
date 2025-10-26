@@ -6,7 +6,7 @@ import { selectedNode } from '../state/current'
 import { filters } from '../state/filters'
 import { payloads } from '../state/payload'
 
-const payload = payloads.avaliable
+const payload = payloads.available
 
 const selectedA = shallowReactive(new Set<PackageNode>())
 const selectedB = shallowReactive(new Set<PackageNode>())

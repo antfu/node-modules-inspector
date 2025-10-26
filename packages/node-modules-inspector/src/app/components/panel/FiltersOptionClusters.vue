@@ -6,7 +6,7 @@ import { payloads } from '../../state/payload'
 
 const clustersAvailableSelect = computed(() => {
   const clusters = new Set<string>()
-  for (const c of payloads.avaliable.clusters) {
+  for (const c of payloads.available.clusters) {
     if (!c.startsWith('dep:'))
       clusters.add(c)
   }

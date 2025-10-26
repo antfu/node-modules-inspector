@@ -249,7 +249,7 @@ function focusOn(spec: string, animated = true) {
 function isRelated(pkg: PackageNode) {
   if (!selectedNode.value)
     return
-  return selectedNode.value === pkg || payloads.avaliable.flatDependencies(selectedNode.value).includes(pkg) || payloads.avaliable.flatDependents(selectedNode.value).includes(pkg)
+  return selectedNode.value === pkg || payloads.available.flatDependencies(selectedNode.value).includes(pkg) || payloads.available.flatDependents(selectedNode.value).includes(pkg)
 }
 
 const createLinkHorizontal = linkHorizontal()

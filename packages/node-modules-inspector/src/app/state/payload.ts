@@ -161,13 +161,13 @@ const _workspace = createComputedPayload(() =>
     .filter(pkg => pkg.workspace),
 )
 
-const _avaliable = createComputedPayload(() =>
+const _available = createComputedPayload(() =>
   _main.packages
     .filter(pkg => !_excluded.map.has(pkg.spec)),
 )
 
 const _filtered = createComputedPayload(() =>
-  _avaliable.packages
+  _available.packages
     .filter(filterSelectPredicate.value),
 )
 
@@ -175,8 +175,8 @@ const _compareA = createComputedPayload(() => {
   if (!filters.state.compareA?.length)
     return []
   const packages = new Set(
-    _avaliable.getList(filters.state.compareA)
-      .flatMap(pkg => [pkg, ..._avaliable.flatDependencies(pkg)]),
+    _available.getList(filters.state.compareA)
+      .flatMap(pkg => [pkg, ..._available.flatDependencies(pkg)]),
   )
   return Array.from(packages)
 })
@@ -185,8 +185,8 @@ const _compareB = createComputedPayload(() => {
   if (!filters.state.compareB?.length)
     return []
   const packages = new Set(
-    _avaliable.getList(filters.state.compareB)
-      .flatMap(pkg => [pkg, ..._avaliable.flatDependencies(pkg)]),
+    _available.getList(filters.state.compareB)
+      .flatMap(pkg => [pkg, ..._available.flatDependencies(pkg)]),
   )
   return Array.from(packages)
 })
@@ -195,7 +195,7 @@ export const payloads = {
   main: _main,
   excluded: _excluded,
   workspace: _workspace,
-  avaliable: _avaliable,
+  available: _available,
   filtered: _filtered,
 
   compareA: _compareA,
@@ -246,5 +246,5 @@ export function getDeprecatedInfo(input: PackageNode | string) {
 }
 
 export const totalWorkspaceSize = computed(() => {
-  return Array.from(payloads.avaliable.packages).reduce((acc, pkg) => acc + (pkg.resolved.installSize?.bytes || 0), 0)
+  return Array.from(payloads.available.packages).reduce((acc, pkg) => acc + (pkg.resolved.installSize?.bytes || 0), 0)
 })

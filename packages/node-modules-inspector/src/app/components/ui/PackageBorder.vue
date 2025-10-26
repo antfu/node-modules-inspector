@@ -30,7 +30,7 @@ const isSelected = computed(() => selectedNode.value === props.pkg)
 const isRelated = computed(() => {
   if (!selectedNode.value)
     return false
-  return isSelected.value || payloads.avaliable.flatDependents(selectedNode.value).includes(props.pkg) || payloads.avaliable.flatDependencies(selectedNode.value).includes(props.pkg)
+  return isSelected.value || payloads.available.flatDependents(selectedNode.value).includes(props.pkg) || payloads.available.flatDependencies(selectedNode.value).includes(props.pkg)
 })
 const isFaded = computed(() => selectedNode.value && !isRelated.value)
 const isFocused = computed(() => {
