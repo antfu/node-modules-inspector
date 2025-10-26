@@ -1,0 +1,10 @@
+{
+  "name": "test-bun-simple",
+  "version": "1.0.0",
+  "dependencies": {
+    "ansis": "catalog:conflicts_deps_h3_0_0"
+  },
+  "devDependencies": {
+    "debug": "catalog:"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "name": "test-bun-nested",
+  "version": "1.0.0",
+  "dependencies": {
+    "loose-envify": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:"
+  },
+  "optionalDependencies": {
+    "fsevents": "2.3.3"
+  },
+  "devDependencies": {
+    "@types/bun": "catalog:"
+  }
+}
