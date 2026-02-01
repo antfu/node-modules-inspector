@@ -20,6 +20,7 @@ export const settings = useLocalStorage<SettingsOptions>(
     chartColoringMode: 'spectrum',
     collapseSidepanel: false,
     chartAnimation: true,
+    preferNpmx: true,
   },
   {
     deep: true,

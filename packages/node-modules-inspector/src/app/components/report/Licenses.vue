@@ -4,6 +4,7 @@ import { computed, ref } from 'vue'
 import { getPackageData } from '@/utils/package-json'
 import { selectedNode } from '../../state/current'
 import { payloads } from '../../state/payload'
+import { settings } from '../../state/settings'
 
 const PERMISSIVE_LICENSES = [
   'MIT',
@@ -119,7 +120,7 @@ const filteredResult = computed(() => {
             <div />
             <template v-for="pkg of filteredResult" :key="pkg.spec">
               <a
-                :href="`https://www.npmjs.com/package/${pkg.name}/v/${pkg.version}`"
+                :href="settings.preferNpmx ? `https://npmx.dev/${pkg.name}@${pkg.version}` : `https://www.npmjs.com/package/${pkg.name}/v/${pkg.version}`"
                 target="_blank"
                 badge-color-gray px2 rounded-full w-max text-sm h-max
               >

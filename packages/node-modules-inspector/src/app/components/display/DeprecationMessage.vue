@@ -2,6 +2,7 @@
 import type { PackageNode } from 'node-modules-tools'
 import { computed } from 'vue'
 import { getDeprecatedInfo } from '../../state/payload'
+import { settings } from '../../state/settings'
 
 const props = withDefaults(defineProps<{
   pkg: PackageNode
@@ -17,13 +18,24 @@ const labelMap = {
   current: 'Current Version Deprecated',
   future: 'Future Deprecation',
 }
+
+const npmUrl = computed(() => {
+  if (settings.value.preferNpmx) {
+    return deprecation.value?.type === 'current'
+      ? `https://npmx.dev/${props.pkg.name}@${props.pkg.version}`
+      : `https://npmx.dev/${props.pkg.name}`
+  }
+  return deprecation.value?.type === 'current'
+    ? `https://npmjs.com/package/${props.pkg.name}/v/${props.pkg.version}`
+    : `https://npmjs.com/package/${props.pkg.name}`
+})
 </script>
 
 <template>
   <a
     v-if="deprecation"
     px3 py2 block
-    :href="deprecation.type === 'current' ? `https://npmjs.com/package/${pkg.name}/v/${pkg.version}` : `https://npmjs.com/package/${pkg.name}`"
+    :href="npmUrl"
     :class="deprecation.type === 'future' ? 'badge-color-orange' : 'badge-color-red'"
     target="_blank"
   >

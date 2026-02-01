@@ -8,7 +8,7 @@ const backend = getBackend()
 
 <template>
   <div>
-    <div flex="~ col gap-4" p4>
+    <div flex="~ col gap-2" p4>
       <OptionItem title="Simplify module types" description="Show only ESM/CJS">
         <OptionCheckbox v-model="settings.moduleTypeSimple" />
       </OptionItem>
@@ -40,6 +40,9 @@ const backend = getBackend()
           :options="['none', 'prod', 'dev', 'both']"
           :titles="['None', 'Prod', 'Dev', 'Both']"
         />
+      </OptionItem>
+      <OptionItem title="Prefer npmx.dev" description="Use npmx.dev instead of npmjs.com for links">
+        <OptionCheckbox v-model="settings.preferNpmx" />
       </OptionItem>
     </div>
 

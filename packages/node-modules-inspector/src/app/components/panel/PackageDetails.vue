@@ -274,7 +274,7 @@ const thirdPartyServices = computed(() => {
           <NuxtLink
             v-if="!pkg.private"
             v-tooltip="'Open on NPM'"
-            :to="`https://www.npmjs.com/package/${pkg.name}/v/${pkg.version}`"
+            :to="settings.preferNpmx ? `https://npmx.dev/${pkg.name}@${pkg.version}` : `https://www.npmjs.com/package/${pkg.name}/v/${pkg.version}`"
             title="Open on NPM"
             target="_blank"
             external
