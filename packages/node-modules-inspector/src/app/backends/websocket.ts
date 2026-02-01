@@ -38,7 +38,7 @@ export function createWebSocketBackend(options: WebSocketBackendOptions): Backen
     },
     serialize: stringify,
     deserialize: parse,
-    onError(err, name) {
+    onFunctionError(err, name) {
       error.value = err
       console.error(`[node-modules-inspector] RPC error on executing "${name}":`)
       console.error(err)

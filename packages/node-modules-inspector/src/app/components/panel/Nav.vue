@@ -88,7 +88,7 @@ function toggleFilters() {
       bg-glass rounded-full border border-base shadow px3 py2 flex-none
       flex="~ items-center gap-1" w-max
     >
-      <template v-for="tab of tabsMeta" :key="tab.value">
+      <template v-for="tab of tabsMeta" :key="tab.path">
         <RouterLink
           v-tooltip="tab.name"
           w-10 h-10 rounded-full hover:bg-active
