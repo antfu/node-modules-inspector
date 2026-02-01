@@ -273,9 +273,9 @@ const thirdPartyServices = computed(() => {
         <div flex="~ gap--1 items-center">
           <NuxtLink
             v-if="!pkg.private"
-            v-tooltip="'Open on NPM'"
+            v-tooltip="settings.preferNpmx ? 'Open on npmx.dev' : 'Open on npmjs.com'"
             :to="settings.preferNpmx ? `https://npmx.dev/${pkg.name}@${pkg.version}` : `https://www.npmjs.com/package/${pkg.name}/v/${pkg.version}`"
-            title="Open on NPM"
+            :title="settings.preferNpmx ? 'Open on npmx.dev' : 'Open on npmjs.com'"
             target="_blank"
             external
             w-8 h-8 rounded-full hover:bg-active flex
