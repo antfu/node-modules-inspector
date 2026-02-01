@@ -48,7 +48,7 @@
     "node-modules-tools": "workspace:*",
     "nuxt": "catalog:bundling",
     "nuxt-eslint-auto-explicit-import": "catalog:lint",
-    "nuxt-mcp": "catalog:bundling",
+    "nuxt-mcp-dev": "catalog:bundling",
     "p-limit": "catalog:deps",
     "rollup": "catalog:bundling",
     "rollup-plugin-esbuild": "catalog:bundling",
@@ -64,10 +64,12 @@
   },
   "resolutions": {
     "@nuxt/devtools": "catalog:dev",
+    "chokidar": "catalog:dev",
     "esbuild": "catalog:bundling",
     "nitropack": "catalog:bundling",
     "nuxt": "catalog:bundling",
     "rollup": "catalog:bundling",
+    "semver": "catalog:deps",
     "vite": "catalog:bundling"
   },
   "simple-git-hooks": {

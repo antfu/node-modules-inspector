@@ -7,6 +7,8 @@ shamefullyHoist: true
 strictPeerDependencies: false
 shellEmulator: true
 ignoreWorkspaceRootCheck: true
+trustPolicyExclude:
+  - undici-types@6.20.0
 
 catalogs:
   bundling:
@@ -18,11 +20,11 @@ catalogs:
     esbuild: ^0.27.2
     nitropack: ^2.13.1
     nuxt: ^4.3.0
-    nuxt-mcp: ^0.2.4
+    nuxt-mcp-dev: ^0.3.2
     rollup: ^4.57.1
     rollup-plugin-esbuild: ^6.2.1
     unbuild: ^3.6.1
-    vite: npm:rolldown-vite@latest
+    vite: ^8.0.0-beta.11
   deps:
     ansis: ^4.2.0
     birpc: ^4.0.0
@@ -51,6 +53,7 @@ catalogs:
     '@antfu/ni': ^28.2.0
     '@nuxt/devtools': ^3.1.1
     bumpp: ^10.4.0
+    chokidar: ^5.0.0
     typescript: ^5.9.3
     vite-plugin-inspect: ^11.3.3
     vue-tsc: ^3.2.4
