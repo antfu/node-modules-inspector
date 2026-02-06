@@ -1,4 +1,5 @@
 export * from './agent-entry'
+export { analyzePackageModuleType } from './analyze-esm'
 export * from './constants'
 
 export { listPackageDependencies } from './list'
