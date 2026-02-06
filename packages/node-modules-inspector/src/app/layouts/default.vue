@@ -20,7 +20,7 @@ useRuntimeHook('page:finish', () => {
   <div
     v-if="isLoading"
     flex="~ items-center justify-center" h-full bg-glass:50
-    absolute left-0 top-0 w-full z-49
+    fixed left-0 top-0 w-full z-49
     animate-fade-in animate-delay-200 animate-fill-both animate-duration-0
     :class="isSidepanelCollapsed ? 'page-padding-collapsed' : 'page-padding'"
   >
