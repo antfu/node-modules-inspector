@@ -17,7 +17,7 @@ import { getModuleType } from '../../utils/module-type'
 
 const mouse = reactive(useMouse())
 const params = useRoute().params as Record<string, string>
-const chart = computed<'frame' | 'treemap' | 'sunburst'>(() => params.chart?.[0] as any || 'treemap')
+const chart = computed<'flamegraph' | 'treemap' | 'sunburst'>(() => params.chart?.[0] as any || 'treemap')
 const nodeHover = shallowRef<ChartNode | undefined>(undefined)
 const nodeSelected = shallowRef<ChartNode | undefined>(undefined)
 const location = window.location
@@ -219,7 +219,7 @@ watch(
       case 'sunburst':
         graph.value = new Sunburst(tree.value.root, options.value)
         break
-      case 'frame':
+      case 'flamegraph':
         graph.value = new Flamegraph(tree.value.root, options.value)
         break
       default:
@@ -294,11 +294,11 @@ onUnmounted(() => {
     </NuxtLink>
     <NuxtLink
       btn-action as="button"
-      :to="{ path: '/chart/frame', hash: location.hash }"
+      :to="{ path: '/chart/flamegraph', hash: location.hash }"
       active-class="text-primary bg-primary:5"
     >
       <div i-ph-chart-bar-horizontal-duotone />
-      Framegraph
+      Flamegraph
     </NuxtLink>
 
     <div flex-auto />
@@ -310,8 +310,8 @@ onUnmounted(() => {
     />
   </div>
   <div mt5>
-    <ChartFramegraph
-      v-if="chart === 'frame' && graph"
+    <ChartFlamegraph
+      v-if="chart === 'flamegraph' && graph"
       :graph="graph"
       :selected="nodeSelected"
       @select="(x: ChartNode | null) => selectNode(x)"
