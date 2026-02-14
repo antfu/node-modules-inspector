@@ -62,11 +62,17 @@ export interface PackageNode extends PackageNodeBase {
     publint?: PublintMessage[] | null
   }
 }
+export type AuditLevelString = 'low' | 'moderate' | 'high' | 'critical'
 
 export interface NpmMeta {
   publishedAt: number
   deprecated?: string
   provenance?: 'trustedPublisher' | boolean
+  vulnerability?: {
+    level: AuditLevelString
+    title: string
+    url?: string
+  }
 }
 
 /**
