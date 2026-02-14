@@ -31,7 +31,7 @@ const AuditLevel: Record<AuditLevelString, number> = {
 const registry = 'https://registry.npmjs.org'
 
 async function getVulnerabilitiesBatch(dependencies: string[]): Promise<(ResolvedVulnerability | null)[]> {
-  const payload = {} as Record<string, Set<string>>
+  const payload: Record<string, Set<string>> = {}
   const dependencyInfo = [] as { name: string, version: string }[]
   for (const dependency of dependencies) {
     const depVersionIndex = dependency.indexOf('@', 1)
@@ -47,6 +47,9 @@ async function getVulnerabilitiesBatch(dependencies: string[]): Promise<(Resolve
   }
   const body = {} as Record<string, string[]>
   for (const depName in payload) {
+    if (!payload[depName]) {
+      continue
+    }
     body[depName] = Array.from(payload[depName])
   }
   const result = await fetch(`${registry}/-/npm/v1/security/advisories/bulk`, {
@@ -102,7 +105,7 @@ async function fetchBatch(
             onResult(r)
           }
           else {
-            missingSpecs.add(queue[idx])
+            missingSpecs.add(queue[idx]!)
           }
         })
       }
@@ -121,14 +124,16 @@ async function fetchBatch(
       Array.from(missingSpecs).map(spec => limit(async () => {
         try {
           const result = await getVulnerabilitiesBatch([spec])
-          if (result[0] !== null) {
+          if (result[0] !== null && result[0] !== undefined) {
             onResult(result[0])
           }
           if ('publishedAt' in result && result.publishedAt) {
             missingSpecs.delete(spec)
           }
         }
-        catch { }
+        catch {
+
+        }
       })),
     )
   }

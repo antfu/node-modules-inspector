@@ -6,7 +6,6 @@ const location = window.location
 
 const params = useRoute().params as Record<string, string>
 const selected = computed(() => params.report?.[0] || 'all')
-const isWebContainer = import.meta.env.BACKEND === 'webcontainer'
 </script>
 
 <template>
@@ -23,8 +22,7 @@ const isWebContainer = import.meta.env.BACKEND === 'webcontainer'
       <div i-ph-warning-duotone />
       Deprecated
     </NuxtLink>
-    <!-- npm /advisories/bulk has CORP issue. -->
-    <NuxtLink v-if="!isWebContainer" btn-action as="button" :to="{ path: '/report/vulnerabilities', hash: location.hash }" active-class="text-red bg-red:5">
+    <NuxtLink btn-action as="button" :to="{ path: '/report/vulnerabilities', hash: location.hash }" active-class="text-red bg-red:5">
       <div i-ph-warning-duotone />
       Vulnerabilities
     </NuxtLink>
@@ -57,7 +55,7 @@ const isWebContainer = import.meta.env.BACKEND === 'webcontainer'
   <ReportTransitiveDeps v-if="selected === 'dependencies' || selected === 'all'" />
   <ReportUsedBy v-if="selected === 'dependencies' || selected === 'all'" />
   <ReportInstallSize v-if="selected === 'install-size' || selected === 'all'" />
-  <ReportVulnerability v-if="!isWebContainer && (selected === 'vulnerabilities' || selected === 'all')" />
+  <ReportVulnerability v-if="selected === 'vulnerabilities' || selected === 'all'" />
   <ReportPublishTime v-if="selected === 'time' || selected === 'all'" />
   <ReportDeprecated v-if="selected === 'deprecated' || selected === 'all'" />
   <ReportEngines v-if="selected === 'node-engines' || selected === 'all'" />
