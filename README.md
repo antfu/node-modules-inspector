@@ -1,4 +1,4 @@
-![](./packages/node-modules-inspector/src/app/public/favicon.svg)
+![Logo](./packages/node-modules-inspector/src/app/public/favicon.svg)
 
 # Node Modules Inspector
 
@@ -10,7 +10,7 @@
 
 Visualize your node_modules, inspect dependencies, and more.
 
-### Quick Start
+## Quick Start
 
 Try it by running following command under your `pnpm`/`npm`/`bun` project.
 
@@ -89,7 +89,7 @@ You can see a build for all Anthony Fu's packages at [everything.antfu.dev](http
 
 <p align="center">
   <a href="https://cdn.jsdelivr.net/gh/antfu/static/sponsors.svg">
-    <img src='https://cdn.jsdelivr.net/gh/antfu/static/sponsors.svg'/>
+    <img src='https://cdn.jsdelivr.net/gh/antfu/static/sponsors.svg' alt='Sponsors' />
   </a>
 </p>
 

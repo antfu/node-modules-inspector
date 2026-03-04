@@ -4,7 +4,7 @@
       "url": "http://localhost:3000/__mcp/sse"
     },
     "nuxt-docs": {
-      "url": "https://mcp.nuxt.com/sse"
+      "url": "https://nuxt.com/mcp"
     }
   }
 }
