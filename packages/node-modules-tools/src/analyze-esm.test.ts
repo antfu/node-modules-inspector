@@ -7,7 +7,7 @@ function analyze(pkgJson: Partial<PackageJson>) {
   return analyzePackageModuleType(pkgJson as PackageJson)
 }
 
-function nestExports(depth: number, value: unknown): unknown {
+function nestExports(depth: number, value: unknown): any {
   let nested = value
   for (let i = 0; i < depth; i++)
     nested = { default: nested }

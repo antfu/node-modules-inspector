@@ -14,9 +14,9 @@ trustPolicyExclude:
 catalogs:
   bundling:
     '@rollup/plugin-alias': ^6.0.0
-    '@rollup/plugin-commonjs': ^29.0.0
+    '@rollup/plugin-commonjs': ^29.0.1
     '@rollup/plugin-node-resolve': ^16.0.3
-    '@unocss/nuxt': ^66.6.4
+    '@unocss/nuxt': ^66.6.5
     '@vueuse/nuxt': ^14.2.1
     esbuild: ^0.27.3
     nitropack: ^2.13.1
@@ -85,13 +85,13 @@ catalogs:
     '@antfu/eslint-config': ^7.6.1
     '@nuxt/eslint': ^1.15.2
     '@typescript-eslint/utils': ^8.56.1
-    '@unocss/eslint-config': ^66.6.4
+    '@unocss/eslint-config': ^66.6.5
     eslint: ^10.0.2
     lint-staged: ^16.3.2
     nuxt-eslint-auto-explicit-import: ^0.1.1
     simple-git-hooks: ^2.13.1
   testing:
-    mlly: ^1.8.0
+    mlly: ^1.8.1
     type-fest: 4.41.0
     vitest: ^4.0.18
   types:
