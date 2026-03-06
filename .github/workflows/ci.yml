@@ -29,6 +29,9 @@ jobs:
       - name: Install
         run: nci
 
+      - name: Build
+        run: nr build
+
       - name: Lint
         run: nr lint
 
