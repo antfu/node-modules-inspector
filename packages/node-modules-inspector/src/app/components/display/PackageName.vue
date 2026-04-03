@@ -5,5 +5,5 @@ defineProps<{
 </script>
 
 <template>
-  <span font-mono>{{ name }}</span>
+ <span font-mono break-all>{{ name }}</span>
 </template>
