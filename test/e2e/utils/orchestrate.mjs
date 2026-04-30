@@ -15,7 +15,9 @@ import process from 'node:process'
 const SCRIPT_DIR = path.dirname(new URL(import.meta.url).pathname)
 const ROOT = path.resolve(SCRIPT_DIR, '../../..')
 const INSPECTOR_PKG = path.join(ROOT, 'packages/node-modules-inspector')
+const TOOLS_PKG = path.join(ROOT, 'packages/node-modules-tools')
 const DIST_PUBLIC = path.join(INSPECTOR_PKG, 'dist/public')
+const TOOLS_DIST = path.join(TOOLS_PKG, 'dist/index.mjs')
 const FIXTURES = path.join(SCRIPT_DIR, '..', '.fixtures')
 const FIXTURE_BUILD = path.join(FIXTURES, 'build')
 const FIXTURE_WC = path.join(FIXTURES, 'wc')
@@ -72,11 +74,23 @@ async function ensureMainBuildAndStaticFixture() {
   run(`node packages/node-modules-inspector/bin.mjs build --outDir ${path.relative(ROOT, FIXTURE_BUILD)}`)
 }
 
+async function ensureToolsBuilt() {
+  if (!FORCE && existsSync(TOOLS_DIST))
+    return
+  // The inspector CLI runs from `dist/cli.mjs` and resolves `node-modules-tools`
+  // through node_modules — which symlinks back to this package's dist via the
+  // workspace. Without this build, the CLI exits with ERR_MODULE_NOT_FOUND.
+  console.log('[e2e:orchestrate] Building node-modules-tools...')
+  run('pnpm -C packages/node-modules-tools run build')
+}
+
 async function buildFixtures() {
   await fs.mkdir(FIXTURES, { recursive: true })
-  // Order: webcontainer first (it leaves dist/public in wc mode), then main
-  // (so the dev CLI serves the right entry from dist/public). Each step is a
-  // no-op when artifacts are already present.
+  // node-modules-tools is a runtime dep of the inspector CLI; build it first.
+  // Then webcontainer (it leaves dist/public in wc mode), then main (so the
+  // dev CLI serves the right entry from dist/public). Each step is a no-op
+  // when artifacts are already present.
+  await ensureToolsBuilt()
   await ensureWebcontainerFixture()
   await ensureMainBuildAndStaticFixture()
 }
