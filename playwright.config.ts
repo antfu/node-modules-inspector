@@ -62,8 +62,10 @@ export default defineConfig({
     command: 'node test/e2e/utils/orchestrate.mjs',
     url: `http://127.0.0.1:${PORT_DEV}/api/metadata.json`,
     reuseExistingServer: !isCI,
-    // Cold start has to do `pnpm wc:build` + `pnpm build` which is slow.
-    timeout: 300_000,
+    // Cold start in CI has to do `pnpm wc:build`, `pnpm build`, plus the
+    // static export (which fetches npm meta for every dep) — together this
+    // can take 5+ minutes on a fresh runner.
+    timeout: 600_000,
     stdout: 'pipe',
     stderr: 'pipe',
     env: {
