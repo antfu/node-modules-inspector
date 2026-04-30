@@ -91,7 +91,8 @@ catalogs:
     nuxt-eslint-auto-explicit-import: ^0.1.1
     simple-git-hooks: ^2.13.1
   testing:
-    mlly: ^1.8.1
+    '@playwright/test': ^1.59.1
+    mlly: ^1.8.2
     type-fest: 4.41.0
     vitest: ^4.0.18
   types:

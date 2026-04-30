@@ -9,7 +9,7 @@ export async function getPackageInstallSize(
     return
   if (pkg.name.startsWith('#'))
     return
-  if (pkg.version.match(/^(?:file|link|workspace):/))
+  if (/^(?:file|link|workspace):/.test(pkg.version))
     return
   if (!pkg.filepath)
     return
@@ -23,7 +23,7 @@ export async function getPackageInstallSize(
         files.push(join(dir, n.name))
       }
       else if (n.isDirectory()) {
-        if (n.name.match(/^\.|^node_modules$/))
+        if (/^\.|^node_modules$/.test(n.name))
           continue
         await traverse(join(dir, n.name))
       }
@@ -74,35 +74,35 @@ export function guessFileCategory(file: string): FileCategory {
   if (dirs.some(d => d.match(/^(?:bin|binary)$/)))
     return 'bin'
 
-  if (base.match(/\.(?:test|tests|spec|specs)\.\w+$/i))
+  if (/\.(?:test|tests|spec|specs)\.\w+$/i.test(base))
     return 'test'
-  if (base.match(/\.map$/i))
+  if (/\.map$/i.test(base))
     return 'map'
-  if (base.match(/\.d(\.\w+)?\.[cm]?tsx?$/i))
+  if (/\.d(?:\.\w+)?\.[cm]?tsx?$/i.test(base))
     return 'dts'
-  if (base.match(/\.exe$/i))
+  if (/\.exe$/i.test(base))
     return 'bin'
-  if (base.match(/\.(?:css|scss|sass|less)$/i))
+  if (/\.(?:css|scss|sass|less)$/i.test(base))
     return 'css'
-  if (base.match(/\.(?:json[c5]?|ya?ml)$/i))
+  if (/\.(?:json[c5]?|ya?ml)$/i.test(base))
     return 'json'
-  if (base.match(/\.html?$/i))
+  if (/\.html?$/i.test(base))
     return 'html'
-  if (base.match(/\.[cm]?jsx?$/i))
+  if (/\.[cm]?jsx?$/i.test(base))
     return 'js'
-  if (base.match(/\.[cm]?tsx?$/i))
+  if (/\.[cm]?tsx?$/i.test(base))
     return 'ts'
-  if (base.match(/\.(?:vue|svelte|astro)$/i))
+  if (/\.(?:vue|svelte|astro)$/i.test(base))
     return 'comp'
-  if (base.match(/\.(?:png|jpe?g|gif|svg)$/i))
+  if (/\.(?:png|jpe?g|gif|svg)$/i.test(base))
     return 'image'
-  if (base.match(/\.(?:md|txt|mdx|markdown|rst)$/i))
+  if (/\.(?:md|txt|mdx|markdown|rst)$/i.test(base))
     return 'doc'
-  if (base.match(/\.(?:wasm|wat)$/i))
+  if (/\.(?:wasm|wat)$/i.test(base))
     return 'wasm'
-  if (base.match(/\.flow$/i))
+  if (/\.flow$/i.test(base))
     return 'flow'
-  if (base.match(/\.(?:ttf|otf|woff2?)$/i))
+  if (/\.(?:ttf|otf|woff2?)$/i.test(base))
     return 'font'
   return 'other'
 }
