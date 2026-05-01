@@ -15,3 +15,6 @@ packages/node-modules-inspector/runtime
 test/e2e/.fixtures
 test/e2e/.results
 playwright-report
+
+# Agent skills from npm packages (managed by skills-npm)
+**/skills/npm-*

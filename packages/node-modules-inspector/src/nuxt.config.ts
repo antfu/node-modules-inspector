@@ -121,7 +121,6 @@ export default defineNuxtConfig({
         output: {
           entryFileNames: '_nuxt/[name].[hash].js',
           chunkFileNames: '_nuxt/chunks/[name].[hash].js',
-          // @ts-expect-error Rolldown-only option, not typed in Rollup OutputOptions
           advancedChunks: {
             groups: [
               {
