@@ -14,6 +14,8 @@
     "prepare": "npx simple-git-hooks && pnpm -C packages/node-modules-inspector run dev:prepare",
     "lint": "pnpm -C packages/node-modules-inspector run dev:prepare && eslint .",
     "test": "vitest",
+    "test:e2e": "playwright test",
+    "test:e2e:install": "playwright install chromium",
     "release": "bumpp -r",
     "typecheck": "vue-tsc --noEmit"
   },
@@ -29,6 +31,7 @@
     "@iconify-json/simple-icons": "catalog:icons",
     "@nuxt/devtools": "catalog:dev",
     "@nuxt/eslint": "catalog:lint",
+    "@playwright/test": "catalog:testing",
     "@rollup/plugin-alias": "catalog:bundling",
     "@rollup/plugin-commonjs": "catalog:bundling",
     "@rollup/plugin-node-resolve": "catalog:bundling",
