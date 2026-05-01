@@ -6,7 +6,7 @@ import devtool from '../../node/devtool'
 
 consola.restoreAll()
 
-let _serverPromise: Promise<{ port: number }> | null = null
+let _serverPromise: Promise<{ port: number, jsonSerializableMethods: string[] }> | null = null
 
 async function bootDevtoolServer() {
   const port = await getPort({ port: 7812, random: true })
@@ -31,7 +31,13 @@ async function bootDevtoolServer() {
     invoke('nmi:get-payload').catch(() => {})
   }, 1)
 
-  return { port }
+  const jsonSerializableMethods: string[] = []
+  for (const def of ctx.rpc.definitions.values()) {
+    if (def.jsonSerializable === true)
+      jsonSerializableMethods.push(def.name)
+  }
+
+  return { port, jsonSerializableMethods }
 }
 
 function getServer() {
@@ -41,6 +47,6 @@ function getServer() {
 }
 
 export default eventHandler(async () => {
-  const { port } = await getServer()
-  return { backend: 'websocket', websocket: port }
+  const { port, jsonSerializableMethods } = await getServer()
+  return { backend: 'websocket', websocket: port, jsonSerializableMethods }
 })

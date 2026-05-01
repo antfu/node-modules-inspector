@@ -15,6 +15,7 @@ import {
   createHostContext,
   startHttpAndWs,
 } from 'devframe/node'
+import { strictJsonStringify, structuredCloneStringify } from 'devframe/rpc'
 import { createApp, eventHandler, fromNodeMiddleware } from 'h3'
 import { dirname, relative, resolve } from 'pathe'
 import sirv from 'sirv'
@@ -64,17 +65,26 @@ cli
     })
 
     await fs.mkdir(resolve(outDir, DEVTOOLS_RPC_DUMP_DIRNAME), { recursive: true })
+
+    const jsonSerializableMethods: string[] = []
+    for (const def of ctx.rpc.definitions.values()) {
+      if (def.jsonSerializable === true)
+        jsonSerializableMethods.push(def.name)
+    }
     await fs.writeFile(
       resolve(outDir, DEVTOOLS_CONNECTION_META_FILENAME),
-      JSON.stringify({ backend: 'static' }, null, 2),
+      JSON.stringify({ backend: 'static', jsonSerializableMethods }, null, 2),
       'utf-8',
     )
 
     const dump = await collectStaticRpcDump(ctx.rpc.definitions.values(), ctx)
-    for (const [filepath, data] of Object.entries(dump.files)) {
+    for (const [filepath, file] of Object.entries(dump.files)) {
       const fullpath = resolve(outDir, filepath)
       await fs.mkdir(dirname(fullpath), { recursive: true })
-      await fs.writeFile(fullpath, JSON.stringify(data), 'utf-8')
+      const text = file.serialization === 'structured-clone'
+        ? structuredCloneStringify(file.data)
+        : strictJsonStringify(file.data, file.fnName)
+      await fs.writeFile(fullpath, text, 'utf-8')
     }
     await fs.writeFile(
       resolve(outDir, DEVTOOLS_RPC_DUMP_MANIFEST_FILENAME),
@@ -117,13 +127,6 @@ cli
     const origin = `http://${host}:${port}`
     const app = createApp()
 
-    app.use(`/${DEVTOOLS_CONNECTION_META_FILENAME}`, eventHandler((event) => {
-      event.node.res.setHeader('Content-Type', 'application/json')
-      return event.node.res.end(JSON.stringify({ backend: 'websocket', websocket: port }))
-    }))
-
-    app.use('/', fromNodeMiddleware(sirv(distDir, { dev: true, single: true })))
-
     const ctx = await createHostContext({
       cwd: options.root,
       mode: 'dev',
@@ -136,6 +139,19 @@ cli
         depth: Number(options.depth),
       },
     })
+
+    const jsonSerializableMethods: string[] = []
+    for (const def of ctx.rpc.definitions.values()) {
+      if (def.jsonSerializable === true)
+        jsonSerializableMethods.push(def.name)
+    }
+
+    app.use(`/${DEVTOOLS_CONNECTION_META_FILENAME}`, eventHandler((event) => {
+      event.node.res.setHeader('Content-Type', 'application/json')
+      return event.node.res.end(JSON.stringify({ backend: 'websocket', websocket: port, jsonSerializableMethods }))
+    }))
+
+    app.use('/', fromNodeMiddleware(sirv(distDir, { dev: true, single: true })))
 
     setTimeout(() => {
       const invoke = ctx.rpc.invokeLocal as (method: string, ...args: any[]) => Promise<any>

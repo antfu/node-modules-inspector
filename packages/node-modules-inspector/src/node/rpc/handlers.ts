@@ -1,18 +1,18 @@
 import type { ListPackageDependenciesOptions, PackageNode, PublintMessage } from 'node-modules-tools'
 import type { Storage } from 'unstorage'
-import type { ListPackagesNpmMetaLatestOptions, ListPackagesNpmMetaOptions, NodeModulesInspectorConfig, NodeModulesInspectorPayload } from '../shared/types'
+import type { ListPackagesNpmMetaLatestOptions, ListPackagesNpmMetaOptions, NodeModulesInspectorConfig, NodeModulesInspectorPayload } from '../../shared/types'
 import process from 'node:process'
 import c from 'ansis'
 import { constructPackageFilters, listPackageDependencies } from 'node-modules-tools'
 import { hash as getHash } from 'ohash'
 import pLimit from 'p-limit'
 import { loadConfig } from 'unconfig'
-import { isNpmMetaLatestValid } from '../shared/utils'
+import { isNpmMetaLatestValid } from '../../shared/utils'
 import {
   getPackagesNpmMeta as _getPackagesNpmMeta,
   getPackagesNpmMetaLatest as _getPackagesNpmMetaLatest,
-} from '../shared/version-info'
-import { MARK_CHECK, MARK_NODE } from './constants'
+} from '../../shared/version-info'
+import { MARK_CHECK, MARK_NODE } from '../constants'
 
 export interface CreateInspectorRpcHandlersOptions extends
   Partial<ListPackageDependenciesOptions>,

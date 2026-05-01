@@ -1,8 +1,12 @@
-import { defineRpcFunction } from 'devframe'
 import { defineDevtool } from 'devframe/types'
-import { stringify as structuredCloneStringify } from 'structured-clone-es'
 import { distDir } from '../dirs'
-import { createInspectorRpcHandlers } from './rpc'
+import { getPackagesNpmMetaRpc } from './rpc/get-packages-npm-meta'
+import { getPackagesNpmMetaLatestRpc } from './rpc/get-packages-npm-meta-latest'
+import { getPayloadRpc } from './rpc/get-payload'
+import { getPublintRpc } from './rpc/get-publint'
+import { createInspectorRpcHandlers } from './rpc/handlers'
+import { openInEditorRpc } from './rpc/open-in-editor'
+import { openInFinderRpc } from './rpc/open-in-finder'
 import { storageNpmMeta, storageNpmMetaLatest, storagePublint } from './storage'
 
 export interface InspectorDevtoolFlags {
@@ -31,47 +35,11 @@ export default defineDevtool({
       storagePublint,
     })
 
-    // The payload contains Maps and Sets (`packages`, plus per-node
-    // `dependencies`/`clusters`/`flatDependents`/...), which JSON.stringify
-    // turns into empty objects. devframe's static dump uses plain JSON, so
-    // we hand-serialize via structured-clone-es and parse on the client.
-    // The dev WS transport already round-trips through structured-clone-es,
-    // so the extra wrap is essentially free there.
-    ctx.rpc.register(defineRpcFunction({
-      name: 'nmi:get-payload',
-      type: 'query',
-      snapshot: true,
-      handler: async (force?: boolean) => structuredCloneStringify(await handlers.getPayload(force)),
-    }))
-
-    ctx.rpc.register(defineRpcFunction({
-      name: 'nmi:get-packages-npm-meta',
-      type: 'query',
-      handler: async (specs: string[]) => structuredCloneStringify(await handlers.getPackagesNpmMeta(specs)),
-    }))
-
-    ctx.rpc.register(defineRpcFunction({
-      name: 'nmi:get-packages-npm-meta-latest',
-      type: 'query',
-      handler: async (pkgNames: string[]) => structuredCloneStringify(await handlers.getPackagesNpmMetaLatest(pkgNames)),
-    }))
-
-    ctx.rpc.register(defineRpcFunction({
-      name: 'nmi:get-publint',
-      type: 'query',
-      handler: handlers.getPublint,
-    }))
-
-    ctx.rpc.register(defineRpcFunction({
-      name: 'nmi:open-in-editor',
-      type: 'event',
-      handler: (filename: string) => handlers.openInEditor(filename),
-    }))
-
-    ctx.rpc.register(defineRpcFunction({
-      name: 'nmi:open-in-finder',
-      type: 'event',
-      handler: (filename: string) => handlers.openInFinder(filename),
-    }))
+    ctx.rpc.register(getPayloadRpc(handlers))
+    ctx.rpc.register(getPackagesNpmMetaRpc(handlers))
+    ctx.rpc.register(getPackagesNpmMetaLatestRpc(handlers))
+    ctx.rpc.register(getPublintRpc(handlers))
+    ctx.rpc.register(openInEditorRpc(handlers))
+    ctx.rpc.register(openInFinderRpc(handlers))
   },
 })

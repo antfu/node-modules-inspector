@@ -12,7 +12,7 @@ import { stringify } from 'structured-clone-es'
 import { createStorage } from 'unstorage'
 import driverMemory from 'unstorage/drivers/memory'
 import { WEBCONTAINER_STDOUT_PREFIX } from '../../shared/constants'
-import { createInspectorRpcHandlers } from '../rpc'
+import { createInspectorRpcHandlers } from '../rpc/handlers'
 
 const rpc = createInspectorRpcHandlers({
   cwd: process.cwd(),

@@ -2,7 +2,6 @@ import type { ConnectionMeta } from 'devframe/types'
 import type { Backend } from '../types/backend'
 import { useRuntimeConfig } from '#app/nuxt'
 import { connectDevtool } from 'devframe/client'
-import { parse as structuredCloneParse } from 'structured-clone-es'
 import { ref, shallowRef } from 'vue'
 
 export async function createDevBackend(): Promise<Backend> {
@@ -42,9 +41,7 @@ export async function createDevBackend(): Promise<Backend> {
     functions: {
       getPayload: async (force?: boolean) => {
         try {
-          // Server returns a structured-clone-es-stringified blob so Maps/Sets
-          // survive devframe's JSON-only static dump.
-          return structuredCloneParse(await call('nmi:get-payload', force)) as any
+          return await call('nmi:get-payload', force)
         }
         catch (err) {
           connectionError.value = err
@@ -52,10 +49,10 @@ export async function createDevBackend(): Promise<Backend> {
         }
       },
       getPackagesNpmMeta: isWebsocket
-        ? async (specs: string[]) => structuredCloneParse(await call('nmi:get-packages-npm-meta', specs)) as any
+        ? (specs: string[]) => call('nmi:get-packages-npm-meta', specs)
         : undefined,
       getPackagesNpmMetaLatest: isWebsocket
-        ? async (pkgNames: string[]) => structuredCloneParse(await call('nmi:get-packages-npm-meta-latest', pkgNames)) as any
+        ? (pkgNames: string[]) => call('nmi:get-packages-npm-meta-latest', pkgNames)
         : undefined,
       getPublint: isWebsocket
         ? (pkg: any) => call('nmi:get-publint', pkg)
