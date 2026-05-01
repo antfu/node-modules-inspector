@@ -112,6 +112,38 @@ export async function install(
     }),
   })
 
+  // Browser-side dispatcher matching devframe's `rpc.call(method, ...args)` shape.
+  // Routes the inspector's RPC names to in-browser implementations: payload comes
+  // from the WebContainer process's stdout; npm-meta is resolved against IndexedDB.
+  const dispatcher = {
+    async call(method: string, ...args: any[]): Promise<any> {
+      switch (method) {
+        case 'nmi:get-payload': {
+          heartbeat = Date.now()
+          serverError = undefined
+          // eslint-disable-next-line no-unmodified-loop-condition
+          while (!result && !serverError) {
+            if (Date.now() - heartbeat > 10000)
+              throw new Error('Server heartbeat timeout')
+            await new Promise(r => setTimeout(r, 100))
+          }
+          if (!result) {
+            if (serverError)
+              throw serverError
+            throw new Error('Failed to get dependencies')
+          }
+          return result
+        }
+        case 'nmi:get-packages-npm-meta':
+          return getPackagesNpmMeta(args[0], { storageNpmMeta })
+        case 'nmi:get-packages-npm-meta-latest':
+          return getPackagesNpmMetaLatest(args[0], { storageNpmMetaLatest })
+        default:
+          throw new Error(`Unknown RPC method in webcontainer: ${method}`)
+      }
+    },
+  }
+
   return {
     name: 'webcontainer',
     connectionError: error,
@@ -120,32 +152,9 @@ export async function install(
       error.value = undefined
     },
     functions: {
-      async getPayload() {
-        heartbeat = Date.now()
-        serverError = undefined
-
-        // Max 10000 ms between heartbeat and now
-        // eslint-disable-next-line no-unmodified-loop-condition
-        while (!result && !serverError) {
-          if (Date.now() - heartbeat > 10000) {
-            throw new Error('Server heartbeat timeout')
-          }
-          await new Promise(r => setTimeout(r, 100))
-        }
-        if (!result) {
-          if (serverError)
-            throw serverError
-
-          throw new Error('Failed to get dependencies')
-        }
-        return result
-      },
-      getPackagesNpmMeta(deps) {
-        return getPackagesNpmMeta(deps, { storageNpmMeta })
-      },
-      getPackagesNpmMetaLatest(pkgNames) {
-        return getPackagesNpmMetaLatest(pkgNames, { storageNpmMetaLatest })
-      },
+      getPayload: () => dispatcher.call('nmi:get-payload'),
+      getPackagesNpmMeta: deps => dispatcher.call('nmi:get-packages-npm-meta', deps),
+      getPackagesNpmMetaLatest: pkgNames => dispatcher.call('nmi:get-packages-npm-meta-latest', pkgNames),
     },
   }
 }

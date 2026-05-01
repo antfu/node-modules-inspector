@@ -7,15 +7,15 @@ import { expect, test } from '@playwright/test'
 const navLink = (href: string) => `a[href^="${href}"]`
 
 test.describe('build mode (static export)', () => {
-  test('serves the static landing and exposes a static metadata file', async ({ page, request }) => {
-    const res = await request.get('/api/metadata.json')
+  test('serves the static landing and exposes a static connection meta', async ({ page, request }) => {
+    const res = await request.get('/.connection.json')
     expect(res.ok()).toBe(true)
     expect(await res.json()).toMatchObject({ backend: 'static' })
 
-    const dump = await request.get('/api/rpc-dump.json')
-    expect(dump.ok()).toBe(true)
-    const dumpBody = await dump.text()
-    expect(dumpBody.length).toBeGreaterThan(100)
+    const manifest = await request.get('/.rpc-dump/index.json')
+    expect(manifest.ok()).toBe(true)
+    const manifestBody = await manifest.json()
+    expect(manifestBody).toHaveProperty('nmi:get-payload')
 
     await page.goto('/')
     await expect(page).toHaveTitle(/Node Modules Inspector/)

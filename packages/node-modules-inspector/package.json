@@ -38,25 +38,24 @@
   },
   "dependencies": {
     "ansis": "catalog:deps",
-    "birpc": "catalog:deps",
     "cac": "catalog:deps",
+    "devframe": "catalog:deps",
     "fast-npm-meta": "catalog:deps",
     "get-port-please": "catalog:deps",
     "h3": "catalog:deps",
     "launch-editor": "catalog:deps",
     "mlly": "catalog:testing",
-    "mrmime": "catalog:deps",
     "node-modules-tools": "workspace:*",
     "ohash": "catalog:deps",
     "open": "catalog:deps",
     "p-limit": "catalog:deps",
     "pathe": "catalog:deps",
     "publint": "catalog:deps",
+    "sirv": "catalog:deps",
     "structured-clone-es": "catalog:deps",
     "tinyglobby": "catalog:deps",
     "unconfig": "catalog:deps",
-    "unstorage": "catalog:deps",
-    "ws": "catalog:deps"
+    "unstorage": "catalog:deps"
   },
   "devDependencies": {
     "@types/semver": "catalog:types",
