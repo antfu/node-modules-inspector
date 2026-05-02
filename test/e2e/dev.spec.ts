@@ -20,12 +20,12 @@ test.describe('dev mode (CLI + websocket backend)', () => {
     await expect(page.locator(navLink('/grid')).first()).toBeVisible({ timeout: 30_000 })
   })
 
-  test('exposes the dev backend metadata endpoint', async ({ request }) => {
-    const res = await request.get('/api/metadata.json')
+  test('exposes the dev backend connection meta', async ({ request }) => {
+    const res = await request.get('/.connection.json')
     expect(res.ok()).toBe(true)
     const body = await res.json()
     expect(body).toHaveProperty('websocket')
-    expect(body.backend).not.toBe('static')
+    expect(body.backend).toBe('websocket')
   })
 
   test('navigates between views', async ({ page }) => {

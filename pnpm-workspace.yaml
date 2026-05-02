@@ -28,14 +28,13 @@ catalogs:
     vite: ^8.0.10
   deps:
     ansis: ^4.2.0
-    birpc: ^4.0.0
     cac: ^7.0.0
+    devframe: ^0.1.17
     fast-npm-meta: ^1.5.0
     get-port-please: ^3.2.0
     h3: ^1.15.11
     js-yaml: ^4.1.1
     launch-editor: ^2.13.2
-    mrmime: ^2.0.1
     ohash: ^2.0.11
     open: ^11.0.0
     p-limit: ^7.3.0
@@ -43,18 +42,19 @@ catalogs:
     pathe: ^2.0.3
     publint: ^0.3.18
     semver: ^7.7.4
+    sirv: ^3.0.2
     stream-json: ^2.1.0
     structured-clone-es: ^2.0.0
     tinyexec: ^1.1.2
     tinyglobby: ^0.2.16
     unconfig: ^7.5.0
     unstorage: ^1.17.5
-    ws: ^8.20.0
   dev:
     '@antfu/ni': ^30.1.0
     '@nuxt/devtools': ^3.2.4
     bumpp: ^11.0.1
     chokidar: ^5.0.0
+    skills-npm: ^1.1.1
     typescript: ^6.0.3
     vite-plugin-inspect: ^11.3.3
     vue-tsc: ^3.2.7
@@ -98,13 +98,11 @@ catalogs:
   types:
     '@pnpm/list': ^1000.3.2
     '@pnpm/types': ^1001.3.0
-    '@types/connect': ^3.4.38
     '@types/d3': ^7.4.3
     '@types/d3-hierarchy': ^3.1.7
     '@types/js-yaml': ^4.0.9
     '@types/semver': ^7.7.1
     '@types/stream-json': ^1.7.8
-    '@types/ws': ^8.18.1
     pkg-types: ^2.3.1
 onlyBuiltDependencies:
   - '@parcel/watcher'

@@ -1,4 +1,4 @@
-import type { ListPackageDependenciesResult, NpmMeta, NpmMetaLatest, PackageNode, PackageNodeRaw, PublintMessage } from 'node-modules-tools'
+import type { ListPackageDependenciesResult, NpmMeta, NpmMetaLatest, PackageNodeRaw } from 'node-modules-tools'
 import type { Storage } from 'unstorage'
 import type { FilterOptions } from './filters'
 
@@ -24,15 +24,6 @@ export type NodeModulesInspectorLog
   = NodeModulesInspectorPayload
     | NodeModulesInspectorHeartbeat
     | NodeModulesInspectorError
-
-export interface ServerFunctions {
-  getPayload: (force?: boolean) => Promise<NodeModulesInspectorPayload>
-  getPackagesNpmMeta: (specs: string[]) => Promise<Map<string, NpmMeta | null>>
-  getPackagesNpmMetaLatest: (pkgNames: string[]) => Promise<Map<string, NpmMetaLatest | null>>
-  getPublint: (pkg: Pick<PackageNode, 'private' | 'workspace' | 'spec' | 'filepath'>) => Promise<PublintMessage[] | null>
-  openInEditor: (filename: string) => void
-  openInFinder: (filename: string) => void
-}
 
 export interface NodeModulesInspectorConfig {
   /**
@@ -91,22 +82,6 @@ export interface SettingsOptions {
   collapseSidepanel: boolean
   chartAnimation: boolean
   preferNpmx: boolean
-}
-
-export type RemoveVoidKeysFromObject<T> = { [K in keyof T]: T[K] extends void ? never : K } extends { [_ in keyof T]: never } ? T : { [K in keyof T as T[K] extends void ? never : K]: T[K] }
-
-export interface ClientFunctions {}
-
-export type ServerFunctionsDump = Omit<
-  RemoveVoidKeysFromObject<{
-    [K in keyof ServerFunctions]: Awaited<ReturnType<ServerFunctions[K]>>
-  }>,
-  'getPublint' | 'getPackagesNpmMeta' | 'getPackagesNpmMetaLatest'
->
-
-export interface ConnectionMeta {
-  backend: 'websocket' | 'static'
-  websocket?: number
 }
 
 export interface ListPackagesNpmMetaOptions {

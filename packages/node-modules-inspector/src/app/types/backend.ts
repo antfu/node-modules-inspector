@@ -1,5 +1,6 @@
+import type { NpmMeta, NpmMetaLatest, PackageNode, PublintMessage } from 'node-modules-tools'
 import type { Ref } from 'vue'
-import type { NodeModulesInspectorPayload, ServerFunctions } from '../../shared/types'
+import type { NodeModulesInspectorPayload } from '../../shared/types'
 
 export interface ReferencePayloadFunctions {
   getReferencePayload?: (hash?: string) => Promise<NodeModulesInspectorPayload>
@@ -8,10 +9,16 @@ export interface ReferencePayloadFunctions {
   removeReferencePayload?: (hash: string) => Promise<void>
 }
 
-export type Functions
-  = & Partial<ServerFunctions>
-    & Pick<ServerFunctions, 'getPayload'>
-    & ReferencePayloadFunctions
+export interface BackendCallableFunctions {
+  getPayload: (force?: boolean) => Promise<NodeModulesInspectorPayload>
+  getPackagesNpmMeta?: (specs: string[]) => Promise<Map<string, NpmMeta | null>>
+  getPackagesNpmMetaLatest?: (pkgNames: string[]) => Promise<Map<string, NpmMetaLatest | null>>
+  getPublint?: (pkg: Pick<PackageNode, 'private' | 'workspace' | 'spec' | 'filepath'>) => Promise<PublintMessage[] | null>
+  openInEditor?: (filename: string) => void
+  openInFinder?: (filename: string) => void
+}
+
+export type Functions = BackendCallableFunctions & ReferencePayloadFunctions
 
 export interface Backend {
   name: string

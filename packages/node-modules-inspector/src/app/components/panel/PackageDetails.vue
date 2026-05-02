@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
-import { useRouter } from '#app/composables/router'
 import { Tooltip, Menu as VMenu } from 'floating-vue'
 import { computed, nextTick, watch } from 'vue'
+import { useRouter } from '#app/composables/router'
 import { getBackend } from '../../backends'
 import { selectedNode } from '../../state/current'
 import { fetchPublintMessages, rawPublintMessages } from '../../state/data'

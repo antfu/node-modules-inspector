@@ -1,8 +1,8 @@
 import type { FilterOptions } from './filters'
-import { useRoute, useRouter } from '#app/composables/router'
 import { objectEntries } from '@antfu/utils'
 import { debouncedWatch, ignorableWatch } from '@vueuse/core'
 import { reactive, watch } from 'vue'
+import { useRoute, useRouter } from '#app/composables/router'
 import { filters, FILTERS_SCHEMA, filtersDefault, isDeepEqual } from './filters'
 
 export interface QueryOptions extends Partial<{ [x in keyof FilterOptions]?: string }> {

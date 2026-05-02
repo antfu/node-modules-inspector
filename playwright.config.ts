@@ -60,7 +60,7 @@ export default defineConfig({
   // on, so consolidating into one command is the only race-free shape.
   webServer: {
     command: 'node test/e2e/utils/orchestrate.mjs',
-    url: `http://127.0.0.1:${PORT_DEV}/api/metadata.json`,
+    url: `http://127.0.0.1:${PORT_DEV}/.connection.json`,
     reuseExistingServer: !isCI,
     // Cold start in CI has to do `pnpm wc:build`, `pnpm build`, plus the
     // static export (which fetches npm meta for every dep) — together this

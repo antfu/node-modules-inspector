@@ -12,9 +12,9 @@ import { stringify } from 'structured-clone-es'
 import { createStorage } from 'unstorage'
 import driverMemory from 'unstorage/drivers/memory'
 import { WEBCONTAINER_STDOUT_PREFIX } from '../../shared/constants'
-import { createServerFunctions } from '../rpc'
+import { createInspectorRpcHandlers } from '../rpc/handlers'
 
-const rpc = createServerFunctions({
+const rpc = createInspectorRpcHandlers({
   cwd: process.cwd(),
   storageNpmMeta: createStorage<NpmMeta>({ driver: driverMemory() }),
   storageNpmMetaLatest: createStorage<NpmMetaLatest>({ driver: driverMemory() }),

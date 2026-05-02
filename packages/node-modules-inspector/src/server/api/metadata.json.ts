@@ -1,24 +1,52 @@
 import process from 'node:process'
 import { consola } from 'consola'
-import { storageNpmMeta, storageNpmMetaLatest, storagePublint } from '../../node/storage'
-import { createWsServer } from '../../node/ws'
+import { createH3DevToolsHost, createHostContext, startHttpAndWs } from 'devframe/node'
+import { getPort } from 'get-port-please'
+import devtool from '../../node/devtool'
 
 consola.restoreAll()
 
-const ws = createWsServer({
-  cwd: process.cwd(),
-  storageNpmMeta,
-  storageNpmMetaLatest,
-  storagePublint,
-  mode: 'dev',
-}).then((ws) => {
-  // Warm up the payload
+let _serverPromise: Promise<{ port: number, jsonSerializableMethods: string[] }> | null = null
+
+async function bootDevtoolServer() {
+  const port = await getPort({ port: 7812, random: true })
+
+  const ctx = await createHostContext({
+    cwd: process.cwd(),
+    mode: 'dev',
+    host: createH3DevToolsHost({ origin: `http://localhost:${port}` }),
+  })
+  await devtool.setup(ctx, { flags: {} })
+
+  await startHttpAndWs({
+    context: ctx,
+    host: 'localhost',
+    port,
+    auth: false,
+  })
+
+  // Warm up the payload so the first SPA call doesn't block on a cold read.
   setTimeout(() => {
-    ws.serverFunctions.getPayload()
+    const invoke = ctx.rpc.invokeLocal as (method: string, ...args: any[]) => Promise<any>
+    invoke('nmi:get-payload').catch(() => {})
   }, 1)
-  return ws
-})
+
+  const jsonSerializableMethods: string[] = []
+  for (const def of ctx.rpc.definitions.values()) {
+    if (def.jsonSerializable === true)
+      jsonSerializableMethods.push(def.name)
+  }
+
+  return { port, jsonSerializableMethods }
+}
+
+function getServer() {
+  if (!_serverPromise)
+    _serverPromise = bootDevtoolServer()
+  return _serverPromise
+}
 
 export default eventHandler(async () => {
-  return await (await ws).getMetadata()
+  const { port, jsonSerializableMethods } = await getServer()
+  return { backend: 'websocket', websocket: port, jsonSerializableMethods }
 })
