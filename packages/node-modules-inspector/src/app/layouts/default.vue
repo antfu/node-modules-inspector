@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useRuntimeHook } from '#app/composables/runtime-hook'
 import { ref } from 'vue'
+import { useRuntimeHook } from '#app/composables/runtime-hook'
 import { isSidepanelCollapsed } from '../state/ui'
 
 const isLoading = ref(false)

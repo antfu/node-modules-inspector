@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
-import { definePageMeta } from '#imports'
 import { computed } from 'vue'
+import { definePageMeta } from '#imports'
 import { filters } from '../state/filters'
 import { payloads } from '../state/payload'
 

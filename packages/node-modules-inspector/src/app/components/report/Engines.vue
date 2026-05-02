@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { DisplayNodeVersionRange } from '#components'
 import { computed } from 'vue'
+import { DisplayNodeVersionRange } from '#components'
 import { selectedNode } from '../../state/current'
 import { payloads } from '../../state/payload'
 import { compareSemverRange, parseSemverRange } from '../../utils/semver'

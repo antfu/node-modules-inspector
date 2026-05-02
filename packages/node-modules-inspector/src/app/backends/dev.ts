@@ -1,8 +1,8 @@
 import type { ConnectionMeta } from 'devframe/types'
 import type { Backend } from '../types/backend'
-import { useRuntimeConfig } from '#app/nuxt'
 import { connectDevtool } from 'devframe/client'
 import { ref, shallowRef } from 'vue'
+import { useRuntimeConfig } from '#app/nuxt'
 
 export async function createDevBackend(): Promise<Backend> {
   const config = useRuntimeConfig()

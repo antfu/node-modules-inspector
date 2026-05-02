@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
 import type { DeprecationType } from '../../state/payload'
+import { computed, nextTick } from 'vue'
 import { useRouter } from '#app/composables/router'
 import { DisplayDateBadge } from '#components'
-import { computed, nextTick } from 'vue'
 import { selectedNode } from '../../state/current'
 import { filters } from '../../state/filters'
 import { getDeprecatedInfo, payloads } from '../../state/payload'
