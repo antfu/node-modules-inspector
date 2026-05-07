@@ -17,7 +17,10 @@ defineProps<{
     inner="flex flex-col gap-2 justify-center h-full hover:bg-active p2 px3"
     @click="selectedNode = pkg === selectedNode ? undefined : pkg"
   >
-    <DisplayPackageSpec :pkg text-left />
+    <div flex="~ gap-2 items-center" text-left>
+      <DisplayPackageSpec :pkg />
+      <DisplayProvenanceBadge :pkg />
+    </div>
     <div flex="~ wrap gap-2 items-center" text-sm>
       <DisplayModuleType :pkg />
       <DisplayNumberBadge
