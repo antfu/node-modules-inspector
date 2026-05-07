@@ -41,7 +41,6 @@ catalogs:
     pathe: ^2.0.3
     publint: ^0.3.19
     semver: ^7.7.4
-    sirv: ^3.0.2
     stream-json: ^2.1.0
     structured-clone-es: ^2.0.0
     tinyexec: ^1.1.2

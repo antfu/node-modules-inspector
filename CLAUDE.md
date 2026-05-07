@@ -19,3 +19,6 @@ Migrate the Node Modules Inspector to use `devframe` as the underlying framework
 ### Open Questions
 - Which parts of the codebase need to be refactored vs. kept as-is?
 - Are there any performance implications of using devframe?
+
+### Implementation Notes
+- CLI implementation should leverage devframe patterns from vitejs/devtools PR #304 for consistency and best practices.

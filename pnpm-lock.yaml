@@ -70,9 +70,6 @@ catalogs:
     publint:
       specifier: ^0.3.19
       version: 0.3.19
-    sirv:
-      specifier: ^3.0.2
-      version: 3.0.2
     stream-json:
       specifier: ^2.1.0
       version: 2.1.0
@@ -425,9 +422,6 @@ importers:
       publint:
         specifier: catalog:deps
         version: 0.3.19
-      sirv:
-        specifier: catalog:deps
-        version: 3.0.2
       structured-clone-es:
         specifier: catalog:deps
         version: 2.0.0

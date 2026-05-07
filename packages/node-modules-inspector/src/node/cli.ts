@@ -4,6 +4,7 @@ import process from 'node:process'
 
 import c from 'ansis'
 import cac from 'cac'
+import { createDevServer, resolveDevServerPort } from 'devframe/adapters/dev'
 import {
   DEVTOOLS_CONNECTION_META_FILENAME,
   DEVTOOLS_RPC_DUMP_DIRNAME,
@@ -13,12 +14,9 @@ import {
   collectStaticRpcDump,
   createH3DevToolsHost,
   createHostContext,
-  startHttpAndWs,
 } from 'devframe/node'
 import { strictJsonStringify, structuredCloneStringify } from 'devframe/rpc'
-import { createApp, eventHandler, fromNodeMiddleware } from 'h3'
 import { dirname, relative, resolve } from 'pathe'
-import sirv from 'sirv'
 import { glob } from 'tinyglobby'
 import { distDir } from '../dirs'
 import { MARK_CHECK, MARK_NODE } from './constants'
@@ -117,58 +115,29 @@ cli
   .option('--port <port>', 'Port', { default: process.env.PORT || 9999 })
   .option('--open', 'Open browser', { default: true })
   .action(async (options) => {
-    const { getPort } = await import('get-port-please')
-    const open = (await import('open')).default
     const host = options.host
-    const port = await getPort({ port: Number(options.port), portRange: [9999, 15000], host })
-
-    console.log(c.green`${MARK_NODE} Starting Node Modules Inspector at`, c.green(`http://${host === '127.0.0.1' ? 'localhost' : host}:${port}`), '\n')
-
-    const origin = `http://${host}:${port}`
-    const app = createApp()
-
-    const ctx = await createHostContext({
-      cwd: options.root,
-      mode: 'dev',
-      host: createH3DevToolsHost({ origin }),
+    const port = await resolveDevServerPort(devtool, {
+      host,
+      defaultPort: Number(options.port),
     })
-    await devtool.setup(ctx, {
+    const url = `http://${host === '127.0.0.1' ? 'localhost' : host}:${port}`
+
+    console.log(c.green`${MARK_NODE} Starting Node Modules Inspector at`, c.green(url), '\n')
+
+    const server = await createDevServer(devtool, {
+      host,
+      port,
       flags: {
         root: options.root,
         config: options.config,
         depth: Number(options.depth),
       },
+      openBrowser: options.open ? url : false,
     })
 
-    const jsonSerializableMethods: string[] = []
-    for (const def of ctx.rpc.definitions.values()) {
-      if (def.jsonSerializable === true)
-        jsonSerializableMethods.push(def.name)
-    }
-
-    app.use(`/${DEVTOOLS_CONNECTION_META_FILENAME}`, eventHandler((event) => {
-      event.node.res.setHeader('Content-Type', 'application/json')
-      return event.node.res.end(JSON.stringify({ backend: 'websocket', websocket: port, jsonSerializableMethods }))
-    }))
-
-    app.use('/', fromNodeMiddleware(sirv(distDir, { dev: true, single: true })))
-
-    setTimeout(() => {
-      const invoke = ctx.rpc.invokeLocal as (method: string, ...args: any[]) => Promise<any>
-      invoke('nmi:get-payload').catch(() => {})
-    }, 1)
-
-    await startHttpAndWs({
-      context: ctx,
-      host,
-      port,
-      app,
-      auth: false,
-      onReady: async () => {
-        if (options.open)
-          await open(`http://${host === '127.0.0.1' ? 'localhost' : host}:${port}`)
-      },
-    })
+    // Warm the payload; rpcGroup.functions is a Proxy returning Promise<handler>.
+    const handlers = server.rpcGroup.functions as Record<string, Promise<(...args: unknown[]) => unknown> | undefined>
+    handlers['nmi:get-payload']?.then(fn => fn?.()).catch(() => {})
   })
 
 cli.help()
