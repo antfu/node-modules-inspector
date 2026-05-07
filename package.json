@@ -50,7 +50,6 @@
     "node-modules-tools": "workspace:*",
     "nuxt": "catalog:bundling",
     "nuxt-eslint-auto-explicit-import": "catalog:lint",
-    "nuxt-mcp-dev": "catalog:bundling",
     "p-limit": "catalog:deps",
     "rollup": "catalog:bundling",
     "rollup-plugin-esbuild": "catalog:bundling",

@@ -21,7 +21,6 @@ export default defineNuxtConfig({
     '@unocss/nuxt',
     '@nuxt/eslint',
     'nuxt-eslint-auto-explicit-import',
-    'nuxt-mcp-dev',
     ...isWebContainer ? ['./app/modules/webcontainer'] : [],
   ],
 
@@ -138,6 +137,11 @@ export default defineNuxtConfig({
         'd3-hierarchy',
         'd3-shape',
         'modern-screenshot',
+        'floating-vue',
+        '@antfu/utils',
+        'semver',
+        'devframe/client',
+        'publint/utils',
       ],
       exclude: [
         'structured-clone-es',

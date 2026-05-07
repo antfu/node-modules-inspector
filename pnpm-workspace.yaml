@@ -21,7 +21,6 @@ catalogs:
     esbuild: ^0.28.0
     nitropack: ^2.13.4
     nuxt: 4.4.2
-    nuxt-mcp-dev: ^0.3.2
     rollup: ^4.60.3
     rollup-plugin-esbuild: ^6.2.1
     unbuild: ^3.6.1
