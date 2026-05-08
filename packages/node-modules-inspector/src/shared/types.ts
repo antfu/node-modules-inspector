@@ -71,6 +71,12 @@ export interface NodeModulesInspectorConfig {
    * Default settings for the frontend
    */
   defaultSettings?: Partial<SettingsOptions>
+  /**
+   * Hook called after payload is collected.
+   * Use `console.log` to print data for CI/CD pipelines.
+   * Throw an error to block the process with a non-zero exit code.
+   */
+  hook?: (payload: NodeModulesInspectorPayload) => void | Promise<void>
 }
 
 export interface SettingsOptions {
