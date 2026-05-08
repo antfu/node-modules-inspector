@@ -30,7 +30,7 @@ cli
   .option('--config <config>', 'Config file')
   .option('--depth <depth>', 'Max depth to list dependencies', { default: 8 })
   .option('--base <baseURL>', 'Base URL for deployment', { default: '/' })
-  .option('--outDir <dir>', 'Output directory', { default: '.node-modules-inspector' })
+  .option('--outDir <dir>', 'Output directory', { default: 'dist/__node-modules-inspector' })
   .action(async (options) => {
     console.log(c.cyan`${MARK_NODE} Building static Node Modules Inspector...`)
 
