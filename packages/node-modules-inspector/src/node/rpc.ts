@@ -190,9 +190,9 @@ export function createServerFunctions(options: CreateServerFunctionsOptions): Se
       ...result,
       config,
     }
-    if (config.hook) {
+    if (config.onPayloadReady) {
       console.log(c.cyan`${MARK_NODE} Running config hook...`)
-      await config.hook(payload)
+      await config.onPayloadReady(payload)
       console.log(c.green`${MARK_CHECK} Config hook finished`)
     }
     return payload

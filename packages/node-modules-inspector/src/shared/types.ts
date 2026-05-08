@@ -76,7 +76,7 @@ export interface NodeModulesInspectorConfig {
    * Use `console.log` to print data for CI/CD pipelines.
    * Throw an error to block the process with a non-zero exit code.
    */
-  hook?: (payload: NodeModulesInspectorPayload) => void | Promise<void>
+  onPayloadReady?: (payload: NodeModulesInspectorPayload) => void | Promise<void>
 }
 
 export interface SettingsOptions {
