@@ -10,7 +10,7 @@ export async function createDevBackend(): Promise<Backend> {
 
   // In Nuxt dev (`nuxi dev`) the SPA is served on Nitro's port; the devframe
   // server runs on a separate port discovered via /api/metadata.json. In the
-  // production CLI / static build the connection meta is at ./.connection.json
+  // production CLI / static build the connection meta is at ./__connection.json
   // and `connectDevtool` finds it via the relative baseURL.
   let connectionMeta: ConnectionMeta | undefined
   if (import.meta.env.DEV) {
@@ -18,7 +18,7 @@ export async function createDevBackend(): Promise<Backend> {
       connectionMeta = await fetch(`${baseURL}api/metadata.json`).then(r => r.json()) as ConnectionMeta
     }
     catch {
-      // No metadata.json route — fall through to .connection.json discovery.
+      // No metadata.json route — fall through to __connection.json discovery.
     }
   }
 

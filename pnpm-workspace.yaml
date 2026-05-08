@@ -24,11 +24,11 @@ catalogs:
     rollup: ^4.60.3
     rollup-plugin-esbuild: ^6.2.1
     unbuild: ^3.6.1
-    vite: ^8.0.10
+    vite: ^8.0.11
   deps:
     ansis: ^4.2.0
     cac: ^7.0.0
-    devframe: ^0.1.19
+    devframe: ^0.1.21
     fast-npm-meta: ^1.5.1
     get-port-please: ^3.2.0
     h3: ^1.15.11
@@ -50,7 +50,7 @@ catalogs:
   dev:
     '@antfu/ni': ^30.1.0
     '@nuxt/devtools': ^3.2.4
-    bumpp: ^11.0.1
+    bumpp: ^11.1.0
     chokidar: ^5.0.0
     skills-npm: ^1.1.1
     typescript: ^6.0.3

@@ -14,7 +14,7 @@ async function bootDevtoolServer() {
   const ctx = await createHostContext({
     cwd: process.cwd(),
     mode: 'dev',
-    host: createH3DevToolsHost({ origin: `http://localhost:${port}` }),
+    host: createH3DevToolsHost({ origin: `http://localhost:${port}`, appName: devtool.id }),
   })
   await devtool.setup(ctx, { flags: {} })
 

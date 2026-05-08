@@ -21,7 +21,7 @@ test.describe('dev mode (CLI + websocket backend)', () => {
   })
 
   test('exposes the dev backend connection meta', async ({ request }) => {
-    const res = await request.get('/.connection.json')
+    const res = await request.get('/__connection.json')
     expect(res.ok()).toBe(true)
     const body = await res.json()
     expect(body).toHaveProperty('websocket')

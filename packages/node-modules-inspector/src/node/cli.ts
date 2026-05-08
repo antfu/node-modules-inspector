@@ -52,7 +52,7 @@ cli
     const ctx = await createHostContext({
       cwd,
       mode: 'build',
-      host: createH3DevToolsHost({ origin: 'http://localhost' }),
+      host: createH3DevToolsHost({ origin: 'http://localhost', appName: devtool.id }),
     })
     await devtool.setup(ctx, {
       flags: {
@@ -136,7 +136,7 @@ cli
     })
 
     // Warm the payload; rpcGroup.functions is a Proxy returning Promise<handler>.
-    const handlers = server.rpcGroup.functions as Record<string, Promise<(...args: unknown[]) => unknown> | undefined>
+    const handlers = server.rpcGroup.functions as unknown as Record<string, Promise<(...args: unknown[]) => unknown> | undefined>
     handlers['nmi:get-payload']?.then(fn => fn?.()).catch(() => {})
   })
 

@@ -8,11 +8,11 @@ const navLink = (href: string) => `a[href^="${href}"]`
 
 test.describe('build mode (static export)', () => {
   test('serves the static landing and exposes a static connection meta', async ({ page, request }) => {
-    const res = await request.get('/.connection.json')
+    const res = await request.get('/__connection.json')
     expect(res.ok()).toBe(true)
     expect(await res.json()).toMatchObject({ backend: 'static' })
 
-    const manifest = await request.get('/.rpc-dump/index.json')
+    const manifest = await request.get('/__rpc-dump/index.json')
     expect(manifest.ok()).toBe(true)
     const manifestBody = await manifest.json()
     expect(manifestBody).toHaveProperty('nmi:get-payload')
