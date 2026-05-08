@@ -4,6 +4,7 @@ import { defineConfig, devices } from '@playwright/test'
 const PORT_DEV = 13001
 const PORT_BUILD = 13002
 const PORT_WC = 13003
+const PORT_BUILD_SUBBASE = 13004
 
 const isCI = !!process.env.CI
 
@@ -52,6 +53,16 @@ export default defineConfig({
         baseURL: `http://127.0.0.1:${PORT_WC}`,
       },
     },
+    {
+      name: 'build-subbase',
+      testMatch: /build-subbase\.spec\.ts$/,
+      use: {
+        ...devices['Desktop Chrome'],
+        // Server roots a parent dir; the inspector lives under
+        // /__node-modules-inspector/ so we can verify --base rewriting works.
+        baseURL: `http://127.0.0.1:${PORT_BUILD_SUBBASE}`,
+      },
+    },
   ],
 
   // A single orchestrator process: it builds the build/webcontainer fixtures
@@ -72,6 +83,7 @@ export default defineConfig({
       E2E_PORT_DEV: String(PORT_DEV),
       E2E_PORT_BUILD: String(PORT_BUILD),
       E2E_PORT_WC: String(PORT_WC),
+      E2E_PORT_BUILD_SUBBASE: String(PORT_BUILD_SUBBASE),
     },
   },
 })

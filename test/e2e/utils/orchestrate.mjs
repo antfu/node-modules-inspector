@@ -21,10 +21,16 @@ const TOOLS_DIST = path.join(TOOLS_PKG, 'dist/index.mjs')
 const FIXTURES = path.join(SCRIPT_DIR, '..', '.fixtures')
 const FIXTURE_BUILD = path.join(FIXTURES, 'build')
 const FIXTURE_WC = path.join(FIXTURES, 'wc')
+// Sub-base fixture: parent dir served as root; inspector built into a
+// `__node-modules-inspector/` subdir with `--base /__node-modules-inspector/`
+// so the rewritten /_nuxt/* asset paths resolve under the sub-path.
+const FIXTURE_BUILD_SUBBASE = path.join(FIXTURES, 'build-subbase')
+const FIXTURE_BUILD_SUBBASE_OUT = path.join(FIXTURE_BUILD_SUBBASE, '__node-modules-inspector')
 
 const PORT_DEV = Number(process.env.E2E_PORT_DEV || 13001)
 const PORT_BUILD = Number(process.env.E2E_PORT_BUILD || 13002)
 const PORT_WC = Number(process.env.E2E_PORT_WC || 13003)
+const PORT_BUILD_SUBBASE = Number(process.env.E2E_PORT_BUILD_SUBBASE || 13004)
 const FORCE = !!process.env.E2E_REBUILD
 
 function run(cmd) {
@@ -74,6 +80,17 @@ async function ensureMainBuildAndStaticFixture() {
   run(`node packages/node-modules-inspector/bin.mjs build --outDir ${path.relative(ROOT, FIXTURE_BUILD)}`)
 }
 
+async function ensureBuildSubbaseFixture() {
+  if (!FORCE && existsSync(path.join(FIXTURE_BUILD_SUBBASE_OUT, 'index.html'))) {
+    console.log('[e2e:orchestrate] sub-base build fixture present — skipping (set E2E_REBUILD=1 to force).')
+    return
+  }
+  console.log('[e2e:orchestrate] Generating sub-base static export with --base /__node-modules-inspector/ ...')
+  await fs.rm(FIXTURE_BUILD_SUBBASE, { recursive: true, force: true })
+  await fs.mkdir(FIXTURE_BUILD_SUBBASE, { recursive: true })
+  run(`node packages/node-modules-inspector/bin.mjs build --outDir ${path.relative(ROOT, FIXTURE_BUILD_SUBBASE_OUT)} --base /__node-modules-inspector/`)
+}
+
 async function ensureToolsBuilt() {
   if (!FORCE && existsSync(TOOLS_DIST))
     return
@@ -93,6 +110,7 @@ async function buildFixtures() {
   await ensureToolsBuilt()
   await ensureWebcontainerFixture()
   await ensureMainBuildAndStaticFixture()
+  await ensureBuildSubbaseFixture()
 }
 
 async function startServers() {
@@ -132,6 +150,11 @@ async function startServers() {
     'wc',
     'node',
     [path.join(SCRIPT_DIR, 'serve.mjs'), path.relative(ROOT, FIXTURE_WC), String(PORT_WC), '--coop-coep'],
+  )
+  start(
+    'build-subbase',
+    'node',
+    [path.join(SCRIPT_DIR, 'serve.mjs'), path.relative(ROOT, FIXTURE_BUILD_SUBBASE), String(PORT_BUILD_SUBBASE), '--spa-base', '/__node-modules-inspector/'],
   )
 
   const shutdown = (signal) => {

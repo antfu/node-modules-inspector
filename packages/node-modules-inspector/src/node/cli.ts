@@ -97,6 +97,12 @@ cli
         const content = await fs.readFile(filePath, 'utf-8')
         const newContent = content
           .replaceAll(/\s(href|src)="\//g, ` $1="${baseURL}`)
+          // Nuxt's <script type="importmap"> entries and buildAssetsDir live in
+          // JSON / object literals — quoted absolute /_nuxt/* paths the
+          // attribute regex above doesn't reach. Without this the importmap
+          // points the entry chunk at /_nuxt/* under the deploy origin and the
+          // SPA fails to hydrate at the sub-base.
+          .replaceAll('"/_nuxt/', `"${baseURL}_nuxt/`)
           .replaceAll('baseURL:"/"', `baseURL:"${baseURL}"`)
         await fs.writeFile(filePath, newContent, 'utf-8')
       }

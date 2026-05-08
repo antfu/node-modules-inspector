@@ -1,6 +1,11 @@
 #!/usr/bin/env node
 // Minimal static file server used by the e2e webServer entries.
-// Usage: node serve.mjs <dir> <port> [--coop-coep]
+// Usage: node serve.mjs <dir> <port> [--coop-coep] [--spa-base <path>]
+//
+// --spa-base <path> changes the SPA fallback target so HTML navigation
+// requests under <path> resolve to <path>/index.html instead of /index.html.
+// Required when the inspector is mounted at a sub-base and the deploy root
+// (the dir served here) sits one level above it.
 
 import { createReadStream } from 'node:fs'
 import { stat } from 'node:fs/promises'
@@ -12,6 +17,9 @@ const args = process.argv.slice(2)
 const dir = resolve(args[0] || '.')
 const port = Number(args[1] || 0)
 const coopCoep = args.includes('--coop-coep')
+const spaBaseIdx = args.indexOf('--spa-base')
+const spaBaseRaw = spaBaseIdx >= 0 ? args[spaBaseIdx + 1] : '/'
+const spaBase = spaBaseRaw.endsWith('/') ? spaBaseRaw : `${spaBaseRaw}/`
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -81,11 +89,18 @@ const server = createServer(async (req, res) => {
   const urlPath = req.url || '/'
   let file = await resolveFile(urlPath)
 
-  // SPA fallback for HTML navigation requests
+  // SPA fallback for HTML navigation requests. When --spa-base is set,
+  // requests under that path fall back to <spa-base>index.html so client
+  // routes under a sub-base hydrate the right SPA shell.
   if (!file) {
     const accept = req.headers.accept || ''
-    if (req.method === 'GET' && accept.includes('text/html'))
-      file = await resolveFile('/index.html')
+    if (req.method === 'GET' && accept.includes('text/html')) {
+      const cleanPath = (urlPath.split('?')[0].split('#')[0]) || '/'
+      const target = spaBase !== '/' && cleanPath.startsWith(spaBase)
+        ? `${spaBase}index.html`
+        : '/index.html'
+      file = await resolveFile(target)
+    }
   }
 
   if (!file) {
@@ -100,5 +115,8 @@ const server = createServer(async (req, res) => {
 })
 
 server.listen(port, '127.0.0.1', () => {
-  console.log(`[e2e:serve] ${dir} -> http://127.0.0.1:${port}${coopCoep ? ' (COOP/COEP)' : ''}`)
+  const flags = [coopCoep ? 'COOP/COEP' : null, spaBase !== '/' ? `spa-base=${spaBase}` : null]
+    .filter(Boolean)
+    .join(', ')
+  console.log(`[e2e:serve] ${dir} -> http://127.0.0.1:${port}${flags ? ` (${flags})` : ''}`)
 })
