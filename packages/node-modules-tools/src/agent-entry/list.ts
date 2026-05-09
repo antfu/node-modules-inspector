@@ -1,5 +1,5 @@
-import type { AgentName } from 'package-manager-detector'
 import type { ListPackageDependenciesBaseResult, ListPackageDependenciesOptions, ListPackageDependenciesRawResult, PackageNodeBase } from '../types'
+import type { AgentNameExtended } from './detect'
 
 /**
  * List dependencies of packages in the current project.
@@ -7,7 +7,7 @@ import type { ListPackageDependenciesBaseResult, ListPackageDependenciesOptions,
  * This function will automatically detect the package manager in the current project, and list the dependencies of the packages.
  */
 export async function listPackageDependenciesRaw(
-  manager: AgentName,
+  manager: AgentNameExtended,
   options: ListPackageDependenciesOptions,
 ): Promise<ListPackageDependenciesBaseResult> {
   let result: ListPackageDependenciesRawResult
@@ -17,6 +17,8 @@ export async function listPackageDependenciesRaw(
     result = await import('../agents/npm').then(r => r.listPackageDependencies(options))
   else if (manager === 'bun')
     result = await import('../agents/bun').then(r => r.listPackageDependencies(options))
+  else if (manager === 'rush-pnpm')
+    result = await import('../agents/rush').then(r => r.listPackageDependencies(options))
   else
     throw new Error(`Package manager ${manager} is not yet supported`)
 
