@@ -15,6 +15,7 @@ Migrate the Node Modules Inspector to use `devframe` as the underlying framework
 ### Key Decisions
 - [2026-05-01] Migrate to `devframe` - Switching from current framework to devframe to improve development experience and maintainability while preserving all external interfaces and user behavior.
 - [2026-05-01] One RPC function per file organization - Establish a clear separation of concerns where each RPC function is defined in its own file for better modularity and maintainability.
+- [2026-05-11] Replace `lint-staged` with `nano-staged` - Switching from lint-staged to nano-staged for better performance and simpler configuration in pre-commit hooks.
 
 ### Open Questions
 - Which parts of the codebase need to be refactored vs. kept as-is?

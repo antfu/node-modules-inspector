@@ -45,7 +45,7 @@
     "esbuild": "catalog:bundling",
     "eslint": "catalog:lint",
     "fast-npm-meta": "catalog:deps",
-    "lint-staged": "catalog:lint",
+    "nano-staged": "catalog:lint",
     "node-modules-inspector": "workspace:*",
     "node-modules-tools": "workspace:*",
     "nuxt": "catalog:bundling",
@@ -75,9 +75,9 @@
     "vite": "catalog:bundling"
   },
   "simple-git-hooks": {
-    "pre-commit": "pnpm i --frozen-lockfile --ignore-scripts --offline && npx lint-staged"
+    "pre-commit": "pnpm i --frozen-lockfile --ignore-scripts --offline && npx nano-staged"
   },
-  "lint-staged": {
+  "nano-staged": {
     "*": "eslint --fix"
   }
 }

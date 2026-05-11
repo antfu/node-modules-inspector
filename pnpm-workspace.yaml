@@ -85,7 +85,7 @@ catalogs:
     '@typescript-eslint/utils': ^8.59.2
     '@unocss/eslint-config': ^66.6.8
     eslint: ^10.3.0
-    lint-staged: ^17.0.2
+    nano-staged: ^1.0.2
     nuxt-eslint-auto-explicit-import: ^0.1.1
     simple-git-hooks: ^2.13.1
   testing:
