@@ -112,4 +112,27 @@ export const packageJsonSnapshots = {
       },
     },
   },
+  'native-addon-with-node-main (#124)': {
+    expected: 'other',
+    packageJson: {
+      name: 'some-native-addon',
+      version: '1.0.0',
+      main: './build/Release/addon.node',
+    },
+  },
+  'native-addon-gypfile (#124)': {
+    expected: 'other',
+    packageJson: {
+      name: 'some-gyp-addon',
+      version: '1.0.0',
+      gypfile: true,
+    } as any,
+  },
+  'empty-package-no-entry (#124)': {
+    expected: 'other',
+    packageJson: {
+      name: 'empty-pkg',
+      version: '1.0.0',
+    },
+  },
 } satisfies Record<string, PackageJsonSnapshotFixture>
