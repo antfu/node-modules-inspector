@@ -1,5 +1,5 @@
 import StreamJSON from 'stream-json'
-import Assembler from 'stream-json/Assembler'
+import Assembler from 'stream-json/assembler.js'
 
 export class JsonParseStreamError extends Error {
   constructor(
@@ -14,7 +14,7 @@ export function parseJsonStream<T>(
   stream: NodeJS.ReadableStream,
 ): Promise<T> {
   const assembler = new Assembler()
-  const parser = StreamJSON.parser()
+  const parser = StreamJSON.parser.asStream()
 
   return new Promise<T>((resolve) => {
     parser.on('data', (chunk) => {
@@ -33,7 +33,7 @@ export function parseJsonStreamWithConcatArrays<T>(
   sourceName: string,
 ): Promise<T[]> {
   const assembler = new Assembler()
-  const parser = StreamJSON.parser({
+  const parser = StreamJSON.parser.asStream({
     jsonStreaming: true,
   })
 

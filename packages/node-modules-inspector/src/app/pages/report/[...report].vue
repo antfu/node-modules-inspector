@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useRoute } from '#app/composables/router'
 import { computed } from 'vue'
+import { useRoute } from '#app/composables/router'
 
 const location = window.location
 

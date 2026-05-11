@@ -21,7 +21,6 @@ export default defineNuxtConfig({
     '@unocss/nuxt',
     '@nuxt/eslint',
     'nuxt-eslint-auto-explicit-import',
-    'nuxt-mcp-dev',
     ...isWebContainer ? ['./app/modules/webcontainer'] : [],
   ],
 
@@ -121,7 +120,6 @@ export default defineNuxtConfig({
         output: {
           entryFileNames: '_nuxt/[name].[hash].js',
           chunkFileNames: '_nuxt/chunks/[name].[hash].js',
-          // @ts-expect-error Rolldown-only option, not typed in Rollup OutputOptions
           advancedChunks: {
             groups: [
               {
@@ -139,6 +137,11 @@ export default defineNuxtConfig({
         'd3-hierarchy',
         'd3-shape',
         'modern-screenshot',
+        'floating-vue',
+        '@antfu/utils',
+        'semver',
+        'devframe/client',
+        'publint/utils',
       ],
       exclude: [
         'structured-clone-es',

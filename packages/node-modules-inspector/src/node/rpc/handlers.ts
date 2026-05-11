@@ -1,20 +1,20 @@
 import type { ListPackageDependenciesOptions, PackageNode, PublintMessage } from 'node-modules-tools'
 import type { Storage } from 'unstorage'
-import type { ListPackagesNpmMetaLatestOptions, ListPackagesNpmMetaOptions, NodeModulesInspectorConfig, NodeModulesInspectorPayload, ServerFunctions } from '../shared/types'
+import type { ListPackagesNpmMetaLatestOptions, ListPackagesNpmMetaOptions, NodeModulesInspectorConfig, NodeModulesInspectorPayload } from '../../shared/types'
 import process from 'node:process'
 import c from 'ansis'
 import { constructPackageFilters, listPackageDependencies } from 'node-modules-tools'
 import { hash as getHash } from 'ohash'
 import pLimit from 'p-limit'
 import { loadConfig } from 'unconfig'
-import { isNpmMetaLatestValid } from '../shared/utils'
+import { isNpmMetaLatestValid } from '../../shared/utils'
 import {
   getPackagesNpmMeta as _getPackagesNpmMeta,
   getPackagesNpmMetaLatest as _getPackagesNpmMetaLatest,
-} from '../shared/version-info'
-import { MARK_CHECK, MARK_NODE } from './constants'
+} from '../../shared/version-info'
+import { MARK_CHECK, MARK_NODE } from '../constants'
 
-export interface CreateServerFunctionsOptions extends
+export interface CreateInspectorRpcHandlersOptions extends
   Partial<ListPackageDependenciesOptions>,
   ListPackagesNpmMetaOptions,
   ListPackagesNpmMetaLatestOptions {
@@ -23,7 +23,16 @@ export interface CreateServerFunctionsOptions extends
   configFile?: string
 }
 
-export function createServerFunctions(options: CreateServerFunctionsOptions): ServerFunctions {
+export interface InspectorRpcHandlers {
+  getPayload: (force?: boolean) => Promise<NodeModulesInspectorPayload>
+  getPackagesNpmMeta: (specs: string[]) => Promise<Map<string, import('node-modules-tools').NpmMeta | null>>
+  getPackagesNpmMetaLatest: (pkgNames: string[]) => Promise<Map<string, import('node-modules-tools').NpmMetaLatest | null>>
+  getPublint: (pkg: Pick<PackageNode, 'private' | 'workspace' | 'spec' | 'filepath'>) => Promise<PublintMessage[] | null>
+  openInEditor: (filename: string) => Promise<void>
+  openInFinder: (filename: string) => Promise<void>
+}
+
+export function createInspectorRpcHandlers(options: CreateInspectorRpcHandlersOptions): InspectorRpcHandlers {
   let _config: Promise<NodeModulesInspectorConfig> | null = null
   let _payload: Promise<NodeModulesInspectorPayload> | null = null
 
@@ -137,7 +146,6 @@ export function createServerFunctions(options: CreateServerFunctionsOptions): Se
 
     const buildTasks: (Promise<void>)[] = []
 
-    // For build mode, we run publint upfront
     if (options.mode === 'build' && config.publint) {
       buildTasks.push((async () => {
         console.log(c.cyan`${MARK_NODE} Running publint...`)
@@ -150,7 +158,6 @@ export function createServerFunctions(options: CreateServerFunctionsOptions): Se
       })())
     }
 
-    // For build mode, we fetch the npm meta upfront
     if (options.mode === 'build' && config.fetchNpmMeta) {
       buildTasks.push((async () => {
         console.log(c.cyan`${MARK_NODE} Fetching npm meta...`)
@@ -170,7 +177,6 @@ export function createServerFunctions(options: CreateServerFunctionsOptions): Se
 
     await Promise.all(buildTasks)
 
-    // Fulfill the npm meta
     await Promise.all(Array.from(result.packages.values())
       .map(async (pkg) => {
         const meta = await options.storageNpmMeta.getItem(pkg.spec)

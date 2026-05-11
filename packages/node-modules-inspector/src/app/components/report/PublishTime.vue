@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { DisplayDateBadge } from '#components'
 import { computed } from 'vue'
+import { DisplayDateBadge } from '#components'
 import { selectedNode } from '../../state/current'
 import { getNpmMetaLatest, getPublishTime, payloads } from '../../state/payload'
 

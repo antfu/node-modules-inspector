@@ -19,6 +19,13 @@ export default antfu({
     },
   })
   .append({
+    files: ['test/e2e/**/*.{ts,mjs,js}'],
+    rules: {
+      'no-console': 'off',
+      'antfu/no-top-level-await': 'off',
+    },
+  })
+  .append({
     files: ['pnpm-workspace.yaml'],
     name: 'antfu/yaml/pnpm-workspace',
     rules: {

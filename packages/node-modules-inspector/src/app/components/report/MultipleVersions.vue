@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
+import { computed, nextTick } from 'vue'
 import { useRouter } from '#app/composables/router'
 import { DisplayDateBadge } from '#components'
-import { computed, nextTick } from 'vue'
 import { selectedNode } from '../../state/current'
 import { rawPayload } from '../../state/data'
 import { filters } from '../../state/filters'
