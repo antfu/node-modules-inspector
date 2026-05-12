@@ -21,6 +21,11 @@ const TOOLS_DIST = path.join(TOOLS_PKG, 'dist/index.mjs')
 const FIXTURES = path.join(SCRIPT_DIR, '..', '.fixtures')
 const FIXTURE_BUILD = path.join(FIXTURES, 'build')
 const FIXTURE_WC = path.join(FIXTURES, 'wc')
+// The e2e-only inspector config disables fetchNpmMeta + publint so the
+// static export doesn't depend on the live npm registry — a cold-cache
+// CI runner otherwise blows past Playwright's 10-minute webServer timeout
+// fetching meta for ~2000 transitive deps.
+const E2E_INSPECTOR_CONFIG = 'test/e2e/inspector.config'
 // Sub-base fixture: parent dir served as root; inspector built into a
 // `__node-modules-inspector/` subdir with `--base /__node-modules-inspector/`
 // so the rewritten /_nuxt/* asset paths resolve under the sub-path.
@@ -77,7 +82,7 @@ async function ensureMainBuildAndStaticFixture() {
 
   console.log('[e2e:orchestrate] Generating static export via inspector CLI...')
   await fs.rm(FIXTURE_BUILD, { recursive: true, force: true })
-  run(`node packages/node-modules-inspector/bin.mjs build --outDir ${path.relative(ROOT, FIXTURE_BUILD)}`)
+  run(`node packages/node-modules-inspector/bin.mjs build --outDir ${path.relative(ROOT, FIXTURE_BUILD)} --config ${E2E_INSPECTOR_CONFIG}`)
 }
 
 async function ensureBuildSubbaseFixture() {
@@ -88,7 +93,7 @@ async function ensureBuildSubbaseFixture() {
   console.log('[e2e:orchestrate] Generating sub-base static export with --base /__node-modules-inspector/ ...')
   await fs.rm(FIXTURE_BUILD_SUBBASE, { recursive: true, force: true })
   await fs.mkdir(FIXTURE_BUILD_SUBBASE, { recursive: true })
-  run(`node packages/node-modules-inspector/bin.mjs build --outDir ${path.relative(ROOT, FIXTURE_BUILD_SUBBASE_OUT)} --base /__node-modules-inspector/`)
+  run(`node packages/node-modules-inspector/bin.mjs build --outDir ${path.relative(ROOT, FIXTURE_BUILD_SUBBASE_OUT)} --base /__node-modules-inspector/ --config ${E2E_INSPECTOR_CONFIG}`)
 }
 
 async function ensureToolsBuilt() {
