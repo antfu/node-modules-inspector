@@ -163,7 +163,7 @@ describe('listPnpmPackageDependencies', () => {
         "@vitest/eslint-plugin@1.6.16",
         "@vueuse/nuxt@14.3.0",
         "body-parser@2.1.0",
-        "devframe@0.1.22",
+        "devframe@0.2.0",
         "eslint-plugin-command@3.5.2",
         "eslint-plugin-import-x@4.16.1",
         "eslint-plugin-jsdoc@62.9.0",
