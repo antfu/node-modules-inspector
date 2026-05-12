@@ -28,7 +28,7 @@ catalogs:
   deps:
     ansis: ^4.2.0
     cac: ^7.0.0
-    devframe: ^0.1.22
+    devframe: ^0.2.0
     fast-npm-meta: ^1.5.1
     get-port-please: ^3.2.0
     h3: ^1.15.11
