@@ -119,7 +119,7 @@ export function analyzePackageModuleType(pkgJson: PackageJson): PackageModuleTyp
   if (pkgJson.types || pkgJson.typings)
     return 'dts'
 
-  // 有 exports 但解析不出类型，降级为 cjs（而不是 other）
+ 
   if (hasExports)
     return 'cjs'
 
