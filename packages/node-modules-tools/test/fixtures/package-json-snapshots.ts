@@ -113,7 +113,7 @@ export const packageJsonSnapshots = {
     },
   },
   'native-addon-with-node-main (#124)': {
-    expected: 'other',
+    expected: 'unknown',
     packageJson: {
       name: 'some-native-addon',
       version: '1.0.0',
@@ -121,7 +121,7 @@ export const packageJsonSnapshots = {
     },
   },
   'native-addon-gypfile (#124)': {
-    expected: 'other',
+    expected: 'unknown',
     packageJson: {
       name: 'some-gyp-addon',
       version: '1.0.0',
@@ -129,7 +129,7 @@ export const packageJsonSnapshots = {
     } as any,
   },
   'empty-package-no-entry (#124)': {
-    expected: 'other',
+    expected: 'unknown',
     packageJson: {
       name: 'empty-pkg',
       version: '1.0.0',

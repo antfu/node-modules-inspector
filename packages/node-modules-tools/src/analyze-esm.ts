@@ -69,7 +69,7 @@ export function analyzePackageModuleType(pkgJson: PackageJson): PackageModuleTyp
 
   // Native binary addon packages (e.g. .node files) are not CJS or ESM
   if (isNativeAddon(pkgJson))
-    return 'other'
+    return 'unknown'
 
   const hasExports = pkgJson.exports != null
   const hasModule = !!pkgJson.module
@@ -119,11 +119,10 @@ export function analyzePackageModuleType(pkgJson: PackageJson): PackageModuleTyp
   if (pkgJson.types || pkgJson.typings)
     return 'dts'
 
- 
   if (hasExports)
     return 'cjs'
 
-  return 'other'
+  return 'unknown'
 }
 function isNativeAddon(pkgJson: PackageJson): boolean {
   const main = pkgJson.main
