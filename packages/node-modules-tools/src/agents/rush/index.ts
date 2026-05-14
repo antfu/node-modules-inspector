@@ -1,1 +1,0 @@
-export { listPackageDependencies } from './list'
