@@ -1,5 +1,5 @@
-import type { AgentName } from 'package-manager-detector'
 import type { PackageJson } from 'pkg-types'
+import type { AgentNameExtended } from './agent-entry/detect'
 import type { BaseOptions, PackageNode, PackageNodeBase } from './types'
 import { existsSync } from 'node:fs'
 import { readFile } from 'node:fs/promises'
@@ -43,7 +43,7 @@ export const PACKAGE_JSON_KEYS = [
  * - Set `module` to the resolved module type (cjs, esm, dual, faux, none).
  */
 export async function resolvePackage(
-  _packageManager: AgentName,
+  _packageManager: AgentNameExtended,
   pkg: PackageNodeBase,
   _options: BaseOptions,
 ): Promise<PackageNode> {
