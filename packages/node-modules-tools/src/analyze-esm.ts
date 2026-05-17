@@ -67,6 +67,10 @@ export function analyzePackageModuleType(pkgJson: PackageJson): PackageModuleTyp
   if (pkgJson.name?.startsWith('@types/'))
     return 'dts'
 
+  // Native binary addon packages are neither CJS nor ESM
+  if (isNativeAddon(pkgJson))
+    return 'unknown'
+
   const hasExports = pkgJson.exports != null
   const hasModule = !!pkgJson.module
   const hasMain = !!pkgJson.main
@@ -115,5 +119,21 @@ export function analyzePackageModuleType(pkgJson: PackageJson): PackageModuleTyp
   if (pkgJson.types || pkgJson.typings)
     return 'dts'
 
-  return 'cjs'
+  if (hasExports)
+    return 'cjs'
+
+  return 'unknown'
+}
+
+function isNativeAddon(pkgJson: PackageJson): boolean {
+  const main = pkgJson.main
+  // .node file as main entry
+  if (main && main.endsWith('.node'))
+    return true
+  // Has gypfile (node-gyp) indicator without any JS entry point
+  if ((pkgJson as Record<string, unknown>).gypfile && !pkgJson.exports && !pkgJson.module) {
+    if (!main || main.endsWith('.node'))
+      return true
+  }
+  return false
 }
