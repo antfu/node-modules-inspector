@@ -206,22 +206,17 @@ export function normalizePkgAuthors(json: PackageJson): ParsedAuthor[] | undefin
       parsed.push(entry)
   }
 
-  const repo = normalizePkgRepository(json)
-  const org = repo?.org
+  // GitHub handle takes precedence over all text-typed authors. If any explicit
+  // author resolved to a github handle, return only those — text-only entries
+  // alongside are dropped.
+  const githubEntries = parsed.filter(a => a.type === 'github')
+  if (githubEntries.length)
+    return githubEntries
 
-  // Inference 1: no explicit authors → synthesize a single inferred github maintainer from the repo org.
-  if (!parsed.length && org) {
-    return [{
-      type: 'github',
-      github: org,
-      avatar: githubAvatar(org),
-      inferred: true,
-    }]
-  }
-
-  // Inference 2: exactly one text-typed author with no detected handle → enrich with the repo org.
-  // The handle takes over as the identity; the explicit author name is dropped.
-  if (parsed.length === 1 && parsed[0]!.type === 'text' && org) {
+  // No explicit github handle — fall back to inferring a single maintainer from
+  // the repository org if available. This drops any text-only authors too.
+  const org = normalizePkgRepository(json)?.org
+  if (org) {
     return [{
       type: 'github',
       github: org,

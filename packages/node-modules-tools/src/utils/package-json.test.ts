@@ -128,10 +128,40 @@ describe('normalize', () => {
         ]
       `)
     })
-    it('does not enrich when multiple authors are present', () => {
-      const result = normalizePkgAuthors({
+    it('infers github maintainer even with multiple text-only authors', () => {
+      // Once a handle is available — even via repo-URL inference — text-only
+      // authors are dropped in favor of the github identity.
+      expect(normalizePkgAuthors({
         authors: ['Alice', 'Bob'],
         repository: 'github:foo/bar',
+      } as PackageJson)).toMatchInlineSnapshot(`
+        [
+          {
+            "avatar": "https://avatars.antfu.dev/gh/foo",
+            "github": "foo",
+            "inferred": true,
+            "type": "github",
+          },
+        ]
+      `)
+    })
+    it('drops text-only co-authors when an explicit github handle is present', () => {
+      expect(normalizePkgAuthors({
+        author: 'Anthony <ant@example.com> (https://github.com/antfu)',
+        authors: ['Bob'],
+      } as PackageJson)).toMatchInlineSnapshot(`
+        [
+          {
+            "avatar": "https://avatars.antfu.dev/gh/antfu",
+            "github": "antfu",
+            "type": "github",
+          },
+        ]
+      `)
+    })
+    it('returns multiple text authors when no handle is available anywhere', () => {
+      const result = normalizePkgAuthors({
+        authors: ['Alice', 'Bob'],
       } as PackageJson)
       expect(result).toHaveLength(2)
       expect(result?.every(a => a.type === 'text')).toBe(true)
