@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { MaintainerActionItem } from '../../state/maintainer-actions'
-import { selectedAction } from '../../state/current'
+import { selectedAction, selectedNode } from '../../state/current'
 import {
   filteredMaintainerActionGroups,
   maintainerActionAuthors,
@@ -10,6 +10,10 @@ import {
 
 function selectItem(item: MaintainerActionItem) {
   selectedAction.value = item
+}
+
+function selectConsumer(item: MaintainerActionItem['consumer']) {
+  selectedNode.value = item
 }
 
 function toggleAuthor(author: string) {
@@ -45,45 +49,51 @@ function ratioPct(item: MaintainerActionItem) {
         </span>
       </div>
 
-      <div v-if="maintainerActionAuthors.length" flex="~ wrap gap-2 items-center" mb3>
-        <span text-xs op-fade flex="~ items-center gap-1">
+      <div v-if="maintainerActionAuthors.length" mb2 border="~ base rounded-md" flex="~ col gap-3" p3>
+        <div text-xs op-fade flex="~ items-center gap-1" h-5 px1>
           <div i-ph-user-duotone />
-          Maintainers:
-        </span>
-        <button
-          v-for="author of maintainerActionAuthors"
-          :key="author"
-          text-xs px2 py0.5 rounded-full border
-          :class="maintainerFilter.includes(author)
-            ? 'border-primary text-primary bg-primary:10'
-            : 'border-base op-fade hover:op100'"
-          @click="toggleAuthor(author)"
-        >
-          {{ author }}
-        </button>
-        <button
-          v-if="maintainerFilter.length"
-          text-xs op-fade hover:op100 underline
-          @click="clearFilter()"
-        >
-          clear
-        </button>
+          Maintainers
+          <button v-if="maintainerFilter.length" border rounded-full px2 py1 text-xs op-fade flex="~ items-center gap-1" hover:op100 ml-2 @click="clearFilter()">
+            <div i-ph-funnel-x-duotone />
+            Clear Filter
+          </button>
+        </div>
+        <div flex="~ wrap gap-2 items-center">
+          <button
+            v-for="author of maintainerActionAuthors"
+            :key="author"
+            text-xs px2 py0.5 rounded-full border
+            :class="maintainerFilter.includes(author)
+              ? 'border-primary text-primary bg-primary:10'
+              : 'border-base op-fade hover:op100'"
+            @click="toggleAuthor(author)"
+          >
+            {{ author }}
+          </button>
+        </div>
       </div>
 
       <template v-if="filteredMaintainerActionGroups.length">
         <div
           class="grid items-center"
-          style="grid-template-columns: auto minmax(8rem, 1fr) auto auto auto 60px 40px auto;"
+          style="grid-template-columns: auto auto minmax(1rem, 1fr) auto auto auto minmax(1rem, 1fr) auto auto auto;"
         >
           <template v-for="group of filteredMaintainerActionGroups" :key="group.consumer.spec">
-            <div col-span-8 h-5 />
+            <div col-span-10 h-5 />
             <div
-              col-span-8
+              col-span-10
               flex="~ items-center gap-3 wrap"
-              bg-active px3 py2
-              border="t x base rounded-t-md"
+              px3 py2
+              border="~ base rounded-t-md"
             >
-              <DisplayPackageSpec :pkg="group.consumer" font-mono />
+              <button
+                font-mono hover:text-primary
+                flex="~ items-center gap-2"
+                :title="`Show ${group.consumer.spec} in side panel`"
+                @click="selectConsumer(group.consumer)"
+              >
+                <DisplayPackageSpec :pkg="group.consumer" />
+              </button>
               <div v-if="group.consumer.workspace" badge-color-lime px2 rounded text-xs>
                 Workspace
               </div>
@@ -99,7 +109,7 @@ function ratioPct(item: MaintainerActionItem) {
             <button
               v-for="(item, idx) of group.items" :key="item.key"
               border="x base"
-              class="col-span-8 grid grid-cols-subgrid items-center text-left border-b border-base hover:bg-active px3 py2 gap-x-2"
+              class="col-span-10 grid grid-cols-subgrid items-center text-left border-b border-base hover:bg-active px3 py2 gap-x-2"
               :class="[selectedAction?.key === item.key ? 'bg-primary:10' : '', idx === group.items.length - 1 ? 'rounded-b-md' : '']"
               @click="selectItem(item)"
             >
@@ -110,6 +120,7 @@ function ratioPct(item: MaintainerActionItem) {
                 {{ item.depType }}
               </span>
               <span font-mono text-sm op80 truncate>{{ item.depName }}</span>
+              <span />
               <div flex items-center justify-end>
                 <span font-mono text-xs px1 rounded badge-color-gray max-w-30 text-ellipsis of-hidden ws-nowrap>{{ item.declaredRange }}</span>
               </div>
@@ -117,12 +128,13 @@ function ratioPct(item: MaintainerActionItem) {
               <div flex items-center justify-start>
                 <span font-mono text-sm px1 rounded badge-color-green max-w-30 text-ellipsis of-hidden ws-nowrap>v{{ item.installedHighestVersion }}</span>
               </div>
-              <div
+              <span />
+              <UiDonut
                 v-tooltip="`${item.migratedCount}/${item.totalCount} consumers satisfy ${item.depName}@${item.installedHighestVersion}`"
-                h-1 bg-active rounded-full of-hidden
-              >
-                <div bg-primary h-full :style="{ width: `${ratioPct(item)}%` }" />
-              </div>
+                :value="item.migrationRatio"
+                :size="16"
+                :thickness="3"
+              />
               <span text-xs op-fade font-mono text-right>{{ ratioPct(item) }}%</span>
               <div i-ph-caret-right op-fade flex-none />
             </button>
