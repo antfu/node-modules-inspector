@@ -7,6 +7,7 @@ import { objectPick } from '@antfu/utils'
 import { join } from 'pathe'
 import { analyzePackageModuleType } from './analyze-esm'
 import { getPackageInstallSize } from './size'
+import { normalizePkgAuthors, normalizePkgFundings, normalizePkgLicense, normalizePkgRepository } from './utils/package-json'
 
 // @keep-unique
 // @keep-sorted
@@ -63,6 +64,10 @@ export async function resolvePackage(
       module: analyzePackageModuleType(json),
       packageJson: objectPick(json, PACKAGE_JSON_KEYS),
       installSize: await getPackageInstallSize(_pkg),
+      authors: normalizePkgAuthors(json),
+      repository: normalizePkgRepository(json),
+      license: normalizePkgLicense(json),
+      fundings: normalizePkgFundings(json),
     }
   }
   else {

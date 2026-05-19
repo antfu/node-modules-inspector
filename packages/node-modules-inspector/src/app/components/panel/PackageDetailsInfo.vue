@@ -8,7 +8,6 @@ import { selectedNode } from '../../state/current'
 import { filters } from '../../state/filters'
 import { getDeprecatedInfo, getNpmMeta, getNpmMetaLatest, getPublishTime, payloads } from '../../state/payload'
 import { settings } from '../../state/settings'
-import { getPackageData } from '../../utils/package-json'
 
 const props = defineProps<{
   pkg: PackageNode
@@ -20,7 +19,9 @@ const router = useRouter()
 const meta = computed(() => getNpmMeta(props.pkg))
 const latestMeta = computed(() => getNpmMetaLatest(props.pkg))
 const deprecation = computed(() => getDeprecatedInfo(props.pkg))
-const resolved = computed(() => getPackageData(props.pkg))
+const resolved = computed(() => props.pkg.resolved)
+const homepage = computed(() => resolved.value.packageJson.homepage)
+const engines = computed(() => resolved.value.packageJson.engines)
 
 const duplicated = computed(() => {
   const value = payloads.filtered.versions.get(props.pkg.name)
@@ -112,7 +113,7 @@ function showDuplicatedGraph(pkgs: PackageNode[]) {
         <NuxtLink
           v-if="resolved.repository"
           v-tooltip="'Open Repository'"
-          :to="resolved.repository"
+          :to="resolved.repository.url"
           title="Open Repository"
           target="_blank"
           external
@@ -121,9 +122,9 @@ function showDuplicatedGraph(pkgs: PackageNode[]) {
           <div i-catppuccin-git icon-catppuccin ma />
         </NuxtLink>
         <NuxtLink
-          v-if="resolved.homepage"
+          v-if="homepage"
           v-tooltip="'Open Homepage'"
-          :to="resolved.homepage"
+          :to="homepage"
           title="Open Homepage"
           target="_blank"
           external
@@ -155,27 +156,15 @@ function showDuplicatedGraph(pkgs: PackageNode[]) {
         </button>
       </div>
     </div>
-    <div v-if="resolved.license || resolved.authors?.length || resolved.engines?.node || getPublishTime(pkg)" flex="~ gap-2 wrap items-center">
+    <div v-if="resolved.license || resolved.authors?.length || engines?.node || getPublishTime(pkg)" flex="~ gap-2 wrap items-center">
       <span v-if="resolved.license">{{ resolved.license }}</span>
       <template v-if="resolved.authors?.length">
         <span v-if="resolved.license" op-fade>·</span>
-        <template
-          v-for="(author, idx) of resolved.authors"
-          :key="author.name"
-        >
-          <span v-if="idx > 0" text-xs op-fade>&</span>
-          <component
-            :is="author.url ? 'a' : 'span'"
-            :href="author.url"
-            target="_blank"
-          >
-            {{ author.name }}
-          </component>
-        </template>
+        <DisplayAuthors :authors="resolved.authors" :size="22" />
       </template>
-      <template v-if="resolved.engines?.node">
+      <template v-if="engines?.node">
         <span op-fade>·</span>
-        <DisplayNodeVersionRange :range="resolved.engines?.node" />
+        <DisplayNodeVersionRange :range="engines?.node" />
       </template>
       <template v-if="getPublishTime(pkg)">
         <span op-fade>·</span>

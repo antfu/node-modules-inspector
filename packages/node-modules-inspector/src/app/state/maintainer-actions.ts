@@ -1,7 +1,6 @@
 import type { PackageNode, PublintMessage } from 'node-modules-tools'
 import semver from 'semver'
 import { computed } from 'vue'
-import { getAuthors } from '../utils/package-json'
 import { compareSemver } from '../utils/semver'
 import { rawPayload, rawPublintMessages } from './data'
 import { payloads } from './payload'
@@ -234,11 +233,11 @@ export interface MaintainerActionGroup {
 }
 
 function getConsumerAuthors(pkg: PackageNode): string[] {
-  const list = getAuthors(pkg)
+  const list = pkg.resolved.authors
   if (!list?.length)
     return []
   return list
-    .map(a => a.name?.trim())
+    .map(a => a.type === 'github' ? `@${a.github}` : a.name?.trim())
     .filter((n): n is string => !!n)
 }
 

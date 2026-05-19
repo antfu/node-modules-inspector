@@ -2,7 +2,6 @@ import type { PackageNode } from 'node-modules-tools'
 import type { DepUpgradeAction, MaintainerActionItem, PublintAction } from '../state/maintainer-actions'
 import { formatMessage } from 'publint/utils'
 import semver from 'semver'
-import { getPackageData } from './package-json'
 import { parseSemverRange } from './semver'
 
 function safeMajor(version: string | undefined): number | undefined {
@@ -29,12 +28,14 @@ function describeCurrentVersion(declaredRange: string): string {
 }
 
 function urlBlock(item: DepUpgradeAction): string[] {
-  const depData = getPackageData(item.installedHighest)
+  const depResolved = item.installedHighest.resolved
+  const repository = depResolved.repository?.url
+  const homepage = depResolved.packageJson.homepage
   const urls: string[] = []
-  if (depData.repository)
-    urls.push(`\`${item.depName}\` repository: ${depData.repository}`)
-  if (depData.homepage && depData.homepage !== depData.repository)
-    urls.push(`\`${item.depName}\` docs: ${depData.homepage}`)
+  if (repository)
+    urls.push(`\`${item.depName}\` repository: ${repository}`)
+  if (homepage && homepage !== repository)
+    urls.push(`\`${item.depName}\` docs: ${homepage}`)
   return urls
 }
 
@@ -84,9 +85,12 @@ function formatPublintLine(msg: PublintAction['messages'][number], pkg: PackageN
 }
 
 export function buildPublintPrompt(item: PublintAction): string {
+  const repository = item.consumer.resolved.repository?.url
   const lines: string[] = [
     `Address publint findings in \`${item.consumer.name}\`.`,
   ]
+  if (repository)
+    lines.push('', `Repository: ${repository}`)
   lines.push('', `Findings (${item.messages.length}):`)
   for (const msg of item.messages)
     lines.push(formatPublintLine(msg, item.consumer))
