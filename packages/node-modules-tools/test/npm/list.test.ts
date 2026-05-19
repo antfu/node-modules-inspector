@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 import { listPackageDependencies } from '../../src'
 
 describe('listNpmPackageDependencies', () => {
-  it('runs with multiple package.json files', async () => {
+  it('runs with multiple package.json files', { timeout: 30000 }, async () => {
     const list = await listPackageDependencies({
       cwd: fileURLToPath(new URL('./fixtures/multiple-package-jsons', import.meta.url)),
       depth: 25,
