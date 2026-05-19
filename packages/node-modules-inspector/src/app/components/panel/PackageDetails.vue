@@ -10,7 +10,6 @@ import { filters } from '../../state/filters'
 import { getDeprecatedInfo, getNpmMeta, getNpmMetaLatest, getPublishTime, payloads } from '../../state/payload'
 import { query } from '../../state/query'
 import { settings } from '../../state/settings'
-import { getPackageData } from '../../utils/package-json'
 
 const props = defineProps<{
   pkg: PackageNode
@@ -27,7 +26,9 @@ const duplicated = computed(() => {
 
 const isExcluded = computed(() => payloads.excluded.has(props.pkg))
 
-const resolved = computed(() => getPackageData(props.pkg))
+const resolved = computed(() => props.pkg.resolved)
+const homepage = computed(() => resolved.value.packageJson.homepage)
+const engines = computed(() => resolved.value.packageJson.engines)
 
 const cluster = computed(() => [...payloads.available.flatClusters(props.pkg)].filter(i => !i.startsWith('dep:')))
 
@@ -279,7 +280,7 @@ const thirdPartyServices = computed(() => {
           <NuxtLink
             v-if="resolved.repository"
             v-tooltip="'Open Repository'"
-            :to="resolved.repository"
+            :to="resolved.repository.url"
             title="Open Repository"
             target="_blank"
             external
@@ -288,9 +289,9 @@ const thirdPartyServices = computed(() => {
             <div i-catppuccin-git icon-catppuccin ma />
           </NuxtLink>
           <NuxtLink
-            v-if="resolved.homepage"
+            v-if="homepage"
             v-tooltip="'Open Homepage'"
-            :to="resolved.homepage"
+            :to="homepage"
             title="Open Homepage"
             target="_blank"
             external
@@ -326,23 +327,11 @@ const thirdPartyServices = computed(() => {
         <span>{{ resolved.license }}</span>
         <template v-if="resolved.authors?.length">
           <span op-fade>·</span>
-          <template
-            v-for="(author, idx) of resolved.authors"
-            :key="author.name"
-          >
-            <span v-if="idx > 0" text-xs op-fade>&</span>
-            <component
-              :is="author.url ? 'a' : 'span'"
-              :href="author.url"
-              target="_blank"
-            >
-              {{ author.name }}
-            </component>
-          </template>
+          <DisplayAuthors :authors="resolved.authors" :size="22" />
         </template>
-        <template v-if="resolved.engines?.node">
+        <template v-if="engines?.node">
           <span op-fade>·</span>
-          <DisplayNodeVersionRange :range="resolved.engines?.node" />
+          <DisplayNodeVersionRange :range="engines?.node" />
         </template>
         <template v-if="getPublishTime(pkg)">
           <span op-fade>·</span>

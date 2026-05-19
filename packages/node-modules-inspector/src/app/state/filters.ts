@@ -7,7 +7,6 @@ import { constructPackageFilters } from 'node-modules-tools/utils'
 import { computed, reactive, toRaw } from 'vue'
 import { FILTERS_SCHEMA } from '../../shared/filters'
 import { getModuleType } from '../utils/module-type'
-import { getAuthors, getPackageData } from '../utils/package-json'
 import { parseSearch } from '../utils/search-parser'
 import { rawPayload } from './data'
 
@@ -112,7 +111,7 @@ export const filterSelectPredicate = computed(() => {
         }
       }
       if (parsed.license?.length) {
-        const license = getPackageData(pkg).license
+        const license = pkg.resolved.license
         if (!license)
           return false
         for (const re of parsed.license) {
@@ -121,11 +120,11 @@ export const filterSelectPredicate = computed(() => {
         }
       }
       if (parsed.author?.length) {
-        const authors = getAuthors(pkg)
+        const authors = pkg.resolved.authors
         if (!authors)
           return false
         for (const re of parsed.author) {
-          if (authors.some(a => re.test(a.name)))
+          if (authors.some(a => a.type === 'github' ? re.test(a.github) : re.test(a.name)))
             return true
         }
         return false

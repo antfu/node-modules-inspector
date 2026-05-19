@@ -1,25 +1,42 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
+
+defineOptions({ inheritAttrs: false })
 
 const props = defineProps<{
-  src: string
+  src?: string
 }>()
 
-const success = ref(false)
+const status = ref<'idle' | 'loading' | 'ok' | 'error'>('idle')
 
-onMounted(() => {
+function load() {
+  if (!props.src) {
+    status.value = 'idle'
+    return
+  }
+  status.value = 'loading'
   const img = new Image()
   img.src = props.src
   img.onload = () => {
-    success.value = true
+    if (img.src === props.src)
+      status.value = 'ok'
   }
-})
+  img.onerror = () => {
+    if (img.src === props.src)
+      status.value = 'error'
+  }
+}
+
+onMounted(load)
+watch(() => props.src, load)
 </script>
 
 <template>
   <img
-    v-if="success"
+    v-if="status === 'ok'"
+    v-bind="$attrs"
     :src="props.src"
-    @error="success = false"
+    @error="status = 'error'"
   >
+  <slot v-else name="fallback" />
 </template>

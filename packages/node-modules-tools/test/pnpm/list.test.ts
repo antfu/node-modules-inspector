@@ -70,6 +70,14 @@ describe('listPnpmPackageDependencies', () => {
         "flatDependents": undefined,
         "name": "debug",
         "resolved": {
+          "authors": [
+            {
+              "avatar": "https://avatars.antfu.dev/gh/qix-",
+              "github": "qix-",
+              "type": "github",
+            },
+          ],
+          "fundings": undefined,
           "installSize": {
             "bytes": 42793,
             "categories": {
@@ -91,6 +99,7 @@ describe('listPnpmPackageDependencies', () => {
               },
             },
           },
+          "license": "MIT",
           "module": "cjs",
           "packageJson": {
             "author": "Josh Junon (https://github.com/qix-)",
@@ -127,6 +136,12 @@ describe('listPnpmPackageDependencies', () => {
               "url": "git://github.com/debug-js/debug.git",
             },
             "version": "4.4.3",
+          },
+          "repository": {
+            "org": "debug-js",
+            "repo": "debug-js/debug",
+            "repoName": "debug",
+            "url": "https://github.com/debug-js/debug",
           },
         },
         "shallowestDependent": Set {

@@ -4,7 +4,6 @@ import type { ParsedFunding } from 'node-modules-tools/utils'
 import { computed } from 'vue'
 import { selectedNode } from '../../state/current'
 import { payloads } from '../../state/payload'
-import { getFundings } from '../../utils/package-json'
 
 const fundingGroup = computed(() => {
   const map = new Map<string, {
@@ -15,7 +14,7 @@ const fundingGroup = computed(() => {
     if (pkg.workspace)
       continue
 
-    const fundings = getFundings(pkg)
+    const fundings = pkg.resolved.fundings
     for (const funding of fundings || []) {
       const group = map.get(funding.entry) ?? {
         info: funding,

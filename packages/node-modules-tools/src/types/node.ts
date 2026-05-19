@@ -1,5 +1,6 @@
 import type { PackageJson } from 'pkg-types'
 import type { Message as PublintMessage } from 'publint'
+import type { ParsedAuthor, ParsedFunding, ParsedLicense, ParsedRepository } from '../utils/package-json'
 import type { PackageInstallSizeInfo } from './size'
 
 export type { PackageJson, PublintMessage }
@@ -60,6 +61,14 @@ export interface PackageNode extends PackageNodeBase {
      * Result for publint, null for invalid, undefined for not checked yet, empty array for all good
      */
     publint?: PublintMessage[] | null
+    /** Parsed authors / maintainers, including GitHub-handle detection and repo-URL inference */
+    authors?: ParsedAuthor[]
+    /** Parsed repository info (normalized URL, GitHub org/repo when applicable) */
+    repository?: ParsedRepository
+    /** Normalized license string (SPDX or combined expression) */
+    license?: ParsedLicense
+    /** Parsed funding entries with avatars when known */
+    fundings?: ParsedFunding[]
   }
 }
 export type AuditLevelString = 'low' | 'moderate' | 'high' | 'critical'
