@@ -6,12 +6,8 @@ import { selectedAction } from '../../state/current'
 import { getMaintainerActionsFor } from '../../state/maintainer-actions'
 import { query } from '../../state/query'
 import { buildAgentPrompt, buildAgentPromptAll } from '../../utils/maintainer-action-templates'
-import { getPackageData } from '../../utils/package-json'
 
 const item = computed(() => selectedAction.value)
-
-const data = computed(() => item.value ? getPackageData(item.value.consumer) : undefined)
-const repoUrl = computed(() => data.value?.repository || data.value?.homepage)
 
 const groupActions = computed<MaintainerActionItem[]>(() =>
   item.value ? getMaintainerActionsFor(item.value.consumer) : [],
@@ -34,8 +30,6 @@ const agentPrompt = computed(() => {
 const { copy, copied } = useClipboard({ source: agentPrompt, copiedDuring: 1500 })
 
 const ratioPct = computed(() => item.value ? Math.round(item.value.migrationRatio * 100) : 0)
-
-const blockLabel = computed(() => item.value?.depType === 'peer' ? 'peerDependencies' : 'dependencies')
 
 const open = computed({
   get: () => !!item.value,
@@ -63,32 +57,7 @@ function showAll() {
         Maintainer Actions
       </div>
 
-      <section flex="~ col gap-2">
-        <div flex="~ items-center gap-2 wrap">
-          <DisplayPackageSpec :pkg="item.consumer" font-mono text-xl />
-          <div v-if="item.consumer.workspace" badge-color-lime px2 rounded text-xs>
-            Workspace
-          </div>
-          <span text-xs op-fade>depth</span>
-          <DisplayNumberBadge :number="item.depth" rounded-full text-xs />
-        </div>
-        <div v-if="data?.authors?.length" flex="~ items-center gap-1 wrap" text-sm op-fade>
-          <div i-ph-user-duotone />
-          <span>{{ data.authors.map(a => a.name).join(', ') }}</span>
-        </div>
-        <a
-          v-if="repoUrl"
-          :href="repoUrl"
-          target="_blank"
-          rel="noopener"
-          text-sm op-fade hover="op100 text-primary"
-          flex="~ items-center gap-1"
-        >
-          <div i-ph-link-simple-duotone />
-          <span truncate>{{ repoUrl }}</span>
-        </a>
-      </section>
-
+      <PanelPackageDetailsInfo :pkg="item.consumer" />
       <template v-if="groupActions.length">
         <div border="t base" my5 />
 
@@ -181,16 +150,16 @@ function showAll() {
           <div text-xs op-fade uppercase tracking-wider flex="~ items-center gap-2" mb2>
             <div i-ph-arrow-fat-up-duotone />
             Upgrade
+          </div>
+
+          <div font-mono text-2xl mb3 flex="~ items-center gap-3 wrap">
+            {{ item.depName }}
             <span
-              px1.5 py0.5 rounded font-mono uppercase text-2xs
+              px1.5 py0.5 rounded font-mono uppercase text-sm
               :class="item.depType === 'peer' ? 'badge-color-purple' : 'badge-color-primary'"
             >
               {{ item.depType }}
             </span>
-          </div>
-
-          <div font-mono text-3xl mb3>
-            {{ item.depName }}
           </div>
 
           <div flex="~ items-center gap-3 wrap" font-mono>
@@ -201,10 +170,6 @@ function showAll() {
 
           <div v-if="item.catalogName" text-xs op-fade mt2>
             Resolved from <code font-mono>{{ item.rawRange }}</code> in <code font-mono>pnpm-workspace.yaml</code>.
-          </div>
-
-          <div text-xs op-fade mt2 font-mono>
-            {{ blockLabel }}["{{ item.depName }}"]
           </div>
         </section>
 
