@@ -19,7 +19,7 @@ defineProps<{
   >
     <div flex="~ gap-2 items-center" text-left>
       <DisplayPackageSpec :pkg>
-        <DisplayProvenanceBadge :pkg ml2 />
+        <DisplayProvenanceBadge :pkg class="translate-x-1 translate-y-0.55" />
       </DisplayPackageSpec>
     </div>
     <div flex="~ wrap gap-2 items-center" text-sm>
