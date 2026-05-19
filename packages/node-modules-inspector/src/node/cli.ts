@@ -10,12 +10,9 @@ import {
   DEVTOOLS_RPC_DUMP_DIRNAME,
   DEVTOOLS_RPC_DUMP_MANIFEST_FILENAME,
 } from 'devframe/constants'
-import {
-  collectStaticRpcDump,
-  createH3DevToolsHost,
-  createHostContext,
-} from 'devframe/node'
+import { createH3DevToolsHost, createHostContext } from 'devframe/node'
 import { strictJsonStringify } from 'devframe/rpc'
+import { collectStaticRpcDump } from 'devframe/rpc/dump'
 import { structuredCloneStringify } from 'devframe/utils/structured-clone'
 import { dirname, relative, resolve } from 'pathe'
 import { glob } from 'tinyglobby'

@@ -21,14 +21,14 @@ catalogs:
     esbuild: ^0.28.0
     nitropack: ^2.13.4
     nuxt: 4.4.2
-    rollup: ^4.60.3
+    rollup: ^4.60.4
     rollup-plugin-esbuild: ^6.2.1
     unbuild: ^3.6.1
-    vite: ^8.0.11
+    vite: ^8.0.13
   deps:
-    ansis: ^4.2.0
+    ansis: ^4.3.0
     cac: ^7.0.0
-    devframe: ^0.2.0
+    devframe: ^0.3.0
     fast-npm-meta: ^1.5.1
     get-port-please: ^3.2.0
     h3: ^1.15.11
@@ -39,8 +39,8 @@ catalogs:
     p-limit: ^7.3.0
     package-manager-detector: ^1.6.0
     pathe: ^2.0.3
-    publint: ^0.3.19
-    semver: ^7.7.4
+    publint: ^0.3.21
+    semver: ^7.8.0
     stream-json: ^2.1.0
     structured-clone-es: ^2.0.0
     tinyexec: ^1.1.2
@@ -55,7 +55,7 @@ catalogs:
     skills-npm: ^1.1.1
     typescript: ^6.0.3
     vite-plugin-inspect: ^11.3.3
-    vue-tsc: ^3.2.8
+    vue-tsc: ^3.3.0
   frontend:
     '@webcontainer/api': ^1.6.4
     '@xterm/addon-fit': ^0.11.0
@@ -71,28 +71,28 @@ catalogs:
     theme-vitesse: ^1.0.0
     vite-hot-client: ^2.2.0
   icons:
-    '@iconify-json/carbon': ^1.2.20
+    '@iconify-json/carbon': ^1.2.21
     '@iconify-json/catppuccin': ^1.2.17
     '@iconify-json/logos': ^1.2.11
     '@iconify-json/ph': ^1.2.2
     '@iconify-json/ri': ^1.2.10
-    '@iconify-json/simple-icons': ^1.2.81
+    '@iconify-json/simple-icons': ^1.2.82
   inlined:
     '@antfu/utils': ^9.3.0
   lint:
-    '@antfu/eslint-config': ^8.2.0
+    '@antfu/eslint-config': ^9.0.0
     '@nuxt/eslint': ^1.15.2
-    '@typescript-eslint/utils': ^8.59.2
+    '@typescript-eslint/utils': ^8.59.4
     '@unocss/eslint-config': ^66.6.8
-    eslint: ^10.3.0
+    eslint: ^10.4.0
     nano-staged: ^1.0.2
     nuxt-eslint-auto-explicit-import: ^0.1.1
     simple-git-hooks: ^2.13.1
   testing:
-    '@playwright/test': ^1.59.1
+    '@playwright/test': ^1.60.0
     mlly: ^1.8.2
     type-fest: 4.41.0
-    vitest: ^4.1.5
+    vitest: ^4.1.6
   types:
     '@pnpm/list': ^1000.3.4
     '@pnpm/types': ^1001.3.0
