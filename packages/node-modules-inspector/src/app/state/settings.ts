@@ -15,6 +15,7 @@ export const settings = useLocalStorage<SettingsOptions>(
     showFileComposition: false,
     showDependencySourceBadge: 'dev',
     showPublintMessages: false,
+    showMaintainerActions: false,
     showThirdPartyServices: false,
     treatFauxAsESM: false,
     chartColoringMode: 'spectrum',

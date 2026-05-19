@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
+import type { MaintainerActionItem } from '../../state/maintainer-actions'
 import { computed, watch } from 'vue'
+import { selectedAction } from '../../state/current'
 import { fetchPublintMessages, rawPublintMessages } from '../../state/data'
 import { filters } from '../../state/filters'
-import { getMaintainerActionsFor } from '../../state/maintainer-actions'
+import { getMaintainerActionsFor, viewAllMaintainerActions } from '../../state/maintainer-actions'
 import { payloads } from '../../state/payload'
 import { query } from '../../state/query'
 import { settings } from '../../state/settings'
@@ -88,7 +90,13 @@ function getShallowestDependents(pkg: PackageNode) {
   return dependents.filter(x => x.depth === minDepth)
 }
 
-const maintainerActionsCount = computed(() => getMaintainerActionsFor(props.pkg).length)
+const maintainerActions = computed(() => getMaintainerActionsFor(props.pkg))
+const maintainerActionsCount = computed(() => maintainerActions.value.length)
+
+function openMaintainerAction(action: MaintainerActionItem) {
+  viewAllMaintainerActions.value = false
+  selectedAction.value = action
+}
 
 const thirdPartyServices = computed(() => {
   const links: {
@@ -187,18 +195,7 @@ const thirdPartyServices = computed(() => {
       <DisplayClusterBadge v-for="c of cluster" :key="c" flex="~ items-center gap-1" :cluster="c" />
     </div>
     <DisplayDeprecationMessage :pkg="pkg" mt2 border-y-2 border-dashed />
-    <NuxtLink
-      v-if="maintainerActionsCount"
-      :to="{ path: '/report/maintainer-actions', hash: location.hash }"
-      flex="~ items-center gap-2 justify-center" mx4 my2 px3 py2
-      rounded-lg badge-color-amber
-      hover="bg-amber-400/30"
-      title="View maintainer actions for this package"
-    >
-      <div i-ph-megaphone-duotone flex-none />
-      <span>{{ maintainerActionsCount }} maintainer action{{ maintainerActionsCount === 1 ? '' : 's' }}</span>
-      <div i-ph-arrow-right text-sm op-fade />
-    </NuxtLink>
+
     <div grid="~ cols-3 gap-2 items-center" p2>
       <button
         v-tooltip="'Focus on this package and the dependencies it brings'"
@@ -238,8 +235,49 @@ const thirdPartyServices = computed(() => {
       </button>
     </div>
 
-    <div v-if="publint" border="t rounded base">
-      <IntegrationsPublintPanel :pkg="pkg" :messages="publint" />
+    <div v-if="maintainerActionsCount" block border="t base">
+      <button
+        flex="~ gap-2 items-center" w-full p4 select-none
+        @click="settings.showMaintainerActions = !settings.showMaintainerActions"
+      >
+        <div i-ph-pipe-wrench-duotone flex-none op-fade />
+        <span op-fade text-sm>Maintainer actions</span>
+        <DisplayNumberBadge :number="maintainerActionsCount" rounded-full text-sm color="badge-color-amber" />
+        <div flex-auto />
+        <NuxtLink
+          v-tooltip="'Open Maintainer Actions report'"
+          :to="{ path: '/report/maintainer-actions', hash: location.hash }"
+          p1 rounded-full hover:bg-active
+          @click.stop
+        >
+          <div i-ph-arrow-square-out op-fade />
+        </NuxtLink>
+        <button p1 rounded-full hover:bg-active mr--2 title="Toggle maintainer actions">
+          <div i-ph-caret-down transition duration-300 :class="settings.showMaintainerActions ? 'op75' : 'rotate-90 op-mute'" />
+        </button>
+      </button>
+      <div v-if="settings.showMaintainerActions" flex="~ col gap-1" px4 pb4 pt-0 mt--2>
+        <button
+          v-for="action of maintainerActions" :key="action.key"
+          flex="~ items-center gap-2" w-full
+          text-left text-sm
+          hover:bg-active rounded px2 py1
+          @click="openMaintainerAction(action)"
+        >
+          <PanelMaintainerActionTypePill :action="action" />
+          <template v-if="action.kind === 'dep-upgrade'">
+            <span font-mono op80 truncate>{{ action.depName }}</span>
+            <span font-mono text-xs px1 rounded badge-color-gray>{{ action.declaredRange }}</span>
+            <div i-ph-arrow-right op-mute text-xs flex-none />
+            <span font-mono text-xs px1 rounded badge-color-green>v{{ action.installedHighestVersion }}</span>
+          </template>
+          <template v-else>
+            <IntegrationsPublintCounts :messages="action.messages" />
+          </template>
+          <div flex-auto />
+          <div i-ph-caret-right op-fade flex-none />
+        </button>
+      </div>
     </div>
 
     <div v-if="pkg.resolved.installSize" p4 border="t base" flex="~ col gap-1">

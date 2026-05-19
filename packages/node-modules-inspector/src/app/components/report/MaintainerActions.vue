@@ -1,19 +1,25 @@
 <script setup lang="ts">
-import type { MaintainerActionItem } from '../../state/maintainer-actions'
-import { selectedAction, selectedNode } from '../../state/current'
+import type { MaintainerActionGroup, MaintainerActionItem } from '../../state/maintainer-actions'
+import { selectedAction } from '../../state/current'
 import {
   filteredMaintainerActionGroups,
   maintainerActionAuthors,
   maintainerActionGroups,
   maintainerFilter,
+  viewAllMaintainerActions,
 } from '../../state/maintainer-actions'
 
 function selectItem(item: MaintainerActionItem) {
+  viewAllMaintainerActions.value = false
   selectedAction.value = item
 }
 
-function selectConsumer(item: MaintainerActionItem['consumer']) {
-  selectedNode.value = item
+function openGroupAll(group: MaintainerActionGroup) {
+  const first = group.items[0]
+  if (!first)
+    return
+  selectedAction.value = first
+  viewAllMaintainerActions.value = true
 }
 
 function toggleAuthor(author: string) {
@@ -28,8 +34,8 @@ function clearFilter() {
   maintainerFilter.value = []
 }
 
-function ratioPct(item: MaintainerActionItem) {
-  return Math.round(item.migrationRatio * 100)
+function ratioPct(migrationRatio: number) {
+  return Math.round(migrationRatio * 100)
 }
 </script>
 
@@ -37,15 +43,14 @@ function ratioPct(item: MaintainerActionItem) {
   <div>
     <template v-if="maintainerActionGroups.length">
       <UiSubTitle>
-        Out-of-range Declarations
+        Maintainer Actions
         <DisplayNumberBadge :number="maintainerActionGroups.length" rounded-full text-sm />
       </UiSubTitle>
 
       <div badge-color-amber flex="~ gap-2 items-center" rounded-lg p2 mb3 px3>
-        <div i-ph-megaphone-duotone flex-none />
+        <div i-ph-pipe-wrench-duotone flex-none />
         <span>
-          Packages whose declared dependency range excludes a newer stable version installed elsewhere in this workspace.
-          Sorted by depth, then by how much of the workspace has already moved on.
+          Packages with actionable improvements for maintainers, including out-of-range dependency declarations and publint findings.
         </span>
       </div>
 
@@ -89,8 +94,8 @@ function ratioPct(item: MaintainerActionItem) {
               <button
                 font-mono hover:text-primary
                 flex="~ items-center gap-2"
-                :title="`Show ${group.consumer.spec} in side panel`"
-                @click="selectConsumer(group.consumer)"
+                :title="`Open all actions for ${group.consumer.spec}`"
+                @click="openGroupAll(group)"
               >
                 <DisplayPackageSpec :pkg="group.consumer" />
               </button>
@@ -106,38 +111,47 @@ function ratioPct(item: MaintainerActionItem) {
                 <span text-xs op-fade>{{ group.items.length === 1 ? 'action' : 'actions' }}</span>
               </div>
             </div>
-            <button
-              v-for="(item, idx) of group.items" :key="item.key"
-              border="x base"
-              class="col-span-10 grid grid-cols-subgrid items-center text-left border-b border-base hover:bg-active px3 py2 gap-x-2"
-              :class="[selectedAction?.key === item.key ? 'bg-primary:10' : '', idx === group.items.length - 1 ? 'rounded-b-md' : '']"
-              @click="selectItem(item)"
-            >
-              <span
-                text-xs px1.5 py0.5 rounded font-mono uppercase
-                :class="item.depType === 'peer' ? 'badge-color-purple' : 'badge-color-primary'"
+            <template v-for="(item, idx) of group.items" :key="item.key">
+              <button
+                v-if="item.kind === 'dep-upgrade'"
+                border="x base"
+                class="col-span-10 grid grid-cols-subgrid items-center text-left border-b border-base hover:bg-active px3 py2 gap-x-2"
+                :class="[selectedAction?.key === item.key ? 'bg-primary:10' : '', idx === group.items.length - 1 ? 'rounded-b-md' : '']"
+                @click="selectItem(item)"
               >
-                {{ item.depType }}
-              </span>
-              <span font-mono text-sm op80 truncate>{{ item.depName }}</span>
-              <span />
-              <div flex items-center justify-end>
-                <span font-mono text-xs px1 rounded badge-color-gray max-w-30 text-ellipsis of-hidden ws-nowrap>{{ item.declaredRange }}</span>
-              </div>
-              <div i-ph-arrow-right op-mute flex-none text-xs />
-              <div flex items-center justify-start>
-                <span font-mono text-sm px1 rounded badge-color-green max-w-30 text-ellipsis of-hidden ws-nowrap>v{{ item.installedHighestVersion }}</span>
-              </div>
-              <span />
-              <UiDonut
-                v-tooltip="`${item.migratedCount}/${item.totalCount} consumers satisfy ${item.depName}@${item.installedHighestVersion}`"
-                :value="item.migrationRatio"
-                :size="16"
-                :thickness="3"
-              />
-              <span text-xs op-fade font-mono text-right>{{ ratioPct(item) }}%</span>
-              <div i-ph-caret-right op-fade flex-none />
-            </button>
+                <PanelMaintainerActionTypePill :action="item" />
+                <span font-mono text-sm op80 truncate>{{ item.depName }}</span>
+                <span />
+                <div flex items-center justify-end>
+                  <span font-mono text-xs px1 rounded badge-color-gray max-w-30 text-ellipsis of-hidden ws-nowrap>{{ item.declaredRange }}</span>
+                </div>
+                <div i-ph-arrow-right op-mute flex-none text-xs />
+                <div flex items-center justify-start>
+                  <span font-mono text-sm px1 rounded badge-color-green max-w-30 text-ellipsis of-hidden ws-nowrap>v{{ item.installedHighestVersion }}</span>
+                </div>
+                <span />
+                <UiDonut
+                  v-tooltip="`${item.migratedCount}/${item.totalCount} consumers satisfy ${item.depName}@${item.installedHighestVersion}`"
+                  :value="item.migrationRatio"
+                  :size="16"
+                  :thickness="3"
+                />
+                <span text-xs op-fade font-mono text-right>{{ ratioPct(item.migrationRatio) }}%</span>
+                <div i-ph-caret-right op-fade flex-none />
+              </button>
+              <button
+                v-else
+                border="x base"
+                class="col-span-10 flex items-center gap-3 text-left border-b border-base hover:bg-active px3 py2"
+                :class="[selectedAction?.key === item.key ? 'bg-primary:10' : '', idx === group.items.length - 1 ? 'rounded-b-md' : '']"
+                @click="selectItem(item)"
+              >
+                <PanelMaintainerActionTypePill :action="item" />
+                <IntegrationsPublintCounts :messages="item.messages" />
+                <div flex-auto />
+                <div i-ph-caret-right op-fade flex-none />
+              </button>
+            </template>
           </template>
         </div>
       </template>
@@ -151,8 +165,8 @@ function ratioPct(item: MaintainerActionItem) {
     <UiEmptyState
       v-else
       type="checkmark"
-      title="No Out-of-range Declarations"
-      message="All packages declare ranges that include the latest stable installed versions in this workspace."
+      title="No Maintainer Actions"
+      message="No out-of-range declarations or publint findings in this workspace."
     />
   </div>
 </template>

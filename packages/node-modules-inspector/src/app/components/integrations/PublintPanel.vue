@@ -1,25 +1,12 @@
 <script setup lang="ts">
 import type { PackageNode, PublintMessage } from 'node-modules-tools'
 import { formatMessage } from 'publint/utils'
-import { computed } from 'vue'
 import { settings } from '../../state/settings'
 
 const props = defineProps<{
   pkg: PackageNode
   messages: readonly PublintMessage[] | undefined | null
 }>()
-
-const counter = computed(() => {
-  const values = {
-    error: 0,
-    warning: 0,
-    suggestion: 0,
-  }
-  for (const message of props.messages || []) {
-    values[message.type]++
-  }
-  return values
-})
 
 const icons = {
   error: 'i-ph-x-duotone text-red',
@@ -44,27 +31,7 @@ const messageColors = {
           <span text-green6 dark:text-green text-xs>All Good</span>
         </div>
       </template>
-      <template v-if="counter.error">
-        <DisplayNumberBadge :number="counter.error" rounded-full text-sm color="badge-color-red">
-          <template #after>
-            <span text-xs ml1 op-fade>error{{ counter.error > 1 ? 's' : '' }}</span>
-          </template>
-        </DisplayNumberBadge>
-      </template>
-      <template v-if="counter.warning">
-        <DisplayNumberBadge :number="counter.warning" rounded-full text-sm color="badge-color-amber">
-          <template #after>
-            <span text-xs ml1 op-fade>warning{{ counter.warning > 1 ? 's' : '' }}</span>
-          </template>
-        </DisplayNumberBadge>
-      </template>
-      <template v-if="counter.suggestion">
-        <DisplayNumberBadge :number="counter.suggestion" rounded-full text-sm color="badge-color-blue">
-          <template #after>
-            <span text-xs ml1 op-fade>suggestion{{ counter.suggestion > 1 ? 's' : '' }}</span>
-          </template>
-        </DisplayNumberBadge>
-      </template>
+      <IntegrationsPublintCounts :messages="messages" />
       <div flex-auto />
       <button
         v-if="messages.length"

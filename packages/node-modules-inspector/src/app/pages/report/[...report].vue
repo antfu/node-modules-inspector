@@ -31,7 +31,7 @@ const selected = computed(() => params.report?.[0] || 'all')
       Multiple Versions
     </NuxtLink>
     <NuxtLink btn-action as="button" :to="{ path: '/report/maintainer-actions', hash: location.hash }" active-class="text-amber bg-amber:5">
-      <div i-ph-megaphone-duotone />
+      <div i-ph-pipe-wrench-duotone />
       Maintainer Actions
     </NuxtLink>
     <NuxtLink btn-action as="button" :to="{ path: '/report/install-size', hash: location.hash }" active-class="text-primary bg-primary:5">

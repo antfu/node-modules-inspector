@@ -1,5 +1,6 @@
 import type { PackageNode } from 'node-modules-tools'
-import type { MaintainerActionItem } from '../state/maintainer-actions'
+import type { DepUpgradeAction, MaintainerActionItem, PublintAction } from '../state/maintainer-actions'
+import { formatMessage } from 'publint/utils'
 import semver from 'semver'
 import { getPackageData } from './package-json'
 import { parseSemverRange } from './semver'
@@ -27,20 +28,17 @@ function describeCurrentVersion(declaredRange: string): string {
   return major !== undefined ? `v${major}` : `\`${declaredRange}\``
 }
 
-function urlBlock(item: MaintainerActionItem): string[] {
-  const consumerData = getPackageData(item.consumer)
+function urlBlock(item: DepUpgradeAction): string[] {
   const depData = getPackageData(item.installedHighest)
   const urls: string[] = []
-  if (consumerData.repository)
-    urls.push(`\`${item.consumer.name}\` repository: ${consumerData.repository}`)
-  if (depData.repository && depData.repository !== consumerData.repository)
+  if (depData.repository)
     urls.push(`\`${item.depName}\` repository: ${depData.repository}`)
   if (depData.homepage && depData.homepage !== depData.repository)
     urls.push(`\`${item.depName}\` docs: ${depData.homepage}`)
   return urls
 }
 
-export function buildAgentPrompt(item: MaintainerActionItem): string {
+export function buildAgentPrompt(item: DepUpgradeAction): string {
   const block = item.depType === 'peer' ? 'peerDependencies' : 'dependencies'
   const fromLabel = describeCurrentVersion(item.declaredRange)
   const fromMajor = rangeHighestMajor(item.declaredRange)
@@ -80,36 +78,72 @@ export function buildAgentPrompt(item: MaintainerActionItem): string {
   return lines.join('\n')
 }
 
-export function buildAgentPromptAll(consumer: PackageNode, items: MaintainerActionItem[]): string {
-  const consumerData = getPackageData(consumer)
-  const hasPeer = items.some(i => i.depType === 'peer')
-  const hasProd = items.some(i => i.depType === 'prod')
-  const mix = hasPeer && hasProd ? 'peer and direct' : hasPeer ? 'peer' : 'direct'
+function formatPublintLine(msg: PublintAction['messages'][number], pkg: PackageNode): string {
+  const text = (formatMessage(msg, pkg.resolved.packageJson) ?? msg.code).replace(/\s+/g, ' ').trim()
+  return `- [${msg.type}] ${msg.code} — ${text}`
+}
 
+export function buildPublintPrompt(item: PublintAction): string {
   const lines: string[] = [
-    `Update ${items.length} ${mix} dependencies in \`${consumer.name}\`:`,
-    '',
-    ...items.map((i) => {
-      const block = i.depType === 'peer' ? 'peerDependencies' : 'dependencies'
-      const fromMajor = rangeHighestMajor(i.declaredRange)
-      const fromLabel = fromMajor !== undefined ? `v${fromMajor} (\`${i.declaredRange}\`)` : `\`${i.declaredRange}\``
-      const toMajor = safeMajor(i.installedHighestVersion)
-      const toLabel = toMajor !== undefined ? `v${toMajor} (\`${i.depName}@${i.installedHighestVersion}\`)` : `\`${i.depName}@${i.installedHighestVersion}\``
-      return `- \`${block}.${i.depName}\`: ${fromLabel} → ${toLabel}`
-    }),
+    `Address publint findings in \`${item.consumer.name}\`.`,
   ]
+  lines.push('', `Findings (${item.messages.length}):`)
+  for (const msg of item.messages)
+    lines.push(formatPublintLine(msg, item.consumer))
+  return lines.join('\n')
+}
 
-  if (consumerData.repository)
-    lines.push('', `Repository: ${consumerData.repository}`)
+export function buildAgentPromptAll(consumer: PackageNode, items: MaintainerActionItem[]): string {
+  const depItems = items.filter((i): i is DepUpgradeAction => i.kind === 'dep-upgrade')
+  const publintItems = items.filter((i): i is PublintAction => i.kind === 'publint')
+
+  const lines: string[] = []
+
+  if (depItems.length) {
+    const hasPeer = depItems.some(i => i.depType === 'peer')
+    const hasProd = depItems.some(i => i.depType === 'prod')
+    const mix = hasPeer && hasProd ? 'peer and direct' : hasPeer ? 'peer' : 'direct'
+    lines.push(
+      `Update ${depItems.length} ${mix} ${depItems.length === 1 ? 'dependency' : 'dependencies'} in \`${consumer.name}\`:`,
+      '',
+      ...depItems.map((i) => {
+        const block = i.depType === 'peer' ? 'peerDependencies' : 'dependencies'
+        const fromMajor = rangeHighestMajor(i.declaredRange)
+        const fromLabel = fromMajor !== undefined ? `v${fromMajor} (\`${i.declaredRange}\`)` : `\`${i.declaredRange}\``
+        const toMajor = safeMajor(i.installedHighestVersion)
+        const toLabel = toMajor !== undefined ? `v${toMajor} (\`${i.depName}@${i.installedHighestVersion}\`)` : `\`${i.depName}@${i.installedHighestVersion}\``
+        return `- \`${block}.${i.depName}\`: ${fromLabel} → ${toLabel}`
+      }),
+    )
+  }
+
+  if (publintItems.length) {
+    if (lines.length)
+      lines.push('')
+    const total = publintItems.reduce((acc, p) => acc + p.messages.length, 0)
+    lines.push(
+      `Address ${total} publint ${total === 1 ? 'finding' : 'findings'} in \`${consumer.name}\`:`,
+      '',
+    )
+    for (const action of publintItems) {
+      for (const msg of action.messages)
+        lines.push(formatPublintLine(msg, action.consumer))
+    }
+  }
+
+  if (depItems.length) {
+    lines.push(
+      '',
+      `For each dep:`,
+      `- Review its changelog between the current and target majors to identify breaking changes.`,
+      `- If no breaking change affects this package:`,
+      `  - For peer dependencies, widen the range to a union of the old and new majors.`,
+      `  - For direct dependencies, update the range to accept the new major (union for backward compat, or a clean bump if older support is not needed).`,
+      `- If a breaking change does affect this package, pause on that dep and ask the user how to proceed.`,
+    )
+  }
 
   lines.push(
-    '',
-    `For each dep:`,
-    `- Review its changelog between the current and target majors to identify breaking changes.`,
-    `- If no breaking change affects this package:`,
-    `  - For peer dependencies, widen the range to a union of the old and new majors.`,
-    `  - For direct dependencies, update the range to accept the new major (union for backward compat, or a clean bump if older support is not needed).`,
-    `- If a breaking change does affect this package, pause on that dep and ask the user how to proceed.`,
     '',
     `After all updates, verify with the test suite, linting, and type checks.`,
   )

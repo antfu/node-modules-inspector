@@ -1,13 +1,20 @@
-import type { PackageNode } from 'node-modules-tools'
+import type { PackageNode, PublintMessage } from 'node-modules-tools'
 import semver from 'semver'
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import { getAuthors } from '../utils/package-json'
 import { compareSemver } from '../utils/semver'
-import { rawPayload } from './data'
+import { rawPayload, rawPublintMessages } from './data'
 import { payloads } from './payload'
+import { query } from './query'
 
-export interface MaintainerActionItem {
+interface BaseAction {
   consumer: PackageNode
+  depth: number
+  key: string
+}
+
+export interface DepUpgradeAction extends BaseAction {
+  kind: 'dep-upgrade'
   depName: string
   depType: 'peer' | 'prod'
   /** The effective semver range (after resolving any catalog reference). */
@@ -22,9 +29,15 @@ export interface MaintainerActionItem {
   migratedCount: number
   totalCount: number
   migrationRatio: number
-  depth: number
-  key: string
 }
+
+export interface PublintAction extends BaseAction {
+  kind: 'publint'
+  messages: PublintMessage[]
+  counts: { error: number, warning: number, suggestion: number }
+}
+
+export type MaintainerActionItem = DepUpgradeAction | PublintAction
 
 interface DepStats {
   highestVersion: string
@@ -75,6 +88,13 @@ function safeGtr(version: string, range: string) {
 
 function isStable(version: string) {
   return semver.prerelease(version) === null
+}
+
+function getPublintMessagesFor(pkg: PackageNode): PublintMessage[] | null {
+  if (pkg.resolved.publint)
+    return pkg.resolved.publint
+  const fetched = rawPublintMessages.value.get(pkg.spec)
+  return fetched ? [...fetched] : null
 }
 
 export const maintainerActions = computed<MaintainerActionItem[]>(() => {
@@ -159,6 +179,7 @@ export const maintainerActions = computed<MaintainerActionItem[]>(() => {
           ? (rawRange.slice('catalog:'.length) || 'default')
           : undefined
         items.push({
+          kind: 'dep-upgrade',
           consumer,
           depName,
           depType,
@@ -178,11 +199,22 @@ export const maintainerActions = computed<MaintainerActionItem[]>(() => {
     }
   }
 
-  items.sort((a, b) =>
-    (a.depth - b.depth)
-    || (b.migrationRatio - a.migrationRatio)
-    || a.consumer.name.localeCompare(b.consumer.name),
-  )
+  for (const consumer of packages) {
+    const messages = getPublintMessagesFor(consumer)
+    if (!messages?.length)
+      continue
+    const counts = { error: 0, warning: 0, suggestion: 0 }
+    for (const m of messages)
+      counts[m.type]++
+    items.push({
+      kind: 'publint',
+      consumer,
+      depth: consumer.depth,
+      key: `${consumer.spec}::publint`,
+      messages,
+      counts,
+    })
+  }
 
   return items
 })
@@ -210,6 +242,16 @@ function getConsumerAuthors(pkg: PackageNode): string[] {
     .filter((n): n is string => !!n)
 }
 
+function actionSortKey(a: MaintainerActionItem, b: MaintainerActionItem): number {
+  if (a.kind !== b.kind)
+    return a.kind === 'dep-upgrade' ? -1 : 1
+  if (a.kind === 'dep-upgrade' && b.kind === 'dep-upgrade') {
+    return (b.migrationRatio - a.migrationRatio)
+      || a.depName.localeCompare(b.depName)
+  }
+  return 0
+}
+
 export const maintainerActionGroups = computed<MaintainerActionGroup[]>(() => {
   const byConsumer = new Map<string, MaintainerActionGroup>()
   for (const item of maintainerActions.value) {
@@ -225,16 +267,12 @@ export const maintainerActionGroups = computed<MaintainerActionGroup[]>(() => {
       byConsumer.set(item.consumer.spec, group)
     }
     group.items.push(item)
-    if (item.migrationRatio > group.maxMigrationRatio)
+    if (item.kind === 'dep-upgrade' && item.migrationRatio > group.maxMigrationRatio)
       group.maxMigrationRatio = item.migrationRatio
   }
 
-  for (const group of byConsumer.values()) {
-    group.items.sort((a, b) =>
-      (b.migrationRatio - a.migrationRatio)
-      || a.depName.localeCompare(b.depName),
-    )
-  }
+  for (const group of byConsumer.values())
+    group.items.sort(actionSortKey)
 
   return Array.from(byConsumer.values()).sort((a, b) =>
     (a.depth - b.depth)
@@ -252,7 +290,19 @@ export const maintainerActionAuthors = computed<string[]>(() => {
   return Array.from(set).sort((a, b) => a.localeCompare(b))
 })
 
-export const maintainerFilter = ref<string[]>([])
+export const maintainerFilter = computed<string[]>({
+  get: () => query.selectedAuthors ? query.selectedAuthors.split(',').filter(Boolean) : [],
+  set: (v) => {
+    query.selectedAuthors = v.length ? v.join(',') : undefined
+  },
+})
+
+export const viewAllMaintainerActions = computed<boolean>({
+  get: () => query.actionAll === 'true',
+  set: (v) => {
+    query.actionAll = v ? 'true' : undefined
+  },
+})
 
 export const filteredMaintainerActionGroups = computed<MaintainerActionGroup[]>(() => {
   const selected = maintainerFilter.value

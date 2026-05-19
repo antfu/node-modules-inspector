@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import type { MaintainerActionItem } from '../../state/maintainer-actions'
+import type { DepUpgradeAction, MaintainerActionItem, PublintAction } from '../../state/maintainer-actions'
 import { useClipboard } from '@vueuse/core'
-import { computed, ref, watch } from 'vue'
+import { computed } from 'vue'
 import { selectedAction } from '../../state/current'
-import { getMaintainerActionsFor } from '../../state/maintainer-actions'
+import { getMaintainerActionsFor, viewAllMaintainerActions } from '../../state/maintainer-actions'
 import { query } from '../../state/query'
-import { buildAgentPrompt, buildAgentPromptAll } from '../../utils/maintainer-action-templates'
+import { buildAgentPrompt, buildAgentPromptAll, buildPublintPrompt } from '../../utils/prompts'
 
 const item = computed(() => selectedAction.value)
 
@@ -13,29 +13,38 @@ const groupActions = computed<MaintainerActionItem[]>(() =>
   item.value ? getMaintainerActionsFor(item.value.consumer) : [],
 )
 
-const viewAll = ref(false)
-const canViewAll = computed(() => groupActions.value.length > 1)
+const groupDepUpgrades = computed<DepUpgradeAction[]>(() =>
+  groupActions.value.filter((a): a is DepUpgradeAction => a.kind === 'dep-upgrade'),
+)
+const groupPublint = computed<PublintAction[]>(() =>
+  groupActions.value.filter((a): a is PublintAction => a.kind === 'publint'),
+)
 
-watch(() => item.value?.consumer.spec, () => {
-  viewAll.value = false
-})
+const viewAll = viewAllMaintainerActions
+const canViewAll = computed(() => groupActions.value.length > 1)
 
 const agentPrompt = computed(() => {
   if (!item.value)
     return ''
   if (viewAll.value)
     return buildAgentPromptAll(item.value.consumer, groupActions.value)
-  return buildAgentPrompt(item.value)
+  return item.value.kind === 'publint'
+    ? buildPublintPrompt(item.value)
+    : buildAgentPrompt(item.value)
 })
 const { copy, copied } = useClipboard({ source: agentPrompt, copiedDuring: 1500 })
 
-const ratioPct = computed(() => item.value ? Math.round(item.value.migrationRatio * 100) : 0)
+const ratioPct = computed(() =>
+  item.value?.kind === 'dep-upgrade' ? Math.round(item.value.migrationRatio * 100) : 0,
+)
 
 const open = computed({
   get: () => !!item.value,
   set: (v) => {
-    if (!v)
+    if (!v) {
       query.selectedAction = undefined
+      viewAll.value = false
+    }
   },
 })
 
@@ -53,7 +62,7 @@ function showAll() {
   <UiDrawer v-model="open" width="w-180">
     <div v-if="item" p6 pb8 flex="~ col gap-0">
       <div text-xs op-fade uppercase tracking-wider flex="~ items-center gap-1" mb3>
-        <div i-ph-megaphone-duotone />
+        <div i-ph-pipe-wrench-duotone />
         Maintainer Actions
       </div>
 
@@ -71,7 +80,13 @@ function showAll() {
               : 'border-base op-fade hover:op100'"
             @click="switchTo(action)"
           >
-            {{ action.depName }} <span op-fade>v{{ action.installedHighestVersion }}</span>
+            <template v-if="action.kind === 'dep-upgrade'">
+              {{ action.depName }} <span op-fade>v{{ action.installedHighestVersion }}</span>
+            </template>
+            <template v-else>
+              <div i-ph-book-open-duotone />
+              publint <span op-fade>({{ action.messages.length }})</span>
+            </template>
           </button>
           <button
             v-if="canViewAll"
@@ -91,61 +106,68 @@ function showAll() {
 
       <div border="t base" my5 />
 
-      <section v-if="viewAll">
-        <div text-xs op-fade uppercase tracking-wider flex="~ items-center gap-2" mb2>
-          <div i-ph-list-bullets-duotone />
-          Bulk upgrade
-        </div>
+      <template v-if="viewAll">
+        <section v-if="groupDepUpgrades.length">
+          <div text-xs op-fade uppercase tracking-wider flex="~ items-center gap-2" mb2>
+            <div i-ph-list-bullets-duotone />
+            Bulk upgrade
+          </div>
 
-        <div border="~ base rounded-md" of-hidden>
-          <table w-full text-sm>
-            <thead>
-              <tr>
-                <th text-left op-fade font-normal py1 px2>
-                  Dep
-                </th>
-                <th text-left op-fade font-normal py1 px2>
-                  Type
-                </th>
-                <th text-right op-fade font-normal py1 px2>
-                  From
-                </th>
-                <th text-right op-fade font-normal py1 px2>
-                  Target
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                v-for="action of groupActions" :key="action.key"
-                border="t base"
-                hover:bg-active cursor-pointer
-                @click="switchTo(action)"
-              >
-                <td py1.5 px2 font-mono>
-                  {{ action.depName }}
-                </td>
-                <td py1.5 px2>
-                  <span
-                    text-xs px1.5 py0.5 rounded font-mono uppercase
-                    :class="action.depType === 'peer' ? 'badge-color-purple' : 'badge-color-primary'"
-                  >
-                    {{ action.depType }}
-                  </span>
-                </td>
-                <td py1.5 px2 text-right font-mono text-xs op80>
-                  {{ action.declaredRange }}
-                </td>
-                <td py1.5 px2 text-right font-mono text-xs>
-                  v{{ action.installedHighestVersion }}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
+          <div border="~ base rounded-md" of-hidden>
+            <table w-full text-sm>
+              <thead>
+                <tr>
+                  <th text-left op-fade font-normal py1 px2>
+                    Dep
+                  </th>
+                  <th text-left op-fade font-normal py1 px2>
+                    Type
+                  </th>
+                  <th text-right op-fade font-normal py1 px2>
+                    From
+                  </th>
+                  <th text-right op-fade font-normal py1 px2>
+                    Target
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  v-for="action of groupDepUpgrades" :key="action.key"
+                  border="t base"
+                  hover:bg-active cursor-pointer
+                  @click="switchTo(action)"
+                >
+                  <td py1.5 px2 font-mono>
+                    {{ action.depName }}
+                  </td>
+                  <td py1.5 px2>
+                    <span
+                      text-xs px1.5 py0.5 rounded font-mono uppercase
+                      :class="action.depType === 'peer' ? 'badge-color-purple' : 'badge-color-primary'"
+                    >
+                      {{ action.depType }}
+                    </span>
+                  </td>
+                  <td py1.5 px2 text-right font-mono text-xs op80>
+                    {{ action.declaredRange }}
+                  </td>
+                  <td py1.5 px2 text-right font-mono text-xs>
+                    v{{ action.installedHighestVersion }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
 
-      <template v-else>
+        <template v-for="action of groupPublint" :key="action.key">
+          <div v-if="groupDepUpgrades.length" border="t base" my5 />
+          <PanelMaintainerActionPublintFindings :action="action" />
+        </template>
+      </template>
+
+      <template v-else-if="item.kind === 'dep-upgrade'">
         <section>
           <div text-xs op-fade uppercase tracking-wider flex="~ items-center gap-2" mb2>
             <div i-ph-arrow-fat-up-duotone />
@@ -196,6 +218,10 @@ function showAll() {
             <span font-mono>{{ item.installedVersions.map(v => `v${v}`).join(', ') }}</span>
           </div>
         </section>
+      </template>
+
+      <template v-else-if="item.kind === 'publint'">
+        <PanelMaintainerActionPublintFindings :action="item" show-link />
       </template>
 
       <div border="t base" my5 />
