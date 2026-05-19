@@ -331,7 +331,7 @@ onMounted(() => {
     >
       <div class="bg-dots" pointer-events-none z-graph-bg absolute left-0 top-0 :style="{ width: `${width}px`, height: `${height}px` }" />
       <div ref="screenshotTarget" :style="{ minWidth: `${width * scale}px`, minHeight: `${height * scale}px` }">
-        <svg ref="svgLinks" pointer-events-none absolute left-0 top-0 z-graph-link :width="width" :height="height">
+        <svg ref="svgLinks" pointer-events-none absolute left-0 top-0 z-graph-link :width="width" :height="height" data-a11y-skip>
           <g>
             <path
               v-for="link of [...links, ...additionalLinks]"
@@ -342,7 +342,7 @@ onMounted(() => {
             />
           </g>
         </svg>
-        <svg ref="svgLinksActive" pointer-events-none absolute left-0 top-0 z-graph-link-active :width="width" :height="height">
+        <svg ref="svgLinksActive" pointer-events-none absolute left-0 top-0 z-graph-link-active :width="width" :height="height" data-a11y-skip>
           <g>
             <path
               v-for="link of activeLinks"

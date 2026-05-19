@@ -19,7 +19,7 @@ watchEffect(() => el.value?.append(props.graph.el))
 
 <template>
   <div grid="~ cols-[max-content_1fr]">
-    <div ref="el" w-500px />
+    <div ref="el" w-500px data-a11y-skip />
     <ChartSunburstSide
       :options="graph.options"
       :selected="selected"
