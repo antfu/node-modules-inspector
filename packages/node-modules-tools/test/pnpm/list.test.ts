@@ -195,7 +195,7 @@ describe('listPnpmPackageDependencies', () => {
         "https-proxy-agent@7.0.6",
         "ioredis@5.10.1",
         "nitropack@2.13.4",
-        "node-modules-inspector@2.0.1",
+        "node-modules-inspector@2.1.0",
         "nuxt-eslint-auto-explicit-import@0.1.1",
         "nuxt@4.4.2",
         "rollup-plugin-esbuild@6.2.1",
