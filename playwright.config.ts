@@ -63,6 +63,16 @@ export default defineConfig({
         baseURL: `http://127.0.0.1:${PORT_BUILD_SUBBASE}`,
       },
     },
+    {
+      name: 'a11y',
+      testMatch: /a11y\.spec\.ts$/,
+      use: {
+        ...devices['Desktop Chrome'],
+        // axe-core scans the deterministic static export — dev mode renders a
+        // transient "Loading…" state that would race the scan.
+        baseURL: `http://127.0.0.1:${PORT_BUILD}`,
+      },
+    },
   ],
 
   // A single orchestrator process: it builds the build/webcontainer fixtures

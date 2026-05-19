@@ -13,5 +13,5 @@ watchEffect(() => el.value?.append(props.graph.el))
 </script>
 
 <template>
-  <div ref="el" />
+  <div ref="el" data-a11y-skip />
 </template>

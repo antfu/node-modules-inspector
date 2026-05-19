@@ -30,14 +30,15 @@ const vulnerability = computed(() => getVulnerability(props.pkg))
     />
     <DisplayVersion
       v-tooltip="deprecation?.current ? `Current version is deprecated: ${deprecation.current}` : undefined"
-      op-fade
+      color-base
       :version="props.pkg.version"
       prefix="@"
       :class="{
-        'text-red line-through': deprecation?.current || vulnerability?.level === 'critical',
-        'text-orange line-through': vulnerability?.level === 'high',
-        'text-yellow line-through': vulnerability?.level === 'moderate',
-        'text-gray line-through': vulnerability?.level === 'low',
+        'text-red-700! dark:text-red-300! line-through': deprecation?.current || vulnerability?.level === 'critical',
+        'text-orange-700! dark:text-orange-300! line-through': vulnerability?.level === 'high',
+        'text-yellow-700! dark:text-yellow-300! line-through': vulnerability?.level === 'moderate',
+        'text-gray-700! dark:text-gray-300! line-through': vulnerability?.level === 'low',
+        'op-fade': !deprecation?.current && !vulnerability,
       }"
     />
   </span>

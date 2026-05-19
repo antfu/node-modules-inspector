@@ -25,6 +25,6 @@ watchEffect(() => el.value?.append(props.graph.el))
       :options="graph.options"
       @select="emit('select', $event)"
     />
-    <div ref="el" />
+    <div ref="el" data-a11y-skip />
   </div>
 </template>
