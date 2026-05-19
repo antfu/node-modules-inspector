@@ -314,16 +314,6 @@ const thirdPartyServices = computed(() => {
       </div>
     </div>
 
-    <div v-if="pkg.dependencies?.size" p4 border="t base" flex="~ col gap-2">
-      <div op-fade text-sm>
-        Dependency Provenance
-      </div>
-      <UiPercentageProvenance
-        :pkg="pkg"
-        :flat="settings.deepDependenciesTree"
-      />
-    </div>
-
     <div v-if="thirdPartyServices.length" flex="~ col gap-2" p4 border="t base">
       <div
         flex="~ gap-3 wrap items-center" select-none
@@ -427,6 +417,13 @@ const thirdPartyServices = computed(() => {
             Dependency Composition
           </div>
           <UiPercentageModuleType
+            :pkg="pkg"
+            :flat="settings.deepDependenciesTree"
+          />
+          <div op-fade text-sm mt2>
+            Dependency Provenance
+          </div>
+          <UiPercentageProvenance
             :pkg="pkg"
             :flat="settings.deepDependenciesTree"
           />

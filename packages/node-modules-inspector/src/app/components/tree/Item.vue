@@ -26,7 +26,9 @@ withDefaults(
     <slot name="before" />
     <DisplayModuleType v-if="showModuleType" :pkg />
     <DisplaySourceTypeBadge v-if="showSourceType" :pkg />
-    <DisplayPackageSpec :pkg />
+    <DisplayPackageSpec :pkg>
+      <DisplayProvenanceBadge :pkg ml2 />
+    </DisplayPackageSpec>
     <slot name="after" />
   </button>
 </template>

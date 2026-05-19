@@ -40,5 +40,6 @@ const vulnerability = computed(() => getVulnerability(props.pkg))
         'text-gray line-through': vulnerability?.level === 'low',
       }"
     />
+    <slot />
   </span>
 </template>

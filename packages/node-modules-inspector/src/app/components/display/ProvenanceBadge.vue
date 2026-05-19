@@ -14,8 +14,8 @@ const meta = computed(() => getNpmMeta(props.pkg))
 
 <template>
   <template v-if="settings.showProvenanceBadge === 'present'">
-    <Tooltip v-if="meta?.provenance">
-      <div i-ph:circle-wavy-check-duotone text-primary-400 text-sm />
+    <Tooltip v-if="meta?.provenance" inline-block align-middle>
+      <div i-ph:circle-wavy-check-duotone inline-block align-middle text-primary-400 text-sm />
       <template #popper>
         This package is built and signed
         {{ meta.provenance === 'trustedPublisher' ? 'by trusted publisher' : 'with provenance' }}
@@ -23,8 +23,8 @@ const meta = computed(() => getNpmMeta(props.pkg))
     </Tooltip>
   </template>
   <template v-else-if="settings.showProvenanceBadge === 'absent'">
-    <Tooltip v-if="meta && !meta.provenance">
-      <div i-ph:circle-wavy-warning-duotone text-amber-400 text-sm />
+    <Tooltip v-if="meta && !meta.provenance" inline-block align-middle>
+      <div i-ph:circle-wavy-warning-duotone inline-block align-middle text-amber-400 text-sm />
       <template #popper>
         This package is not signed with provenance
       </template>
