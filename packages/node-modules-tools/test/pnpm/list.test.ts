@@ -131,6 +131,11 @@ describe('listPnpmPackageDependencies', () => {
             "license": "MIT",
             "main": "./src/index.js",
             "name": "debug",
+            "peerDependenciesMeta": {
+              "supports-color": {
+                "optional": true,
+              },
+            },
             "repository": {
               "type": "git",
               "url": "git://github.com/debug-js/debug.git",
