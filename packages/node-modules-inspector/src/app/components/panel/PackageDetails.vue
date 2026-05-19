@@ -420,6 +420,13 @@ const thirdPartyServices = computed(() => {
             :pkg="pkg"
             :flat="settings.deepDependenciesTree"
           />
+          <div op-fade text-sm mt2>
+            Dependency Provenance
+          </div>
+          <UiPercentageProvenance
+            :pkg="pkg"
+            :flat="settings.deepDependenciesTree"
+          />
         </div>
 
         <template v-if="payloads.available.flatDependencies(pkg).length">

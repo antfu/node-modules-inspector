@@ -25,6 +25,7 @@ Migrate the Node Modules Inspector to use `devframe` as the underlying framework
 - [2026-05-19] Enhance maintainer actions view with catalog resolution and filtering - Resolve catalogs for workspace packages (e.g., "catalog:deps -> v0.2.16"), group results by package, and add filtering capability by package maintainers to improve actionability and organization of the view.
 - [2026-05-21] Refactor dependency upgrade view UI - Replace side panel with right-drawer layout, display version changes in table format for better alignment, remove "Message to Maintainer" feature, and refocus details page on dependency upgrade decisions rather than package-centric view.
 - [2026-05-21] Ignore monorepo dependencies in deps update actions - Exclude dependencies that share the same repository link from dependency update actions (e.g., nuxt and @nuxt/kit from the same monorepo) to avoid redundant or confusing update suggestions.
+- [2026-05-23] Consolidate provenance badge UI strategy - Move provenance indicator from main package view to "deps on" tab; replace donut visualization with progress bar (matching ESM/CJS style); add packageSpec badge slot for inline badge placement within version indicator parts; display provenance badge in the dependency tree within "deps on" tab for better information density and consistency.
 
 ### Open Questions
 - Which parts of the codebase need to be refactored vs. kept as-is?

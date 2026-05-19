@@ -49,7 +49,6 @@ function showDuplicatedGraph(pkgs: PackageNode[]) {
         font-mono text-2xl flex="~ wrap items-center gap-2"
         :class="deprecation?.latest ? deprecation.type === 'future' ? 'text-orange line-through' : 'text-red line-through' : ''"
       />
-
       <DisplayProvenanceBadge :pkg />
     </div>
 

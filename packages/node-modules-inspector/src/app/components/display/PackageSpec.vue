@@ -41,5 +41,6 @@ const vulnerability = computed(() => getVulnerability(props.pkg))
         'op-fade': !deprecation?.current && !vulnerability,
       }"
     />
+    <slot />
   </span>
 </template>

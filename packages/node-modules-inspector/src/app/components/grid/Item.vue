@@ -18,8 +18,9 @@ defineProps<{
     @click="selectedNode = pkg === selectedNode ? undefined : pkg"
   >
     <div flex="~ gap-2 items-center" text-left>
-      <DisplayPackageSpec :pkg />
-      <DisplayProvenanceBadge :pkg />
+      <DisplayPackageSpec :pkg>
+        <DisplayProvenanceBadge :pkg class="translate-x-1 translate-y-0.55" />
+      </DisplayPackageSpec>
     </div>
     <div flex="~ wrap gap-2 items-center" text-sm>
       <DisplayModuleType :pkg />

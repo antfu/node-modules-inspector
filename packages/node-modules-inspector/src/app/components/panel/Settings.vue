@@ -28,6 +28,13 @@ const backend = getBackend()
       <OptionItem title="Show publish time badge" description="Show publish time badge on package list">
         <OptionCheckbox v-model="settings.showPublishTimeBadge" />
       </OptionItem>
+      <OptionItem title="Provenance badge" description="Show provenance indicator on packages">
+        <OptionSelectGroup
+          v-model="settings.showProvenanceBadge"
+          :options="['present', 'absent', 'none']"
+          :titles="['Present', 'Absent', 'None']"
+        />
+      </OptionItem>
       <OptionItem title="Colorize size badge" description="Colorize package size badge">
         <OptionCheckbox v-model="settings.colorizePackageSize" />
       </OptionItem>
