@@ -1,14 +1,13 @@
 <script setup lang="ts">
 import type { PackageModuleType, PackageNode } from 'node-modules-tools'
+import type { ParsedAuthor } from 'node-modules-tools/utils'
 import { computed } from 'vue'
 import { useRoute } from '#app/composables/router'
-import SafeImage from '@/components/display/SafeImage.vue'
 import { getNpmMeta, payloads } from '../../state/payload'
 import { getModuleType } from '../../utils/module-type'
-import { getAuthors, getPackageData, getRepository } from '../../utils/package-json'
 
 const params = useRoute().params as Record<string, string>
-const tab = computed<'depth' | 'clusters' | 'module-type' | 'authors' | 'licenses' | 'github' | 'provenance'>(() => params.grid?.[0] as any || 'depth')
+const tab = computed<'depth' | 'clusters' | 'module-type' | 'authors' | 'licenses' | 'provenance'>(() => params.grid?.[0] as any || 'depth')
 
 const location = window.location
 
@@ -18,7 +17,7 @@ interface Group {
   name: string
   cluster?: string
   module?: PackageModuleType
-  org?: string
+  author?: ParsedAuthor
   packages: PackageNode[]
   expanded?: boolean
 }
@@ -63,22 +62,25 @@ const groups = computed<Group[]>(() => {
       }))
   }
   else if (tab.value === 'authors') {
-    const map = new Map<string, PackageNode[]>()
+    const map = new Map<string, { author: ParsedAuthor, packages: PackageNode[] }>()
+    const UNSPECIFIED: ParsedAuthor = { type: 'text', name: '<Unspecified>' }
     for (const pkg of payloads.filtered.packages) {
-      const authors = getAuthors(pkg) || []
-      if (!authors.length)
-        authors.push({ name: '<Unspecified>', url: undefined })
+      const authors = pkg.resolved.authors?.length ? pkg.resolved.authors : [UNSPECIFIED]
       for (const author of authors) {
-        if (!map.has(author.name))
-          map.set(author.name, [])
-        map.get(author.name)?.push(pkg)
+        const key = author.type === 'github' ? `@${author.github}` : author.name
+        let entry = map.get(key)
+        if (!entry) {
+          entry = { author, packages: [] }
+          map.set(key, entry)
+        }
+        entry.packages.push(pkg)
       }
     }
 
     return [...map.entries()]
       .sort(([a], [b]) => a.localeCompare(b))
-      .map(([author, packages]) => ({
-        name: author,
+      .map(([key, { author, packages }]) => ({
+        name: key,
         author,
         packages,
         expanded: false,
@@ -87,7 +89,7 @@ const groups = computed<Group[]>(() => {
   else if (tab.value === 'licenses') {
     const map = new Map<string, PackageNode[]>()
     for (const pkg of payloads.filtered.packages) {
-      const license = getPackageData(pkg).license || '<Unspecified>'
+      const license = pkg.resolved.license || '<Unspecified>'
       if (!map.has(license))
         map.set(license, [])
       map.get(license)?.push(pkg)
@@ -98,24 +100,6 @@ const groups = computed<Group[]>(() => {
       .map(([license, packages]) => ({
         name: license,
         license,
-        packages,
-        expanded: false,
-      }))
-  }
-  else if (tab.value === 'github') {
-    const map = new Map<string, PackageNode[]>()
-    for (const pkg of payloads.filtered.packages) {
-      const org = getRepository(pkg)?.org || '<Unspecified>'
-      if (!map.has(org))
-        map.set(org, [])
-      map.get(org)?.push(pkg)
-    }
-
-    return [...map.entries()]
-      .sort(([a], [b]) => a.localeCompare(b))
-      .map(([org, packages]) => ({
-        name: org,
-        org,
         packages,
         expanded: false,
       }))
@@ -191,10 +175,6 @@ const groups = computed<Group[]>(() => {
         <div i-ph-file-text-duotone />
         License
       </NuxtLink>
-      <NuxtLink btn-action as="button" :to="{ path: '/grid/github', hash: location.hash }" active-class="text-primary bg-primary:5">
-        <div i-ph-users-duotone />
-        GitHub Slug
-      </NuxtLink>
       <NuxtLink btn-action as="button" :to="{ path: '/grid/provenance', hash: location.hash }" active-class="text-primary bg-primary:5">
         <div i-ph:circle-wavy-check-duotone />
         Provenance
@@ -209,13 +189,9 @@ const groups = computed<Group[]>(() => {
     >
       <template #title>
         <div flex="~ items-center gap-1">
-          <SafeImage
-            v-if="group.org" :src="`https://avatars.antfu.dev/gh/${group.org}`"
-            bg-active border="~ base rounded-full"
-            w6 h6 crossorigin="anonymous"
-          />
           <DisplayClusterBadge v-if="group.cluster" :cluster="group.cluster" />
           <DisplayModuleType v-else-if="group.module" :pkg="group.module" />
+          <DisplayAuthors v-else-if="group.author" :authors="[group.author]" :link="false" />
           <span v-else op75>{{ group.name }}</span>
         </div>
         <DisplayNumberBadge :number="group.packages.length" rounded-full ml2 text-base />

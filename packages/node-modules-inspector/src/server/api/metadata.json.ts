@@ -1,7 +1,7 @@
 import process from 'node:process'
 import { consola } from 'consola'
 import { createH3DevToolsHost, createHostContext, startHttpAndWs } from 'devframe/node'
-import { getPort } from 'get-port-please'
+import { getRandomPort } from 'get-port-please'
 import devframe from '../../node/devframe'
 
 consola.restoreAll()
@@ -9,7 +9,10 @@ consola.restoreAll()
 let _serverPromise: Promise<{ port: number, jsonSerializableMethods: string[] }> | null = null
 
 async function bootDevframeServer() {
-  const port = await getPort({ port: 7812, random: true })
+  // Always pick a random free port for the dev-time RPC server. The client discovers it via
+  // this metadata endpoint, so there's no benefit to a fixed default — and a fixed default
+  // would clash with sibling workspaces running the inspector in parallel.
+  const port = await getRandomPort('localhost')
 
   const ctx = await createHostContext({
     cwd: process.cwd(),
