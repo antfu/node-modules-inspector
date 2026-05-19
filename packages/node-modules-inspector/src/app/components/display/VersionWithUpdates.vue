@@ -4,10 +4,13 @@ import { Tooltip } from 'floating-vue'
 import semver from 'semver'
 import { computed } from 'vue'
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   version?: string
   latest?: NpmMetaLatest | null
-}>()
+  displayVersion?: boolean
+}>(), {
+  displayVersion: true,
+})
 
 const versionDiff = computed(() => {
   if (!props.latest || !props.version)
@@ -25,7 +28,7 @@ const updateAvailable = computed(() => {
 <template>
   <Tooltip v-if="version">
     <div flex="~ items-center gap-1">
-      <DisplayVersion :version="version" op75 />
+      <DisplayVersion v-if="props.displayVersion" :version="version" op75 />
       <template v-if="latest">
         <div v-if="latest.version === version || !updateAvailable" text-sm op-fade>
           <div i-ph-calendar-check-duotone />

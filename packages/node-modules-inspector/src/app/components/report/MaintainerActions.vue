@@ -1,15 +1,59 @@
 <script setup lang="ts">
 import type { ParsedAuthor } from 'node-modules-tools/utils'
 import type { MaintainerActionGroup, MaintainerActionItem } from '../../state/maintainer-actions'
-import { selectedAction } from '../../state/current'
+import { computed, ref } from 'vue'
+import { getBackend } from '../../backends'
+import { selectedAction, selectedNode } from '../../state/current'
+import { fetchPublintMessages, rawPayload, rawPublintMessages } from '../../state/data'
 import {
   authorKey,
   filteredMaintainerActionGroups,
   maintainerActionAuthors,
   maintainerActionGroups,
+  maintainerActionSortMode,
   maintainerFilter,
   viewAllMaintainerActions,
 } from '../../state/maintainer-actions'
+import { getNpmMetaLatest, payloads } from '../../state/payload'
+
+const SORT_OPTIONS = ['depth', 'migration', 'latest'] as const
+const SORT_TITLES = ['Depth', 'Migration rate', 'Latest released']
+
+const backend = getBackend()
+
+const publintRunning = ref(false)
+const publintDone = ref(0)
+const publintTotal = ref(0)
+
+const pendingPublintCandidates = computed(() =>
+  payloads.filtered.packages.filter(p =>
+    !p.workspace
+    && !p.private
+    && p.filepath
+    && !p.resolved.publint
+    && !rawPublintMessages.value.has(p.spec),
+  ),
+)
+
+async function runPublintForAll() {
+  if (publintRunning.value)
+    return
+  const candidates = pendingPublintCandidates.value
+  if (!candidates.length)
+    return
+  publintRunning.value = true
+  publintDone.value = 0
+  publintTotal.value = candidates.length
+  try {
+    await Promise.all(candidates.map(async (pkg) => {
+      await fetchPublintMessages(pkg)
+      publintDone.value++
+    }))
+  }
+  finally {
+    publintRunning.value = false
+  }
+}
 
 function selectItem(item: MaintainerActionItem) {
   viewAllMaintainerActions.value = false
@@ -20,6 +64,7 @@ function openGroupAll(group: MaintainerActionGroup) {
   const first = group.items[0]
   if (!first)
     return
+  selectedNode.value = group.consumer
   selectedAction.value = first
   viewAllMaintainerActions.value = true
 }
@@ -54,14 +99,33 @@ function ratioPct(migrationRatio: number) {
         Packages with actionable improvements for maintainers, including out-of-range dependency declarations and publint findings.
       </div>
 
+      <div v-if="backend.isDynamic && rawPayload?.config?.publint && (pendingPublintCandidates.length || publintRunning)" mt3>
+        <button
+          btn-action
+          :disabled="publintRunning"
+          @click="runPublintForAll()"
+        >
+          <div :class="publintRunning ? 'i-ph-spinner-gap-duotone animate-spin' : 'i-ph-book-open-duotone'" />
+          {{ publintRunning ? `Running publint... (${publintDone}/${publintTotal})` : 'Run Publint for all packages' }}
+        </button>
+      </div>
+
       <div v-if="maintainerActionAuthors.length" mb2 border="~ base rounded-md" flex="~ col gap-3" p3 mt4>
-        <div text-xs op-fade flex="~ items-center gap-1" h-5 px1>
+        <div text-xs flex="~ items-center gap-1" h-5 px1>
           <div i-ph-user-duotone />
           Maintainers
-          <button v-if="maintainerFilter.length" border rounded-full px2 py1 text-xs op-fade flex="~ items-center gap-1" hover:op100 ml-2 @click="clearFilter()">
+          <button v-if="maintainerFilter.length" border="~ base rounded-full" px2 py1 text-xs op-fade flex="~ items-center gap-1" hover:op100 ml-2 @click="clearFilter()">
             <div i-ph-funnel-x-duotone />
             Clear Filter
           </button>
+          <div ml-auto flex="~ items-center gap-1">
+            <span op-fade mr1>Sort by</span>
+            <OptionSelectGroup
+              v-model="maintainerActionSortMode"
+              :options="SORT_OPTIONS"
+              :titles="SORT_TITLES"
+            />
+          </div>
         </div>
         <div flex="~ wrap gap-2 items-center">
           <button
@@ -79,6 +143,14 @@ function ratioPct(migrationRatio: number) {
             <DisplayAuthorEntry :author="author" :link="false" :size="22" />
           </button>
         </div>
+      </div>
+      <div v-else mb2 border="~ base rounded-md" flex="~ items-center gap-1" px3 py2 mt4 text-xs>
+        <span op-fade mr1>Sort by</span>
+        <OptionSelectGroup
+          v-model="maintainerActionSortMode"
+          :options="SORT_OPTIONS"
+          :titles="SORT_TITLES"
+        />
       </div>
 
       <template v-if="filteredMaintainerActionGroups.length">
@@ -102,9 +174,12 @@ function ratioPct(migrationRatio: number) {
               >
                 <DisplayPackageSpec :pkg="group.consumer" />
               </button>
-              <div v-if="group.consumer.workspace" badge-color-lime px2 rounded text-xs>
-                Workspace
-              </div>
+              <DisplayVersionWithUpdates
+                :version="group.consumer.version"
+                :latest="getNpmMetaLatest(group.consumer)"
+                :display-version="false"
+              />
+              <DisplayDateBadge :pkg="group.consumer" />
               <DisplayAuthors v-if="group.authors.length" :authors="group.authors" :size="20" />
               <div ml-auto flex="~ items-center gap-2">
                 <DisplayNumberBadge :number="group.items.length" rounded-full text-xs />

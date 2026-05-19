@@ -11,6 +11,7 @@ export interface QueryOptions extends Partial<{ [x in keyof FilterOptions]?: str
   selectedAction?: string
   selectedAuthors?: string
   actionAll?: string
+  actionSort?: string
 }
 
 export const query = reactive<QueryOptions>({
@@ -19,6 +20,7 @@ export const query = reactive<QueryOptions>({
   selectedAction: '',
   selectedAuthors: '',
   actionAll: '',
+  actionSort: '',
 } as any)
 
 function camelCase(str: string) {

@@ -4,7 +4,7 @@ import semver from 'semver'
 import { computed } from 'vue'
 import { compareSemver } from '../utils/semver'
 import { rawPayload, rawPublintMessages } from './data'
-import { payloads } from './payload'
+import { getPublishTime, payloads } from './payload'
 import { query } from './query'
 
 export function authorKey(author: ParsedAuthor): string {
@@ -240,7 +240,20 @@ export interface MaintainerActionGroup {
   authors: ParsedAuthor[]
   items: MaintainerActionItem[]
   maxMigrationRatio: number
+  latestReleasedAt: number
 }
+
+export type MaintainerActionSortMode = 'depth' | 'migration' | 'latest'
+
+export const maintainerActionSortMode = computed<MaintainerActionSortMode>({
+  get: () => {
+    const v = query.actionSort
+    return v === 'migration' || v === 'latest' ? v : 'depth'
+  },
+  set: (v) => {
+    query.actionSort = v === 'depth' ? undefined : v
+  },
+})
 
 function getConsumerAuthors(pkg: PackageNode): ParsedAuthor[] {
   const list = pkg.resolved.authors
@@ -270,6 +283,7 @@ export const maintainerActionGroups = computed<MaintainerActionGroup[]>(() => {
         authors: getConsumerAuthors(item.consumer),
         items: [],
         maxMigrationRatio: 0,
+        latestReleasedAt: getPublishTime(item.consumer)?.getTime() ?? 0,
       }
       byConsumer.set(item.consumer.spec, group)
     }
@@ -281,23 +295,34 @@ export const maintainerActionGroups = computed<MaintainerActionGroup[]>(() => {
   for (const group of byConsumer.values())
     group.items.sort(actionSortKey)
 
-  return Array.from(byConsumer.values()).sort((a, b) =>
-    (a.depth - b.depth)
-    || (b.maxMigrationRatio - a.maxMigrationRatio)
-    || a.consumer.name.localeCompare(b.consumer.name),
-  )
+  const groups = Array.from(byConsumer.values())
+  const mode = maintainerActionSortMode.value
+  const nameTie = (a: MaintainerActionGroup, b: MaintainerActionGroup) =>
+    a.consumer.name.localeCompare(b.consumer.name)
+  const cmp: (a: MaintainerActionGroup, b: MaintainerActionGroup) => number
+    = mode === 'migration'
+      ? (a, b) => (b.maxMigrationRatio - a.maxMigrationRatio) || (a.depth - b.depth) || nameTie(a, b)
+      : mode === 'latest'
+        ? (a, b) => (b.latestReleasedAt - a.latestReleasedAt) || (a.depth - b.depth) || nameTie(a, b)
+        : (a, b) => (a.depth - b.depth) || (b.maxMigrationRatio - a.maxMigrationRatio) || nameTie(a, b)
+  return groups.sort(cmp)
 })
 
 export const maintainerActionAuthors = computed<ParsedAuthor[]>(() => {
-  const map = new Map<string, ParsedAuthor>()
+  const map = new Map<string, { author: ParsedAuthor, count: number }>()
   for (const group of maintainerActionGroups.value) {
     for (const author of group.authors) {
       const key = authorKey(author)
-      if (!map.has(key))
-        map.set(key, author)
+      const entry = map.get(key)
+      if (entry)
+        entry.count++
+      else
+        map.set(key, { author, count: 1 })
     }
   }
-  return Array.from(map.values()).sort((a, b) => authorKey(a).localeCompare(authorKey(b)))
+  return Array.from(map.values())
+    .sort((a, b) => (b.count - a.count) || authorKey(a.author).localeCompare(authorKey(b.author)))
+    .map(e => e.author)
 })
 
 export const maintainerFilter = computed<string[]>({
