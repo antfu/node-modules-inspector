@@ -252,9 +252,9 @@ const thirdPartyServices = computed(() => {
         >
           <div i-ph-arrow-square-out op-fade />
         </NuxtLink>
-        <button p1 rounded-full hover:bg-active mr--2 title="Toggle maintainer actions">
+        <div p1 mr--2 title="Toggle maintainer actions">
           <div i-ph-caret-down transition duration-300 :class="settings.showMaintainerActions ? 'op75' : 'rotate-90 op-mute'" />
-        </button>
+        </div>
       </button>
       <div v-if="settings.showMaintainerActions" flex="~ col gap-1" px4 pb4 pt-0 mt--2>
         <button

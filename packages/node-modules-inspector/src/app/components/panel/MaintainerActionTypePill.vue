@@ -16,10 +16,9 @@ defineProps<{
   </span>
   <span
     v-else
-    text-xs px1.5 py0.5 rounded font-mono uppercase badge-color-amber
+    text-xs px1.5 py0.5 rounded font-mono uppercase badge-color-teal
     flex="~ items-center gap-1"
   >
-    <div i-ph-book-open-duotone />
     publint
   </span>
 </template>

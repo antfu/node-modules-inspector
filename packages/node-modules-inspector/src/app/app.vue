@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useHead } from '@unhead/vue'
+import { useHead } from '#imports'
 import Entry from './entries/index'
 import { setupQuery } from './state/query'
 

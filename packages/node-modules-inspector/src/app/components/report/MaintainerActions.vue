@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import type { ParsedAuthor } from 'node-modules-tools/utils'
 import type { MaintainerActionGroup, MaintainerActionItem } from '../../state/maintainer-actions'
 import { selectedAction } from '../../state/current'
 import {
+  authorKey,
   filteredMaintainerActionGroups,
   maintainerActionAuthors,
   maintainerActionGroups,
@@ -22,12 +24,13 @@ function openGroupAll(group: MaintainerActionGroup) {
   viewAllMaintainerActions.value = true
 }
 
-function toggleAuthor(author: string) {
-  const i = maintainerFilter.value.indexOf(author)
+function toggleAuthor(author: ParsedAuthor) {
+  const key = authorKey(author)
+  const i = maintainerFilter.value.indexOf(key)
   if (i === -1)
-    maintainerFilter.value = [...maintainerFilter.value, author]
+    maintainerFilter.value = [...maintainerFilter.value, key]
   else
-    maintainerFilter.value = maintainerFilter.value.filter(a => a !== author)
+    maintainerFilter.value = maintainerFilter.value.filter(a => a !== key)
 }
 
 function clearFilter() {
@@ -47,14 +50,11 @@ function ratioPct(migrationRatio: number) {
         <DisplayNumberBadge :number="maintainerActionGroups.length" rounded-full text-sm />
       </UiSubTitle>
 
-      <div badge-color-amber flex="~ gap-2 items-center" rounded-lg p2 mb3 px3>
-        <div i-ph-pipe-wrench-duotone flex-none />
-        <span>
-          Packages with actionable improvements for maintainers, including out-of-range dependency declarations and publint findings.
-        </span>
+      <div op-fade>
+        Packages with actionable improvements for maintainers, including out-of-range dependency declarations and publint findings.
       </div>
 
-      <div v-if="maintainerActionAuthors.length" mb2 border="~ base rounded-md" flex="~ col gap-3" p3>
+      <div v-if="maintainerActionAuthors.length" mb2 border="~ base rounded-md" flex="~ col gap-3" p3 mt4>
         <div text-xs op-fade flex="~ items-center gap-1" h-5 px1>
           <div i-ph-user-duotone />
           Maintainers
@@ -66,14 +66,17 @@ function ratioPct(migrationRatio: number) {
         <div flex="~ wrap gap-2 items-center">
           <button
             v-for="author of maintainerActionAuthors"
-            :key="author"
-            text-xs px2 py0.5 rounded-full border
-            :class="maintainerFilter.includes(author)
-              ? 'border-primary text-primary bg-primary:10'
-              : 'border-base op-fade hover:op100'"
+            :key="authorKey(author)"
+            rounded-full
+            :class="
+              maintainerFilter.length === 0
+                ? ''
+                : maintainerFilter.includes(authorKey(author))
+                  ? 'ring-2 ring-primary'
+                  : 'op-fade hover:op100'"
             @click="toggleAuthor(author)"
           >
-            {{ author }}
+            <DisplayAuthorEntry :author="author" :link="false" :size="22" />
           </button>
         </div>
       </div>
@@ -102,10 +105,7 @@ function ratioPct(migrationRatio: number) {
               <div v-if="group.consumer.workspace" badge-color-lime px2 rounded text-xs>
                 Workspace
               </div>
-              <div v-if="group.authors.length" flex="~ items-center gap-1" text-xs op-fade>
-                <div i-ph-user-duotone />
-                <span>{{ group.authors.join(', ') }}</span>
-              </div>
+              <DisplayAuthors v-if="group.authors.length" :authors="group.authors" :size="20" />
               <div ml-auto flex="~ items-center gap-2">
                 <DisplayNumberBadge :number="group.items.length" rounded-full text-xs />
                 <span text-xs op-fade>{{ group.items.length === 1 ? 'action' : 'actions' }}</span>

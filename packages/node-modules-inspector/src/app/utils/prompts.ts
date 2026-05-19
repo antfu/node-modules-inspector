@@ -22,60 +22,58 @@ function rangeHighestMajor(range: string): number | undefined {
   return safeMajor(parsed.highest)
 }
 
-function describeCurrentVersion(declaredRange: string): string {
+function fromLabel(declaredRange: string): string {
   const major = rangeHighestMajor(declaredRange)
   return major !== undefined ? `v${major}` : `\`${declaredRange}\``
 }
 
-function urlBlock(item: DepUpgradeAction): string[] {
+function toLabel(installedHighestVersion: string): string {
+  const major = safeMajor(installedHighestVersion)
+  return major !== undefined ? `v${major}` : `v${installedHighestVersion}`
+}
+
+function block(item: DepUpgradeAction): string {
+  return item.depType === 'peer' ? 'peerDependencies' : 'dependencies'
+}
+
+function compatGuidance(item: DepUpgradeAction): string {
+  const fromMajor = rangeHighestMajor(item.declaredRange)
+  const toMajor = safeMajor(item.installedHighestVersion)
+  const unionExample = fromMajor !== undefined && toMajor !== undefined
+    ? `\`^${fromMajor} || ^${toMajor}\``
+    : 'a union of both majors'
+  if (item.depType === 'peer')
+    return `widen \`${block(item)}.${item.depName}\` to a union (e.g. ${unionExample}) so consumers on either major are supported.`
+  const newOnlyExample = toMajor !== undefined ? `\`^${toMajor}.0.0\`` : 'the new major'
+  return `update \`${block(item)}.${item.depName}\` to accept ${toLabel(item.installedHighestVersion)} — ${unionExample} for backward compat, or ${newOnlyExample} for a clean bump.`
+}
+
+function depUrls(item: DepUpgradeAction): string[] {
   const depResolved = item.installedHighest.resolved
   const repository = depResolved.repository?.url
   const homepage = depResolved.packageJson.homepage
   const urls: string[] = []
   if (repository)
-    urls.push(`\`${item.depName}\` repository: ${repository}`)
+    urls.push(`Repository: ${repository}`)
   if (homepage && homepage !== repository)
-    urls.push(`\`${item.depName}\` docs: ${homepage}`)
+    urls.push(`Docs: ${homepage}`)
   return urls
 }
 
 export function buildAgentPrompt(item: DepUpgradeAction): string {
-  const block = item.depType === 'peer' ? 'peerDependencies' : 'dependencies'
-  const fromLabel = describeCurrentVersion(item.declaredRange)
-  const fromMajor = rangeHighestMajor(item.declaredRange)
-  const toMajor = safeMajor(item.installedHighestVersion)
-  const toLabel = toMajor !== undefined ? `v${toMajor}` : `v${item.installedHighestVersion}`
-  const unionExample = fromMajor !== undefined && toMajor !== undefined
-    ? `\`^${fromMajor} || ^${toMajor}\``
-    : 'a union of the current and target majors'
-  const newOnlyExample = toMajor !== undefined ? `\`^${toMajor}.0.0\`` : `the new major`
-
-  const intent = item.depType === 'peer'
-    ? `\`${item.depName}\` is declared as a peer dependency — it signals compatibility to downstream consumers. The goal is to broaden that compatibility, not necessarily to drop the old major.`
-    : `\`${item.depName}\` is a direct dependency. The goal is to upgrade to ${toLabel}.`
-
-  const compatBullet = item.depType === 'peer'
-    ? `- If no breaking change affects this package, widen \`${block}.${item.depName}\` to a union (e.g. ${unionExample}) so consumers on either major are still supported.`
-    : `- If no breaking change affects this package, update \`${block}.${item.depName}\` to allow ${toLabel}. A union (${unionExample}) keeps backward compat; a clean bump to ${newOnlyExample} is simpler if older support is not needed.`
-
   const lines: string[] = [
-    `Update \`${item.depName}\` in \`${item.consumer.name}\` from ${fromLabel} to ${toLabel} (specifically \`${item.depName}@${item.installedHighestVersion}\`).`,
+    `Update \`${block(item)}.${item.depName}\` in \`${item.consumer.name}\`: ${fromLabel(item.declaredRange)} → ${toLabel(item.installedHighestVersion)} (target \`${item.depName}@${item.installedHighestVersion}\`).`,
   ]
-
-  const urls = urlBlock(item)
+  const urls = depUrls(item)
   if (urls.length)
     lines.push('', ...urls)
-
   lines.push(
     '',
-    intent,
-    '',
-    `- Review \`${item.depName}\`'s changelog between ${fromLabel} and ${toLabel} to identify breaking changes.`,
-    compatBullet,
-    `- If a breaking change does affect this package, do not change the declaration unilaterally — pause and ask the user how to proceed (e.g. drop the old major and bump, fork compatibility, etc.).`,
-    `- Verify the update by running the test suite, linting, and type checks.`,
+    `- Review \`${item.depName}\`'s changelog for breaking changes between ${fromLabel(item.declaredRange)} and ${toLabel(item.installedHighestVersion)}.`,
+    `- If none affect this package, ${compatGuidance(item)}`,
+    `- Otherwise pause and ask the user before changing the declaration.`,
+    `- Verify with the test suite, lint, and type checks.`,
   )
-
   return lines.join('\n')
 }
 
@@ -84,16 +82,24 @@ function formatPublintLine(msg: PublintAction['messages'][number], pkg: PackageN
   return `- [${msg.type}] ${msg.code} — ${text}`
 }
 
+function publintSection(items: PublintAction[], consumerName: string): string[] {
+  const total = items.reduce((acc, p) => acc + p.messages.length, 0)
+  const lines: string[] = [
+    `Address ${total} publint ${total === 1 ? 'finding' : 'findings'} in \`${consumerName}\`:`,
+    '',
+  ]
+  for (const action of items) {
+    for (const msg of action.messages)
+      lines.push(formatPublintLine(msg, action.consumer))
+  }
+  return lines
+}
+
 export function buildPublintPrompt(item: PublintAction): string {
   const repository = item.consumer.resolved.repository?.url
-  const lines: string[] = [
-    `Address publint findings in \`${item.consumer.name}\`.`,
-  ]
+  const lines = publintSection([item], item.consumer.name)
   if (repository)
-    lines.push('', `Repository: ${repository}`)
-  lines.push('', `Findings (${item.messages.length}):`)
-  for (const msg of item.messages)
-    lines.push(formatPublintLine(msg, item.consumer))
+    lines.splice(1, 0, `Repository: ${repository}`, '')
   return lines.join('\n')
 }
 
@@ -103,54 +109,25 @@ export function buildAgentPromptAll(consumer: PackageNode, items: MaintainerActi
 
   const lines: string[] = []
 
+  if (publintItems.length)
+    lines.push(...publintSection(publintItems, consumer.name))
+
   if (depItems.length) {
+    if (lines.length)
+      lines.push('')
     const hasPeer = depItems.some(i => i.depType === 'peer')
     const hasProd = depItems.some(i => i.depType === 'prod')
     const mix = hasPeer && hasProd ? 'peer and direct' : hasPeer ? 'peer' : 'direct'
     lines.push(
       `Update ${depItems.length} ${mix} ${depItems.length === 1 ? 'dependency' : 'dependencies'} in \`${consumer.name}\`:`,
       '',
-      ...depItems.map((i) => {
-        const block = i.depType === 'peer' ? 'peerDependencies' : 'dependencies'
-        const fromMajor = rangeHighestMajor(i.declaredRange)
-        const fromLabel = fromMajor !== undefined ? `v${fromMajor} (\`${i.declaredRange}\`)` : `\`${i.declaredRange}\``
-        const toMajor = safeMajor(i.installedHighestVersion)
-        const toLabel = toMajor !== undefined ? `v${toMajor} (\`${i.depName}@${i.installedHighestVersion}\`)` : `\`${i.depName}@${i.installedHighestVersion}\``
-        return `- \`${block}.${i.depName}\`: ${fromLabel} → ${toLabel}`
-      }),
-    )
-  }
-
-  if (publintItems.length) {
-    if (lines.length)
-      lines.push('')
-    const total = publintItems.reduce((acc, p) => acc + p.messages.length, 0)
-    lines.push(
-      `Address ${total} publint ${total === 1 ? 'finding' : 'findings'} in \`${consumer.name}\`:`,
+      ...depItems.map(i => `- \`${block(i)}.${i.depName}\`: ${fromLabel(i.declaredRange)} → ${toLabel(i.installedHighestVersion)} (\`${i.depName}@${i.installedHighestVersion}\`)`),
       '',
-    )
-    for (const action of publintItems) {
-      for (const msg of action.messages)
-        lines.push(formatPublintLine(msg, action.consumer))
-    }
-  }
-
-  if (depItems.length) {
-    lines.push(
-      '',
-      `For each dep:`,
-      `- Review its changelog between the current and target majors to identify breaking changes.`,
-      `- If no breaking change affects this package:`,
-      `  - For peer dependencies, widen the range to a union of the old and new majors.`,
-      `  - For direct dependencies, update the range to accept the new major (union for backward compat, or a clean bump if older support is not needed).`,
-      `- If a breaking change does affect this package, pause on that dep and ask the user how to proceed.`,
+      `For each: check the changelog, widen (peer) or update (direct) the range when no breaking change affects this package, otherwise pause and ask the user.`,
     )
   }
 
-  lines.push(
-    '',
-    `After all updates, verify with the test suite, linting, and type checks.`,
-  )
+  lines.push('', `Verify with the test suite, lint, and type checks.`)
 
   return lines.join('\n')
 }

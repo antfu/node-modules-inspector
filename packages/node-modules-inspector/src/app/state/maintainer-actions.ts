@@ -1,10 +1,15 @@
 import type { PackageNode, PublintMessage } from 'node-modules-tools'
+import type { ParsedAuthor } from 'node-modules-tools/utils'
 import semver from 'semver'
 import { computed } from 'vue'
 import { compareSemver } from '../utils/semver'
 import { rawPayload, rawPublintMessages } from './data'
 import { payloads } from './payload'
 import { query } from './query'
+
+export function authorKey(author: ParsedAuthor): string {
+  return author.type === 'github' ? `@${author.github}` : author.name
+}
 
 interface BaseAction {
   consumer: PackageNode
@@ -173,6 +178,11 @@ export const maintainerActions = computed<MaintainerActionItem[]>(() => {
           continue
         if (safeGtr(entry.highestVersion, declaredRange) !== true)
           continue
+        // Skip when consumer and dep share the same repository (monorepo siblings).
+        const consumerRepo = consumer.resolved.repository?.url
+        const depRepo = entry.highestPkg.resolved.repository?.url
+        if (consumerRepo && depRepo && consumerRepo === depRepo)
+          continue
         const total = entry.migrated + entry.behind
         const catalogName = rawRange.startsWith('catalog:')
           ? (rawRange.slice('catalog:'.length) || 'default')
@@ -227,23 +237,21 @@ export function findMaintainerActionByKey(key: string | undefined): MaintainerAc
 export interface MaintainerActionGroup {
   consumer: PackageNode
   depth: number
-  authors: string[]
+  authors: ParsedAuthor[]
   items: MaintainerActionItem[]
   maxMigrationRatio: number
 }
 
-function getConsumerAuthors(pkg: PackageNode): string[] {
+function getConsumerAuthors(pkg: PackageNode): ParsedAuthor[] {
   const list = pkg.resolved.authors
   if (!list?.length)
     return []
-  return list
-    .map(a => a.type === 'github' ? `@${a.github}` : a.name?.trim())
-    .filter((n): n is string => !!n)
+  return list.filter(a => a.type === 'github' || !!a.name?.trim())
 }
 
 function actionSortKey(a: MaintainerActionItem, b: MaintainerActionItem): number {
   if (a.kind !== b.kind)
-    return a.kind === 'dep-upgrade' ? -1 : 1
+    return a.kind === 'publint' ? -1 : 1
   if (a.kind === 'dep-upgrade' && b.kind === 'dep-upgrade') {
     return (b.migrationRatio - a.migrationRatio)
       || a.depName.localeCompare(b.depName)
@@ -280,13 +288,16 @@ export const maintainerActionGroups = computed<MaintainerActionGroup[]>(() => {
   )
 })
 
-export const maintainerActionAuthors = computed<string[]>(() => {
-  const set = new Set<string>()
+export const maintainerActionAuthors = computed<ParsedAuthor[]>(() => {
+  const map = new Map<string, ParsedAuthor>()
   for (const group of maintainerActionGroups.value) {
-    for (const author of group.authors)
-      set.add(author)
+    for (const author of group.authors) {
+      const key = authorKey(author)
+      if (!map.has(key))
+        map.set(key, author)
+    }
   }
-  return Array.from(set).sort((a, b) => a.localeCompare(b))
+  return Array.from(map.values()).sort((a, b) => authorKey(a).localeCompare(authorKey(b)))
 })
 
 export const maintainerFilter = computed<string[]>({
@@ -308,7 +319,7 @@ export const filteredMaintainerActionGroups = computed<MaintainerActionGroup[]>(
   if (!selected.length)
     return maintainerActionGroups.value
   const set = new Set(selected)
-  return maintainerActionGroups.value.filter(g => g.authors.some(a => set.has(a)))
+  return maintainerActionGroups.value.filter(g => g.authors.some(a => set.has(authorKey(a))))
 })
 
 export function getMaintainerActionsFor(pkg: PackageNode): MaintainerActionItem[] {

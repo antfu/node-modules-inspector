@@ -19,6 +19,7 @@ html, body , #__nuxt{
 
 html {
   --at-apply: bg-base font-sans;
+  scrollbar-gutter: stable;
 }
 body {
   --at-apply: color-base;

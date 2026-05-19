@@ -29,7 +29,7 @@ const href = computed(() => {
     flex="~ gap-1.5 items-center" of-hidden text-ellipsis
     :style="{ fontSize: `${props.size * 0.5}px`, height: `${props.size}px` }"
     :class="href ? 'hover:bg-active' : ''"
-    border="y r rounded-full" pr-2
+    border="y r base rounded-full" pr-2
   >
     <template
       v-if="author.type === 'github'"

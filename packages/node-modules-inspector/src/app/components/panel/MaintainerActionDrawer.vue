@@ -1,13 +1,23 @@
 <script setup lang="ts">
 import type { DepUpgradeAction, MaintainerActionItem, PublintAction } from '../../state/maintainer-actions'
 import { useClipboard } from '@vueuse/core'
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import { selectedAction } from '../../state/current'
+import { fetchPublintMessages } from '../../state/data'
 import { getMaintainerActionsFor, viewAllMaintainerActions } from '../../state/maintainer-actions'
 import { query } from '../../state/query'
 import { buildAgentPrompt, buildAgentPromptAll, buildPublintPrompt } from '../../utils/prompts'
 
 const item = computed(() => selectedAction.value)
+
+watch(
+  () => item.value?.consumer,
+  (consumer) => {
+    if (consumer)
+      fetchPublintMessages(consumer)
+  },
+  { immediate: true },
+)
 
 const groupActions = computed<MaintainerActionItem[]>(() =>
   item.value ? getMaintainerActionsFor(item.value.consumer) : [],
@@ -107,7 +117,13 @@ function showAll() {
       <div border="t base" my5 />
 
       <template v-if="viewAll">
+        <template v-for="(action, i) of groupPublint" :key="action.key">
+          <div v-if="i > 0" border="t base" my5 />
+          <PanelMaintainerActionPublintFindings :action="action" />
+        </template>
+
         <section v-if="groupDepUpgrades.length">
+          <div v-if="groupPublint.length" border="t base" my5 />
           <div text-xs op-fade uppercase tracking-wider flex="~ items-center gap-2" mb2>
             <div i-ph-list-bullets-duotone />
             Bulk upgrade
@@ -160,11 +176,6 @@ function showAll() {
             </table>
           </div>
         </section>
-
-        <template v-for="action of groupPublint" :key="action.key">
-          <div v-if="groupDepUpgrades.length" border="t base" my5 />
-          <PanelMaintainerActionPublintFindings :action="action" />
-        </template>
       </template>
 
       <template v-else-if="item.kind === 'dep-upgrade'">
