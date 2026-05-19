@@ -31,6 +31,8 @@ export const PACKAGE_JSON_KEYS = [
   'module',
   'name',
   'optionalDependencies',
+  'peerDependencies',
+  'peerDependenciesMeta',
   'repository',
   'types',
   'version',

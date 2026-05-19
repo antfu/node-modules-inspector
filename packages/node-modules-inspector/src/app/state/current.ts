@@ -1,4 +1,5 @@
 import { computed } from 'vue'
+import { findMaintainerActionByKey } from './maintainer-actions'
 import { payloads } from './payload'
 import { query } from './query'
 
@@ -8,5 +9,14 @@ export const selectedNode = computed({
   },
   set(v) {
     query.selected = v?.spec
+  },
+})
+
+export const selectedAction = computed({
+  get() {
+    return findMaintainerActionByKey(query.selectedAction)
+  },
+  set(v) {
+    query.selectedAction = v?.key
   },
 })

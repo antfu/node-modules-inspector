@@ -45,6 +45,8 @@ export default defineConfig({
       'z-panel-nav': 'z-60',
       'z-panel-goto': 'z-70',
       'z-panel-terminal': 'z-80',
+      'z-drawer-backdrop': 'z-85',
+      'z-drawer-content': 'z-90',
 
       'op-fade': 'op65 dark:op55',
       'op-mute': 'op30 dark:op25',

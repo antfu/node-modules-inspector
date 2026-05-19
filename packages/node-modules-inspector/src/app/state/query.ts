@@ -8,11 +8,13 @@ import { filters, FILTERS_SCHEMA, filtersDefault, isDeepEqual } from './filters'
 export interface QueryOptions extends Partial<{ [x in keyof FilterOptions]?: string }> {
   selected?: string
   install?: string
+  selectedAction?: string
 }
 
 export const query = reactive<QueryOptions>({
   selected: '',
   install: '',
+  selectedAction: '',
 } as any)
 
 function camelCase(str: string) {

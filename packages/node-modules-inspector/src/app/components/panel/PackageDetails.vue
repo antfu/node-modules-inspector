@@ -7,6 +7,7 @@ import { getBackend } from '../../backends'
 import { selectedNode } from '../../state/current'
 import { fetchPublintMessages, rawPublintMessages } from '../../state/data'
 import { filters } from '../../state/filters'
+import { getMaintainerActionsFor } from '../../state/maintainer-actions'
 import { getDeprecatedInfo, getNpmMeta, getNpmMetaLatest, getPublishTime, payloads } from '../../state/payload'
 import { query } from '../../state/query'
 import { settings } from '../../state/settings'
@@ -17,6 +18,7 @@ const props = defineProps<{
 }>()
 
 const backend = getBackend()
+const location = window.location
 
 const duplicated = computed(() => {
   const value = payloads.filtered.versions.get(props.pkg.name)
@@ -104,6 +106,8 @@ function getShallowestDependents(pkg: PackageNode) {
 const meta = computed(() => getNpmMeta(props.pkg))
 const latestMeta = computed(() => getNpmMetaLatest(props.pkg))
 const deprecation = computed(() => getDeprecatedInfo(props.pkg))
+
+const maintainerActionsCount = computed(() => getMaintainerActionsFor(props.pkg).length)
 
 const router = useRouter()
 function showDuplicatedGraph(pkgs: PackageNode[]) {
@@ -354,6 +358,18 @@ const thirdPartyServices = computed(() => {
       <DisplayClusterBadge v-for="c of cluster" :key="c" flex="~ items-center gap-1" :cluster="c" />
     </div>
     <DisplayDeprecationMessage :pkg="pkg" mt2 border-y-2 border-dashed />
+    <NuxtLink
+      v-if="maintainerActionsCount"
+      :to="{ path: '/report/maintainer-actions', hash: location.hash }"
+      flex="~ items-center gap-2 justify-center" mx4 my2 px3 py2
+      rounded-lg badge-color-amber
+      hover="bg-amber-400/30"
+      title="View maintainer actions for this package"
+    >
+      <div i-ph-megaphone-duotone flex-none />
+      <span>{{ maintainerActionsCount }} maintainer action{{ maintainerActionsCount === 1 ? '' : 's' }}</span>
+      <div i-ph-arrow-right text-sm op-fade />
+    </NuxtLink>
     <div grid="~ cols-3 gap-2 items-center" p2>
       <button
         v-tooltip="'Focus on this package and the dependencies it brings'"

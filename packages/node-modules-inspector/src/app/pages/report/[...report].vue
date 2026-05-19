@@ -30,6 +30,10 @@ const selected = computed(() => params.report?.[0] || 'all')
       <div i-ph-copy-duotone />
       Multiple Versions
     </NuxtLink>
+    <NuxtLink btn-action as="button" :to="{ path: '/report/maintainer-actions', hash: location.hash }" active-class="text-amber bg-amber:5">
+      <div i-ph-megaphone-duotone />
+      Maintainer Actions
+    </NuxtLink>
     <NuxtLink btn-action as="button" :to="{ path: '/report/install-size', hash: location.hash }" active-class="text-primary bg-primary:5">
       <div i-ph-package-duotone />
       Install Size
@@ -62,4 +66,5 @@ const selected = computed(() => params.report?.[0] || 'all')
   <ReportLicenses v-if="selected === 'licenses' || selected === 'all'" />
   <ReportFunding v-if="selected === 'funding' || selected === 'all'" />
   <ReportMultipleVersions v-if="selected === 'multiple-versions' || selected === 'all'" />
+  <ReportMaintainerActions v-if="selected === 'maintainer-actions' || selected === 'all'" />
 </template>

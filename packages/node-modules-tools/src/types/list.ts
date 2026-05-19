@@ -29,6 +29,12 @@ export interface ListPackageDependenciesRawResult {
   packageManager: string
   packageManagerVersion?: string
   packages: Map<string, PackageNodeRaw>
+  /**
+   * Catalog name → (dep name → range), as declared by the workspace manifest
+   * (e.g. `pnpm-workspace.yaml`). Used to resolve `catalog:<name>` ranges back
+   * to actual semver ranges.
+   */
+  catalogs?: Record<string, Record<string, string>>
 }
 
 export interface ListPackageDependenciesBaseResult extends ListPackageDependenciesRawResult {
