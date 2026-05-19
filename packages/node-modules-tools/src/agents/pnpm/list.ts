@@ -240,5 +240,6 @@ export async function listPackageDependencies(
     packageManager: 'pnpm',
     packageManagerVersion: await getPnpmVersion(options),
     packages,
+    catalogs: catalogsMap,
   }
 }

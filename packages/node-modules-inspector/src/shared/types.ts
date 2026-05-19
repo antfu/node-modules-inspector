@@ -83,6 +83,7 @@ export interface SettingsOptions {
   showDependencySourceBadge: 'none' | 'dev' | 'prod' | 'both'
   treatFauxAsESM: boolean
   showPublintMessages: boolean
+  showMaintainerActions: boolean
   showThirdPartyServices: boolean
   chartColoringMode: 'spectrum' | 'module'
   collapseSidepanel: boolean

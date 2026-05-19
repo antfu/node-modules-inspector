@@ -54,4 +54,5 @@ const isLoading = computed(() => Boolean(!backend.value || backend.value?.status
   <NuxtLayout>
     <NuxtPage v-if="!isLoading" />
   </NuxtLayout>
+  <PanelMaintainerActionDrawer v-if="!isLoading" />
 </template>
