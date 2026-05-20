@@ -50,5 +50,6 @@ const href = computed(() => {
       <div i-ph-user-circle-duotone :style="{ width: `${props.size}px`, height: `${props.size}px` }" op-fade scale-115 />
       <span>{{ author.name }}</span>
     </template>
+    <slot name="after" />
   </component>
 </template>

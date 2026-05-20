@@ -4,7 +4,7 @@ import semver from 'semver'
 import { computed } from 'vue'
 import { compareSemver } from '../utils/semver'
 import { rawPayload, rawPublintMessages } from './data'
-import { getPublishTime, payloads } from './payload'
+import { getNpmMetaLatest, getPublishTime, payloads } from './payload'
 import { query } from './query'
 
 export function authorKey(author: ParsedAuthor): string {
@@ -295,7 +295,13 @@ export const maintainerActionGroups = computed<MaintainerActionGroup[]>(() => {
   for (const group of byConsumer.values())
     group.items.sort(actionSortKey)
 
-  const groups = Array.from(byConsumer.values())
+  const byName = new Map<string, MaintainerActionGroup>()
+  for (const g of byConsumer.values()) {
+    const cur = byName.get(g.consumer.name)
+    if (!cur || compareSemver(cur.consumer.version, g.consumer.version) < 0)
+      byName.set(g.consumer.name, g)
+  }
+  const groups = Array.from(byName.values())
   const mode = maintainerActionSortMode.value
   const nameTie = (a: MaintainerActionGroup, b: MaintainerActionGroup) =>
     a.consumer.name.localeCompare(b.consumer.name)
@@ -308,8 +314,13 @@ export const maintainerActionGroups = computed<MaintainerActionGroup[]>(() => {
   return groups.sort(cmp)
 })
 
-export const maintainerActionAuthors = computed<ParsedAuthor[]>(() => {
-  const map = new Map<string, { author: ParsedAuthor, count: number }>()
+export interface MaintainerActionAuthorEntry {
+  author: ParsedAuthor
+  count: number
+}
+
+export const maintainerActionAuthors = computed<MaintainerActionAuthorEntry[]>(() => {
+  const map = new Map<string, MaintainerActionAuthorEntry>()
   for (const group of maintainerActionGroups.value) {
     for (const author of group.authors) {
       const key = authorKey(author)
@@ -322,7 +333,6 @@ export const maintainerActionAuthors = computed<ParsedAuthor[]>(() => {
   }
   return Array.from(map.values())
     .sort((a, b) => (b.count - a.count) || authorKey(a.author).localeCompare(authorKey(b.author)))
-    .map(e => e.author)
 })
 
 export const maintainerFilter = computed<string[]>({
@@ -339,12 +349,53 @@ export const viewAllMaintainerActions = computed<boolean>({
   },
 })
 
+export const maintainerActionIncludePublint = computed<boolean>({
+  get: () => query.actionIncludePublint !== 'false',
+  set: (v) => {
+    query.actionIncludePublint = v ? undefined : 'false'
+  },
+})
+
+export const maintainerActionLatestOnly = computed<boolean>({
+  get: () => query.actionLatestOnly !== 'false',
+  set: (v) => {
+    query.actionLatestOnly = v ? undefined : 'false'
+  },
+})
+
 export const filteredMaintainerActionGroups = computed<MaintainerActionGroup[]>(() => {
+  let groups = maintainerActionGroups.value
+
   const selected = maintainerFilter.value
-  if (!selected.length)
-    return maintainerActionGroups.value
-  const set = new Set(selected)
-  return maintainerActionGroups.value.filter(g => g.authors.some(a => set.has(authorKey(a))))
+  if (selected.length) {
+    const set = new Set(selected)
+    groups = groups.filter(g => g.authors.some(a => set.has(authorKey(a))))
+  }
+
+  if (!maintainerActionIncludePublint.value) {
+    groups = groups
+      .map((g) => {
+        const items = g.items.filter(i => i.kind !== 'publint')
+        return items.length === g.items.length ? g : { ...g, items }
+      })
+      .filter(g => g.items.length > 0)
+  }
+
+  if (maintainerActionLatestOnly.value) {
+    groups = groups.filter((g) => {
+      const latest = getNpmMetaLatest(g.consumer)
+      if (!latest?.version)
+        return true
+      try {
+        return semver.major(g.consumer.version) === semver.major(latest.version)
+      }
+      catch {
+        return true
+      }
+    })
+  }
+
+  return groups
 })
 
 export function getMaintainerActionsFor(pkg: PackageNode): MaintainerActionItem[] {
