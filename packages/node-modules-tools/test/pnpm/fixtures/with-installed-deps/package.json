@@ -2,6 +2,6 @@
   "name": "pnpm-fixture-with-installed-deps",
   "private": true,
   "dependencies": {
-    "debug": "catalog:"
+    "debug": "4.3.4"
   }
 }
