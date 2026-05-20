@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { ParsedAuthor } from 'node-modules-tools/utils'
 import type { MaintainerActionGroup, MaintainerActionItem } from '../../state/maintainer-actions'
+import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
 import { computed, ref } from 'vue'
 import { getBackend } from '../../backends'
 import { selectedAction, selectedNode } from '../../state/current'
@@ -10,11 +11,13 @@ import {
   filteredMaintainerActionGroups,
   maintainerActionAuthors,
   maintainerActionGroups,
+  maintainerActionIncludePublint,
+  maintainerActionLatestOnly,
   maintainerActionSortMode,
   maintainerFilter,
   viewAllMaintainerActions,
 } from '../../state/maintainer-actions'
-import { getNpmMetaLatest, payloads } from '../../state/payload'
+import { payloads } from '../../state/payload'
 
 const SORT_OPTIONS = ['depth', 'migration', 'latest'] as const
 const SORT_TITLES = ['Depth', 'Migration rate', 'Latest released']
@@ -24,6 +27,30 @@ const backend = getBackend()
 const publintRunning = ref(false)
 const publintDone = ref(0)
 const publintTotal = ref(0)
+
+const breakpoints = useBreakpoints(breakpointsTailwind)
+const isTwoColumns = breakpoints.greaterOrEqual('2xl')
+
+const MAINTAINERS_COLLAPSED_COUNT = 15
+const showAllMaintainers = ref(false)
+const visibleMaintainers = computed(() => {
+  const all = maintainerActionAuthors.value
+  if (showAllMaintainers.value || all.length <= MAINTAINERS_COLLAPSED_COUNT)
+    return all
+  return all.slice(0, MAINTAINERS_COLLAPSED_COUNT)
+})
+
+const groupColumns = computed<MaintainerActionGroup[][]>(() => {
+  const groups = filteredMaintainerActionGroups.value
+  if (!isTwoColumns.value)
+    return [groups]
+  const left: MaintainerActionGroup[] = []
+  const right: MaintainerActionGroup[] = []
+  groups.forEach((g, i) => {
+    (i % 2 === 0 ? left : right).push(g)
+  })
+  return [left, right]
+})
 
 const pendingPublintCandidates = computed(() =>
   payloads.filtered.packages.filter(p =>
@@ -81,10 +108,6 @@ function toggleAuthor(author: ParsedAuthor) {
 function clearFilter() {
   maintainerFilter.value = []
 }
-
-function ratioPct(migrationRatio: number) {
-  return Math.round(migrationRatio * 100)
-}
 </script>
 
 <template>
@@ -99,18 +122,7 @@ function ratioPct(migrationRatio: number) {
         Packages with actionable improvements for maintainers, including out-of-range dependency declarations and publint findings.
       </div>
 
-      <div v-if="backend.isDynamic && rawPayload?.config?.publint && (pendingPublintCandidates.length || publintRunning)" mt3>
-        <button
-          btn-action
-          :disabled="publintRunning"
-          @click="runPublintForAll()"
-        >
-          <div :class="publintRunning ? 'i-ph-spinner-gap-duotone animate-spin' : 'i-ph-book-open-duotone'" />
-          {{ publintRunning ? `Running publint... (${publintDone}/${publintTotal})` : 'Run Publint for all packages' }}
-        </button>
-      </div>
-
-      <div v-if="maintainerActionAuthors.length" mb2 border="~ base rounded-md" flex="~ col gap-3" p3 mt4>
+      <div v-if="maintainerActionAuthors.length" mb2 border="~ base rounded-md" bg-base flex="~ col gap-3" p3 mt4>
         <div text-xs flex="~ items-center gap-1" h-5 px1>
           <div i-ph-user-duotone />
           Maintainers
@@ -118,116 +130,79 @@ function ratioPct(migrationRatio: number) {
             <div i-ph-funnel-x-duotone />
             Clear Filter
           </button>
-          <div ml-auto flex="~ items-center gap-1">
-            <span op-fade mr1>Sort by</span>
-            <OptionSelectGroup
-              v-model="maintainerActionSortMode"
-              :options="SORT_OPTIONS"
-              :titles="SORT_TITLES"
-            />
-          </div>
         </div>
         <div flex="~ wrap gap-2 items-center">
           <button
-            v-for="author of maintainerActionAuthors"
-            :key="authorKey(author)"
+            v-for="entry of visibleMaintainers"
+            :key="authorKey(entry.author)"
             rounded-full
             :class="
               maintainerFilter.length === 0
                 ? ''
-                : maintainerFilter.includes(authorKey(author))
+                : maintainerFilter.includes(authorKey(entry.author))
                   ? 'ring-2 ring-primary'
                   : 'op-fade hover:op100'"
-            @click="toggleAuthor(author)"
+            :title="`${entry.count} ${entry.count === 1 ? 'package' : 'packages'}`"
+            @click="toggleAuthor(entry.author)"
           >
-            <DisplayAuthorEntry :author="author" :link="false" :size="22" />
+            <DisplayAuthorEntry :author="entry.author" :link="false" :size="22" class="pr-0!">
+              <template #after>
+                <DisplayNumberBadge :number="entry.count" rounded-full text-xs px2 />
+              </template>
+            </DisplayAuthorEntry>
+          </button>
+          <button
+            v-if="maintainerActionAuthors.length > MAINTAINERS_COLLAPSED_COUNT"
+            border="~ base rounded-full" px2 py1 text-xs op-fade flex="~ items-center gap-1" hover:op100
+            @click="showAllMaintainers = !showAllMaintainers"
+          >
+            <div :class="showAllMaintainers ? 'i-ph-caret-up-duotone' : 'i-ph-caret-down-duotone'" />
+            {{ showAllMaintainers
+              ? 'Show less'
+              : `Show ${maintainerActionAuthors.length - MAINTAINERS_COLLAPSED_COUNT} more` }}
           </button>
         </div>
       </div>
-      <div v-else mb2 border="~ base rounded-md" flex="~ items-center gap-1" px3 py2 mt4 text-xs>
-        <span op-fade mr1>Sort by</span>
-        <OptionSelectGroup
-          v-model="maintainerActionSortMode"
-          :options="SORT_OPTIONS"
-          :titles="SORT_TITLES"
-        />
+
+      <div mt4 mb2 flex="~ wrap items-center gap-x-4 gap-y-2" text-xs px1>
+        <div flex="~ items-center gap-1">
+          <span op-fade mr1>Sort by</span>
+          <OptionSelectGroup
+            v-model="maintainerActionSortMode"
+            :options="SORT_OPTIONS"
+            :titles="SORT_TITLES"
+          />
+        </div>
+        <label flex="~ items-center gap-2" cursor-pointer>
+          <OptionCheckbox v-model="maintainerActionLatestOnly" />
+          Show only packages with latest major
+        </label>
+        <label flex="~ items-center gap-2" cursor-pointer>
+          <OptionCheckbox v-model="maintainerActionIncludePublint" />
+          Include publint findings
+        </label>
+        <div v-if="backend.isDynamic && rawPayload?.config?.publint && maintainerActionIncludePublint && (pendingPublintCandidates.length || publintRunning)">
+          <button
+            btn-action
+            :disabled="publintRunning"
+            @click="runPublintForAll()"
+          >
+            <div :class="publintRunning ? 'i-ph-spinner-gap-duotone animate-spin' : 'i-ph-book-open-duotone'" />
+            {{ publintRunning ? `Running publint... (${publintDone}/${publintTotal})` : 'Run publint for all packages' }}
+          </button>
+        </div>
       </div>
 
       <template v-if="filteredMaintainerActionGroups.length">
-        <div
-          class="grid items-center"
-          style="grid-template-columns: auto auto minmax(1rem, 1fr) auto auto auto minmax(1rem, 1fr) auto auto auto;"
-        >
-          <template v-for="group of filteredMaintainerActionGroups" :key="group.consumer.spec">
-            <div col-span-10 h-5 />
-            <div
-              col-span-10
-              flex="~ items-center gap-3 wrap"
-              px3 py2
-              border="~ base rounded-t-md"
-            >
-              <button
-                font-mono hover:text-primary
-                flex="~ items-center gap-2"
-                :title="`Open all actions for ${group.consumer.spec}`"
-                @click="openGroupAll(group)"
-              >
-                <DisplayPackageSpec :pkg="group.consumer" />
-              </button>
-              <DisplayVersionWithUpdates
-                :version="group.consumer.version"
-                :latest="getNpmMetaLatest(group.consumer)"
-                :display-version="false"
-              />
-              <DisplayDateBadge :pkg="group.consumer" />
-              <DisplayAuthors v-if="group.authors.length" :authors="group.authors" :size="20" />
-              <div ml-auto flex="~ items-center gap-2">
-                <DisplayNumberBadge :number="group.items.length" rounded-full text-xs />
-                <span text-xs op-fade>{{ group.items.length === 1 ? 'action' : 'actions' }}</span>
-              </div>
-            </div>
-            <template v-for="(item, idx) of group.items" :key="item.key">
-              <button
-                v-if="item.kind === 'dep-upgrade'"
-                border="x base"
-                class="col-span-10 grid grid-cols-subgrid items-center text-left border-b border-base hover:bg-active px3 py2 gap-x-2"
-                :class="[selectedAction?.key === item.key ? 'bg-primary:10' : '', idx === group.items.length - 1 ? 'rounded-b-md' : '']"
-                @click="selectItem(item)"
-              >
-                <PanelMaintainerActionTypePill :action="item" />
-                <span font-mono text-sm op80 truncate>{{ item.depName }}</span>
-                <span />
-                <div flex items-center justify-end>
-                  <span font-mono text-xs px1 rounded badge-color-gray max-w-30 text-ellipsis of-hidden ws-nowrap>{{ item.declaredRange }}</span>
-                </div>
-                <div i-ph-arrow-right op-mute flex-none text-xs />
-                <div flex items-center justify-start>
-                  <span font-mono text-sm px1 rounded badge-color-green max-w-30 text-ellipsis of-hidden ws-nowrap>v{{ item.installedHighestVersion }}</span>
-                </div>
-                <span />
-                <UiDonut
-                  v-tooltip="`${item.migratedCount}/${item.totalCount} consumers satisfy ${item.depName}@${item.installedHighestVersion}`"
-                  :value="item.migrationRatio"
-                  :size="16"
-                  :thickness="3"
-                />
-                <span text-xs op-fade font-mono text-right>{{ ratioPct(item.migrationRatio) }}%</span>
-                <div i-ph-caret-right op-fade flex-none />
-              </button>
-              <button
-                v-else
-                border="x base"
-                class="col-span-10 flex items-center gap-3 text-left border-b border-base hover:bg-active px3 py2"
-                :class="[selectedAction?.key === item.key ? 'bg-primary:10' : '', idx === group.items.length - 1 ? 'rounded-b-md' : '']"
-                @click="selectItem(item)"
-              >
-                <PanelMaintainerActionTypePill :action="item" />
-                <IntegrationsPublintCounts :messages="item.messages" />
-                <div flex-auto />
-                <div i-ph-caret-right op-fade flex-none />
-              </button>
-            </template>
-          </template>
+        <div flex="~ gap-3 items-start" mt3>
+          <ReportMaintainerActionsGrid
+            v-for="(col, i) of groupColumns"
+            :key="i"
+            :groups="col"
+            flex-1 min-w-0
+            @select-item="selectItem"
+            @open-group-all="openGroupAll"
+          />
         </div>
       </template>
       <UiEmptyState

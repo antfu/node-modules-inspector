@@ -79,6 +79,6 @@
     "pre-commit": "pnpm i --frozen-lockfile --ignore-scripts --offline && npx nano-staged"
   },
   "nano-staged": {
-    "*": "eslint --fix"
+    "*": "eslint --fix --no-warn-ignored --no-error-on-unmatched-pattern"
   }
 }

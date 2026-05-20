@@ -13,8 +13,9 @@ export default antfu({
     },
   })
   .append({
-    files: ['packages/node-modules-tools/test/bun/fixtures/**/package.json'],
+    files: ['packages/node-modules-tools/test/*/fixtures/**/package.json'],
     rules: {
+      'pnpm/json-enforce-catalog': 'off',
       'pnpm/json-valid-catalog': 'off',
     },
   })

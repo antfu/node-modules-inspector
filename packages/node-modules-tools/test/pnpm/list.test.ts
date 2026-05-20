@@ -15,196 +15,35 @@ describe('listPnpmPackageDependencies', () => {
     expect(list.packages.size).toBe(2)
   })
 
-  it('runs on this repository', { timeout: 10000 }, async () => {
+  it('runs on a fixture with installed deps', { timeout: 10000 }, async () => {
     const list = await listPackageDependencies({
-      cwd: fileURLToPath(new URL('../../..', import.meta.url)),
+      cwd: fileURLToPath(new URL('./fixtures/with-installed-deps', import.meta.url)),
       depth: 25,
       monorepo: false,
+      workspace: false,
     })
 
     expect(list.packageManager).toBe('pnpm')
+    expect(list.packageManagerVersion).toBeTypeOf('string')
 
-    const item = Array.from(list.packages.values()).find(i => i.name === 'debug')
+    const debug = list.packages.get('debug@4.3.4')
+    expect(debug).toBeDefined()
+    expect(debug?.name).toBe('debug')
+    expect(debug?.version).toBe('4.3.4')
+    expect(debug?.workspace).toBeFalsy()
+    expect(debug?.clusters.has('dep:prod')).toBe(true)
+    expect(debug?.dependencies.has('ms@2.1.2')).toBe(true)
+    expect(debug?.resolved.license).toBe('MIT')
+    expect(debug?.resolved.packageJson?.name).toBe('debug')
+    expect(debug?.resolved.repository?.repoName).toBe('debug')
+    expect(debug?.resolved.authors?.length).toBeGreaterThan(0)
+    expect(debug?.resolved.installSize?.bytes).toBeGreaterThan(0)
 
-    expect(item).toBeDefined()
-    expect({
-      ...item,
-      filepath: undefined,
-      flatDependents: undefined,
-    }).toMatchInlineSnapshot(`
-      {
-        "clusters": Set {
-          "dep:dev",
-        },
-        "dependencies": Set {},
-        "dependents": Set {
-          "rollup-plugin-esbuild@6.2.1",
-          "@typescript-eslint/typescript-estree@8.59.4",
-          "@typescript-eslint/project-service@8.59.4",
-          "ioredis@5.10.1",
-          "vite-plugin-inspect@11.3.3",
-          "eslint-plugin-jsdoc@62.9.0",
-          "eslint-plugin-import-x@4.16.1",
-          "@typescript-eslint/type-utils@8.59.1",
-          "eslint-plugin-unimport@0.1.2",
-          "simple-git@3.36.0",
-          "@kwsites/file-exists@1.1.1",
-          "eslint-plugin-toml@1.3.1",
-          "@typescript-eslint/parser@8.59.4",
-          "@typescript-eslint/parser@8.56.1",
-          "@nuxt/cli@3.35.1",
-          "send@1.2.0",
-          "https-proxy-agent@7.0.6",
-        },
-        "depth": 2,
-        "filepath": undefined,
-        "flatClusters": Set {
-          "dep:dev",
-          "catalog:bundling",
-          "catalog:lint",
-          "catalog:deps",
-          "dep:prod",
-          "catalog:dev",
-        },
-        "flatDependencies": Set {},
-        "flatDependents": undefined,
-        "name": "debug",
-        "resolved": {
-          "authors": [
-            {
-              "avatar": "https://avatars.antfu.dev/gh/qix-",
-              "github": "qix-",
-              "type": "github",
-            },
-          ],
-          "fundings": undefined,
-          "installSize": {
-            "bytes": 42793,
-            "categories": {
-              "doc": {
-                "bytes": 22115,
-                "count": 1,
-              },
-              "js": {
-                "bytes": 18060,
-                "count": 4,
-              },
-              "json": {
-                "bytes": 1479,
-                "count": 1,
-              },
-              "other": {
-                "bytes": 1139,
-                "count": 1,
-              },
-            },
-          },
-          "license": "MIT",
-          "module": "cjs",
-          "packageJson": {
-            "author": "Josh Junon (https://github.com/qix-)",
-            "dependencies": {
-              "ms": "^2.1.3",
-            },
-            "description": "Lightweight debugging utility for Node.js and the browser",
-            "devDependencies": {
-              "brfs": "^2.0.1",
-              "browserify": "^16.2.3",
-              "coveralls": "^3.0.2",
-              "karma": "^3.1.4",
-              "karma-browserify": "^6.0.0",
-              "karma-chrome-launcher": "^2.2.0",
-              "karma-mocha": "^1.3.0",
-              "mocha": "^5.2.0",
-              "mocha-lcov-reporter": "^1.2.0",
-              "sinon": "^14.0.0",
-              "xo": "^0.23.0",
-            },
-            "engines": {
-              "node": ">=6.0",
-            },
-            "keywords": [
-              "debug",
-              "log",
-              "debugger",
-            ],
-            "license": "MIT",
-            "main": "./src/index.js",
-            "name": "debug",
-            "peerDependenciesMeta": {
-              "supports-color": {
-                "optional": true,
-              },
-            },
-            "repository": {
-              "type": "git",
-              "url": "git://github.com/debug-js/debug.git",
-            },
-            "version": "4.4.3",
-          },
-          "repository": {
-            "org": "debug-js",
-            "repo": "debug-js/debug",
-            "repoName": "debug",
-            "url": "https://github.com/debug-js/debug",
-          },
-        },
-        "shallowestDependent": Set {
-          "rollup-plugin-esbuild@6.2.1",
-          "vite-plugin-inspect@11.3.3",
-        },
-        "spec": "debug@4.4.3",
-        "version": "4.4.3",
-      }
-    `)
+    const ms = list.packages.get('ms@2.1.2')
+    expect(ms).toBeDefined()
+    expect(ms?.name).toBe('ms')
+    expect(ms?.version).toBe('2.1.2')
 
-    expect(
-      Array.from(item?.flatDependents ?? [])
-        .filter(d => !d.startsWith('node-modules-tools@') && !d.startsWith('#'))
-        .sort((a, b) => a.localeCompare(b)),
-    ).toMatchInlineSnapshot(`
-      [
-        "@antfu/eslint-config@9.0.0",
-        "@kwsites/file-exists@1.1.1",
-        "@mapbox/node-pre-gyp@2.0.0",
-        "@nuxt/cli@3.35.1",
-        "@nuxt/devtools@3.2.4",
-        "@nuxt/eslint-config@1.15.2",
-        "@nuxt/eslint-plugin@1.15.2",
-        "@nuxt/eslint@1.15.2",
-        "@nuxt/nitro-server@4.4.2",
-        "@nuxt/vite-builder@4.4.2",
-        "@typescript-eslint/eslint-plugin@8.59.1",
-        "@typescript-eslint/parser@8.56.1",
-        "@typescript-eslint/parser@8.59.4",
-        "@typescript-eslint/project-service@8.59.4",
-        "@typescript-eslint/rule-tester@8.56.1",
-        "@typescript-eslint/type-utils@8.59.1",
-        "@typescript-eslint/typescript-estree@8.59.4",
-        "@typescript-eslint/utils@8.59.4",
-        "@vercel/nft@1.5.0",
-        "@vitest/eslint-plugin@1.6.17",
-        "@vueuse/nuxt@14.3.0",
-        "eslint-plugin-command@3.5.2",
-        "eslint-plugin-import-x@4.16.1",
-        "eslint-plugin-jsdoc@62.9.0",
-        "eslint-plugin-perfectionist@5.9.0",
-        "eslint-plugin-toml@1.3.1",
-        "eslint-plugin-unimport@0.1.2",
-        "eslint-plugin-vue@10.9.1",
-        "https-proxy-agent@7.0.6",
-        "ioredis@5.10.1",
-        "nitropack@2.13.4",
-        "node-modules-inspector@2.1.0",
-        "nuxt-eslint-auto-explicit-import@0.1.1",
-        "nuxt@4.4.2",
-        "rollup-plugin-esbuild@6.2.1",
-        "send@1.2.0",
-        "serve-static@2.2.1",
-        "simple-git@3.36.0",
-        "unstorage@1.17.5",
-        "vite-plugin-inspect@11.3.3",
-      ]
-    `)
+    expect(Array.from(debug?.flatDependents ?? [])).toContain('pnpm-fixture-with-installed-deps@0.0.0')
   })
 })

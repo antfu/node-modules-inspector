@@ -1,0 +1,7 @@
+{
+  "name": "pnpm-fixture-with-installed-deps",
+  "private": true,
+  "dependencies": {
+    "debug": "4.3.4"
+  }
+}
