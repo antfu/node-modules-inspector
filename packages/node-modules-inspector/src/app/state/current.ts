@@ -2,12 +2,15 @@ import { computed } from 'vue'
 import { findMaintainerActionByKey } from './maintainer-actions'
 import { payloads } from './payload'
 import { query } from './query'
+import { settings } from './settings'
 
 export const selectedNode = computed({
   get() {
     return query.selected ? payloads.main.get(query.selected) : undefined
   },
   set(v) {
+    if (v)
+      settings.value.collapseSidepanel = false
     query.selected = v?.spec
   },
 })
