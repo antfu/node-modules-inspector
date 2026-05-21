@@ -1,4 +1,4 @@
-![Logo](./packages/node-modules-inspector/src/app/public/favicon.svg)
+![Logo](./packages/node-modules-inspector/src/public/favicon.svg)
 
 # Node Modules Inspector
 
