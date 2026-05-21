@@ -2,8 +2,8 @@ import type { PackageModuleType, PackageNode } from 'node-modules-tools'
 import { computed } from 'vue'
 import { settings } from '../state/settings'
 
-export const MODULE_TYPES_FULL = ['dual', 'esm', 'faux', 'cjs', 'dts'] as PackageModuleType[]
-export const MODULE_TYPES_FULL_SELECT = ['dual', 'esm', 'faux', 'cjs'] as PackageModuleType[]
+export const MODULE_TYPES_FULL = ['dual', 'esm', 'faux', 'cjs', 'dts', 'unknown'] as PackageModuleType[]
+export const MODULE_TYPES_FULL_SELECT = ['dual', 'esm', 'faux', 'cjs', 'unknown'] as PackageModuleType[]
 
 // @unocss-include
 export const MODULE_TYPES_COLOR_BADGE = {
@@ -34,6 +34,8 @@ export function getModuleType(node: PackageNode | PackageModuleType) {
 
   if (type === 'dts')
     return 'dts'
+  if (type === 'unknown')
+    return 'unknown'
   if (['cjs', 'faux'].includes(type))
     return 'cjs'
   return 'esm'
