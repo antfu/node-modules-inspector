@@ -8,6 +8,7 @@ export const settings = useLocalStorage<SettingsOptions>(
     moduleTypeSimple: false,
     moduleTypeRender: 'badge',
     deepDependenciesTree: true,
+    dependenciesGroupBy: 'none',
     packageDetailsTab: 'dependents',
     colorizePackageSize: true,
     showInstallSizeBadge: true,

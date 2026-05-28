@@ -75,6 +75,7 @@ export interface SettingsOptions {
   moduleTypeSimple: boolean
   moduleTypeRender: 'badge' | 'circle' | 'none'
   deepDependenciesTree: boolean
+  dependenciesGroupBy: 'none' | 'catalog' | 'module'
   packageDetailsTab: 'dependencies' | 'dependents'
   colorizePackageSize: boolean
   showInstallSizeBadge: boolean
