@@ -1,6 +1,6 @@
 import process from 'node:process'
 import { consola } from 'consola'
-import { createH3DevToolsHost, createHostContext, startHttpAndWs } from 'devframe/node'
+import { createH3DevframeHost, createHostContext, startHttpAndWs } from 'devframe/node'
 import { getRandomPort } from 'get-port-please'
 import devframe from '../../node/devframe'
 
@@ -17,7 +17,7 @@ async function bootDevframeServer() {
   const ctx = await createHostContext({
     cwd: process.cwd(),
     mode: 'dev',
-    host: createH3DevToolsHost({ origin: `http://localhost:${port}`, appName: devframe.id }),
+    host: createH3DevframeHost({ origin: `http://localhost:${port}`, appName: devframe.id }),
   })
   await devframe.setup(ctx, { flags: {} })
 

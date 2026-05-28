@@ -6,11 +6,11 @@ import c from 'ansis'
 import cac from 'cac'
 import { createDevServer, resolveDevServerPort } from 'devframe/adapters/dev'
 import {
-  DEVTOOLS_CONNECTION_META_FILENAME,
-  DEVTOOLS_RPC_DUMP_DIRNAME,
-  DEVTOOLS_RPC_DUMP_MANIFEST_FILENAME,
+  DEVFRAME_CONNECTION_META_FILENAME,
+  DEVFRAME_RPC_DUMP_DIRNAME,
+  DEVFRAME_RPC_DUMP_MANIFEST_FILENAME,
 } from 'devframe/constants'
-import { createH3DevToolsHost, createHostContext } from 'devframe/node'
+import { createH3DevframeHost, createHostContext } from 'devframe/node'
 import { strictJsonStringify } from 'devframe/rpc'
 import { collectStaticRpcDump } from 'devframe/rpc/dump'
 import { structuredCloneStringify } from 'devframe/utils/structured-clone'
@@ -50,7 +50,7 @@ cli
     const ctx = await createHostContext({
       cwd,
       mode: 'build',
-      host: createH3DevToolsHost({ origin: 'http://localhost', appName: devframe.id }),
+      host: createH3DevframeHost({ origin: 'http://localhost', appName: devframe.id }),
     })
     await devframe.setup(ctx, {
       flags: {
@@ -60,7 +60,7 @@ cli
       },
     })
 
-    await fs.mkdir(resolve(outDir, DEVTOOLS_RPC_DUMP_DIRNAME), { recursive: true })
+    await fs.mkdir(resolve(outDir, DEVFRAME_RPC_DUMP_DIRNAME), { recursive: true })
 
     const jsonSerializableMethods: string[] = []
     for (const def of ctx.rpc.definitions.values()) {
@@ -68,7 +68,7 @@ cli
         jsonSerializableMethods.push(def.name)
     }
     await fs.writeFile(
-      resolve(outDir, DEVTOOLS_CONNECTION_META_FILENAME),
+      resolve(outDir, DEVFRAME_CONNECTION_META_FILENAME),
       JSON.stringify({ backend: 'static', jsonSerializableMethods }, null, 2),
       'utf-8',
     )
@@ -83,7 +83,7 @@ cli
       await fs.writeFile(fullpath, text, 'utf-8')
     }
     await fs.writeFile(
-      resolve(outDir, DEVTOOLS_RPC_DUMP_MANIFEST_FILENAME),
+      resolve(outDir, DEVFRAME_RPC_DUMP_MANIFEST_FILENAME),
       JSON.stringify(dump.manifest, null, 2),
       'utf-8',
     )
