@@ -54,6 +54,24 @@ function getDepth(amount: number, min = 1) {
   return 10
 }
 
+const GROUP_BY_CYCLE = ['none', 'catalog', 'module'] as const
+
+const groupByMeta = computed(() => {
+  switch (settings.value.dependenciesGroupBy) {
+    case 'catalog':
+      return { icon: 'i-ph-exclude-duotone', label: 'Catalog' }
+    case 'module':
+      return { icon: 'i-ph-cube-duotone', label: 'Module' }
+    default:
+      return { icon: 'i-ph-list-duotone', label: 'None' }
+  }
+})
+
+function cycleDependenciesGroupBy() {
+  const idx = GROUP_BY_CYCLE.indexOf(settings.value.dependenciesGroupBy)
+  settings.value.dependenciesGroupBy = GROUP_BY_CYCLE[(idx + 1) % GROUP_BY_CYCLE.length]!
+}
+
 const publint = computed(() => {
   if (props.pkg.resolved.publint)
     return props.pkg.resolved.publint
@@ -375,7 +393,15 @@ const thirdPartyServices = computed(() => {
           :number="settings.deepDependenciesTree ? payloads.available.flatDependencies(pkg).length : payloads.available.dependencies(pkg).length"
         />
       </button>
-      <div border="b base" pt2 px2>
+      <div border="b base" pt2 px2 flex="~ items-center gap-1">
+        <button
+          v-tooltip="`Group dependencies by: ${groupByMeta.label}`"
+          p1 rounded-full hover:bg-active
+          :title="`Group dependencies by: ${groupByMeta.label}`"
+          @click="cycleDependenciesGroupBy"
+        >
+          <div op75 :class="groupByMeta.icon" />
+        </button>
         <button
           v-tooltip="'Toggle deep dependencies tree'"
           p1 rounded-full hover:bg-active
@@ -396,6 +422,7 @@ const thirdPartyServices = computed(() => {
             :currents="getShallowestDependents(pkg)"
             :list="payloads.available.flatDependents(pkg)"
             :max-depth="getDepth(payloads.available.flatDependents(pkg).length, 2)"
+            :group-by="settings.dependenciesGroupBy"
             type="dependents"
           />
           <TreeDependencies
@@ -404,6 +431,7 @@ const thirdPartyServices = computed(() => {
             :currents="payloads.available.dependents(pkg)"
             :list="payloads.available.dependents(pkg)"
             :max-depth="getDepth(payloads.available.dependents(pkg).length, 2)"
+            :group-by="settings.dependenciesGroupBy"
             type="dependents"
           />
         </template>
@@ -435,6 +463,7 @@ const thirdPartyServices = computed(() => {
             :currents="payloads.available.dependencies(pkg)"
             :list="payloads.available.flatDependencies(pkg)"
             :max-depth="getDepth(payloads.available.flatDependencies(pkg).length)"
+            :group-by="settings.dependenciesGroupBy"
             type="dependencies"
           />
         </template>
