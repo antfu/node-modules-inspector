@@ -72,6 +72,44 @@ Then you can host the `.node-modules-inspector` folder with any static file serv
 
 You can see a build for all Anthony Fu's packages at [everything.antfu.dev](https://everything.antfu.dev).
 
+## CLI Reports
+
+In addition to the web UI, the inspector exposes three machine-readable reports designed for shell pipelines and AI coding agents:
+
+```bash
+npx node-modules-inspector report duplicates   # packages installed in multiple versions
+npx node-modules-inspector report sizes        # packages sorted by install size
+npx node-modules-inspector report maintainers  # dep-upgrade opportunities + publint, grouped by consumer/author
+```
+
+Each command renders a pretty ANSI table by default. Add `--json` to emit JSON to stdout — progress logs go to stderr, so output is pipe-safe:
+
+```bash
+npx node-modules-inspector report duplicates --json | jq '.[].name'
+npx node-modules-inspector report sizes --json --limit 10
+npx node-modules-inspector report maintainers --json --sort migration --no-latest-only
+```
+
+Common options across all reports: `--root <dir>`, `--config <file>`, `--depth <n>`, `--limit <n>`. Run `node-modules-inspector report --help` for the full per-report flag set.
+
+## MCP Server
+
+The same three reports are exposed as MCP tools for AI coding agents. Start the server over stdio:
+
+```bash
+npx node-modules-inspector mcp
+```
+
+Tools exposed:
+- `nmi:report-duplicates`
+- `nmi:report-sizes`
+- `nmi:report-maintainers`
+
+Input/output JSON Schemas are auto-derived from the underlying valibot definitions and surfaced via `tools/list`. Wire it into Claude Code (or any MCP-compatible client) by adding `node-modules-inspector mcp` as a stdio server in your MCP config.
+
+> [!NOTE]
+> An [agent skill](./skills/node-modules-inspector/SKILL.md) lives at `skills/node-modules-inspector/SKILL.md` (repo root) and is copied into the published tarball at `<pkg>/skills/` during `prepack`. If your project uses [`skills-npm`](https://github.com/antfu/skills-npm), the skill is automatically symlinked into your agent's skill directory after `pnpm install`.
+
 ## Screenshots
 
 ![Image](https://github.com/user-attachments/assets/80ce6f9d-26fb-4fcf-8c51-e3d2b6f9f24c)
