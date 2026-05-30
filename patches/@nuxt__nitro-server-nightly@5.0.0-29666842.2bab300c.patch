@@ -1,0 +1,13 @@
+diff --git a/dist/index.mjs b/dist/index.mjs
+index 0e04d33a5c9cd0e31d4da72203d4963572005c4a..c80632ceede7f64b5e37d89c19183d4c6a793fa4 100644
+--- a/dist/index.mjs
++++ b/dist/index.mjs
+@@ -665,7 +665,7 @@ async function bundle(nuxt) {
+ 		base: nitroConfig.serverDir,
+ 		watchOptions: { ignored: [isIgnored] }
+ 	};
+-	const cacheDriverPath = join(distDir, "runtime/utils/cache-driver.js");
++	const cacheDriverPath = join(distDir, "runtime/utils/cache-driver.mjs");
+ 	const cacheDriverOption = isWindows ? pathToFileURL(cacheDriverPath).href : cacheDriverPath;
+ 	if (nuxt.options.dev) {
+ 		const payloadCacheDir = resolve(nuxt.options.buildDir, "cache/nuxt/payload");
