@@ -31,6 +31,7 @@ catalogs:
     unbuild: ^3.6.1
     vite: ^8.0.13
   deps:
+    '@modelcontextprotocol/sdk': ^1.29.0
     ansis: ^4.3.0
     cac: ^7.0.0
     devframe: ^0.5.2
@@ -52,6 +53,7 @@ catalogs:
     tinyglobby: ^0.2.16
     unconfig: ^7.5.0
     unstorage: ^1.17.5
+    valibot: ^1.4.1
   dev:
     '@antfu/ni': ^30.1.0
     '@nuxt/devtools': ^3.2.4
@@ -96,6 +98,7 @@ catalogs:
   testing:
     '@axe-core/playwright': ^4.11.3
     '@playwright/test': ^1.60.0
+    '@valibot/to-json-schema': ^1.7.0
     mlly: ^1.8.2
     type-fest: 4.41.0
     vitest: ^4.1.6

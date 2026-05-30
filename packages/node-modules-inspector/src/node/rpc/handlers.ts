@@ -21,6 +21,8 @@ export interface CreateInspectorRpcHandlersOptions extends
   mode: 'dev' | 'build'
   storagePublint?: Storage<PublintMessage[]>
   configFile?: string
+  /** Route progress logs to stderr (keeps stdout clean for JSON/MCP). */
+  quiet?: boolean
 }
 
 export interface InspectorRpcHandlers {
@@ -33,6 +35,10 @@ export interface InspectorRpcHandlers {
 }
 
 export function createInspectorRpcHandlers(options: CreateInspectorRpcHandlersOptions): InspectorRpcHandlers {
+  const log = options.quiet
+    ? (msg: string) => process.stderr.write(`${msg}\n`)
+    : (msg: string) => console.log(msg)
+
   let _config: Promise<NodeModulesInspectorConfig> | null = null
   let _payload: Promise<NodeModulesInspectorPayload> | null = null
 
@@ -59,39 +65,39 @@ export function createInspectorRpcHandlers(options: CreateInspectorRpcHandlersOp
       merge: true,
     })
     if (result.sources.length)
-      console.log(c.green`${MARK_CHECK} Config loaded from ${result.sources.join(', ')}`)
+      log(c.green`${MARK_CHECK} Config loaded from ${result.sources.join(', ')}`)
     return result.config
   }
 
-  async function getPackagesNpmMeta(specs: string[], log = true) {
+  async function getPackagesNpmMeta(specs: string[], verbose = true) {
     const config = await getConfig()
     if (!config.fetchNpmMeta)
       return new Map()
-    if (log)
-      console.log(c.cyan`${MARK_NODE} Fetching npm meta for ${specs.length} packages...`)
+    if (verbose)
+      log(c.cyan`${MARK_NODE} Fetching npm meta for ${specs.length} packages...`)
     const result = await _getPackagesNpmMeta(specs, { storageNpmMeta: options.storageNpmMeta })
-    if (log)
-      console.log(c.green`${MARK_CHECK} npm meta fetched for ${specs.length} packages`)
+    if (verbose)
+      log(c.green`${MARK_CHECK} npm meta fetched for ${specs.length} packages`)
     return result
   }
 
-  async function getPackagesNpmMetaLatest(pkgNames: string[], log = true) {
+  async function getPackagesNpmMetaLatest(pkgNames: string[], verbose = true) {
     const config = await getConfig()
     if (!config.fetchNpmMeta)
       return new Map()
-    if (log)
-      console.log(c.cyan`${MARK_NODE} Fetching npm meta latest for ${pkgNames.length} packages...`)
+    if (verbose)
+      log(c.cyan`${MARK_NODE} Fetching npm meta latest for ${pkgNames.length} packages...`)
     const result = await _getPackagesNpmMetaLatest(pkgNames, { storageNpmMetaLatest: options.storageNpmMetaLatest })
-    if (log)
-      console.log(c.green`${MARK_CHECK} npm meta latest fetched for ${pkgNames.length} packages`)
+    if (verbose)
+      log(c.green`${MARK_CHECK} npm meta latest fetched for ${pkgNames.length} packages`)
     return result
   }
 
-  async function getPublint(pkg: Pick<PackageNode, 'private' | 'workspace' | 'spec' | 'filepath'>, log = true) {
+  async function getPublint(pkg: Pick<PackageNode, 'private' | 'workspace' | 'spec' | 'filepath'>, verbose = true) {
     if (pkg.workspace || pkg.private || !pkg.filepath)
       return null
-    if (log)
-      console.log(c.cyan`${MARK_NODE} Running publint for ${pkg.spec}...`)
+    if (verbose)
+      log(c.cyan`${MARK_NODE} Running publint for ${pkg.spec}...`)
     try {
       let result = await options.storagePublint?.getItem(pkg.spec) || undefined
       const { publint } = await import('publint')
@@ -103,8 +109,8 @@ export function createInspectorRpcHandlers(options: CreateInspectorRpcHandlersOp
         }).then(r => r.messages) || []
         await options.storagePublint?.setItem(pkg.spec, result)
       }
-      if (log)
-        console.log(c.green`${MARK_CHECK} Publint for ${pkg.spec} finished with ${result.length} messages`)
+      if (verbose)
+        log(c.green`${MARK_CHECK} Publint for ${pkg.spec} finished with ${result.length} messages`)
       return result
     }
     catch (e) {
@@ -128,7 +134,7 @@ export function createInspectorRpcHandlers(options: CreateInspectorRpcHandlersOp
     const config = await getConfig()
     const excludeFilter = constructPackageFilters(config.excludePackages || [], 'some')
     const depsFilter = constructPackageFilters(config.excludeDependenciesOf || [], 'some')
-    console.log(c.cyan`${MARK_NODE} Reading node_modules...`)
+    log(c.cyan`${MARK_NODE} Reading node_modules...`)
     const result = await listPackageDependencies({
       cwd: process.cwd(),
       depth: 8,
@@ -148,19 +154,19 @@ export function createInspectorRpcHandlers(options: CreateInspectorRpcHandlersOp
 
     if (options.mode === 'build' && config.publint) {
       buildTasks.push((async () => {
-        console.log(c.cyan`${MARK_NODE} Running publint...`)
+        log(c.cyan`${MARK_NODE} Running publint...`)
         const limit = pLimit(20)
         await Promise.all([...result.packages.values()]
           .map(pkg => limit(async () => {
             pkg.resolved.publint ||= await getPublint(pkg, false)
           })))
-        console.log(c.green`${MARK_CHECK} Publint finished`)
+        log(c.green`${MARK_CHECK} Publint finished`)
       })())
     }
 
     if (options.mode === 'build' && config.fetchNpmMeta) {
       buildTasks.push((async () => {
-        console.log(c.cyan`${MARK_NODE} Fetching npm meta...`)
+        log(c.cyan`${MARK_NODE} Fetching npm meta...`)
         try {
           await Promise.allSettled([
             getPackagesNpmMeta(Array.from(result.packages.keys()), false),
@@ -171,7 +177,7 @@ export function createInspectorRpcHandlers(options: CreateInspectorRpcHandlersOp
           console.error(c.red`${MARK_NODE} Failed to fetch npm meta`)
           console.error(e)
         }
-        console.log(c.green`${MARK_CHECK} npm meta fetched`)
+        log(c.green`${MARK_CHECK} npm meta fetched`)
       })())
     }
 
@@ -188,7 +194,7 @@ export function createInspectorRpcHandlers(options: CreateInspectorRpcHandlersOp
           pkg.resolved.npmMetaLatest = metaLatest
       }))
 
-    console.log(c.green`${MARK_CHECK} node_modules read finished`)
+    log(c.green`${MARK_CHECK} node_modules read finished`)
 
     const payload: NodeModulesInspectorPayload = {
       hash,
@@ -197,9 +203,9 @@ export function createInspectorRpcHandlers(options: CreateInspectorRpcHandlersOp
       config,
     }
     if (config.onPayloadReady) {
-      console.log(c.cyan`${MARK_NODE} Running config hook...`)
+      log(c.cyan`${MARK_NODE} Running config hook...`)
       await config.onPayloadReady(payload)
-      console.log(c.green`${MARK_CHECK} Config hook finished`)
+      log(c.green`${MARK_CHECK} Config hook finished`)
     }
     return payload
   }

@@ -172,5 +172,68 @@ cli
     }
   })
 
+cli
+  .command('report <type>', 'Run an inspector report (maintainers | duplicates | sizes)')
+  .option('--root <dir>', 'Root directory', { default: process.cwd() })
+  .option('--config <file>', 'Config file')
+  .option('--depth <depth>', 'Max depth to list dependencies', { default: 8 })
+  .option('--json', 'Emit JSON to stdout (machine-readable)')
+  .option('--limit <n>', 'Cap the number of returned entries')
+  .option('--sort <mode>', '[maintainers] Sort mode: depth | migration | latest', { default: 'depth' })
+  .option('--author <handle>', '[maintainers] Filter by author handle (repeatable)')
+  .option('--no-publint', '[maintainers] Exclude publint actions')
+  .option('--no-latest-only', '[maintainers] Include consumers that are not on the latest major')
+  .option('--min-versions <n>', '[duplicates] Only include packages installed at this many versions or more', { default: 2 })
+  .option('--include-workspace', '[sizes] Include workspace packages')
+  .action(async (type: string, options: Record<string, any>) => {
+    const valid = ['maintainers', 'duplicates', 'sizes']
+    if (!valid.includes(type)) {
+      console.error(c.red`✖ Unknown report type "${type}". Expected one of: ${valid.join(', ')}.`)
+      process.exit(1)
+    }
+    const { runReport } = await import('./cli-report/run-report')
+    const authors = Array.isArray(options.author)
+      ? options.author
+      : options.author
+        ? [options.author]
+        : []
+    await runReport({
+      type: type as 'maintainers' | 'duplicates' | 'sizes',
+      root: options.root,
+      config: options.config,
+      depth: Number(options.depth),
+      json: !!options.json,
+      limit: options.limit != null ? Number(options.limit) : undefined,
+      sort: options.sort,
+      authors,
+      includePublint: options.publint !== false,
+      latestOnly: options.latestOnly !== false,
+      minVersions: options.minVersions != null ? Number(options.minVersions) : undefined,
+      includeWorkspace: !!options.includeWorkspace,
+    })
+  })
+
+cli
+  .command('mcp', 'Start an MCP stdio server exposing report tools to coding agents (experimental)')
+  .option('--root <dir>', 'Root directory', { default: process.cwd() })
+  .option('--config <file>', 'Config file')
+  .option('--depth <depth>', 'Max depth to list dependencies', { default: 8 })
+  .action(async (options) => {
+    if (options.config)
+      process.env.NMI_CLI_CONFIG = options.config
+    process.env.NMI_CLI_DEPTH = String(Number(options.depth))
+    process.env.NMI_CLI_QUIET = '1'
+    if (options.root && options.root !== process.cwd())
+      process.chdir(options.root)
+
+    const { createMcpServer } = await import('devframe/adapters/mcp')
+    await createMcpServer(devframe, {
+      transport: 'stdio',
+      onReady: ({ transport }) => {
+        console.error(c.green`${MARK_CHECK} ${devframe.id} MCP server ready (${transport})`)
+      },
+    })
+  })
+
 cli.help()
 cli.parse()
