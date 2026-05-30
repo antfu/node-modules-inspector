@@ -1,4 +1,7 @@
 import semver from 'semver'
+import { compareSemver } from '../../shared/semver'
+
+export { compareSemver }
 
 export interface ParsedSemver {
   valid: boolean
@@ -53,18 +56,6 @@ export function parseSemverRange(range: string) {
   result.parts = parts
   result.bare = partsBare
   return result
-}
-
-export function compareSemver(a: string, b: string) {
-  if (a === b)
-    return 0
-  try {
-    return semver.compare(a, b)
-  }
-  catch (e) {
-    console.error('Failed to compare semver ', e)
-    return 0
-  }
 }
 
 export function compareSemverRange(a = '*', b = '*') {

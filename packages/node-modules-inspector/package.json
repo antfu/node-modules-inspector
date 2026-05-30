@@ -22,7 +22,8 @@
   "bin": "bin.mjs",
   "files": [
     "bin.mjs",
-    "dist"
+    "dist",
+    "skills"
   ],
   "scripts": {
     "dev": "pnpm run -r stub && (cd src && ROLLDOWN_OPTIONS_VALIDATION=loose nuxi dev)",
@@ -30,13 +31,14 @@
     "build": "pnpm run wc:prepare && (cd src && ROLLDOWN_OPTIONS_VALIDATION=loose nuxi build) && unbuild",
     "build:debug": "ROLLDOWN_OPTIONS_VALIDATION=loose NUXT_DEBUG_BUILD=true pnpm run build",
     "start": "node ./bin.mjs",
-    "prepack": "pnpm build",
-    "dev:prepare": "(cd src && nuxi prepare) && pnpm wc:prepare",
+    "prepack": "pnpm build && node scripts/copy-skills.mjs",
+    "dev:prepare": "(cd src && nuxi prepare) && pnpm wc:prepare && node scripts/copy-skills.mjs",
     "wc:prepare": "rollup -c",
     "wc:build": "pnpm run wc:prepare && NMI_BACKEND=webcontainer ROLLDOWN_OPTIONS_VALIDATION=loose nuxi build src && unbuild",
     "wc:dev": "pnpm run -r stub && pnpm run wc:prepare && (cd src && NMI_BACKEND=webcontainer ROLLDOWN_OPTIONS_VALIDATION=loose nuxi dev)"
   },
   "dependencies": {
+    "@modelcontextprotocol/sdk": "catalog:deps",
     "ansis": "catalog:deps",
     "cac": "catalog:deps",
     "devframe": "catalog:deps",
@@ -54,11 +56,13 @@
     "structured-clone-es": "catalog:deps",
     "tinyglobby": "catalog:deps",
     "unconfig": "catalog:deps",
-    "unstorage": "catalog:deps"
+    "unstorage": "catalog:deps",
+    "valibot": "catalog:deps"
   },
   "devDependencies": {
     "@types/semver": "catalog:types",
     "@unocss/nuxt": "catalog:bundling",
+    "@valibot/to-json-schema": "catalog:testing",
     "@vueuse/nuxt": "catalog:bundling",
     "@webcontainer/api": "catalog:frontend",
     "@xterm/addon-fit": "catalog:frontend",
