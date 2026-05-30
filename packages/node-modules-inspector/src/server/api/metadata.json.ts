@@ -2,6 +2,7 @@ import process from 'node:process'
 import { consola } from 'consola'
 import { createH3DevframeHost, createHostContext, startHttpAndWs } from 'devframe/node'
 import { getRandomPort } from 'get-port-please'
+import { defineEventHandler } from 'h3'
 import devframe from '../../node/devframe'
 
 consola.restoreAll()
@@ -49,7 +50,7 @@ function getServer() {
   return _serverPromise
 }
 
-export default eventHandler(async () => {
+export default defineEventHandler(async () => {
   const { port, jsonSerializableMethods } = await getServer()
   return { backend: 'websocket', websocket: port, jsonSerializableMethods }
 })

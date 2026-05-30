@@ -15,6 +15,7 @@ const headers: Record<string, string> = isWebContainer
 
 export default defineNuxtConfig({
   ssr: false,
+  spaLoadingTemplate: false,
 
   modules: [
     '@vueuse/nuxt',
@@ -43,6 +44,10 @@ export default defineNuxtConfig({
   experimental: {
     typedPages: true,
     clientNodeCompat: true,
+  },
+
+  future: {
+    compatibilityVersion: 5,
   },
 
   features: {
@@ -74,11 +79,10 @@ export default defineNuxtConfig({
         headers,
       },
     },
-    sourceMap: false,
+    sourcemap: false,
   },
 
   app: {
-    baseURL: './',
     head: {
       title: 'Node Modules Inspector',
       charset: 'utf-8',
@@ -107,7 +111,6 @@ export default defineNuxtConfig({
   },
 
   vite: {
-    base: './',
     define: {
       'import.meta.env.BACKEND': JSON.stringify(backend),
     },
@@ -154,7 +157,7 @@ export default defineNuxtConfig({
   },
 
   devtools: {
-    enabled: false,
+    enabled: true,
   },
 
   typescript: {
@@ -172,5 +175,5 @@ export default defineNuxtConfig({
     },
   },
 
-  compatibilityDate: '2024-07-17',
+  compatibilityDate: '2026-05-29',
 })
