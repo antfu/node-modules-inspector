@@ -40,7 +40,9 @@ export default defineConfig({
 
       'color-deprecated': 'text-op85 text-[#b71c1c] dark:text-[#f87171]',
 
-      // Bespoke z-index ladder (overrides the preset's z-* where names collide).
+      // The preset ships no z-index scale (stacking is the app's to own); this is
+      // the app's bespoke named-layer ladder. Shortcut expansions are exempt from
+      // the preset's plain-z blocklist.
       'z-graph-bg': 'z-5',
       'z-graph-link': 'z-10',
       'z-graph-node': 'z-11',
@@ -63,9 +65,14 @@ export default defineConfig({
     // Contributes the design layer: the primary/warning/success/error ramps,
     // the semantic shortcuts (color-base, bg-*, border-*, btn-*, badge*, op-*),
     // the color-scale-* severity layer and the bg-dots/bg-grid pattern rules.
-    // Cast: the package bundles its own `@unocss/core`, so its `Preset` generic
-    // is a distinct (structurally identical) type from this app's `unocss`.
-    presetAnthonyDesign({ primary }) as unknown as Preset,
+    //
+    // `plainZIndex: false` opts out of the preset's plain-`z-<number>` guardrail:
+    // this app already owns a deliberate z-index system (the named ladder above
+    // plus a few local, within-component z values), so the guardrail is redundant.
+    //
+    // Cast: resolved against a different `@unocss/core` instance than this app's
+    // `unocss`, so the `Preset` generic is a distinct (structurally identical) type.
+    presetAnthonyDesign({ primary, blocklists: { plainZIndex: false } }) as unknown as Preset,
     presetWind3(),
     presetAttributify(),
     presetIcons({
@@ -83,17 +90,9 @@ export default defineConfig({
       }),
     }),
   ],
-  content: {
-    pipeline: {
-      // Keep UnoCSS's default file scanning AND scan @antfu/design's components
-      // (in node_modules) so their utility classes are generated. Providing
-      // `include` replaces the default, so the default pattern is restated here.
-      include: [
-        /\.(vue|svelte|[jt]sx|vine\.ts|mdx?|astro|elm|php|phtml|marko|html)($|\?)/,
-        /@antfu\/design\/.*\.(vue|ts|mjs|js)($|\?)/,
-      ],
-    },
-  },
+  // `@antfu/design` requires the directives transformer — its shipped styles
+  // recolor overlays via token `--at-apply` directives. No `content` override is
+  // needed: UnoCSS's default scan already matches the package's `.vue` components.
   transformers: [
     transformerDirectives(),
     transformerVariantGroup(),

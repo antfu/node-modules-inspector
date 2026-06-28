@@ -19,7 +19,6 @@ overrides:
   semver: 7.8.0
 
 patchedDependencies:
-  '@antfu/design@0.1.0': patches/@antfu__design@0.1.0.patch
   '@nuxt/nitro-server-nightly@5.0.0-29666842.2bab300c': patches/@nuxt__nitro-server-nightly@5.0.0-29666842.2bab300c.patch
 
 catalogs:
@@ -69,7 +68,7 @@ catalogs:
     vite-plugin-inspect: ^11.4.1
     vue-tsc: ^3.3.2
   frontend:
-    '@antfu/design': ^0.1.0
+    '@antfu/design': ^0.2.0
     '@webcontainer/api': ^1.6.4
     '@xterm/addon-fit': ^0.11.0
     '@xterm/xterm': ^6.0.0
@@ -122,4 +121,3 @@ allowBuilds:
   esbuild: true
   simple-git-hooks: true
   unrs-resolver: true
-  vue-demi: true

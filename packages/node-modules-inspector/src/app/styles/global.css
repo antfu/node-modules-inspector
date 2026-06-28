@@ -1,5 +1,7 @@
-/* App-specific styles. Base surface, scrollbar, animations, floating-vue and
- * reka-ui styling now come from `@antfu/design/styles.css` (imported in app.vue). */
+/* App-specific styles. Scrollbar, animations, floating-vue and reka-ui styling
+ * come from `@antfu/design/styles.css` (imported in app.vue). The root surface is
+ * applied here (not relied on from the package's base.css) so it never depends on
+ * the directives transformer reaching the package's node_modules CSS. */
 
 html, body , #__nuxt{
   height: 100vh;
@@ -8,8 +10,12 @@ html, body , #__nuxt{
 }
 
 html {
-  --at-apply: font-sans;
+  --at-apply: bg-base font-sans;
   scrollbar-gutter: stable;
+}
+
+body {
+  --at-apply: color-base;
 }
 
 /* Bespoke PNG dot-grid backdrop (distinct from the preset's `bg-dots` rule). */
