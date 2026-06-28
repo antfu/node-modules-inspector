@@ -60,6 +60,7 @@
     "valibot": "catalog:deps"
   },
   "devDependencies": {
+    "@antfu/design": "catalog:frontend",
     "@types/semver": "catalog:types",
     "@unocss/nuxt": "catalog:bundling",
     "@valibot/to-json-schema": "catalog:testing",

@@ -1,0 +1,13 @@
+diff --git a/unocss/colors.ts b/unocss/colors.ts
+index e21a7b62c00e354a821e689bf733571afc564b96..9ba018875dd57cca2e71667536decec1d6df4843 100644
+--- a/unocss/colors.ts
++++ b/unocss/colors.ts
+@@ -98,7 +98,7 @@ export function generateColorRamp(input: string): ColorRamp {
+   const hue = Number.isFinite(rawHue) ? rawHue : 0
+   const ramp: ColorRamp = { DEFAULT: input }
+   RAMP_STOPS.forEach((stop, i) => {
+-    const l = RAMP_LIGHTNESS[i]
++    const l = RAMP_LIGHTNESS[i]!
+     // Taper chroma at the lightest/darkest stops so they don't look muddy.
+     const c = (chroma || 0) * (l > 0.9 || l < 0.25 ? 0.6 : 1)
+     ramp[stop] = new Color('oklch', [l, c, hue]).to('srgb').toGamut({ space: 'srgb' }).toString({ format: 'hex' })

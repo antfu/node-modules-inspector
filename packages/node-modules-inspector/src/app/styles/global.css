@@ -1,28 +1,28 @@
+/* App-specific styles. Base surface, scrollbar, animations, floating-vue and
+ * reka-ui styling now come from `@antfu/design/styles.css` (imported in app.vue). */
+
 html, body , #__nuxt{
   height: 100vh;
   margin: 0;
   padding: 0;
 }
 
-.bg-dots {
+html {
+  --at-apply: font-sans;
+  scrollbar-gutter: stable;
+}
+
+/* Bespoke PNG dot-grid backdrop (distinct from the preset's `bg-dots` rule). */
+.bg-dot-grid {
   background-image: url('/dot-grid-light.png');
   background-size: 50px;
   background-repeat: repeat;
 }
 
-.dark .bg-dots,
-.bg-dots.dark {
-  color-scheme: dark;
+.dark .bg-dot-grid,
+.bg-dot-grid.dark {
   background-color: black;
   background-image: url('/dot-grid-dark.png');
-}
-
-html {
-  --at-apply: bg-base font-sans;
-  scrollbar-gutter: stable;
-}
-body {
-  --at-apply: color-base;
 }
 
 summary::-webkit-details-marker {
@@ -53,30 +53,9 @@ summary::-webkit-details-marker {
   --uno: font-mono;
 }
 
-/* Overrides Floating Vue */
-.v-popper--theme-dropdown .v-popper__inner,
-.v-popper--theme-tooltip .v-popper__inner {
-  --at-apply: bg-tooltip color-base font-sans rounded border border-base shadow dark:shadow-2xl;
-  box-shadow: 0 6px 30px #0000001a;
-}
-
-.v-popper--theme-tooltip .v-popper__inner {
-  --at-apply: text-sm;
-}
-
+/* Floating Vue — app refinements on top of @antfu/design/styles/floating-vue.css */
 .v-popper--theme-tooltip {
   max-width: 20rem;
-}
-
-.v-popper--theme-tooltip .v-popper__arrow-inner,
-.v-popper--theme-dropdown .v-popper__arrow-inner {
-  visibility: visible;
-  --at-apply: border-white dark:border-#111;
-}
-
-.v-popper--theme-tooltip .v-popper__arrow-outer,
-.v-popper--theme-dropdown .v-popper__arrow-outer {
-  --at-apply: border-base;
 }
 
 .v-popper--theme-tooltip.v-popper--shown,

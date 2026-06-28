@@ -1,4 +1,6 @@
+import type { Preset } from 'unocss'
 import { fileURLToPath } from 'node:url'
+import { presetAnthonyDesign } from '@antfu/design/unocss'
 import { createLocalFontProcessor } from '@unocss/preset-web-fonts/local'
 import {
   defineConfig,
@@ -11,29 +13,34 @@ import {
   transformerVariantGroup,
 } from 'unocss'
 
+// The project's WCAG-tuned green ramp (darkened 400 so text-primary /
+// text-primary-400 clear WCAG AA on white). Kept verbatim from the prior config.
+const primary = {
+  50: '#E9F4E7',
+  100: '#D2E8CF',
+  200: '#A9D3A2',
+  300: '#7CBC71',
+  400: '#49833E',
+  DEFAULT: '#49833E',
+  500: '#3F7236',
+  600: '#396831',
+  700: '#2C5026',
+  800: '#1D3419',
+  900: '#0F1C0D',
+  950: '#080E07',
+}
+
 export default defineConfig({
   shortcuts: [
     {
-      'color-base': 'color-neutral-800 dark:color-neutral-300',
-      'bg-base': 'bg-white dark:bg-#111',
-      'bg-secondary': 'bg-#eee dark:bg-#222',
-      'border-base': 'border-#8882',
-
-      'bg-tooltip': 'bg-white:75 dark:bg-#111:75 backdrop-blur-8',
-      'bg-code': 'bg-gray5:5',
-
-      'bg-gradient-more': 'bg-gradient-to-t from-white via-white:80 to-white:0 dark:from-#111 dark:via-#111:80 dark:to-#111:0',
-
-      'color-active': 'color-primary-600 dark:color-primary-300',
-      'border-active': 'border-primary-600/25 dark:border-primary-400/25',
-      'bg-active': 'bg-#8881',
-
-      'btn-action': 'border border-base rounded flex gap-2 items-center px2 py1 op75 hover:op100 hover:bg-active disabled:pointer-events-none disabled:op30!',
-      'btn-action-sm': 'btn-action text-sm',
-      'btn-action-active': 'color-active border-active! bg-active op100!',
-
+      // App-specific shortcuts not covered by `presetAnthonyDesign`.
+      // The semantic tokens (color-base, bg-*, border-*, btn-action*, op-*,
+      // color-scale-*, badge-color-*, bg-glass, …) now come from the preset.
       'icon-catppuccin': 'light:filter-invert-100 light:filter-hue-rotate-180 light:filter-brightness-80',
 
+      'color-deprecated': 'text-op85 text-[#b71c1c] dark:text-[#f87171]',
+
+      // Bespoke z-index ladder (overrides the preset's z-* where names collide).
       'z-graph-bg': 'z-5',
       'z-graph-link': 'z-10',
       'z-graph-node': 'z-11',
@@ -48,42 +55,17 @@ export default defineConfig({
       'z-drawer-backdrop': 'z-85',
       'z-drawer-content': 'z-90',
 
-      'op-fade': 'op65 dark:op55',
-      'op-mute': 'op30 dark:op25',
-      'color-deprecated': 'text-op85 text-[#b71c1c] dark:text-[#f87171]',
-
-      'color-scale-neutral': 'text-gray-700 dark:text-gray-300',
-      'color-scale-low': 'text-lime-700 dark:text-lime-300 dark:saturate-75',
-      'color-scale-medium': 'text-amber-700 dark:text-amber-300 dark:saturate-90',
-      'color-scale-high': 'text-orange-700 dark:text-orange-300',
-      'color-scale-critical': 'text-red-700 dark:text-red-300',
-
       'page-padding': 'pt-24 pl-112 pr-8 pb-8',
       'page-padding-collapsed': 'pt-24 pl-14 pr-8 pb-8',
     },
-    [/^badge-color-(\w+)$/, ([, color]) => `bg-${color}-400:20 dark:bg-${color}-400:10 text-${color}-800 dark:text-${color}-300 border-${color}-600:10 dark:border-${color}-300:10`],
-    [/^bg-glass(:\d+)?$/, ([, opacity = ':75']) => `bg-white${opacity} dark:bg-#111${opacity} backdrop-blur-5`],
   ],
-  theme: {
-    colors: {
-      primary: {
-        50: '#E9F4E7',
-        100: '#D2E8CF',
-        200: '#A9D3A2',
-        300: '#7CBC71',
-        // Darkened from #579E4B so text-primary / text-primary-400 clear WCAG AA on white.
-        400: '#49833E',
-        DEFAULT: '#49833E',
-        500: '#3F7236',
-        600: '#396831',
-        700: '#2C5026',
-        800: '#1D3419',
-        900: '#0F1C0D',
-        950: '#080E07',
-      },
-    },
-  },
   presets: [
+    // Contributes the design layer: the primary/warning/success/error ramps,
+    // the semantic shortcuts (color-base, bg-*, border-*, btn-*, badge*, op-*),
+    // the color-scale-* severity layer and the bg-dots/bg-grid pattern rules.
+    // Cast: the package bundles its own `@unocss/core`, so its `Preset` generic
+    // is a distinct (structurally identical) type from this app's `unocss`.
+    presetAnthonyDesign({ primary }) as unknown as Preset,
     presetWind3(),
     presetAttributify(),
     presetIcons({
@@ -101,6 +83,17 @@ export default defineConfig({
       }),
     }),
   ],
+  content: {
+    pipeline: {
+      // Keep UnoCSS's default file scanning AND scan @antfu/design's components
+      // (in node_modules) so their utility classes are generated. Providing
+      // `include` replaces the default, so the default pattern is restated here.
+      include: [
+        /\.(vue|svelte|[jt]sx|vine\.ts|mdx?|astro|elm|php|phtml|marko|html)($|\?)/,
+        /@antfu\/design\/.*\.(vue|ts|mjs|js)($|\?)/,
+      ],
+    },
+  },
   transformers: [
     transformerDirectives(),
     transformerVariantGroup(),

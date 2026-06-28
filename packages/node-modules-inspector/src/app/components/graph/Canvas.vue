@@ -329,7 +329,7 @@ onMounted(() => {
       flex="~ items-center justify-center"
       :style="{ transform: `scale(${scale})`, transformOrigin: '0 0' }"
     >
-      <div class="bg-dots" pointer-events-none z-graph-bg absolute left-0 top-0 :style="{ width: `${width}px`, height: `${height}px` }" />
+      <div class="bg-dot-grid" pointer-events-none z-graph-bg absolute left-0 top-0 :style="{ width: `${width}px`, height: `${height}px` }" />
       <div ref="screenshotTarget" :style="{ minWidth: `${width * scale}px`, minHeight: `${height * scale}px` }">
         <svg ref="svgLinks" pointer-events-none absolute left-0 top-0 z-graph-link :width="width" :height="height" data-a11y-skip>
           <g>

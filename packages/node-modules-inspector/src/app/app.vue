@@ -4,6 +4,7 @@ import Entry from './entries/index'
 import { setupQuery } from './state/query'
 
 import 'floating-vue/dist/style.css'
+import '@antfu/design/styles.css'
 import './styles/global.css'
 import './composables/dark'
 

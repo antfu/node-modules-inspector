@@ -105,7 +105,7 @@ export default defineNuxtConfig({
       ],
       htmlAttrs: {
         lang: 'en',
-        class: 'bg-dots',
+        class: 'bg-dot-grid',
       },
     },
   },
