@@ -1,6 +1,6 @@
 import { Canvas, Meta } from '@storybook/addon-docs/blocks'
-import * as ClusterBadge from './display/ClusterBadge.stories'
-import * as Logo from './ui/Logo.stories'
+import * as DisplayClusterBadge from './display/ClusterBadge.stories'
+import * as UILogo from './ui/Logo.stories'
 
 <Meta title="Overview" />
 
@@ -11,17 +11,20 @@ App-specific presentational building blocks, themed end-to-end by the
 primitives (badges, versions, avatars, checkboxes, drawers) come from
 `@antfu/design` directly and are documented in that package's own Storybook —
 only components unique to this app live here. Toggle the theme from the
-toolbar to check both light and dark. Each title links to that component's own
-docs page.
+toolbar to check both light and dark. Each tile is a live story; click a
+component name to open its full page.
+
+## Display
 
 ### [ClusterBadge](/?path=/docs/display-clusterbadge--docs)
 
-A hash-tinted label for a dependency cluster (namespace-aware).
+<Canvas of={DisplayClusterBadge.Namespaced} />
+<Canvas of={DisplayClusterBadge.Plain} />
+<Canvas of={DisplayClusterBadge.Gallery} />
 
-<Canvas of={ClusterBadge.Gallery} />
+## UI
 
 ### [Logo](/?path=/docs/ui-logo--docs)
 
-The app mark.
-
-<Canvas of={Logo.Sizes} />
+<Canvas of={UILogo.Default} />
+<Canvas of={UILogo.Sizes} />

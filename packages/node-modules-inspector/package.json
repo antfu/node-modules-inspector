@@ -28,6 +28,7 @@
   "scripts": {
     "storybook": "storybook dev -p 6006 --no-open",
     "storybook:build": "storybook build",
+    "docs:overview": "node scripts/gen-overview.mjs",
     "dev": "pnpm run -r stub && (cd src && ROLLDOWN_OPTIONS_VALIDATION=loose nuxi dev)",
     "stub": "unbuild --stub",
     "build": "pnpm run wc:prepare && (cd src && ROLLDOWN_OPTIONS_VALIDATION=loose nuxi build) && unbuild",

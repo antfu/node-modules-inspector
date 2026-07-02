@@ -43,8 +43,14 @@ export default defineNuxtConfig({
         path: fileURLToPath(new URL('../../../node_modules/@antfu/design/components', import.meta.url)),
         pathPrefix: false,
         extensions: ['vue'],
-        // These two need optional peers (splitpanes, @tanstack/vue-virtual) we don't use.
-        ignore: ['**/LayoutSplitPane.vue', '**/LayoutVirtualList.vue'],
+        ignore: [
+          // These two need optional peers (splitpanes, @tanstack/vue-virtual) we don't use.
+          '**/LayoutSplitPane.vue',
+          '**/LayoutVirtualList.vue',
+          // Intentionally shadowed: the app keeps its own (deprecated/vulnerable
+          // coloring must inherit from context; the design one is self-colored).
+          '**/DisplayPackageName.vue',
+        ],
       },
       // Keep the default app components dir (registered last to win name conflicts).
       '~/components',
