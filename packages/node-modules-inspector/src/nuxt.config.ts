@@ -54,6 +54,11 @@ export default defineNuxtConfig({
     inlineStyles: false,
   },
 
+  // `@antfu/design` ships raw `.ts`/`.vue`; transpile it in the build.
+  build: {
+    transpile: ['@antfu/design'],
+  },
+
   css: [
     '@unocss/reset/tailwind.css',
   ],
@@ -149,6 +154,8 @@ export default defineNuxtConfig({
       exclude: [
         'structured-clone-es',
         'birpc',
+        // Ships raw `.ts`/`.vue`; let Vite compile it in-place instead of prebundling.
+        '@antfu/design',
       ],
     },
     plugins: [

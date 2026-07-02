@@ -1,0 +1,38 @@
+import { Canvas, Meta } from '@storybook/addon-docs/blocks'
+import * as NumberBadge from './display/NumberBadge.stories'
+import * as Version from './display/Version.stories'
+import * as ClusterBadge from './display/ClusterBadge.stories'
+import * as Logo from './ui/Logo.stories'
+
+<Meta title="Overview" />
+
+# Node Modules Inspector — Components
+
+Presentational building blocks, themed end-to-end by the
+[`@antfu/design`](https://github.com/antfu/design) UnoCSS preset. Toggle the
+theme from the toolbar to check both light and dark. Each title links to that
+component's own docs page.
+
+### [NumberBadge](/?path=/docs/display-numberbadge--docs)
+
+A compact numeric chip with optional icon, prefix/suffix and `badge-color-*` tint.
+
+<Canvas of={NumberBadge.Gallery} />
+
+### [ClusterBadge](/?path=/docs/display-clusterbadge--docs)
+
+A hash-tinted label for a dependency cluster (namespace-aware).
+
+<Canvas of={ClusterBadge.Gallery} />
+
+### [Version](/?path=/docs/display-version--docs)
+
+A monospace version label that understands range specifiers.
+
+<Canvas of={Version.Default} />
+
+### [Logo](/?path=/docs/ui-logo--docs)
+
+The app mark.
+
+<Canvas of={Logo.Sizes} />

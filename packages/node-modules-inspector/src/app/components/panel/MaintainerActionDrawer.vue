@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { DepUpgradeAction, MaintainerActionItem, PublintAction } from '../../state/maintainer-actions'
+import DisplayDonut from '@antfu/design/components/Display/DisplayDonut.vue'
 import { useClipboard } from '@vueuse/core'
 import { computed, watch } from 'vue'
 import { selectedAction } from '../../state/current'
@@ -213,7 +214,7 @@ function showAll() {
             Migration progress
           </div>
           <div flex="~ items-center gap-3" mb1>
-            <UiDonut :value="item.migrationRatio" :size="28" :thickness="5" />
+            <DisplayDonut class="flex-none" :value="item.migrationRatio" :size="28" :thickness="5" />
             <div flex-auto>
               <div font-mono text-sm>
                 {{ ratioPct }}%

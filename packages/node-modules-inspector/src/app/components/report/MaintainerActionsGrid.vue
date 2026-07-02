@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { MaintainerActionGroup, MaintainerActionItem } from '../../state/maintainer-actions'
+import DisplayDonut from '@antfu/design/components/Display/DisplayDonut.vue'
 import { selectedAction } from '../../state/current'
 import { getNpmMetaLatest } from '../../state/payload'
 
@@ -65,8 +66,9 @@ function ratioPct(migrationRatio: number) {
             <span font-mono text-sm px1 rounded badge-color-green max-w-30 text-ellipsis of-hidden ws-nowrap>v{{ item.installedHighestVersion }}</span>
           </div>
           <span />
-          <UiDonut
+          <DisplayDonut
             v-tooltip="`${item.migratedCount}/${item.totalCount} consumers satisfy ${item.depName}@${item.installedHighestVersion}`"
+            class="flex-none"
             :value="item.migrationRatio"
             :size="16"
             :thickness="3"

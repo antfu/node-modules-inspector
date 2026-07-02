@@ -1,0 +1,21 @@
+/* When the preview is dark, recolor the autodocs/MDX surfaces to match the app
+   tokens (Storybook's docs theme is otherwise static light). */
+.dark .sbdocs-wrapper,
+.dark .sbdocs.sbdocs-content {
+  background: #111;
+}
+.dark .sbdocs-preview,
+.dark .docs-story {
+  background: #111;
+  border-color: #8882;
+}
+.dark .sbdocs h1,
+.dark .sbdocs h2,
+.dark .sbdocs h3,
+.dark .sbdocs p,
+.dark .sbdocs a {
+  color: #ccc;
+}
+.dark .sbdocs h2 {
+  border-color: #8882;
+}
