@@ -44,7 +44,15 @@ export default defineConfig({
     // The design layer: semantic `*-base` tokens, `btn-*`/`badge*` shortcuts,
     // `badge-color-*`/`bg-glass` dynamics, the `color-scale-*` severity ramp and
     // the primary/warning/success/error theme scales (default antfu green).
-    presetAnthonyDesign(),
+    presetAnthonyDesign({
+      // Full stacks (not bare names): the preset merges these into the theme's
+      // `fontFamily` verbatim, so without generic fallbacks the page renders in
+      // the browser default (serif) whenever the webfont hasn't loaded.
+      fonts: {
+        sans: '"DM Sans",ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji"',
+        mono: '"DM Mono",ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace',
+      },
+    }),
     presetWind3(),
     presetAttributify(),
     presetIcons({
