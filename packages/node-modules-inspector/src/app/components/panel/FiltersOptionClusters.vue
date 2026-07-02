@@ -74,7 +74,7 @@ const clusters = Object.fromEntries(
         :titles="['AND', 'OR']"
       />
       <label flex="~ gap-1 items-center">
-        <OptionCheckbox
+        <FormCheckbox
           v-model="clusterAll"
         />
         <div>
@@ -89,7 +89,7 @@ const clusters = Object.fromEntries(
         flex="~ gap-1 items-center" select-none
         @dblclick.prevent="selectOnly(type)"
       >
-        <OptionCheckbox
+        <FormCheckbox
           v-model="clusters[type]!.value"
         />
         <DisplayClusterBadge

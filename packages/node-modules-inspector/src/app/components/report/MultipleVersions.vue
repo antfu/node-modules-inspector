@@ -34,7 +34,7 @@ function showGraph(pkgs: PackageNode[]) {
   <template v-if="sorted.length">
     <UiSubTitle>
       Multi-Versions Packages
-      <DisplayNumberBadge :number="sorted.length" rounded-full text-sm />
+      <DisplayNumberBadge :value="sorted.length" />
     </UiSubTitle>
     <!-- Bun does not provide a `bun dedupe` command yet: https://github.com/oven-sh/bun/issues/1343 -->
     <div

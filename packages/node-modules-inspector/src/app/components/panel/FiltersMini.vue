@@ -69,9 +69,8 @@ const moduleTypes = Object.fromEntries(
         />
         <DisplayNumberBadge
           v-if="filters.state.clusters?.length && filters.state.clusters.length > 3"
-          :number="filters.state.clusters.length - 3"
+          :value="filters.state.clusters.length - 3"
           suffix="+"
-          rounded-full text-xs
         />
       </div>
     </div>

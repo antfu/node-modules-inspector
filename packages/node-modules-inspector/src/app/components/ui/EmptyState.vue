@@ -1,5 +1,5 @@
 <script setup lang="ts">
-withDefaults(defineProps<{
+const props = withDefaults(defineProps<{
   title: string
   message: string
   type?: 'checkmark' | 'info'
@@ -14,12 +14,11 @@ withDefaults(defineProps<{
   <UiSubTitle>
     {{ title }}
   </UiSubTitle>
-  <div
-    :class="color === 'gray' ? 'badge-color-gray' : 'badge-color-green'"
-    op75 flex="~ gap-2 items-center" rounded-lg p2 my2 px3
+  <FeedbackTip
+    :type="props.color === 'green' ? 'success' : 'info'"
+    :icon="props.type === 'checkmark' ? 'i-ph-check-circle-duotone' : 'i-ph-info-duotone'"
+    my2
   >
-    <div v-if="type === 'checkmark'" i-ph-check-circle-duotone flex-none />
-    <div v-if="type === 'info'" i-ph-info-duotone flex-none />
-    <span>{{ message }}</span>
-  </div>
+    {{ message }}
+  </FeedbackTip>
 </template>

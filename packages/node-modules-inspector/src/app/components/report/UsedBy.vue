@@ -38,14 +38,14 @@ const transitiveDeps = computed(() =>
             </button>
             <div flex="~ justify-end items-center gap-1">
               <DisplayNumberBadge
-                :number="payloads.available.dependents(pkg).length"
-                rounded-full text-sm h-max
+                :value="payloads.available.dependents(pkg).length"
+                h-max
               />
             </div>
             <div flex="~ justify-end items-center gap-1">
               <DisplayNumberBadge
-                :number="payloads.available.flatDependents(pkg).length"
-                rounded-full text-sm h-max
+                :value="payloads.available.flatDependents(pkg).length"
+                h-max
               />
             </div>
             <!-- <UiPercentageDepth :pkg="pkg" :flat="true" /> -->

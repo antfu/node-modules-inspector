@@ -82,6 +82,7 @@
     "idb-keyval": "catalog:frontend",
     "modern-screenshot": "catalog:frontend",
     "nanovis": "catalog:frontend",
+    "reka-ui": "catalog:frontend",
     "rollup": "catalog:bundling",
     "semver": "catalog:deps",
     "storybook": "catalog:storybook",

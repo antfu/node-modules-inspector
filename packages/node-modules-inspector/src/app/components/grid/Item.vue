@@ -26,15 +26,13 @@ defineProps<{
       <DisplayModuleType :pkg />
       <DisplayNumberBadge
         v-if="payloads.available.flatDependents(pkg).length"
-        :number="payloads.available.flatDependents(pkg).length"
+        :value="payloads.available.flatDependents(pkg).length"
         icon="i-ph-arrow-elbow-down-right-duotone text-xs"
-        rounded-full text-sm
       />
       <DisplayNumberBadge
         v-if="payloads.available.flatDependencies(pkg).length"
-        :number="payloads.available.flatDependencies(pkg).length"
+        :value="payloads.available.flatDependencies(pkg).length"
         icon="i-ph-lego-duotone text-xs"
-        rounded-full text-sm
       />
 
       <DisplayFileSizeBadge

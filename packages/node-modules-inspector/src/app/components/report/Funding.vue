@@ -48,7 +48,7 @@ const cols = computed(() => {
   <template v-if="fundingGroup.length">
     <UiSubTitle>
       Funding
-      <DisplayNumberBadge :number="fundingGroup.length" rounded-full text-sm />
+      <DisplayNumberBadge :value="fundingGroup.length" />
     </UiSubTitle>
     <div op-fade>
       The following packages you use are requesting funding. Consider supporting them to help keep them sustainable.
@@ -59,7 +59,7 @@ const cols = computed(() => {
           <div>
             <div font-mono mt3 border="x t rounded-t-lg base" w-max bg-base of-hidden>
               <DisplayFundingEntry :funding="pkgs.info" p1 px3 hover="bg-pink/5 text-pink" transition>
-                <DisplayNumberBadge :number="pkgs.packages.length" rounded-full text-sm />
+                <DisplayNumberBadge :value="pkgs.packages.length" />
               </DisplayFundingEntry>
             </div>
             <ReportExpendableContainer :list="pkgs.packages" container-class="rounded-lt-none">

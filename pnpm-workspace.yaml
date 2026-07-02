@@ -82,6 +82,7 @@ catalogs:
     idb-keyval: ^6.2.4
     modern-screenshot: ^4.7.0
     nanovis: ^1.0.0
+    reka-ui: ^2.10.0
     theme-vitesse: ^1.0.0
     vite-hot-client: ^2.2.0
   icons:
@@ -127,3 +128,4 @@ allowBuilds:
   esbuild: true
   simple-git-hooks: true
   unrs-resolver: true
+  vue-demi: true

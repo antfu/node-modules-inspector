@@ -41,16 +41,16 @@ import { filters } from '../../state/filters'
     </div>
     <div mt2 flex="~ col gap-1">
       <OptionItem title="Exclude Types Packages" description="Exclude TypeScript declaration packages">
-        <OptionCheckbox v-model="filters.state.excludeDts" />
+        <FormCheckbox v-model="filters.state.excludeDts" />
       </OptionItem>
       <OptionItem title="Exclude Optional Packages" description="Exclude optional packages">
-        <OptionCheckbox v-model="filters.state.excludeOptional" />
+        <FormCheckbox v-model="filters.state.excludeOptional" />
       </OptionItem>
       <OptionItem title="Exclude Private Packages" description="Exclude private workspace packages and their dependencies">
-        <OptionCheckbox v-model="filters.state.excludePrivate" />
+        <FormCheckbox v-model="filters.state.excludePrivate" />
       </OptionItem>
       <OptionItem title="Exclude Workspace Roots" description="Exclude workspaces but NOT their dependencies">
-        <OptionCheckbox v-model="filters.state.excludeWorkspace" />
+        <FormCheckbox v-model="filters.state.excludeWorkspace" />
       </OptionItem>
     </div>
   </div>

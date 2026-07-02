@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { MaintainerActionGroup, MaintainerActionItem } from '../../state/maintainer-actions'
-import DisplayDonut from '@antfu/design/components/Display/DisplayDonut.vue'
 import { selectedAction } from '../../state/current'
 import { getNpmMetaLatest } from '../../state/payload'
 

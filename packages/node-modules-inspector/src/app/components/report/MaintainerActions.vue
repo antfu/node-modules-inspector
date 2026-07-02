@@ -115,7 +115,7 @@ function clearFilter() {
     <template v-if="maintainerActionGroups.length">
       <UiSubTitle>
         Maintainer Actions
-        <DisplayNumberBadge :number="maintainerActionGroups.length" rounded-full text-sm />
+        <DisplayNumberBadge :value="maintainerActionGroups.length" />
       </UiSubTitle>
 
       <div op-fade>
@@ -147,7 +147,7 @@ function clearFilter() {
           >
             <DisplayAuthorEntry :author="entry.author" :link="false" :size="22" class="pr-0!">
               <template #after>
-                <DisplayNumberBadge :number="entry.count" rounded-full text-xs px2 />
+                <DisplayNumberBadge :value="entry.count" />
               </template>
             </DisplayAuthorEntry>
           </button>
@@ -174,11 +174,11 @@ function clearFilter() {
           />
         </div>
         <label flex="~ items-center gap-2" cursor-pointer>
-          <OptionCheckbox v-model="maintainerActionLatestOnly" />
+          <FormCheckbox v-model="maintainerActionLatestOnly" />
           Show only packages with latest major
         </label>
         <label flex="~ items-center gap-2" cursor-pointer>
-          <OptionCheckbox v-model="maintainerActionIncludePublint" />
+          <FormCheckbox v-model="maintainerActionIncludePublint" />
           Include publint findings
         </label>
         <div v-if="backend.isDynamic && rawPayload?.config?.publint && maintainerActionIncludePublint && (pendingPublintCandidates.length || publintRunning)">

@@ -40,7 +40,7 @@ const moduleTypes = Object.fromEntries(
         :key="type"
         flex="~ gap-1 items-center"
       >
-        <OptionCheckbox
+        <FormCheckbox
           v-model="moduleTypes[type].value"
         />
         <DisplayModuleType

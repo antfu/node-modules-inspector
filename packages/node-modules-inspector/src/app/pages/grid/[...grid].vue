@@ -194,7 +194,7 @@ const groups = computed<Group[]>(() => {
           <DisplayAuthors v-else-if="group.author" :authors="[group.author]" :link="false" />
           <span v-else op75>{{ group.name }}</span>
         </div>
-        <DisplayNumberBadge :number="group.packages.length" rounded-full ml2 text-base />
+        <DisplayNumberBadge :value="group.packages.length" ml2 />
       </template>
     </GridExpand>
   </div>

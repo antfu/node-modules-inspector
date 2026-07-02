@@ -35,6 +35,22 @@ export default defineNuxtConfig({
   logLevel: 'verbose',
   srcDir: 'app',
 
+  components: {
+    dirs: [
+      // `@antfu/design` ships raw category-prefixed SFCs (DisplayDonut, FormCheckbox, …);
+      // register them for auto-import so they resolve like local components.
+      {
+        path: fileURLToPath(new URL('../../../node_modules/@antfu/design/components', import.meta.url)),
+        pathPrefix: false,
+        extensions: ['vue'],
+        // These two need optional peers (splitpanes, @tanstack/vue-virtual) we don't use.
+        ignore: ['**/LayoutSplitPane.vue', '**/LayoutVirtualList.vue'],
+      },
+      // Keep the default app components dir (registered last to win name conflicts).
+      '~/components',
+    ],
+  },
+
   eslint: {
     config: {
       standalone: false,

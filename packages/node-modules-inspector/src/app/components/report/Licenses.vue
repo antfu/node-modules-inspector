@@ -91,9 +91,9 @@ const filteredResult = computed(() => {
                 :class="{ 'text-primary': selected.includes(group[0]) }"
                 @click="toggleSelected(group[0])"
               >
-                <OptionCheckbox :model-value="selected.includes(group[0])" pointer-events-none />
+                <FormCheckbox :model-value="selected.includes(group[0])" pointer-events-none />
                 <span>{{ group[0] }}</span>
-                <DisplayNumberBadge :number="group[1].length" rounded-full text-sm w-max mra />
+                <DisplayNumberBadge :value="group[1].length" w-max mra />
                 <a
                   v-if="PERMISSIVE_LICENSES.includes(group[0])"
                   href="https://en.wikipedia.org/wiki/Permissive_software_license" target="_blank"

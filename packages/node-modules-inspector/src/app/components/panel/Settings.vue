@@ -10,10 +10,10 @@ const backend = getBackend()
   <div>
     <div flex="~ col gap-2" p4>
       <OptionItem title="Simplify module types" description="Show only ESM/CJS">
-        <OptionCheckbox v-model="settings.moduleTypeSimple" />
+        <FormCheckbox v-model="settings.moduleTypeSimple" />
       </OptionItem>
       <OptionItem title="Treat FAUX as ESM" description="Treat FAUX as ESM">
-        <OptionCheckbox v-model="settings.treatFauxAsESM" />
+        <FormCheckbox v-model="settings.treatFauxAsESM" />
       </OptionItem>
       <OptionItem title="Module type indicator" description="Rendering mode of module type indicator">
         <OptionSelectGroup
@@ -23,10 +23,10 @@ const backend = getBackend()
         />
       </OptionItem>
       <OptionItem title="Show size badge" description="Show install size badge on package list">
-        <OptionCheckbox v-model="settings.showInstallSizeBadge" />
+        <FormCheckbox v-model="settings.showInstallSizeBadge" />
       </OptionItem>
       <OptionItem title="Show publish time badge" description="Show publish time badge on package list">
-        <OptionCheckbox v-model="settings.showPublishTimeBadge" />
+        <FormCheckbox v-model="settings.showPublishTimeBadge" />
       </OptionItem>
       <OptionItem title="Provenance badge" description="Show provenance indicator on packages">
         <OptionSelectGroup
@@ -36,10 +36,10 @@ const backend = getBackend()
         />
       </OptionItem>
       <OptionItem title="Colorize size badge" description="Colorize package size badge">
-        <OptionCheckbox v-model="settings.colorizePackageSize" />
+        <FormCheckbox v-model="settings.colorizePackageSize" />
       </OptionItem>
       <OptionItem title="Animate chart" description="Animate chart">
-        <OptionCheckbox v-model="settings.chartAnimation" />
+        <FormCheckbox v-model="settings.chartAnimation" />
       </OptionItem>
       <OptionItem title="Dependency source badge" description="Show a badge of the source type">
         <OptionSelectGroup
@@ -49,7 +49,7 @@ const backend = getBackend()
         />
       </OptionItem>
       <OptionItem title="Prefer npmx.dev" description="Use npmx.dev instead of npmjs.com for links">
-        <OptionCheckbox v-model="settings.preferNpmx" />
+        <FormCheckbox v-model="settings.preferNpmx" />
       </OptionItem>
     </div>
 

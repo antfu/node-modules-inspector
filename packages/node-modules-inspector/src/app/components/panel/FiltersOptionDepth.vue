@@ -67,15 +67,14 @@ const depthGridRows = computed(() => Math.ceil(availableDepths.value.length / 3)
       <label
         flex="~ gap-1 items-center"
       >
-        <OptionCheckbox
+        <FormCheckbox
           v-model="depthsRefsAll"
         />
         <div>
           All
         </div>
         <DisplayNumberBadge
-          :number="payloads.available.packages.length"
-          rounded-full text-xs
+          :value="payloads.available.packages.length"
         />
       </label>
     </div>
@@ -86,14 +85,14 @@ const depthGridRows = computed(() => Math.ceil(availableDepths.value.length / 3)
         flex="~ gap-1 items-center" select-none
         @dblclick.prevent="selectOnly(depth)"
       >
-        <OptionCheckbox
+        <FormCheckbox
           v-model="depthsRefs[depth]!.value"
         />
         <div font-mono>
           #{{ depth }}
         </div>
         <DisplayNumberBadge
-          :number="payloads.available.packages.filter(p => p.depth === depth).length"
+          :value="payloads.available.packages.filter(p => p.depth === depth).length"
           rounded-full text-xs
         />
       </label>

@@ -5,10 +5,12 @@ import { expect, it } from 'vitest'
 import { analyzePackageModuleType } from '../src/analyze-esm'
 
 async function getPackageJsonPath(pkg: string) {
+  // Resolve from this file so the lookup is deterministic (not hoist-order dependent).
+  const url = import.meta.url
   return JSON.parse(await fs.readFile(
-    await resolvePath(`${pkg}/package.json`)
+    await resolvePath(`${pkg}/package.json`, { url })
       .catch(async () => {
-        return await resolvePackageJSON(await resolvePath(pkg))
+        return await resolvePackageJSON(await resolvePath(pkg, { url }))
       }),
     'utf-8',
   ))

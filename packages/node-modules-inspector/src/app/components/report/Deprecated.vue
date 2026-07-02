@@ -62,7 +62,7 @@ const titleMap = {
       <template v-if="key !== 'any' && pkgs.length">
         <UiSubTitle>
           <span>{{ titleMap[key as keyof typeof titleMap] }}</span>
-          <DisplayNumberBadge :number="pkgs.length" rounded-full text-sm color="badge-color-red" />
+          <DisplayNumberBadge :value="pkgs.length" color="red" />
         </UiSubTitle>
         <div grid="~ cols-minmax-250px gap-4">
           <div

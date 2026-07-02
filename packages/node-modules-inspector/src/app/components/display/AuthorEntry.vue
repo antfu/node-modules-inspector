@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { ParsedAuthor } from 'node-modules-tools/utils'
 import { computed } from 'vue'
-import SafeImage from './SafeImage.vue'
 
 const props = withDefaults(defineProps<{
   author: ParsedAuthor
@@ -34,16 +33,12 @@ const href = computed(() => {
     <template
       v-if="author.type === 'github'"
     >
-      <SafeImage
+      <DisplayAvatar
         :src="author.avatar"
-        bg-active border="~ base rounded-full"
-        :style="{ width: `${props.size}px`, height: `${props.size}px` }"
-        crossorigin="anonymous"
-      >
-        <template #fallback>
-          <div i-ph-user-circle-duotone :style="{ width: `${props.size}px`, height: `${props.size}px` }" op-fade />
-        </template>
-      </SafeImage>
+        :name="author.github"
+        :size="props.size"
+        class="bg-active border border-base"
+      />
       <span font-mono>{{ author.github }}</span>
     </template>
     <template v-else>

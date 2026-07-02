@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import ActionDarkToggle from '@antfu/design/components/Action/ActionDarkToggle.vue'
 import { isDark, toggleDark } from '../../composables/dark'
 import { rawPayload } from '../../state/data'
 

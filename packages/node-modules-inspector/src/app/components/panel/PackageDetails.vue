@@ -260,7 +260,7 @@ const thirdPartyServices = computed(() => {
       >
         <div i-ph-pipe-wrench-duotone flex-none op-fade />
         <span op-fade text-sm>Maintainer actions</span>
-        <DisplayNumberBadge :number="maintainerActionsCount" rounded-full text-sm color="badge-color-amber" />
+        <DisplayNumberBadge :value="maintainerActionsCount" color="amber" />
         <div flex-auto />
         <NuxtLink
           v-tooltip="'Open Maintainer Actions report'"
@@ -377,8 +377,7 @@ const thirdPartyServices = computed(() => {
       >
         <span :class="settings.packageDetailsTab === 'dependents' ? '' : 'op30'">Used by</span>
         <DisplayNumberBadge
-          text-xs rounded-full
-          :number="settings.deepDependenciesTree ? payloads.available.flatDependents(pkg).length : payloads.available.dependents(pkg).length"
+          :value="settings.deepDependenciesTree ? payloads.available.flatDependents(pkg).length : payloads.available.dependents(pkg).length"
         />
       </button>
       <div border="b base" w-2 />
@@ -389,8 +388,7 @@ const thirdPartyServices = computed(() => {
       >
         <span :class="settings.packageDetailsTab === 'dependencies' ? '' : 'op30'">Deps on</span>
         <DisplayNumberBadge
-          text-xs rounded-full
-          :number="settings.deepDependenciesTree ? payloads.available.flatDependencies(pkg).length : payloads.available.dependencies(pkg).length"
+          :value="settings.deepDependenciesTree ? payloads.available.flatDependencies(pkg).length : payloads.available.dependencies(pkg).length"
         />
       </button>
       <div border="b base" pt2 px2 flex="~ items-center gap-1">

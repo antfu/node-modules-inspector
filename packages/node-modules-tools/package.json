@@ -48,6 +48,7 @@
     "@pnpm/types": "catalog:types",
     "@types/js-yaml": "catalog:types",
     "@types/stream-json": "catalog:types",
+    "h3": "catalog:deps",
     "stream-json": "catalog:deps",
     "unbuild": "catalog:bundling"
   }

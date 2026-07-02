@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import { formatBytes, getBytesColor } from '@antfu/design/utils/format'
 import { computed } from 'vue'
 import { totalWorkspaceSize } from '../../state/payload'
 import { settings } from '../../state/settings'
-import { bytesToHumanSize } from '../../utils/format'
 
 const props = withDefaults(
   defineProps<{
@@ -22,31 +22,15 @@ const props = withDefaults(
   },
 )
 
-const KB = 1024
-const MB = KB ** 2
-
-const colorScale = [
-  [80 * KB, 'color-scale-neutral'],
-  [500 * KB, 'color-scale-low'],
-  [1 * MB, 'color-scale-medium'],
-  [10 * MB, 'color-scale-high'],
-  [20 * MB, 'color-scale-critical'],
-] as const
-
-const color = computed(() => {
-  if (!settings.value.colorizePackageSize && !props.colorize)
-    return colorScale[0]
-  const bytes = props.bytes || 0
-  for (const [limit, color] of colorScale) {
-    if (bytes < limit)
-      return color
-  }
-  return colorScale[colorScale.length - 1]![1]
-})
+const color = computed(() =>
+  (settings.value.colorizePackageSize || props.colorize)
+    ? getBytesColor(props.bytes || 0)
+    : 'color-scale-neutral',
+)
 
 const ratio = computed(() => (props.bytes || 0) * 100 / (props.total ?? totalWorkspaceSize.value))
 
-const formatted = computed(() => bytesToHumanSize(props.bytes || 0, props.digits))
+const formatted = computed(() => formatBytes(props.bytes || 0, { digits: props.digits }))
 </script>
 
 <template>

@@ -45,7 +45,7 @@ const top = computed(() => {
   <div>
     <UiSubTitle v-if="title">
       {{ resolvedTitle }}
-      <DisplayNumberBadge v-if="list.length" :number="list.length" rounded-full text-sm />
+      <DisplayNumberBadge v-if="list.length" :value="list.length" />
       <button
         v-if="reversable"
         title="Reverse"
@@ -74,7 +74,7 @@ const top = computed(() => {
         >
           <div i-ri:arrow-down-double-line />
           <span>More</span>
-          <DisplayNumberBadge prefix="+" :number="Math.min(Math.round(count * 0.5), props.list.length)" rounded-full text-sm />
+          <DisplayNumberBadge prefix="+" :value="Math.min(Math.round(count * 0.5), props.list.length)" />
         </button>
         <button
           op35 p2 pt4 mta
@@ -85,7 +85,7 @@ const top = computed(() => {
         >
           <div i-ph-arrows-out-line-vertical-duotone />
           <span>All</span>
-          <DisplayNumberBadge :number="props.list.length" rounded-full text-sm />
+          <DisplayNumberBadge :value="props.list.length" />
         </button>
       </div>
     </div>

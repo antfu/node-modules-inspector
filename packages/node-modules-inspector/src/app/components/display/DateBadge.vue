@@ -2,6 +2,7 @@
 import type { PackageNode } from 'node-modules-tools'
 import { computed } from 'vue'
 import { getPublishTime } from '../../state/payload'
+import { settings } from '../../state/settings'
 
 const props = withDefaults(
   defineProps<{
@@ -20,22 +21,10 @@ const date = computed(() => props.time
     ? getPublishTime(props.pkg)
     : undefined,
 )
-
-const formatter = Intl.DateTimeFormat('en-US', {
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric',
-})
-const dateTitle = computed(() => date.value ? formatter.format(date.value) : null)
 </script>
 
 <template>
-  <DisplayDurationBadge
-    v-if="date"
-    v-tooltip="dateTitle"
-    :title="dateTitle"
-    :ms="Date.now() - +date"
-    :colorize="props.colorize"
-    mode="day"
-  />
+  <div v-if="date" class="px-0.4em py-0.2em line-height-none bg-gray:5 text-sm w-max">
+    <DisplayDate :date="date" :colorize="settings.colorizePackageSize || props.colorize" />
+  </div>
 </template>

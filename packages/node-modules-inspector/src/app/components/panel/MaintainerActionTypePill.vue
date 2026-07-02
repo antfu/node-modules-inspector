@@ -7,18 +7,11 @@ defineProps<{
 </script>
 
 <template>
-  <span
+  <DisplayBadge
     v-if="action.kind === 'dep-upgrade'"
-    text-xs px1.5 py0.5 rounded font-mono uppercase
-    :class="action.depType === 'peer' ? 'badge-color-purple' : 'badge-color-primary'"
-  >
-    {{ action.depType }}
-  </span>
-  <span
-    v-else
-    text-xs px1.5 py0.5 rounded font-mono uppercase badge-color-teal
-    flex="~ items-center gap-1"
-  >
-    publint
-  </span>
+    :text="action.depType"
+    :color="action.depType === 'peer' ? 'purple' : 'primary'"
+    class="font-mono uppercase"
+  />
+  <DisplayBadge v-else text="publint" color="teal" class="font-mono uppercase" />
 </template>

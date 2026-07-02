@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { DepUpgradeAction, MaintainerActionItem, PublintAction } from '../../state/maintainer-actions'
-import DisplayDonut from '@antfu/design/components/Display/DisplayDonut.vue'
 import { useClipboard } from '@vueuse/core'
 import { computed, watch } from 'vue'
 import { selectedAction } from '../../state/current'
@@ -70,13 +69,8 @@ function showAll() {
 </script>
 
 <template>
-  <UiDrawer v-model="open" width="w-180">
-    <div v-if="item" p6 pb8 flex="~ col gap-0">
-      <div text-xs op-fade uppercase tracking-wider flex="~ items-center gap-1" mb3>
-        <div i-ph-pipe-wrench-duotone />
-        Maintainer Actions
-      </div>
-
+  <OverlayDrawer v-model:open="open" title="Maintainer Actions">
+    <div v-if="item" p2 pb4 flex="~ col gap-0">
       <PanelPackageDetailsInfo :pkg="item.consumer" />
       <template v-if="groupActions.length">
         <div border="t base" my5 />
@@ -258,5 +252,5 @@ function showAll() {
         >{{ agentPrompt }}</pre>
       </section>
     </div>
-  </UiDrawer>
+  </OverlayDrawer>
 </template>

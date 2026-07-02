@@ -27,6 +27,12 @@ summary::-webkit-details-marker {
   display: none;
 }
 
+/* Widen the design system's right drawer (defaults to w-80) — the maintainer
+   action drawer shows prompts/code blocks and needs the room. */
+[data-af-drawer][data-side='right'] {
+  width: min(45rem, 90vw);
+}
+
 /* Animations */
 @keyframes spin-reverse {
   from {
