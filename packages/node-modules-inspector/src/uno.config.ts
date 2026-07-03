@@ -11,6 +11,7 @@ import {
   transformerDirectives,
   transformerVariantGroup,
 } from 'unocss'
+import { theme as wind3Theme } from 'unocss/preset-wind3'
 
 export default defineConfig({
   shortcuts: [
@@ -45,12 +46,14 @@ export default defineConfig({
     // `badge-color-*`/`bg-glass` dynamics, the `color-scale-*` severity ramp and
     // the primary/warning/success/error theme scales (default antfu green).
     presetAnthonyDesign({
-      // Full stacks (not bare names): the preset merges these into the theme's
-      // `fontFamily` verbatim, so without generic fallbacks the page renders in
-      // the browser default (serif) whenever the webfont hasn't loaded.
+      // presetWebFonts below owns the brand fonts: it downloads DM Sans/DM Mono
+      // and prepends them to the theme's fontFamily. Feed the design preset the
+      // wind3 defaults so its own font merge is a no-op — its bare "DM Sans"
+      // default would otherwise replace the stacks and drop the generic
+      // fallbacks (serif flash when the webfont isn't loaded).
       fonts: {
-        sans: '"DM Sans",ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji"',
-        mono: '"DM Mono",ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace',
+        sans: wind3Theme.fontFamily!.sans,
+        mono: wind3Theme.fontFamily!.mono,
       },
     }),
     presetWind3(),
