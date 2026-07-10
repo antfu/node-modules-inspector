@@ -1,5 +1,6 @@
 import process from 'node:process'
 import { defineDevframe } from 'devframe/types'
+import { description, homepage, name as packageName, version } from '../../package.json'
 import { distDir } from '../dirs'
 import { getPackagesNpmMetaRpc } from './rpc/get-packages-npm-meta'
 import { getPackagesNpmMetaLatestRpc } from './rpc/get-packages-npm-meta-latest'
@@ -23,6 +24,10 @@ export interface InspectorDevframeFlags {
 export default defineDevframe({
   id: 'node-modules-inspector',
   name: 'Node Modules Inspector',
+  version,
+  packageName,
+  homepage,
+  description,
   icon: 'ph:package-duotone',
   cli: {
     command: 'node-modules-inspector',

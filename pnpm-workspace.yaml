@@ -38,7 +38,7 @@ catalogs:
     '@modelcontextprotocol/sdk': ^1.29.0
     ansis: ^4.3.0
     cac: ^7.0.0
-    devframe: ^0.5.2
+    devframe: ^0.6.0
     fast-npm-meta: ^2.0.0
     get-port-please: ^3.2.0
     h3: ^1.15.11
