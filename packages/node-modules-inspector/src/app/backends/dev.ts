@@ -6,7 +6,15 @@ import { useRuntimeConfig } from '#app/nuxt'
 
 export async function createDevBackend(): Promise<Backend> {
   const config = useRuntimeConfig()
-  const baseURL = config.app.baseURL || './'
+  // devframe resolves `__connection.json` (and the static RPC dump) via ufo's
+  // `withBase`, which drops the leading slash for a root ("/") base — so a bare
+  // base makes the fetch relative to the current route (e.g. `/grid/depth`)
+  // instead of the origin, 404ing on any non-root URL. Resolve to an absolute,
+  // origin-rooted URL so discovery works regardless of the active route.
+  const rawBase = config.app.baseURL || './'
+  const baseURL = typeof window !== 'undefined'
+    ? new URL(rawBase, window.location.origin).href
+    : rawBase
 
   // In Nuxt dev (`nuxi dev`) the SPA is served on Nitro's port; the devframe
   // server runs on a separate port discovered via /api/metadata.json. In the
