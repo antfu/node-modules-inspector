@@ -11,7 +11,6 @@ import {
   transformerDirectives,
   transformerVariantGroup,
 } from 'unocss'
-import { theme as wind3Theme } from 'unocss/preset-wind3'
 
 export default defineConfig({
   shortcuts: [
@@ -44,18 +43,11 @@ export default defineConfig({
   presets: [
     // The design layer: semantic `*-base` tokens, `btn-*`/`badge*` shortcuts,
     // `badge-color-*`/`bg-glass` dynamics, the `color-scale-*` severity ramp and
-    // the primary/warning/success/error theme scales (default antfu green).
-    presetAnthonyDesign({
-      // presetWebFonts below owns the brand fonts: it downloads DM Sans/DM Mono
-      // and prepends them to the theme's fontFamily. Feed the design preset the
-      // wind3 defaults so its own font merge is a no-op — its bare "DM Sans"
-      // default would otherwise replace the stacks and drop the generic
-      // fallbacks (serif flash when the webfont isn't loaded).
-      fonts: {
-        sans: wind3Theme.fontFamily!.sans,
-        mono: wind3Theme.fontFamily!.mono,
-      },
-    }),
+    // the primary/warning/success/error theme scales (default antfu green). It
+    // has no opinion on fonts — presetWebFonts below is the sole source of
+    // truth for `font-sans`/`font-mono`, composed onto the base preset's own
+    // fallback chain (see @antfu/design >=0.2.2).
+    presetAnthonyDesign(),
     presetWind3(),
     presetAttributify(),
     presetIcons({

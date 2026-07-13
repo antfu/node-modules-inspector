@@ -59,7 +59,7 @@ catalogs:
     unstorage: ^1.17.5
     valibot: ^1.4.1
   dev:
-    '@antfu/design': ^0.2.1
+    '@antfu/design': ^0.2.2
     '@antfu/ni': ^30.1.0
     '@nuxt/devtools': ^4.0.0-alpha.6
     bumpp: ^11.1.0
