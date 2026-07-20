@@ -57,10 +57,10 @@
     "tinyglobby": "catalog:deps",
     "unconfig": "catalog:deps",
     "unstorage": "catalog:deps",
-    "valibot": "catalog:deps"
+    "valibot": "catalog:deps",
+    "verkit": "catalog:deps"
   },
   "devDependencies": {
-    "@types/semver": "catalog:types",
     "@unocss/nuxt": "catalog:bundling",
     "@valibot/to-json-schema": "catalog:testing",
     "@vueuse/nuxt": "catalog:bundling",
@@ -76,7 +76,6 @@
     "modern-screenshot": "catalog:frontend",
     "nanovis": "catalog:frontend",
     "rollup": "catalog:bundling",
-    "semver": "catalog:deps",
     "theme-vitesse": "catalog:frontend",
     "vite-hot-client": "catalog:frontend"
   }

@@ -40,8 +40,8 @@
     "pathe": "catalog:deps",
     "pkg-types": "catalog:types",
     "publint": "catalog:deps",
-    "semver": "catalog:deps",
-    "tinyexec": "catalog:deps"
+    "tinyexec": "catalog:deps",
+    "verkit": "catalog:deps"
   },
   "devDependencies": {
     "@pnpm/list": "catalog:types",

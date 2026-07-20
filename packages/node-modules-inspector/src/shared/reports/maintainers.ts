@@ -1,6 +1,6 @@
 import type { PackageNode, PublintMessage } from 'node-modules-tools'
 import type { ParsedAuthor } from 'node-modules-tools/utils'
-import semver from 'semver'
+import { getMajor, getPrerelease, isGreaterThanRange, satisfies } from 'verkit'
 import { compareSemver } from '../semver'
 
 export function authorKey(author: ParsedAuthor): string {
@@ -86,7 +86,7 @@ function isPlainSemverRange(range: string | undefined): range is string {
 
 function safeSatisfies(version: string, range: string) {
   try {
-    return semver.satisfies(version, range)
+    return satisfies(version, range)
   }
   catch {
     return null
@@ -95,7 +95,7 @@ function safeSatisfies(version: string, range: string) {
 
 function safeGtr(version: string, range: string) {
   try {
-    return semver.gtr(version, range)
+    return isGreaterThanRange(version, range)
   }
   catch {
     return null
@@ -103,7 +103,7 @@ function safeGtr(version: string, range: string) {
 }
 
 function isStable(version: string) {
-  return semver.prerelease(version) === null
+  return getPrerelease(version) === null
 }
 
 function getPublintMessagesFor(
@@ -337,7 +337,7 @@ export function groupMaintainerActions(
       if (!latest)
         return true
       try {
-        return semver.major(g.consumer.version) === semver.major(latest)
+        return getMajor(g.consumer.version) === getMajor(latest)
       }
       catch {
         return true

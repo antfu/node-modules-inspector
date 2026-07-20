@@ -1,14 +1,14 @@
 import type { PackageNode } from 'node-modules-tools'
 import type { DepUpgradeAction, MaintainerActionItem, PublintAction } from '../state/maintainer-actions'
 import { formatMessage } from 'publint/utils'
-import semver from 'semver'
+import { getMajor } from 'verkit'
 import { parseSemverRange } from './semver'
 
 function safeMajor(version: string | undefined): number | undefined {
   if (!version)
     return undefined
   try {
-    return semver.major(version)
+    return getMajor(version)
   }
   catch {
     return undefined
