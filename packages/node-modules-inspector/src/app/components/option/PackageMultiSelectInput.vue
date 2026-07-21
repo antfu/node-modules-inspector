@@ -8,7 +8,7 @@ defineProps<{
   excludes?: PackageNode[]
 }>()
 
-const selected = defineModel('selected', { default: new Set<PackageNode>() })
+const selected = defineModel<Set<PackageNode>>('selected', { default: () => new Set<PackageNode>() })
 
 const input = ref('')
 

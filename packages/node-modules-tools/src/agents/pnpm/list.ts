@@ -2,7 +2,7 @@ import type { PackageDependencyHierarchy } from '@pnpm/list'
 import type { ProjectManifest } from '@pnpm/types'
 import type { ListPackageDependenciesOptions, ListPackageDependenciesRawResult, PackageNodeRaw } from '../../types'
 import fs from 'node:fs'
-import YAML from 'js-yaml'
+import { load as yamlLoad } from 'js-yaml'
 import { dirname, join, relative } from 'pathe'
 import { x } from 'tinyexec'
 import { CLUSTER_DEP_DEV, CLUSTER_DEP_PROD } from '../../constants'
@@ -111,7 +111,7 @@ export async function getCatalogs(root: string): Promise<Record<string, Record<s
   if (!fs.existsSync(join(root, 'pnpm-workspace.yaml')))
     return {}
   const raw = await fs.promises.readFile(join(root, 'pnpm-workspace.yaml'), 'utf-8')
-  const data = YAML.load(raw) as any || {}
+  const data = yamlLoad(raw) as any || {}
   return {
     ...data.catalogs || {},
     default: data.catalog,

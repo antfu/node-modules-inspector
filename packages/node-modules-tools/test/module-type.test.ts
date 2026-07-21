@@ -25,7 +25,9 @@ it('types only', async () => {
 })
 
 it('dual', async () => {
-  expect(analyzePackageModuleType(await getPackageJsonPath('h3')))
+  // h3 became ESM-only starting at v2 (all `exports` entries are `.mjs`, no
+  // `require` condition) — tinyglobby still ships both conditions.
+  expect(analyzePackageModuleType(await getPackageJsonPath('tinyglobby')))
     .toEqual('dual')
 
   expect(analyzePackageModuleType(await getPackageJsonPath('rollup-plugin-esbuild')))

@@ -1,7 +1,7 @@
 {
   "name": "node-modules-inspector",
   "type": "module",
-  "version": "2.1.3",
+  "version": "2.2.0",
   "description": "A Node Modules Inspector",
   "author": "Anthony Fu <anthonyfu117@hotmail.com>",
   "license": "MIT",
@@ -60,13 +60,13 @@
     "tinyglobby": "catalog:deps",
     "unconfig": "catalog:deps",
     "unstorage": "catalog:deps",
-    "valibot": "catalog:deps"
+    "valibot": "catalog:deps",
+    "verkit": "catalog:deps"
   },
   "devDependencies": {
     "@antfu/design": "catalog:dev",
     "@storybook/addon-docs": "catalog:storybook",
     "@storybook/vue3-vite": "catalog:storybook",
-    "@types/semver": "catalog:types",
     "@unocss/nuxt": "catalog:bundling",
     "@valibot/to-json-schema": "catalog:testing",
     "@vitejs/plugin-vue": "catalog:frontend",
@@ -85,7 +85,6 @@
     "nanovis": "catalog:frontend",
     "reka-ui": "catalog:frontend",
     "rollup": "catalog:bundling",
-    "semver": "catalog:deps",
     "storybook": "catalog:storybook",
     "theme-vitesse": "catalog:frontend",
     "vite-hot-client": "catalog:frontend"

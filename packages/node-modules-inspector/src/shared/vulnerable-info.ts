@@ -1,7 +1,7 @@
 import type { AuditLevelString, NpmMeta } from 'node-modules-tools'
 import type { ListPackagesNpmMetaOptions } from './types'
 import pLimit from 'p-limit'
-import { satisfies } from 'semver'
+import { satisfies } from 'verkit'
 
 interface AuditReport {
   id: string

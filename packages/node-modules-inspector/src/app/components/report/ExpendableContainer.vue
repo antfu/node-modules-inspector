@@ -15,11 +15,11 @@ const props = withDefaults(
   },
 )
 
-const count = defineModel('count', {
+const count = defineModel<number>('count', {
   default: 20,
 })
 
-const reverse = defineModel('reverse', {
+const reverse = defineModel<boolean>('reverse', {
   default: false,
 })
 
@@ -49,7 +49,7 @@ const top = computed(() => {
       <button
         v-if="reversable"
         title="Reverse"
-        ml-a w-8 h-8 rounded-full hover:bg-active flex
+        ml-a w-8 h-8 rounded-full hover:bg-hover flex
         @click="reverse = !reverse"
       >
         <div v-if="!reverse" i-ph-sort-descending ma />

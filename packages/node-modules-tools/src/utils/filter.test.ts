@@ -24,7 +24,9 @@ describe('constructPackageFilter', () => {
     const filter = constructPackageFilter('foo@^1.0.0')
     expect(filter({ name: 'foo', version: '1.0.0' })).toBe(true)
     expect(filter({ name: 'foo', version: '1.1.0' })).toBe(true)
+    expect(filter({ name: 'foo', version: '1.1.0-beta.1' })).toBe(false)
     expect(filter({ name: 'foo', version: '2.0.0' })).toBe(false)
+    expect(filter({ name: 'foo', version: 'invalid' })).toBe(false)
   })
 
   it('prefix', () => {

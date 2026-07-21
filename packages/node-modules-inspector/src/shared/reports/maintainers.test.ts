@@ -81,6 +81,37 @@ describe('computeMaintainerActions', () => {
     expect(items).toEqual([])
   })
 
+  it('ignores prerelease versions when finding the highest installed version', () => {
+    const stable = pkg({ name: 'dep', version: '1.5.0' })
+    const prerelease = pkg({ name: 'dep', version: '2.0.0-beta.1' })
+    const consumer = pkg({
+      name: 'consumer',
+      version: '1.0.0',
+      dependencies: { dep: '^1.0.0' },
+    })
+    const all = [consumer, stable, prerelease]
+    const items = computeMaintainerActions({
+      packages: all,
+      versions: buildVersions(all),
+    })
+    expect(items).toEqual([])
+  })
+
+  it('ignores invalid semver ranges', () => {
+    const dep = pkg({ name: 'dep', version: '2.0.0' })
+    const consumer = pkg({
+      name: 'consumer',
+      version: '1.0.0',
+      dependencies: { dep: 'not a range' },
+    })
+    const all = [consumer, dep]
+    const items = computeMaintainerActions({
+      packages: all,
+      versions: buildVersions(all),
+    })
+    expect(items).toEqual([])
+  })
+
   it('resolves catalog: ranges', () => {
     const dep1 = pkg({ name: 'dep', version: '1.0.0' })
     const dep2 = pkg({ name: 'dep', version: '2.0.0' })
@@ -166,5 +197,28 @@ describe('groupMaintainerActions', () => {
     const groups = groupMaintainerActions(items)
     expect(groups).toHaveLength(1)
     expect(groups[0]!.consumer.version).toBe('2.0.0')
+  })
+
+  it('filters consumers to the latest major version', () => {
+    const dep = pkg({ name: 'dep', version: '2.0.0' })
+    const consumer = pkg({
+      name: 'consumer',
+      version: '2.1.0',
+      dependencies: { dep: '^1.0.0' },
+    })
+    const all = [consumer, dep]
+    const items = computeMaintainerActions({
+      packages: all,
+      versions: buildVersions(all),
+    })
+
+    expect(groupMaintainerActions(items, {
+      latestOnly: true,
+      latestVersionOf: () => '2.5.0',
+    })).toHaveLength(1)
+    expect(groupMaintainerActions(items, {
+      latestOnly: true,
+      latestVersionOf: () => '3.0.0',
+    })).toEqual([])
   })
 })

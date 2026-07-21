@@ -1,4 +1,4 @@
-import semver from 'semver'
+import { isValid, isValidRange } from 'verkit'
 import { compareSemver } from '../../shared/semver'
 
 export { compareSemver }
@@ -24,7 +24,7 @@ export function parseSemverRange(range: string) {
   }
   SemverParseCache.set(range, result)
 
-  if (!semver.validRange(range)) {
+  if (!isValidRange(range)) {
     return result
   }
 
@@ -46,7 +46,7 @@ export function parseSemverRange(range: string) {
 
   const highest = partsBare.at(-1)!
   const lowest = partsBare.at(0)!
-  if (!semver.valid(highest) || !semver.valid(lowest)) {
+  if (!isValid(highest) || !isValid(lowest)) {
     return result
   }
 

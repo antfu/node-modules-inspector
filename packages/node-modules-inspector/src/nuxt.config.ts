@@ -169,7 +169,7 @@ export default defineNuxtConfig({
         'modern-screenshot',
         'floating-vue',
         '@antfu/utils',
-        'semver',
+        'verkit',
         'devframe/client',
         'publint/utils',
       ],

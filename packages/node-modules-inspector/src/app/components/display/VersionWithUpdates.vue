@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { NpmMetaLatest } from 'node-modules-tools'
 import { Tooltip } from 'floating-vue'
-import semver from 'semver'
+import { difference, isGreater } from 'verkit'
 import { computed } from 'vue'
 
 const props = withDefaults(defineProps<{
@@ -15,13 +15,13 @@ const props = withDefaults(defineProps<{
 const versionDiff = computed(() => {
   if (!props.latest || !props.version)
     return ''
-  return semver.diff(props.latest.version, props.version)
+  return difference(props.latest.version, props.version)
 })
 
 const updateAvailable = computed(() => {
   if (!props.latest || !props.version)
     return false
-  return semver.gt(props.latest.version, props.version)
+  return isGreater(props.latest.version, props.version)
 })
 </script>
 
