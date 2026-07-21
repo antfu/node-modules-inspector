@@ -60,7 +60,7 @@ catalogs:
     valibot: ^1.4.2
     verkit: ^0.1.2
   dev:
-    '@antfu/design': ^0.2.2
+    '@antfu/design': ^0.3.2
     '@antfu/ni': ^30.2.0
     '@nuxt/devtools': ^4.0.0-alpha.7
     bumpp: ^11.1.0

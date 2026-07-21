@@ -27,7 +27,7 @@ const href = computed(() => {
     :target="href ? '_blank' : undefined"
     flex="~ gap-1.5 items-center" of-hidden text-ellipsis
     :style="{ fontSize: `${props.size * 0.5}px`, height: `${props.size}px` }"
-    :class="href ? 'hover:bg-active' : ''"
+    :class="href ? 'hover:bg-hover' : ''"
     border="y r base rounded-full" pr-2
   >
     <template
@@ -37,7 +37,7 @@ const href = computed(() => {
         :src="author.avatar"
         :name="author.github"
         :size="props.size"
-        class="bg-active border border-base"
+        class="bg-ambient border border-base"
       />
       <span font-mono>{{ author.github }}</span>
     </template>

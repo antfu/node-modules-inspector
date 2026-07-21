@@ -78,7 +78,7 @@ function showDuplicatedGraph(pkgs: PackageNode[]) {
             <button
               v-for="versionNode of duplicated" :key="versionNode.version"
               py1 px2 rounded flex="~ items-center gap-1" min-w-40
-              font-mono hover="bg-active"
+              font-mono hover="bg-hover"
               :class="selectedNode === versionNode ? 'text-primary' : ''"
               @click="selectedNode = versionNode"
             >
@@ -88,7 +88,7 @@ function showDuplicatedGraph(pkgs: PackageNode[]) {
             <div border="t base" my1 />
             <button
               py1 px2 rounded flex="~ items-center gap-1" min-w-40
-              hover="bg-active"
+              hover="bg-hover"
               @click="showDuplicatedGraph(duplicated)"
             >
               <div i-ph-graph-duotone />
@@ -105,7 +105,7 @@ function showDuplicatedGraph(pkgs: PackageNode[]) {
           :title="settings.preferNpmx ? 'Open on npmx.dev' : 'Open on npmjs.com'"
           target="_blank"
           external
-          w-8 h-8 rounded-full hover:bg-active flex
+          w-8 h-8 rounded-full hover:bg-hover flex
         >
           <div i-catppuccin-npm icon-catppuccin ma />
         </NuxtLink>
@@ -116,7 +116,7 @@ function showDuplicatedGraph(pkgs: PackageNode[]) {
           title="Open Repository"
           target="_blank"
           external
-          ml--1 w-8 h-8 rounded-full hover:bg-active flex
+          ml--1 w-8 h-8 rounded-full hover:bg-hover flex
         >
           <div i-catppuccin-git icon-catppuccin ma />
         </NuxtLink>
@@ -127,7 +127,7 @@ function showDuplicatedGraph(pkgs: PackageNode[]) {
           title="Open Homepage"
           target="_blank"
           external
-          ml--1 w-8 h-8 rounded-full hover:bg-active flex
+          ml--1 w-8 h-8 rounded-full hover:bg-hover flex
         >
           <div i-catppuccin-http icon-catppuccin ma />
         </NuxtLink>
@@ -139,7 +139,7 @@ function showDuplicatedGraph(pkgs: PackageNode[]) {
           v-if="backend?.functions.openInEditor && pkg.filepath"
           v-tooltip="'Open Package Folder in Editor'"
           title="Open Package Folder in Editor"
-          ml--1 w-8 h-8 rounded-full hover:bg-active flex
+          ml--1 w-8 h-8 rounded-full hover:bg-hover flex
           @click="backend.functions.openInEditor(pkg.filepath)"
         >
           <div i-catppuccin-folder-vscode hover:i-catppuccin-folder-vscode-open icon-catppuccin ma />
@@ -148,7 +148,7 @@ function showDuplicatedGraph(pkgs: PackageNode[]) {
           v-if="backend?.functions.openInFinder && pkg.filepath"
           v-tooltip="'Open Package Folder in File Explorer'"
           title="Open Package Folder in File Explorer"
-          ml--1 w-8 h-8 rounded-full hover:bg-active flex
+          ml--1 w-8 h-8 rounded-full hover:bg-hover flex
           @click="backend.functions.openInFinder(pkg.filepath)"
         >
           <div i-catppuccin-folder-command hover:i-catppuccin-folder-command-open icon-catppuccin ma />

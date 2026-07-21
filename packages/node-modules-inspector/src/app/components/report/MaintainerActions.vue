@@ -173,14 +173,12 @@ function clearFilter() {
             :titles="SORT_TITLES"
           />
         </div>
-        <label flex="~ items-center gap-2" cursor-pointer>
-          <FormCheckbox v-model="maintainerActionLatestOnly" />
+        <FormCheckbox v-model="maintainerActionLatestOnly">
           Show only packages with latest major
-        </label>
-        <label flex="~ items-center gap-2" cursor-pointer>
-          <FormCheckbox v-model="maintainerActionIncludePublint" />
+        </FormCheckbox>
+        <FormCheckbox v-model="maintainerActionIncludePublint">
           Include publint findings
-        </label>
+        </FormCheckbox>
         <div v-if="backend.isDynamic && rawPayload?.config?.publint && maintainerActionIncludePublint && (pendingPublintCandidates.length || publintRunning)">
           <button
             btn-action

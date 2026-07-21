@@ -29,7 +29,7 @@ const parentStack = computed(() => {
     <template v-for="node, idx of parentStack" :key="node.id">
       <div v-if="idx > 0" i-ph-arrow-right-bold text-sm op-fade />
       <button
-        hover="bg-active" rounded px1
+        hover="bg-hover" rounded px1
         @click="emit('select', node)"
       >
         <DisplayPackageSpec v-if="node.meta" :pkg="node.meta" />

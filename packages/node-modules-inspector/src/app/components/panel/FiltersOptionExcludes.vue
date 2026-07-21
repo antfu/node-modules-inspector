@@ -40,16 +40,16 @@ import { filters } from '../../state/filters'
       To exclude a specific package, select from its menu
     </div>
     <div mt2 flex="~ col gap-1">
-      <OptionItem title="Exclude Types Packages" description="Exclude TypeScript declaration packages">
+      <OptionItem :div="true" title="Exclude Types Packages" description="Exclude TypeScript declaration packages">
         <FormCheckbox v-model="filters.state.excludeDts" />
       </OptionItem>
-      <OptionItem title="Exclude Optional Packages" description="Exclude optional packages">
+      <OptionItem :div="true" title="Exclude Optional Packages" description="Exclude optional packages">
         <FormCheckbox v-model="filters.state.excludeOptional" />
       </OptionItem>
-      <OptionItem title="Exclude Private Packages" description="Exclude private workspace packages and their dependencies">
+      <OptionItem :div="true" title="Exclude Private Packages" description="Exclude private workspace packages and their dependencies">
         <FormCheckbox v-model="filters.state.excludePrivate" />
       </OptionItem>
-      <OptionItem title="Exclude Workspace Roots" description="Exclude workspaces but NOT their dependencies">
+      <OptionItem :div="true" title="Exclude Workspace Roots" description="Exclude workspaces but NOT their dependencies">
         <FormCheckbox v-model="filters.state.excludeWorkspace" />
       </OptionItem>
     </div>

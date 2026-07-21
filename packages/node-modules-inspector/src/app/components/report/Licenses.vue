@@ -86,7 +86,7 @@ const filteredResult = computed(() => {
           <div flex="~ col gap-y-1">
             <template v-for="group of licensesGroup" :key="group[0]">
               <button
-                text-left hover:bg-active px2 ml--2 rounded
+                text-left hover:bg-hover px2 ml--2 rounded
                 flex="~ gap-2 items-center"
                 :class="{ 'text-primary': selected.includes(group[0]) }"
                 @click="toggleSelected(group[0])"
@@ -129,7 +129,7 @@ const filteredResult = computed(() => {
                 <DisplaySourceTypeBadge :pkg mode="both" />
               </div>
               <button
-                font-mono text-left hover:bg-active px2 ml--2 rounded
+                font-mono text-left hover:bg-hover px2 ml--2 rounded
                 @click="selectedNode = pkg"
               >
                 <DisplayPackageSpec :pkg />

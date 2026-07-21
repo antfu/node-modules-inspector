@@ -112,7 +112,7 @@ const moduleTypes = Object.fromEntries(
 
     <button
       v-tooltip="'Clear Filters'"
-      w8 h8 rounded-full hover:bg-active op-fade hover:op100 flex="~ items-center justify-center"
+      w8 h8 rounded-full hover:bg-hover op-fade hover:op100 flex="~ items-center justify-center"
       title="Clear Filters"
       @click="filters.select.reset()"
     >

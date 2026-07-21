@@ -18,7 +18,7 @@ import { filters } from '../../state/filters'
       <label
         p4 flex-none h-full
         flex="~ items-center gap-1.5"
-        hover:bg-active
+        hover:bg-hover
       >
         <div i-ph-text-t-duotone text-lg :class="filters.search ? 'text-primary' : 'op-fade'" flex-none />
         <input
@@ -27,7 +27,7 @@ import { filters } from '../../state/filters'
           w-full bg-transparent outline-none
         >
         <button
-          w-6 h-6 rounded-full hover:bg-active flex
+          w-6 h-6 rounded-full hover:bg-hover flex
           :class="filters.state.search ? '' : 'op0'"
           @click="filters.state.search = ''"
         >

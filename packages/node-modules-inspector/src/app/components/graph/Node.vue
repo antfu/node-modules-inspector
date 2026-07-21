@@ -37,6 +37,6 @@ defineProps<{
 }
 
 .graph-node-button {
-  --uno: 'flex items-center rounded-xl w-full px2 hover:bg-active gap-1';
+  --uno: 'flex items-center rounded-xl w-full px2 hover:bg-hover gap-1';
 }
 </style>

@@ -33,7 +33,7 @@ export default defineConfig({
       'z-drawer-content': 'z-90',
 
       // App-specific tokens not covered by the design preset.
-      'icon-catppuccin': 'light:filter-invert-100 light:filter-hue-rotate-180 light:filter-brightness-80',
+      // (icon-catppuccin now ships from @antfu/design >=0.3.0 — see unocss/shortcuts.ts)
       'color-deprecated': 'text-op85 text-[#b71c1c] dark:text-[#f87171]',
 
       'page-padding': 'pt-24 pl-112 pr-8 pb-8',

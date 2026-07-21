@@ -19,41 +19,28 @@ function newInspect() {
       flex="~ items-center"
       bg-glass rounded-full border border-base shadow
     >
-      <button
+      <ActionIconButton
         v-if="isWebContainer && rawPayload"
-        v-tooltip="'Start a new inspect'"
-        title="Start a new inspect"
-        w-10 h-10 rounded-full hover:bg-active op-fade hover:op100
-        flex="~ items-center justify-center"
+        tooltip="Start a new inspect"
+        icon="i-ph-plus-circle-duotone"
+        class="text-xl"
         @click="newInspect()"
-      >
-        <div i-ph-plus-circle-duotone text-xl />
-      </button>
-      <a
-        v-tooltip="'Check source code on GitHub'"
-        title="Check source code on GitHub"
-        w-10 h-10 rounded-full hover:bg-active op-fade hover:op100
-        flex="~ items-center justify-center"
+      />
+      <ActionIconButton
+        tooltip="Check source code on GitHub"
+        icon="i-ri-github-fill"
+        class="text-xl"
         href="https://github.com/antfu/node-modules-inspector" target="_blank"
-      >
-        <div i-ri-github-fill text-xl />
-      </a>
-      <ActionDarkToggle
-        :color-scheme="isDark ? 'dark' : 'light'"
-        @update:color-scheme="() => toggleDark()"
-      >
-        <template #default="{ toggle }">
-          <button
-            v-tooltip="'Toggle Dark Mode'"
-            w-10 h-10 rounded-full hover:bg-active op-fade hover:op100
-            flex="~ items-center justify-center"
-            title="Toggle Dark Mode"
-            @click="toggle"
-          >
-            <div i-ph-sun-duotone dark:i-ph-moon-duotone text-xl />
-          </button>
-        </template>
-      </ActionDarkToggle>
+      />
+      <!-- The design package owns no dark-mode state or toggle component
+           (see its recipes.md); compose ActionIconButton with our own
+           isDark/toggleDark (@vueuse/core's useDark) instead. -->
+      <ActionIconButton
+        :tooltip="isDark ? 'Switch to light mode' : 'Switch to dark mode'"
+        :icon="isDark ? 'i-ph-sun-duotone' : 'i-ph-moon-duotone'"
+        class="text-xl"
+        @click="toggleDark()"
+      />
     </div>
   </div>
 </template>

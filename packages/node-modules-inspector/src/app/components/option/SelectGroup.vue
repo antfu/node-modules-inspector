@@ -15,7 +15,7 @@ const value = defineModel<string | number | null>('modelValue', {
     <label
       v-for="i, idx of options"
       :key="i ?? idx"
-      border="b base" relative mb--1px hover:bg-active px1.2 py0.8
+      border="b base" relative mb--1px hover:bg-hover px1.2 py0.8
       :class="[
         idx ? 'border-l border-base ml--1px' : '',
         i === value ? 'bg-primary:10 text-primary' : '',

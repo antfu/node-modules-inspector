@@ -62,7 +62,7 @@ function showGraph(pkgs: PackageNode[]) {
             {{ pkgs[0]!.name }}
           </h2>
           <button
-            v-tooltip="'Compare in Graph'" p1 rounded-full op-fade hover:bg-active hover:text-primary hover:op100
+            v-tooltip="'Compare in Graph'" p1 rounded-full op-fade hover:bg-hover hover:text-primary hover:op100
             flex="~ items-center"
             title="Compare in Graph"
             @click="showGraph(pkgs)"
@@ -74,7 +74,7 @@ function showGraph(pkgs: PackageNode[]) {
           <button
             v-for="pkg of pkgs" :key="pkg.version"
             px2 rounded flex="~ items-center gap-2"
-            font-mono hover="bg-active"
+            font-mono hover="bg-hover"
             :class="selectedNode === pkg ? 'bg-active' : ''"
             @click="selectedNode = pkg"
           >

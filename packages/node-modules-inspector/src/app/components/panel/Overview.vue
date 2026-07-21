@@ -54,7 +54,7 @@ const timepassed = computed(() => rawPayload.value?.timestamp ? Date.now() - raw
         v-tooltip="'Collapse sidepanel'"
         w-10 h-10 mr--2
         rounded-full op30
-        hover="op100 bg-active"
+        hover="op100 bg-hover"
         title="Collapse sidepanel"
         flex="~ items-center justify-center"
         @click="settings.collapseSidepanel = !settings.collapseSidepanel"

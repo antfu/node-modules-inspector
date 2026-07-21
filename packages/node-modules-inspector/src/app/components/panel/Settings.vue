@@ -9,10 +9,10 @@ const backend = getBackend()
 <template>
   <div>
     <div flex="~ col gap-2" p4>
-      <OptionItem title="Simplify module types" description="Show only ESM/CJS">
+      <OptionItem :div="true" title="Simplify module types" description="Show only ESM/CJS">
         <FormCheckbox v-model="settings.moduleTypeSimple" />
       </OptionItem>
-      <OptionItem title="Treat FAUX as ESM" description="Treat FAUX as ESM">
+      <OptionItem :div="true" title="Treat FAUX as ESM" description="Treat FAUX as ESM">
         <FormCheckbox v-model="settings.treatFauxAsESM" />
       </OptionItem>
       <OptionItem title="Module type indicator" description="Rendering mode of module type indicator">
@@ -22,10 +22,10 @@ const backend = getBackend()
           :titles="['Badge', 'Circle', 'None']"
         />
       </OptionItem>
-      <OptionItem title="Show size badge" description="Show install size badge on package list">
+      <OptionItem :div="true" title="Show size badge" description="Show install size badge on package list">
         <FormCheckbox v-model="settings.showInstallSizeBadge" />
       </OptionItem>
-      <OptionItem title="Show publish time badge" description="Show publish time badge on package list">
+      <OptionItem :div="true" title="Show publish time badge" description="Show publish time badge on package list">
         <FormCheckbox v-model="settings.showPublishTimeBadge" />
       </OptionItem>
       <OptionItem title="Provenance badge" description="Show provenance indicator on packages">
@@ -35,10 +35,10 @@ const backend = getBackend()
           :titles="['Present', 'Absent', 'None']"
         />
       </OptionItem>
-      <OptionItem title="Colorize size badge" description="Colorize package size badge">
+      <OptionItem :div="true" title="Colorize size badge" description="Colorize package size badge">
         <FormCheckbox v-model="settings.colorizePackageSize" />
       </OptionItem>
-      <OptionItem title="Animate chart" description="Animate chart">
+      <OptionItem :div="true" title="Animate chart" description="Animate chart">
         <FormCheckbox v-model="settings.chartAnimation" />
       </OptionItem>
       <OptionItem title="Dependency source badge" description="Show a badge of the source type">
@@ -48,7 +48,7 @@ const backend = getBackend()
           :titles="['None', 'Prod', 'Dev', 'Both']"
         />
       </OptionItem>
-      <OptionItem title="Prefer npmx.dev" description="Use npmx.dev instead of npmjs.com for links">
+      <OptionItem :div="true" title="Prefer npmx.dev" description="Use npmx.dev instead of npmjs.com for links">
         <FormCheckbox v-model="settings.preferNpmx" />
       </OptionItem>
     </div>

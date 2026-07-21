@@ -20,7 +20,7 @@ defineProps<{
       :src="funding.avatar"
       :name="funding.name"
       :size="24"
-      class="bg-active border border-base"
+      class="bg-ambient border border-base"
     />
     <span>{{ funding.name }}</span>
     <slot />

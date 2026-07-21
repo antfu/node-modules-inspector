@@ -36,7 +36,7 @@ const messageColors = {
       <button
         v-if="messages.length"
         v-tooltip="'Toggle file composition'"
-        p1 rounded-full hover:bg-active mr--2
+        p1 rounded-full hover:bg-hover mr--2
         title="Toggle file composition"
       >
         <div i-ph-caret-down transition duration-300 :class="settings.showPublintMessages ? 'op75' : 'rotate-90 op-mute'" />
@@ -48,7 +48,7 @@ const messageColors = {
       p3 mt--2 of-x-auto w-full
       :href="`https://publint.dev/${props.pkg.spec}`"
       target="_blank"
-      :class="messages.length > 0 ? 'hover:bg-active' : ''"
+      :class="messages.length > 0 ? 'hover:bg-hover' : ''"
     >
       <div v-for="message of messages" :key="message.code" text-sm flex="~ gap-2">
         <div :class="icons[message.type]" flex-none mt0.5 />

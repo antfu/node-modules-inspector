@@ -11,7 +11,7 @@ defineProps<{
     v-if="action.kind === 'dep-upgrade'"
     :text="action.depType"
     :color="action.depType === 'peer' ? 'purple' : 'primary'"
-    class="font-mono uppercase"
+    class="font-mono uppercase text-xs"
   />
-  <DisplayBadge v-else text="publint" color="teal" class="font-mono uppercase" />
+  <DisplayBadge v-else text="publint" color="teal" class="font-mono uppercase text-xs" />
 </template>

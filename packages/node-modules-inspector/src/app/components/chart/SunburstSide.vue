@@ -26,7 +26,7 @@ const emit = defineEmits<{
       <template v-for="child of selected.children" :key="child.id">
         <button
           ws-nowrap text-nowrap text-left overflow-hidden text-ellipsis text-sm
-          hover="bg-active" rounded px2
+          hover="bg-hover" rounded px2
           @click="emit('select', child)"
         >
           <span v-if="child.meta && child.meta === selected?.meta" text-primary>(self)</span>
@@ -36,7 +36,7 @@ const emit = defineEmits<{
 
         <button
           relative flex="~ gap-1 items-center"
-          hover="bg-active" rounded
+          hover="bg-hover" rounded
           @click="emit('select', child)"
         >
           <div

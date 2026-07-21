@@ -58,7 +58,7 @@ onBeforeUnmount(() => {
   >
     <button
       v-tooltip="'Toggle Terminal'"
-      w-10 h-10 rounded-full hover:bg-active op-fade hover:op100
+      w-10 h-10 rounded-full hover:bg-hover op-fade hover:op100
       flex="~ items-center justify-center"
       title="Toggle Terminal"
       @click="openTerminal = !openTerminal"
@@ -77,7 +77,7 @@ onBeforeUnmount(() => {
     <div absolute top-2 right-2 flex="~ items-center gap-0">
       <button
         w-10 h-10 rounded-full op30
-        hover="op100 bg-active"
+        hover="op100 bg-hover"
         flex="~ items-center justify-center"
         @click="openTerminal = false"
       >

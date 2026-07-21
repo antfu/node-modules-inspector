@@ -146,7 +146,7 @@ function showAll() {
                 <tr
                   v-for="action of groupDepUpgrades" :key="action.key"
                   border="t base"
-                  hover:bg-active cursor-pointer
+                  hover:bg-hover cursor-pointer
                   @click="switchTo(action)"
                 >
                   <td py1.5 px2 font-mono>

@@ -64,38 +64,33 @@ const depthGridRows = computed(() => Math.ceil(availableDepths.value.length / 3)
         </div>
       </div>
       <div flex-auto />
-      <label
-        flex="~ gap-1 items-center"
+      <FormCheckbox
+        v-model="depthsRefsAll"
       >
-        <FormCheckbox
-          v-model="depthsRefsAll"
-        />
-        <div>
+        <span flex="~ gap-1 items-center">
           All
-        </div>
-        <DisplayNumberBadge
-          :value="payloads.available.packages.length"
-        />
-      </label>
+          <DisplayNumberBadge
+            :value="payloads.available.packages.length"
+          />
+        </span>
+      </FormCheckbox>
     </div>
     <div grid="~ flow-col" :style="`grid-template-rows: repeat(${depthGridRows}, minmax(0, 1fr));`">
-      <label
+      <FormCheckbox
         v-for="depth of availableDepths"
         :key="depth"
-        flex="~ gap-1 items-center" select-none
+        v-model="depthsRefs[depth]!.value"
+        select-none
         @dblclick.prevent="selectOnly(depth)"
       >
-        <FormCheckbox
-          v-model="depthsRefs[depth]!.value"
-        />
-        <div font-mono>
-          #{{ depth }}
-        </div>
-        <DisplayNumberBadge
-          :value="payloads.available.packages.filter(p => p.depth === depth).length"
-          rounded-full text-xs
-        />
-      </label>
+        <span flex="~ gap-1 items-center">
+          <span font-mono>#{{ depth }}</span>
+          <DisplayNumberBadge
+            :value="payloads.available.packages.filter(p => p.depth === depth).length"
+            rounded-full text-xs
+          />
+        </span>
+      </FormCheckbox>
     </div>
   </div>
 </template>

@@ -111,8 +111,8 @@ catalogs:
       version: 0.1.2
   dev:
     '@antfu/design':
-      specifier: ^0.2.2
-      version: 0.2.2
+      specifier: ^0.3.2
+      version: 0.3.2
     '@antfu/ni':
       specifier: ^30.2.0
       version: 30.2.0
@@ -493,7 +493,7 @@ importers:
     devDependencies:
       '@antfu/design':
         specifier: catalog:dev
-        version: 0.2.2(@antfu/utils@9.3.0)(@axe-core/playwright@4.12.1(playwright-core@1.61.1))(@iconify-json/catppuccin@1.2.17)(@tanstack/vue-virtual@3.13.33(vue@3.5.40(typescript@5.9.3)))(@unocss/core@66.7.5)(colorjs.io@0.6.1)(floating-vue@5.2.2(@nuxt/kit-nightly@5.0.0-29743145.f100e56e(magic-string@1.0.0)(magicast@0.5.3)(oxc-parser@0.131.0)(rolldown@1.2.0)(unplugin@3.3.0(esbuild@0.28.1)(rolldown@1.2.0)(rollup@4.62.2)(vite@8.1.5)(webpack@5.98.0(esbuild@0.28.1))))(vue@3.5.40(typescript@5.9.3)))(playwright@1.61.1)(reka-ui@2.10.1(vue@3.5.40(typescript@5.9.3)))(unocss@66.7.5(@unocss/webpack@66.7.5(esbuild@0.28.1)(rolldown@1.2.0)(rollup@4.62.2)(vite@8.1.5)(webpack@5.98.0(esbuild@0.28.1)))(vite@8.1.5))(vue@3.5.40(typescript@5.9.3))
+        version: 0.3.2(@antfu/utils@9.3.0)(@axe-core/playwright@4.12.1(playwright-core@1.61.1))(@iconify-json/catppuccin@1.2.17)(@tanstack/vue-virtual@3.13.33(vue@3.5.40(typescript@5.9.3)))(@unocss/core@66.7.5)(colorjs.io@0.6.1)(floating-vue@5.2.2(@nuxt/kit-nightly@5.0.0-29743145.f100e56e(magic-string@1.0.0)(magicast@0.5.3)(oxc-parser@0.131.0)(rolldown@1.2.0)(unplugin@3.3.0(esbuild@0.28.1)(rolldown@1.2.0)(rollup@4.62.2)(vite@8.1.5)(webpack@5.98.0(esbuild@0.28.1))))(vue@3.5.40(typescript@5.9.3)))(playwright@1.61.1)(reka-ui@2.10.1(vue@3.5.40(typescript@5.9.3)))(unocss@66.7.5(@unocss/webpack@66.7.5(esbuild@0.28.1)(rolldown@1.2.0)(rollup@4.62.2)(vite@8.1.5)(webpack@5.98.0(esbuild@0.28.1)))(vite@8.1.5))(vue@3.5.40(typescript@5.9.3))
       '@storybook/addon-docs':
         specifier: catalog:storybook
         version: 10.5.3(@types/react@19.2.17)(esbuild@0.28.1)(rollup@4.62.2)(storybook@10.5.3(@types/react@19.2.17)(react@19.2.7))(vite@8.1.5)(webpack@5.98.0(esbuild@0.28.1))
@@ -622,8 +622,8 @@ packages:
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
 
-  '@antfu/design@0.2.2':
-    resolution: {integrity: sha512-5EFnKrZXwmtHfM9BnptN9rVS7eJ8zMX24xJbYYe4A7yN6+FNjj9inPL/39nlDEWWOuMpZdvOXNvxbG08LYO+Tw==}
+  '@antfu/design@0.3.2':
+    resolution: {integrity: sha512-7n2LGlXEnmGZ+XYe5vVE61VC5iRg+CC63gwLwwKAh421GfxC0NSRIeU4HItMFNZZ0FwLxjbjb4ifPGXwlD+2cA==}
     peerDependencies:
       '@antfu/utils': ^9.0.0
       '@axe-core/playwright': ^4.0.0
@@ -631,6 +631,7 @@ packages:
       '@tanstack/vue-virtual': ^3.0.0
       '@unocss/core': '>=66.0.0'
       colorjs.io: ^0.6.0
+      dompurify: ^3.0.0
       floating-vue: ^5.0.0
       playwright: ^1.0.0
       reka-ui: ^2.0.0
@@ -649,6 +650,8 @@ packages:
       '@unocss/core':
         optional: true
       colorjs.io:
+        optional: true
+      dompurify:
         optional: true
       floating-vue:
         optional: true
@@ -8618,7 +8621,7 @@ snapshots:
       '@jridgewell/gen-mapping': 0.3.13
       '@jridgewell/trace-mapping': 0.3.31
 
-  '@antfu/design@0.2.2(@antfu/utils@9.3.0)(@axe-core/playwright@4.12.1(playwright-core@1.61.1))(@iconify-json/catppuccin@1.2.17)(@tanstack/vue-virtual@3.13.33(vue@3.5.40(typescript@5.9.3)))(@unocss/core@66.7.5)(colorjs.io@0.6.1)(floating-vue@5.2.2(@nuxt/kit-nightly@5.0.0-29743145.f100e56e(magic-string@1.0.0)(magicast@0.5.3)(oxc-parser@0.131.0)(rolldown@1.2.0)(unplugin@3.3.0(esbuild@0.28.1)(rolldown@1.2.0)(rollup@4.62.2)(vite@8.1.5)(webpack@5.98.0(esbuild@0.28.1))))(vue@3.5.40(typescript@5.9.3)))(playwright@1.61.1)(reka-ui@2.10.1(vue@3.5.40(typescript@5.9.3)))(unocss@66.7.5(@unocss/webpack@66.7.5(esbuild@0.28.1)(rolldown@1.2.0)(rollup@4.62.2)(vite@8.1.5)(webpack@5.98.0(esbuild@0.28.1)))(vite@8.1.5))(vue@3.5.40(typescript@5.9.3))':
+  '@antfu/design@0.3.2(@antfu/utils@9.3.0)(@axe-core/playwright@4.12.1(playwright-core@1.61.1))(@iconify-json/catppuccin@1.2.17)(@tanstack/vue-virtual@3.13.33(vue@3.5.40(typescript@5.9.3)))(@unocss/core@66.7.5)(colorjs.io@0.6.1)(floating-vue@5.2.2(@nuxt/kit-nightly@5.0.0-29743145.f100e56e(magic-string@1.0.0)(magicast@0.5.3)(oxc-parser@0.131.0)(rolldown@1.2.0)(unplugin@3.3.0(esbuild@0.28.1)(rolldown@1.2.0)(rollup@4.62.2)(vite@8.1.5)(webpack@5.98.0(esbuild@0.28.1))))(vue@3.5.40(typescript@5.9.3)))(playwright@1.61.1)(reka-ui@2.10.1(vue@3.5.40(typescript@5.9.3)))(unocss@66.7.5(@unocss/webpack@66.7.5(esbuild@0.28.1)(rolldown@1.2.0)(rollup@4.62.2)(vite@8.1.5)(webpack@5.98.0(esbuild@0.28.1)))(vite@8.1.5))(vue@3.5.40(typescript@5.9.3))':
     dependencies:
       '@vueuse/core': 14.3.0(vue@3.5.40(typescript@5.9.3))
       unocss: 66.7.5(@unocss/webpack@66.7.5(esbuild@0.28.1)(rolldown@1.2.0)(rollup@4.62.2)(vite@8.1.5)(webpack@5.98.0(esbuild@0.28.1)))(vite@8.1.5)

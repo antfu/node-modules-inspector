@@ -35,20 +35,17 @@ const moduleTypes = Object.fromEntries(
 <template>
   <div flex="~ col gap-2" p4 border="t base">
     <div flex="~ gap-4 wrap">
-      <label
+      <FormCheckbox
         v-for="type of moduleTypesAvailableSelect"
         :key="type"
-        flex="~ gap-1 items-center"
+        v-model="moduleTypes[type].value"
       >
-        <FormCheckbox
-          v-model="moduleTypes[type].value"
-        />
         <DisplayModuleType
           :pkg="type"
           :force="true"
           :class="moduleTypes[type].value ? '' : 'saturate-0 op75'"
         />
-      </label>
+      </FormCheckbox>
     </div>
   </div>
 </template>

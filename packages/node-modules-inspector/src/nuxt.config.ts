@@ -44,9 +44,10 @@ export default defineNuxtConfig({
         pathPrefix: false,
         extensions: ['vue'],
         ignore: [
-          // These two need optional peers (splitpanes, @tanstack/vue-virtual) we don't use.
+          // These need optional peers (splitpanes, @tanstack/vue-virtual, dompurify) we don't use.
           '**/LayoutSplitPane.vue',
           '**/LayoutVirtualList.vue',
+          '**/DisplayIconifyRemoteIcon.vue',
           // Intentionally shadowed: the app keeps its own (deprecated/vulnerable
           // coloring must inherit from context; the design one is self-colored).
           '**/DisplayPackageName.vue',

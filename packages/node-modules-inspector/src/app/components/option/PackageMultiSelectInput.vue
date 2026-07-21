@@ -28,7 +28,7 @@ function onCommitted(node: PackageNode) {
           <label
             p3 flex-none rounded-full h-full
             flex="~ items-center gap-1.5"
-            hover:bg-active
+            hover:bg-hover
           >
             <slot name="icon" />
             <input
@@ -39,7 +39,7 @@ function onCommitted(node: PackageNode) {
               @keydown="onEnter"
             >
             <button
-              w-6 h-6 rounded-full hover:bg-active flex
+              w-6 h-6 rounded-full hover:bg-hover flex
               :class="input ? '' : 'op0'"
               @click="input = ''"
             >
@@ -58,7 +58,7 @@ function onCommitted(node: PackageNode) {
       >
         <TreeItem :pkg="pkg" flex-auto :show-module-type="false" />
         <button
-          flex-none op-fade rounded-full p1 hover="op100 bg-active"
+          flex-none op-fade rounded-full p1 hover="op100 bg-hover"
           @click="selected.delete(pkg)"
         >
           <div i-ph-x />
