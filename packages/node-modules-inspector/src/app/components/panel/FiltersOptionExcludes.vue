@@ -43,6 +43,9 @@ import { filters } from '../../state/filters'
       <OptionItem :div="true" title="Exclude Types Packages" description="Exclude TypeScript declaration packages">
         <FormCheckbox v-model="filters.state.excludeDts" />
       </OptionItem>
+      <OptionItem :div="true" title="Exclude Dev Dependencies" description="Exclude packages introduced only as dev dependencies">
+        <FormCheckbox v-model="filters.state.excludeDev" />
+      </OptionItem>
       <OptionItem :div="true" title="Exclude Optional Packages" description="Exclude optional packages">
         <FormCheckbox v-model="filters.state.excludeOptional" />
       </OptionItem>

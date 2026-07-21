@@ -144,7 +144,11 @@ async function startServers() {
   start(
     'dev',
     'node',
-    ['packages/node-modules-inspector/bin.mjs', '--port', String(PORT_DEV), '--host', '127.0.0.1', '--no-open'],
+    // `--no-auth` skips devframe's interactive OTP handshake — a headless
+    // Playwright browser can't complete the "open the printed magic link"
+    // step, and the RPC calls the SPA makes on load would otherwise be
+    // rejected as untrusted (DF0036).
+    ['packages/node-modules-inspector/bin.mjs', '--port', String(PORT_DEV), '--host', '127.0.0.1', '--no-open', '--no-auth'],
   )
   start(
     'build',
