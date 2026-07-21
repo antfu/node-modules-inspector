@@ -12,6 +12,7 @@ export interface FilterOptions {
 
   excludes: null | string[]
   excludeDts: boolean
+  excludeDev: boolean
   excludeOptional: boolean
   excludePrivate: boolean
   excludeWorkspace: boolean
@@ -46,6 +47,7 @@ export const FILTERS_SCHEMA: {
   // Excludes
   excludes: { type: Array, default: null, category: 'exclude' },
   excludeDts: { type: Boolean, default: true, category: 'exclude' },
+  excludeDev: { type: Boolean, default: false, category: 'exclude' },
   excludeOptional: { type: Boolean, default: true, category: 'exclude' },
   excludePrivate: { type: Boolean, default: false, category: 'exclude' },
   excludeWorkspace: { type: Boolean, default: import.meta.env.BACKEND === 'webcontainer', category: 'exclude' },

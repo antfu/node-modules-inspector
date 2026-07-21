@@ -42,7 +42,7 @@ const filtersWhy = computed(() => state.why?.length ? constructPackageFilters(st
 export function filtersExcludePredicate(pkg: PackageNode) {
   if (state.excludeDts && pkg.resolved.module === 'dts')
     return true
-  if (state.excludeDts && pkg.resolved.module === 'dts')
+  if (state.excludeDev && !pkg.workspace && pkg.flatClusters.has(CLUSTER_DEP_DEV) && !pkg.flatClusters.has(CLUSTER_DEP_PROD))
     return true
   if (state.excludeOptional && !pkg.filepath)
     return true

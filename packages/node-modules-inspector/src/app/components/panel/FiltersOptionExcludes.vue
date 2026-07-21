@@ -43,6 +43,9 @@ import { filters } from '../../state/filters'
       <OptionItem title="Exclude Types Packages" description="Exclude TypeScript declaration packages">
         <OptionCheckbox v-model="filters.state.excludeDts" />
       </OptionItem>
+      <OptionItem title="Exclude Dev Dependencies" description="Exclude packages introduced only as dev dependencies">
+        <OptionCheckbox v-model="filters.state.excludeDev" />
+      </OptionItem>
       <OptionItem title="Exclude Optional Packages" description="Exclude optional packages">
         <OptionCheckbox v-model="filters.state.excludeOptional" />
       </OptionItem>
