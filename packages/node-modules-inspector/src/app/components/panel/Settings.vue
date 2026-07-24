@@ -1,9 +1,12 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import { getBackend } from '../../backends'
 import { fetchData } from '../../state/data'
 import { settings } from '../../state/settings'
 
 const backend = getBackend()
+
+const showConfigDialog = ref(false)
 </script>
 
 <template>
@@ -60,6 +63,12 @@ const backend = getBackend()
         <div i-ph-arrows-clockwise-duotone />
         Refetch Data
       </button>
+      <button btn-action @click="showConfigDialog = true">
+        <div i-ph-file-code-duotone />
+        Save as config file
+      </button>
     </div>
+
+    <PanelSettingsConfigDialog v-model="showConfigDialog" />
   </div>
 </template>
