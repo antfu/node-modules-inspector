@@ -83,14 +83,14 @@ function download() {
           <div flex="~ items-center justify-end gap-2" border="t base" px4 py3>
             <button
               btn-action text-sm
-              :class="copied ? 'text-green' : ''"
+              :class="copied ? 'text-primary' : ''"
               @click="copy()"
             >
-              <div :class="copied ? 'i-ph-check-duotone' : 'i-ph-copy-duotone'" />
+              <div :class="copied ? 'i-ph-check' : 'i-ph-copy-duotone'" />
               {{ copied ? 'Copied' : 'Copy' }}
             </button>
             <button
-              btn-action btn-action-active text-sm
+              btn-action text-sm
               @click="download()"
             >
               <div i-ph-download-simple-duotone />

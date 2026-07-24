@@ -63,18 +63,10 @@ const showConfigDialog = ref(false)
         <div i-ph-arrows-clockwise-duotone />
         Refetch Data
       </button>
-    </div>
-
-    <div border="t base" p4 flex="~ col gap-2">
       <button btn-action @click="showConfigDialog = true">
         <div i-ph-file-code-duotone />
         Save as config file
       </button>
-      <div text-xs op-fade>
-        Export the current filters and settings as a
-        <code color-active bg-primary:10 rounded px1 py0.5>node-modules-inspector.config.ts</code>
-        file.
-      </div>
     </div>
 
     <PanelSettingsConfigDialog v-model="showConfigDialog" />
