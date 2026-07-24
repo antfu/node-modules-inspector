@@ -14,7 +14,11 @@ trustPolicyExclude:
   - tinyexec@1.2.2
 
 overrides:
-  '@nuxt/devtools': 4.0.0-alpha.6
+  '@nuxt/devtools': ^4.0.0-alpha.9
+  '@nuxt/devtools-kit': ^4.0.0-alpha.9
+  '@vitejs/devtools': ^0.4.8
+  '@vitejs/devtools-kit': ^0.4.8
+  '@vitejs/devtools-rolldown': ^0.4.8
   chokidar: 5.0.0
   semver: 7.8.0
 
@@ -38,18 +42,18 @@ catalogs:
     '@modelcontextprotocol/sdk': ^1.29.0
     ansis: ^4.3.1
     cac: ^7.0.0
-    devframe: ^0.7.5
+    devframe: ^0.7.14
     fast-npm-meta: ^2.2.0
     get-port-please: ^3.2.0
     h3: ^2.0.1-rc.25
-    js-yaml: ^5.2.1
+    js-yaml: ^5.2.2
     launch-editor: ^2.14.1
     ohash: ^2.0.11
     open: ^11.0.0
-    p-limit: ^7.3.0
-    package-manager-detector: ^1.7.0
+    p-limit: ^7.3.1
+    package-manager-detector: ^1.8.0
     pathe: ^2.0.3
-    publint: ^0.3.21
+    publint: ^0.3.22
     semver: ^7.8.5
     stream-json: ^3.5.0
     structured-clone-es: ^2.0.0
@@ -58,16 +62,16 @@ catalogs:
     unconfig: ^7.5.0
     unstorage: ^1.17.5
     valibot: ^1.4.2
-    verkit: ^0.1.2
+    verkit: ^0.3.0
   dev:
-    '@antfu/ni': ^30.2.0
-    '@nuxt/devtools': ^4.0.0-alpha.7
+    '@antfu/ni': ^30.3.0
+    '@nuxt/devtools': ^4.0.0-alpha.9
     bumpp: ^11.1.0
     chokidar: ^5.0.0
     skills-npm: ^1.2.0
     typescript: ^6.0.3
     vite-plugin-inspect: ^12.0.2
-    vue-tsc: ^3.3.7
+    vue-tsc: ^3.3.8
   frontend:
     '@webcontainer/api': ^1.6.4
     '@xterm/addon-fit': ^0.11.0
@@ -92,9 +96,9 @@ catalogs:
   inlined:
     '@antfu/utils': ^9.3.0
   lint:
-    '@antfu/eslint-config': ^9.1.0
+    '@antfu/eslint-config': ^9.2.0
     '@nuxt/eslint': ^1.16.0
-    '@typescript-eslint/utils': ^8.64.0
+    '@typescript-eslint/utils': ^8.65.0
     '@unocss/eslint-config': ^66.7.5
     eslint: ^10.7.0
     nano-staged: ^1.0.2
@@ -109,7 +113,7 @@ catalogs:
     vitest: ^4.1.10
   types:
     '@pnpm/list': ^1000.3.4
-    '@pnpm/types': ^1101.4.0
+    '@pnpm/types': ^1101.6.0
     '@types/d3': ^7.4.3
     '@types/d3-hierarchy': ^3.1.7
     '@types/js-yaml': ^4.0.9
