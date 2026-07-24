@@ -124,12 +124,14 @@ export function generateConfigFile(): string {
   const existing = (rawPayload.value?.config ?? {}) as NodeModulesInspectorConfig
   const config: NodeModulesInspectorConfig = {}
 
-  // Preserve non-filter/settings fields from the existing config.
+  // Preserve non-filter/settings fields from the existing config, dropping any
+  // that equal the built-in defaults (unconfig injects `fetchNpmMeta`/`publint`
+  // into every loaded config, so they would otherwise always be emitted).
   if (existing.name != null)
     config.name = existing.name
-  if (existing.fetchNpmMeta != null)
+  if (existing.fetchNpmMeta != null && existing.fetchNpmMeta !== true)
     config.fetchNpmMeta = existing.fetchNpmMeta
-  if (existing.publint != null)
+  if (existing.publint != null && existing.publint !== false)
     config.publint = existing.publint
   const excludePackages = toStringArray(existing.excludePackages)
   if (excludePackages?.length)
