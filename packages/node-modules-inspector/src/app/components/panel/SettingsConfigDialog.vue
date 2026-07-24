@@ -73,6 +73,7 @@ function download() {
               Save the following as
               <code color-active bg-primary:10 rounded px1 py0.5>{{ CONFIG_FILENAME }}</code>
               in your project root to reuse the current filters and settings as defaults.
+              It is merged on top of your existing config, preserving its other fields.
             </p>
             <pre
               text-xs p3 rounded-lg border="~ base" bg-code

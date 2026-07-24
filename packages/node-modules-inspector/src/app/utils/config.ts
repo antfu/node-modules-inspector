@@ -3,6 +3,7 @@ import type { NodeModulesInspectorConfig, SettingsOptions } from '../../shared/t
 import { objectMap } from '@antfu/utils'
 import { toRaw } from 'vue'
 import { FILTERS_SCHEMA } from '../../shared/filters'
+import { rawPayload } from '../state/data'
 import { filters } from '../state/filters'
 import { settings, SETTINGS_DEFAULT } from '../state/settings'
 
@@ -72,6 +73,17 @@ export function getNonDefaultSettings(): Partial<SettingsOptions> {
   return result
 }
 
+/**
+ * Keep only the string entries of a config array (function-based matchers
+ * cannot be serialized and are already stripped when the config is sent to
+ * the frontend).
+ */
+function toStringArray(value: unknown): string[] | undefined {
+  if (!Array.isArray(value))
+    return undefined
+  return value.filter((v): v is string => typeof v === 'string')
+}
+
 const IDENTIFIER_RE = /^[a-z_$][\w$]*$/i
 
 function serialize(value: unknown, indent: number): string {
@@ -104,11 +116,31 @@ function serialize(value: unknown, indent: number): string {
 
 /**
  * Generate the source of a `node-modules-inspector.config.ts` file that
- * captures the current filters and settings as defaults.
+ * captures the current filters and settings as defaults, merged on top of the
+ * existing config so its other fields (name, publint, excludes, ...) are
+ * preserved.
  */
 export function generateConfigFile(): string {
+  const existing = (rawPayload.value?.config ?? {}) as NodeModulesInspectorConfig
   const config: NodeModulesInspectorConfig = {}
 
+  // Preserve non-filter/settings fields from the existing config.
+  if (existing.name != null)
+    config.name = existing.name
+  if (existing.fetchNpmMeta != null)
+    config.fetchNpmMeta = existing.fetchNpmMeta
+  if (existing.publint != null)
+    config.publint = existing.publint
+  const excludePackages = toStringArray(existing.excludePackages)
+  if (excludePackages?.length)
+    config.excludePackages = excludePackages
+  const excludeDependenciesOf = toStringArray(existing.excludeDependenciesOf)
+  if (excludeDependenciesOf?.length)
+    config.excludeDependenciesOf = excludeDependenciesOf
+
+  // The current filter/settings state already folds in the existing config's
+  // defaults, so diffing against the hard defaults yields the fully-merged
+  // result (existing config values + the user's changes, including resets).
   const defaultFilters = getNonDefaultFilters()
   if (Object.keys(defaultFilters).length)
     config.defaultFilters = defaultFilters
