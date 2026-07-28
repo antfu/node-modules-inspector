@@ -68,17 +68,8 @@
     "vitest": "catalog:testing",
     "vue-tsc": "catalog:dev"
   },
-  "resolutions": {
-    "@nuxt/devtools": "catalog:dev",
-    "chokidar": "catalog:dev",
-    "esbuild": "catalog:bundling",
-    "nuxt": "catalog:bundling",
-    "rollup": "catalog:bundling",
-    "semver": "catalog:deps",
-    "vite": "catalog:bundling"
-  },
   "simple-git-hooks": {
-    "pre-commit": "pnpm i --frozen-lockfile --ignore-scripts --offline && npx nano-staged"
+    "pre-commit": "pnpm i --frozen-lockfile --ignore-scripts --offline && pnpm exec nano-staged"
   },
   "nano-staged": {
     "*": "eslint --fix --no-warn-ignored --no-error-on-unmatched-pattern"

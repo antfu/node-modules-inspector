@@ -13,13 +13,20 @@ trustPolicyExclude:
   - '@pnpm/modules-yaml'
   - tinyexec@1.2.2
 
+refs:
+  devframe: &devframe ^0.7.14
+  nuxt-devtools: &nuxt-devtools ^4.0.0-alpha.9
+  vite-devtools: &vite-devtools ^0.4.9
+
 overrides:
-  '@nuxt/devtools': ^4.0.0-alpha.9
-  '@nuxt/devtools-kit': ^4.0.0-alpha.9
-  '@vitejs/devtools': ^0.4.8
-  '@vitejs/devtools-kit': ^0.4.8
-  '@vitejs/devtools-rolldown': ^0.4.8
+  '@devframes/hub': *devframe
+  '@nuxt/devtools': *nuxt-devtools
+  '@nuxt/devtools-kit': *nuxt-devtools
+  '@vitejs/devtools': *vite-devtools
+  '@vitejs/devtools-kit': *vite-devtools
+  '@vitejs/devtools-rolldown': *vite-devtools
   chokidar: 5.0.0
+  devframe: *devframe
   semver: 7.8.0
 
 patchedDependencies:
@@ -34,7 +41,7 @@ catalogs:
     '@vueuse/nuxt': ^14.3.0
     esbuild: ^0.28.1
     nuxt: npm:nuxt-nightly@5x
-    rollup: ^4.62.2
+    rollup: ^4.62.3
     rollup-plugin-esbuild: ^6.2.1
     unbuild: ^3.6.1
     vite: ^8.1.5
@@ -42,10 +49,10 @@ catalogs:
     '@modelcontextprotocol/sdk': ^1.29.0
     ansis: ^4.3.1
     cac: ^7.0.0
-    devframe: ^0.7.14
+    devframe: *devframe
     fast-npm-meta: ^2.2.0
     get-port-please: ^3.2.0
-    h3: ^2.0.1-rc.25
+    h3: ^2.0.1-rc.26
     js-yaml: ^5.2.2
     launch-editor: ^2.14.1
     ohash: ^2.0.11
@@ -54,7 +61,6 @@ catalogs:
     package-manager-detector: ^1.8.0
     pathe: ^2.0.3
     publint: ^0.3.22
-    semver: ^7.8.5
     stream-json: ^3.5.0
     structured-clone-es: ^2.0.0
     tinyexec: ^1.2.4
@@ -65,9 +71,8 @@ catalogs:
     verkit: ^0.3.0
   dev:
     '@antfu/ni': ^30.3.0
-    '@nuxt/devtools': ^4.0.0-alpha.9
+    '@nuxt/devtools': *nuxt-devtools
     bumpp: ^11.1.0
-    chokidar: ^5.0.0
     skills-npm: ^1.2.0
     typescript: ^6.0.3
     vite-plugin-inspect: ^12.0.2
@@ -92,7 +97,7 @@ catalogs:
     '@iconify-json/logos': ^1.2.11
     '@iconify-json/ph': ^1.2.2
     '@iconify-json/ri': ^1.2.10
-    '@iconify-json/simple-icons': ^1.2.91
+    '@iconify-json/simple-icons': ^1.2.92
   inlined:
     '@antfu/utils': ^9.3.0
   lint:
@@ -100,13 +105,13 @@ catalogs:
     '@nuxt/eslint': ^1.16.0
     '@typescript-eslint/utils': ^8.65.0
     '@unocss/eslint-config': ^66.7.5
-    eslint: ^10.7.0
+    eslint: ^10.8.0
     nano-staged: ^1.0.2
     nuxt-eslint-auto-explicit-import: ^0.2.0
     simple-git-hooks: ^2.13.1
   testing:
     '@axe-core/playwright': ^4.12.1
-    '@playwright/test': ^1.61.1
+    '@playwright/test': ^1.62.0
     '@valibot/to-json-schema': ^1.7.1
     mlly: ^1.8.2
     type-fest: 4.41.0
