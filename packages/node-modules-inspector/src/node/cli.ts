@@ -118,9 +118,10 @@ cli
   .option('--host <host>', 'Host', { default: process.env.HOST || '127.0.0.1' })
   .option('--port <port>', 'Port', { default: process.env.PORT || 9999 })
   .option('--open', 'Open browser', { default: true })
-  .option('--auth', 'Require the one-time-code auth handshake before RPC calls', { default: true })
+  .option('--auth', 'Require the one-time-code auth handshake before RPC calls')
   .action(async (options) => {
     const host = options.host
+    const auth = options.auth ?? (host === '0.0.0.0' || host === '::')
     const port = await resolveDevServerPort(devframe, {
       host,
       defaultPort: Number(options.port),
@@ -137,9 +138,8 @@ cli
         config: options.config,
         depth: Number(options.depth),
         // Forwarded to createDevServer's own auth resolution (not consumed by
-        // devframe.setup) — `--no-auth` opts out of the interactive OTP gate
-        // for trusted automation (e.g. the e2e suite driving a headless browser).
-        auth: options.auth,
+        // devframe.setup). Explicit --auth/--no-auth override the host default.
+        auth,
       },
       openBrowser: options.open ? url : false,
     })

@@ -13,9 +13,20 @@ trustPolicyExclude:
   - '@pnpm/modules-yaml'
   - tinyexec@1.2.2
 
+refs:
+  devframe: &devframe ^0.7.14
+  nuxt-devtools: &nuxt-devtools ^4.0.0-alpha.9
+  vite-devtools: &vite-devtools ^0.4.9
+
 overrides:
-  '@nuxt/devtools': 4.0.0-alpha.6
+  '@devframes/hub': *devframe
+  '@nuxt/devtools': *nuxt-devtools
+  '@nuxt/devtools-kit': *nuxt-devtools
+  '@vitejs/devtools': *vite-devtools
+  '@vitejs/devtools-kit': *vite-devtools
+  '@vitejs/devtools-rolldown': *vite-devtools
   chokidar: 5.0.0
+  devframe: *devframe
   semver: 7.8.0
 
 patchedDependencies:
@@ -30,7 +41,7 @@ catalogs:
     '@vueuse/nuxt': ^14.3.0
     esbuild: ^0.28.1
     nuxt: npm:nuxt-nightly@5x
-    rollup: ^4.62.2
+    rollup: ^4.62.3
     rollup-plugin-esbuild: ^6.2.1
     unbuild: ^3.6.1
     vite: ^8.1.5
@@ -38,19 +49,18 @@ catalogs:
     '@modelcontextprotocol/sdk': ^1.29.0
     ansis: ^4.3.1
     cac: ^7.0.0
-    devframe: ^0.7.5
+    devframe: *devframe
     fast-npm-meta: ^2.2.0
     get-port-please: ^3.2.0
-    h3: ^2.0.1-rc.25
-    js-yaml: ^5.2.1
+    h3: ^2.0.1-rc.26
+    js-yaml: ^5.2.2
     launch-editor: ^2.14.1
     ohash: ^2.0.11
     open: ^11.0.0
-    p-limit: ^7.3.0
-    package-manager-detector: ^1.7.0
+    p-limit: ^7.3.1
+    package-manager-detector: ^1.8.0
     pathe: ^2.0.3
-    publint: ^0.3.21
-    semver: ^7.8.5
+    publint: ^0.3.22
     stream-json: ^3.5.0
     structured-clone-es: ^2.0.0
     tinyexec: ^1.2.4
@@ -58,18 +68,17 @@ catalogs:
     unconfig: ^7.5.0
     unstorage: ^1.17.5
     valibot: ^1.4.2
-    verkit: ^0.1.2
+    verkit: ^0.3.0
   dev:
     '@antfu/design': ^0.3.2
-    '@antfu/ni': ^30.2.0
-    '@nuxt/devtools': ^4.0.0-alpha.7
+    '@antfu/ni': ^30.3.0
+    '@nuxt/devtools': *nuxt-devtools
     bumpp: ^11.1.0
-    chokidar: ^5.0.0
     colorjs.io: ^0.6.1
     skills-npm: ^1.2.0
     typescript: ^6.0.3
     vite-plugin-inspect: ^12.0.2
-    vue-tsc: ^3.3.7
+    vue-tsc: ^3.3.8
   frontend:
     '@vitejs/plugin-vue': ^6.0.7
     '@webcontainer/api': ^1.6.4
@@ -92,15 +101,15 @@ catalogs:
     '@iconify-json/logos': ^1.2.11
     '@iconify-json/ph': ^1.2.2
     '@iconify-json/ri': ^1.2.10
-    '@iconify-json/simple-icons': ^1.2.91
+    '@iconify-json/simple-icons': ^1.2.92
   inlined:
     '@antfu/utils': ^9.3.0
   lint:
-    '@antfu/eslint-config': ^9.1.0
+    '@antfu/eslint-config': ^9.2.0
     '@nuxt/eslint': ^1.16.0
-    '@typescript-eslint/utils': ^8.64.0
+    '@typescript-eslint/utils': ^8.65.0
     '@unocss/eslint-config': ^66.7.5
-    eslint: ^10.7.0
+    eslint: ^10.8.0
     nano-staged: ^1.0.2
     nuxt-eslint-auto-explicit-import: ^0.2.0
     simple-git-hooks: ^2.13.1
@@ -110,14 +119,14 @@ catalogs:
     storybook: ^10.4.6
   testing:
     '@axe-core/playwright': ^4.12.1
-    '@playwright/test': ^1.61.1
+    '@playwright/test': ^1.62.0
     '@valibot/to-json-schema': ^1.7.1
     mlly: ^1.8.2
     type-fest: 4.41.0
     vitest: ^4.1.10
   types:
     '@pnpm/list': ^1000.3.4
-    '@pnpm/types': ^1101.4.0
+    '@pnpm/types': ^1101.6.0
     '@types/d3': ^7.4.3
     '@types/d3-hierarchy': ^3.1.7
     '@types/js-yaml': ^4.0.9

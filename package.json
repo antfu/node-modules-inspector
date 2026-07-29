@@ -1,8 +1,8 @@
 {
   "type": "module",
-  "version": "2.2.0",
+  "version": "2.3.1",
   "private": true,
-  "packageManager": "pnpm@11.15.1",
+  "packageManager": "pnpm@11.17.0",
   "engines": {
     "node": "^22.19.0 || ^24.11.0 || >=26.0.0"
   },
@@ -68,17 +68,8 @@
     "vitest": "catalog:testing",
     "vue-tsc": "catalog:dev"
   },
-  "resolutions": {
-    "@nuxt/devtools": "catalog:dev",
-    "chokidar": "catalog:dev",
-    "esbuild": "catalog:bundling",
-    "nuxt": "catalog:bundling",
-    "rollup": "catalog:bundling",
-    "semver": "catalog:deps",
-    "vite": "catalog:bundling"
-  },
   "simple-git-hooks": {
-    "pre-commit": "pnpm i --frozen-lockfile --ignore-scripts --offline && npx nano-staged"
+    "pre-commit": "pnpm i --frozen-lockfile --ignore-scripts --offline && pnpm exec nano-staged"
   },
   "nano-staged": {
     "*": "eslint --fix --no-warn-ignored --no-error-on-unmatched-pattern"
