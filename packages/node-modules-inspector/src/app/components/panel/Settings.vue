@@ -69,6 +69,6 @@ const showConfigDialog = ref(false)
       </button>
     </div>
 
-    <PanelSettingsConfigDialog v-model="showConfigDialog" />
+    <PanelSettingsConfigDialog v-model:open="showConfigDialog" />
   </div>
 </template>
