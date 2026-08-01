@@ -50,7 +50,7 @@ const selected = computed(() => params.report?.[0] || 'all')
       <div i-ph-scales-duotone />
       Licenses
     </NuxtLink>
-    <NuxtLink btn-action as="button" :to="{ path: '/report', hash: location.hash }" active-class="text-primary bg-primary:5">
+    <NuxtLink btn-action as="button" :to="{ path: '/report', hash: location.hash }" exact-active-class="text-primary bg-primary:5">
       <div i-ph-grid-four-duotone />
       All
     </NuxtLink>
