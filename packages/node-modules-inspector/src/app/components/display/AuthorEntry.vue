@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { ParsedAuthor } from 'node-modules-tools/utils'
 import { computed } from 'vue'
-import SafeImage from './SafeImage.vue'
 
 const props = withDefaults(defineProps<{
   author: ParsedAuthor
@@ -28,22 +27,22 @@ const href = computed(() => {
     :target="href ? '_blank' : undefined"
     flex="~ gap-1.5 items-center" of-hidden text-ellipsis
     :style="{ fontSize: `${props.size * 0.5}px`, height: `${props.size}px` }"
-    :class="href ? 'hover:bg-active' : ''"
+    :class="href ? 'hover:bg-hover' : ''"
     border="y r base rounded-full" pr-2
   >
     <template
       v-if="author.type === 'github'"
     >
-      <SafeImage
+      <DisplaySafeImage
         :src="author.avatar"
-        bg-active border="~ base rounded-full"
+        :alt="author.github"
+        class="rounded-full bg-ambient border border-base object-cover"
         :style="{ width: `${props.size}px`, height: `${props.size}px` }"
-        crossorigin="anonymous"
       >
         <template #fallback>
           <div i-ph-user-circle-duotone :style="{ width: `${props.size}px`, height: `${props.size}px` }" op-fade />
         </template>
-      </SafeImage>
+      </DisplaySafeImage>
       <span font-mono>{{ author.github }}</span>
     </template>
     <template v-else>

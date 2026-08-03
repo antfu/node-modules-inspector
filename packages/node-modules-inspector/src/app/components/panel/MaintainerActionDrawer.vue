@@ -69,13 +69,8 @@ function showAll() {
 </script>
 
 <template>
-  <UiDrawer v-model="open" width="w-180">
-    <div v-if="item" p6 pb8 flex="~ col gap-0">
-      <div text-xs op-fade uppercase tracking-wider flex="~ items-center gap-1" mb3>
-        <div i-ph-pipe-wrench-duotone />
-        Maintainer Actions
-      </div>
-
+  <OverlayDrawer v-model:open="open" title="Maintainer Actions">
+    <div v-if="item" p2 pb4 flex="~ col gap-0">
       <PanelPackageDetailsInfo :pkg="item.consumer" />
       <template v-if="groupActions.length">
         <div border="t base" my5 />
@@ -151,7 +146,7 @@ function showAll() {
                 <tr
                   v-for="action of groupDepUpgrades" :key="action.key"
                   border="t base"
-                  hover:bg-active cursor-pointer
+                  hover:bg-hover cursor-pointer
                   @click="switchTo(action)"
                 >
                   <td py1.5 px2 font-mono>
@@ -213,7 +208,7 @@ function showAll() {
             Migration progress
           </div>
           <div flex="~ items-center gap-3" mb1>
-            <UiDonut :value="item.migrationRatio" :size="28" :thickness="5" />
+            <DisplayDonut class="flex-none" :value="item.migrationRatio" :size="28" :thickness="5" />
             <div flex-auto>
               <div font-mono text-sm>
                 {{ ratioPct }}%
@@ -257,5 +252,5 @@ function showAll() {
         >{{ agentPrompt }}</pre>
       </section>
     </div>
-  </UiDrawer>
+  </OverlayDrawer>
 </template>

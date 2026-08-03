@@ -90,7 +90,7 @@ function reset() {
     <button
       :disabled="!selectedA.size || !selectedB.size"
       class="disabled:op-mute disabled:pointer-events-none"
-      px5 py1 text-lg border="~ base rounded-full" hover="bg-active op100"
+      px5 py1 text-lg border="~ base rounded-full" hover="bg-hover op100"
       @click="compare"
     >
       Start Compare
@@ -107,7 +107,7 @@ function reset() {
       fixed top-4 left="50%" transform="-50%" bg-glass shadow of-hidden
     >
       <button
-        px5 py1 text-lg hover="bg-active op100" op-fade
+        px5 py1 text-lg hover="bg-hover op100" op-fade
         @click="reset"
       >
         Start a new compare

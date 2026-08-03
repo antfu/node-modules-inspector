@@ -12,11 +12,11 @@ const showConfigDialog = ref(false)
 <template>
   <div>
     <div flex="~ col gap-2" p4>
-      <OptionItem title="Simplify module types" description="Show only ESM/CJS">
-        <OptionCheckbox v-model="settings.moduleTypeSimple" />
+      <OptionItem :div="true" title="Simplify module types" description="Show only ESM/CJS">
+        <FormCheckbox v-model="settings.moduleTypeSimple" />
       </OptionItem>
-      <OptionItem title="Treat FAUX as ESM" description="Treat FAUX as ESM">
-        <OptionCheckbox v-model="settings.treatFauxAsESM" />
+      <OptionItem :div="true" title="Treat FAUX as ESM" description="Treat FAUX as ESM">
+        <FormCheckbox v-model="settings.treatFauxAsESM" />
       </OptionItem>
       <OptionItem title="Module type indicator" description="Rendering mode of module type indicator">
         <OptionSelectGroup
@@ -25,11 +25,11 @@ const showConfigDialog = ref(false)
           :titles="['Badge', 'Circle', 'None']"
         />
       </OptionItem>
-      <OptionItem title="Show size badge" description="Show install size badge on package list">
-        <OptionCheckbox v-model="settings.showInstallSizeBadge" />
+      <OptionItem :div="true" title="Show size badge" description="Show install size badge on package list">
+        <FormCheckbox v-model="settings.showInstallSizeBadge" />
       </OptionItem>
-      <OptionItem title="Show publish time badge" description="Show publish time badge on package list">
-        <OptionCheckbox v-model="settings.showPublishTimeBadge" />
+      <OptionItem :div="true" title="Show publish time badge" description="Show publish time badge on package list">
+        <FormCheckbox v-model="settings.showPublishTimeBadge" />
       </OptionItem>
       <OptionItem title="Provenance badge" description="Show provenance indicator on packages">
         <OptionSelectGroup
@@ -38,11 +38,11 @@ const showConfigDialog = ref(false)
           :titles="['Present', 'Absent', 'None']"
         />
       </OptionItem>
-      <OptionItem title="Colorize size badge" description="Colorize package size badge">
-        <OptionCheckbox v-model="settings.colorizePackageSize" />
+      <OptionItem :div="true" title="Colorize size badge" description="Colorize package size badge">
+        <FormCheckbox v-model="settings.colorizePackageSize" />
       </OptionItem>
-      <OptionItem title="Animate chart" description="Animate chart">
-        <OptionCheckbox v-model="settings.chartAnimation" />
+      <OptionItem :div="true" title="Animate chart" description="Animate chart">
+        <FormCheckbox v-model="settings.chartAnimation" />
       </OptionItem>
       <OptionItem title="Dependency source badge" description="Show a badge of the source type">
         <OptionSelectGroup
@@ -51,8 +51,8 @@ const showConfigDialog = ref(false)
           :titles="['None', 'Prod', 'Dev', 'Both']"
         />
       </OptionItem>
-      <OptionItem title="Prefer npmx.dev" description="Use npmx.dev instead of npmjs.com for links">
-        <OptionCheckbox v-model="settings.preferNpmx" />
+      <OptionItem :div="true" title="Prefer npmx.dev" description="Use npmx.dev instead of npmjs.com for links">
+        <FormCheckbox v-model="settings.preferNpmx" />
       </OptionItem>
     </div>
 
@@ -69,6 +69,6 @@ const showConfigDialog = ref(false)
       </button>
     </div>
 
-    <PanelSettingsConfigDialog v-model="showConfigDialog" />
+    <PanelSettingsConfigDialog v-model:open="showConfigDialog" />
   </div>
 </template>

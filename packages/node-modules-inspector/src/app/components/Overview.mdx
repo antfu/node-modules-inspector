@@ -1,0 +1,30 @@
+import { Canvas, Meta } from '@storybook/addon-docs/blocks'
+import * as DisplayClusterBadge from './display/ClusterBadge.stories'
+import * as UILogo from './ui/Logo.stories'
+
+<Meta title="Overview" />
+
+# Node Modules Inspector — Components
+
+App-specific presentational building blocks, themed end-to-end by the
+[`@antfu/design`](https://github.com/antfu/design) UnoCSS preset. Generic
+primitives (badges, versions, avatars, checkboxes, drawers) come from
+`@antfu/design` directly and are documented in that package's own Storybook —
+only components unique to this app live here. Toggle the theme from the
+toolbar to check both light and dark. Each tile is a live story; click a
+component name to open its full page.
+
+## Display
+
+### [ClusterBadge](/?path=/docs/display-clusterbadge--docs)
+
+<Canvas of={DisplayClusterBadge.Namespaced} />
+<Canvas of={DisplayClusterBadge.Plain} />
+<Canvas of={DisplayClusterBadge.Gallery} />
+
+## UI
+
+### [Logo](/?path=/docs/ui-logo--docs)
+
+<Canvas of={UILogo.Default} />
+<Canvas of={UILogo.Sizes} />

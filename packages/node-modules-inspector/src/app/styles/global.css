@@ -17,8 +17,15 @@ html, body , #__nuxt{
   background-image: url('/dot-grid-dark.png');
 }
 
+/* `bg-base` comes from `@antfu/design/styles` (base.css) applied to `html`.
+   `color-base` needs restating on `body`: UnoCSS's class-based dark variant
+   generates a *descendant* selector (`.dark html{…}`), which can never match
+   on the root element itself (`html` has no ancestor to carry `.dark`) — so
+   anything relying on pure inheritance from `html`'s own color silently gets
+   stuck on the light-mode value in dark mode. `body` doesn't have this
+   problem (`.dark body` is a normal, matchable descendant selector). */
 html {
-  --at-apply: bg-base font-sans;
+  --at-apply: font-sans;
   scrollbar-gutter: stable;
 }
 body {
@@ -27,6 +34,12 @@ body {
 
 summary::-webkit-details-marker {
   display: none;
+}
+
+/* Widen the design system's right drawer (defaults to w-80) — the maintainer
+   action drawer shows prompts/code blocks and needs the room. */
+[data-af-drawer][data-side='right'] {
+  width: min(45rem, 90vw);
 }
 
 /* Animations */
@@ -51,35 +64,4 @@ summary::-webkit-details-marker {
 
 .terminal.xterm .xterm-rows {
   --uno: font-mono;
-}
-
-/* Overrides Floating Vue */
-.v-popper--theme-dropdown .v-popper__inner,
-.v-popper--theme-tooltip .v-popper__inner {
-  --at-apply: bg-tooltip color-base font-sans rounded border border-base shadow dark:shadow-2xl;
-  box-shadow: 0 6px 30px #0000001a;
-}
-
-.v-popper--theme-tooltip .v-popper__inner {
-  --at-apply: text-sm;
-}
-
-.v-popper--theme-tooltip {
-  max-width: 20rem;
-}
-
-.v-popper--theme-tooltip .v-popper__arrow-inner,
-.v-popper--theme-dropdown .v-popper__arrow-inner {
-  visibility: visible;
-  --at-apply: border-white dark:border-#111;
-}
-
-.v-popper--theme-tooltip .v-popper__arrow-outer,
-.v-popper--theme-dropdown .v-popper__arrow-outer {
-  --at-apply: border-base;
-}
-
-.v-popper--theme-tooltip.v-popper--shown,
-.v-popper--theme-tooltip.v-popper--shown * {
-  transition: none !important;
 }

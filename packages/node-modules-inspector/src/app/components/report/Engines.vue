@@ -27,7 +27,7 @@ const transitiveDeps = computed(() =>
 
         <template v-for="pkg of items" :key="pkg.spec">
           <button
-            font-mono text-left hover:bg-active px2 ml--2 rounded
+            font-mono text-left hover:bg-hover px2 ml--2 rounded
             flex="~ gap-2 items-center"
             @click="selectedNode = pkg"
           >

@@ -69,9 +69,8 @@ const moduleTypes = Object.fromEntries(
         />
         <DisplayNumberBadge
           v-if="filters.state.clusters?.length && filters.state.clusters.length > 3"
-          :number="filters.state.clusters.length - 3"
+          :value="filters.state.clusters.length - 3"
           suffix="+"
-          rounded-full text-xs
         />
       </div>
     </div>
@@ -113,7 +112,7 @@ const moduleTypes = Object.fromEntries(
 
     <button
       v-tooltip="'Clear Filters'"
-      w8 h8 rounded-full hover:bg-active op-fade hover:op100 flex="~ items-center justify-center"
+      w8 h8 rounded-full hover:bg-hover op-fade hover:op100 flex="~ items-center justify-center"
       title="Clear Filters"
       @click="filters.select.reset()"
     >

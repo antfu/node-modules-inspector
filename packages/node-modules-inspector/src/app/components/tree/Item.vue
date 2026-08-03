@@ -20,7 +20,7 @@ withDefaults(
     v-if="pkg"
     flex="~ gap-2 items-center"
     ws-nowrap rounded
-    hover="bg-active"
+    hover="bg-hover"
     @click="selectedNode = pkg"
   >
     <slot name="before" />

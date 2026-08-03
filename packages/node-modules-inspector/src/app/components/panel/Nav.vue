@@ -91,7 +91,7 @@ function toggleFilters() {
       <template v-for="tab of tabsMeta" :key="tab.path">
         <RouterLink
           v-tooltip="tab.name"
-          w-10 h-10 rounded-full hover:bg-active
+          w-10 h-10 rounded-full hover:bg-hover
           flex="~ items-center justify-center"
           :title="tab.name"
           :class="route.path.startsWith(tab.path) ? 'text-primary' : 'op-fade'"
@@ -106,7 +106,7 @@ function toggleFilters() {
       <div w-1px h-20px mx2 border="l base" />
       <div relative>
         <button
-          w-10 h-10 rounded-full hover:bg-active
+          w-10 h-10 rounded-full hover:bg-hover
           flex="~ items-center justify-center"
           title="Filters"
           :class="isFiltersOpen ? 'text-primary' : 'op-fade'"
@@ -119,7 +119,7 @@ function toggleFilters() {
         </div>
       </div>
       <button
-        w-10 h-10 rounded-full hover:bg-active
+        w-10 h-10 rounded-full hover:bg-hover
         flex="~ items-center justify-center"
         title="Settings"
         :class="isSettingOpen ? 'text-primary' : 'op-fade'"

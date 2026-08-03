@@ -1,4 +1,5 @@
 import { fileURLToPath } from 'node:url'
+import { presetAnthonyDesign } from '@antfu/design/unocss'
 import { createLocalFontProcessor } from '@unocss/preset-web-fonts/local'
 import {
   defineConfig,
@@ -14,32 +15,15 @@ import {
 export default defineConfig({
   shortcuts: [
     {
-      'color-base': 'color-neutral-800 dark:color-neutral-300',
-      'bg-base': 'bg-white dark:bg-#111',
-      'bg-secondary': 'bg-#eee dark:bg-#222',
-      'border-base': 'border-#8882',
-
-      'bg-tooltip': 'bg-white:75 dark:bg-#111:75 backdrop-blur-8',
-      'bg-code': 'bg-gray5:5',
-
-      'bg-gradient-more': 'bg-gradient-to-t from-white via-white:80 to-white:0 dark:from-#111 dark:via-#111:80 dark:to-#111:0',
-
-      'color-active': 'color-primary-600 dark:color-primary-300',
-      'border-active': 'border-primary-600/25 dark:border-primary-400/25',
-      'bg-active': 'bg-#8881',
-
-      'btn-action': 'border border-base rounded flex gap-2 items-center px2 py1 op75 hover:op100 hover:bg-active disabled:pointer-events-none disabled:op30!',
-      'btn-action-sm': 'btn-action text-sm',
-      'btn-action-active': 'color-active border-active! bg-active op100!',
-
-      'icon-catppuccin': 'light:filter-invert-100 light:filter-hue-rotate-180 light:filter-brightness-80',
-
+      // App-owned named z-index layers. The design preset ships no z-scale and
+      // blocks plain `z-<number>` in markup, so every layer is defined here.
       'z-graph-bg': 'z-5',
       'z-graph-link': 'z-10',
       'z-graph-node': 'z-11',
       'z-graph-link-active': 'z-12',
       'z-graph-node-active': 'z-13',
 
+      'z-loading': 'z-49',
       'z-panel-content': 'z-50',
       'z-panel-no-mobile': 'z-55',
       'z-panel-nav': 'z-60',
@@ -47,43 +31,36 @@ export default defineConfig({
       'z-panel-terminal': 'z-80',
       'z-drawer-backdrop': 'z-85',
       'z-drawer-content': 'z-90',
+      'z-modal-backdrop': 'z-95',
+      'z-modal-content': 'z-100',
 
-      'op-fade': 'op65 dark:op55',
-      'op-mute': 'op30 dark:op25',
+      // App-specific tokens not covered by the design preset.
+      // (icon-catppuccin now ships from @antfu/design >=0.3.0 — see unocss/shortcuts.ts)
       'color-deprecated': 'text-op85 text-[#b71c1c] dark:text-[#f87171]',
-
-      'color-scale-neutral': 'text-gray-700 dark:text-gray-300',
-      'color-scale-low': 'text-lime-700 dark:text-lime-300 dark:saturate-75',
-      'color-scale-medium': 'text-amber-700 dark:text-amber-300 dark:saturate-90',
-      'color-scale-high': 'text-orange-700 dark:text-orange-300',
-      'color-scale-critical': 'text-red-700 dark:text-red-300',
 
       'page-padding': 'pt-24 pl-112 pr-8 pb-8',
       'page-padding-collapsed': 'pt-24 pl-14 pr-8 pb-8',
     },
-    [/^badge-color-(\w+)$/, ([, color]) => `bg-${color}-400:20 dark:bg-${color}-400:10 text-${color}-800 dark:text-${color}-300 border-${color}-600:10 dark:border-${color}-300:10`],
-    [/^bg-glass(:\d+)?$/, ([, opacity = ':75']) => `bg-white${opacity} dark:bg-#111${opacity} backdrop-blur-5`],
   ],
-  theme: {
-    colors: {
-      primary: {
-        50: '#E9F4E7',
-        100: '#D2E8CF',
-        200: '#A9D3A2',
-        300: '#7CBC71',
-        // Darkened from #579E4B so text-primary / text-primary-400 clear WCAG AA on white.
-        400: '#49833E',
-        DEFAULT: '#49833E',
-        500: '#3F7236',
-        600: '#396831',
-        700: '#2C5026',
-        800: '#1D3419',
-        900: '#0F1C0D',
-        950: '#080E07',
-      },
-    },
-  },
   presets: [
+    // The design layer: semantic `*-base` tokens, `btn-*`/`badge*` shortcuts,
+    // `badge-color-*`/`bg-glass` dynamics, the `color-scale-*` severity ramp and
+    // the primary/warning/success/error theme scales (default antfu green). It
+    // has no opinion on fonts — presetWebFonts below is the sole source of
+    // truth for `font-sans`/`font-mono`, composed onto the base preset's own
+    // fallback chain (see @antfu/design >=0.2.2).
+    presetAnthonyDesign({
+      overrides: {
+        // `badge-color-*`'s light-mode text-700-on-bg-400/20 formula is
+        // marginally below WCAG AA (4.5:1) for these three hues specifically
+        // (~4.4-4.5:1, axe-core-measured) — bump to the 800 shade, which
+        // clears comfortably (~6.2:1) while staying in the same hue family.
+        // Reported upstream; drop these once a fixed @antfu/design ships.
+        'badge-color-orange': 'bg-orange-400/20 dark:bg-orange-400/10 text-orange-800 dark:text-orange-300 border border-orange-600/15 dark:border-orange-300/15',
+        'badge-color-yellow': 'bg-yellow-400/20 dark:bg-yellow-400/10 text-yellow-800 dark:text-yellow-300 border border-yellow-600/15 dark:border-yellow-300/15',
+        'badge-color-green': 'bg-green-400/20 dark:bg-green-400/10 text-green-800 dark:text-green-300 border border-green-600/15 dark:border-green-300/15',
+      },
+    }),
     presetWind3(),
     presetAttributify(),
     presetIcons({
@@ -100,6 +77,21 @@ export default defineConfig({
         fontServeBaseUrl: './fonts',
       }),
     }),
+  ],
+  safelist: [
+    'badge-color-amber',
+    'badge-color-blue',
+    'badge-color-cyan',
+    'badge-color-gray',
+    'badge-color-green',
+    'badge-color-lime',
+    'badge-color-orange',
+    'badge-color-pink',
+    'badge-color-purple',
+    'badge-color-red',
+    'badge-color-teal',
+    'badge-color-yellow',
+    'badge-color-primary',
   ],
   transformers: [
     transformerDirectives(),

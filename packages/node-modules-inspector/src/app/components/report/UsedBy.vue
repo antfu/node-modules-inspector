@@ -29,7 +29,7 @@ const transitiveDeps = computed(() =>
 
           <template v-for="pkg of items" :key="pkg.spec">
             <button
-              font-mono text-left hover:bg-active px2 ml--2 rounded
+              font-mono text-left hover:bg-hover px2 ml--2 rounded
               flex="~ gap-2 items-center"
               @click="selectedNode = pkg"
             >
@@ -38,14 +38,14 @@ const transitiveDeps = computed(() =>
             </button>
             <div flex="~ justify-end items-center gap-1">
               <DisplayNumberBadge
-                :number="payloads.available.dependents(pkg).length"
-                rounded-full text-sm h-max
+                :value="payloads.available.dependents(pkg).length"
+                h-max
               />
             </div>
             <div flex="~ justify-end items-center gap-1">
               <DisplayNumberBadge
-                :number="payloads.available.flatDependents(pkg).length"
-                rounded-full text-sm h-max
+                :value="payloads.available.flatDependents(pkg).length"
+                h-max
               />
             </div>
             <!-- <UiPercentageDepth :pkg="pkg" :flat="true" /> -->

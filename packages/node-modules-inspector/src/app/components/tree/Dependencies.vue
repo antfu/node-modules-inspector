@@ -138,7 +138,7 @@ function getGroupLabel(key: string): string {
             />
           </RenderNextTick>
           <div v-else-if="props.maxDepth > 2" ml6>
-            <span op-fade px2 bg-active rounded text-sm>
+            <span op-fade px2 bg-ambient rounded text-sm>
               {{ children?.length }} more ···
             </span>
           </div>

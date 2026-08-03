@@ -86,14 +86,14 @@ const filteredResult = computed(() => {
           <div flex="~ col gap-y-1">
             <template v-for="group of licensesGroup" :key="group[0]">
               <button
-                text-left hover:bg-active px2 ml--2 rounded
+                text-left hover:bg-hover px2 ml--2 rounded
                 flex="~ gap-2 items-center"
                 :class="{ 'text-primary': selected.includes(group[0]) }"
                 @click="toggleSelected(group[0])"
               >
-                <OptionCheckbox :model-value="selected.includes(group[0])" pointer-events-none />
+                <FormCheckbox :model-value="selected.includes(group[0])" pointer-events-none />
                 <span>{{ group[0] }}</span>
-                <DisplayNumberBadge :number="group[1].length" rounded-full text-sm w-max mra />
+                <DisplayNumberBadge :value="group[1].length" w-max mra />
                 <a
                   v-if="PERMISSIVE_LICENSES.includes(group[0])"
                   href="https://en.wikipedia.org/wiki/Permissive_software_license" target="_blank"
@@ -129,7 +129,7 @@ const filteredResult = computed(() => {
                 <DisplaySourceTypeBadge :pkg mode="both" />
               </div>
               <button
-                font-mono text-left hover:bg-active px2 ml--2 rounded
+                font-mono text-left hover:bg-hover px2 ml--2 rounded
                 @click="selectedNode = pkg"
               >
                 <DisplayPackageSpec :pkg />

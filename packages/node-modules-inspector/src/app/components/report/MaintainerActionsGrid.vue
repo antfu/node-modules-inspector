@@ -50,7 +50,7 @@ function ratioPct(migrationRatio: number) {
         <button
           v-if="item.kind === 'dep-upgrade'"
           border="x base"
-          class="col-span-10 grid grid-cols-subgrid items-center text-left border-b border-base hover:bg-active px3 py2 gap-x-2"
+          class="col-span-10 grid grid-cols-subgrid items-center text-left border-b border-base hover:bg-hover px3 py2 gap-x-2"
           :class="[selectedAction?.key === item.key ? 'bg-primary:10' : '', idx === group.items.length - 1 ? 'rounded-b-md' : '']"
           @click="emit('selectItem', item)"
         >
@@ -65,8 +65,9 @@ function ratioPct(migrationRatio: number) {
             <span font-mono text-sm px1 rounded badge-color-green max-w-30 text-ellipsis of-hidden ws-nowrap>v{{ item.installedHighestVersion }}</span>
           </div>
           <span />
-          <UiDonut
+          <DisplayDonut
             v-tooltip="`${item.migratedCount}/${item.totalCount} consumers satisfy ${item.depName}@${item.installedHighestVersion}`"
+            class="flex-none"
             :value="item.migrationRatio"
             :size="16"
             :thickness="3"
@@ -77,7 +78,7 @@ function ratioPct(migrationRatio: number) {
         <button
           v-else
           border="x base"
-          class="col-span-10 flex items-center gap-3 text-left border-b border-base hover:bg-active px3 py2"
+          class="col-span-10 flex items-center gap-3 text-left border-b border-base hover:bg-hover px3 py2"
           :class="[selectedAction?.key === item.key ? 'bg-primary:10' : '', idx === group.items.length - 1 ? 'rounded-b-md' : '']"
           @click="emit('selectItem', item)"
         >

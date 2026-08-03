@@ -28,15 +28,15 @@ const transitiveDeps = computed(() =>
 
         <template v-for="pkg of items" :key="pkg.spec">
           <button
-            font-mono text-left hover:bg-active px2 ml--2 rounded
+            font-mono text-left hover:bg-hover px2 ml--2 rounded
             @click="selectedNode = pkg"
           >
             <DisplayPackageSpec :pkg />
           </button>
           <div flex="~ justify-end items-center">
             <DisplayNumberBadge
-              :number="payloads.available.flatDependencies(pkg).length"
-              rounded-full text-sm h-max
+              :value="payloads.available.flatDependencies(pkg).length"
+              h-max
             />
           </div>
           <UiPercentageModuleType :pkg="pkg" :flat="true" />

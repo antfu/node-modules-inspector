@@ -103,7 +103,10 @@ function safeGtr(version: string, range: string) {
 }
 
 function isStable(version: string) {
-  return getPrerelease(version) === null
+  // verkit's runtime returns `[]` for stable versions (its own .d.ts says
+  // `null`) — check both so this doesn't re-break if that's ever "fixed".
+  const prerelease = getPrerelease(version)
+  return prerelease == null || prerelease.length === 0
 }
 
 function getPublintMessagesFor(

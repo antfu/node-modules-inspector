@@ -14,7 +14,7 @@ defineProps<{
     :pkg
     as="button"
     outer="border rounded-lg"
-    inner="flex flex-col gap-2 justify-center h-full hover:bg-active p2 px3"
+    inner="flex flex-col gap-2 justify-center h-full hover:bg-hover p2 px3"
     @click="selectedNode = pkg === selectedNode ? undefined : pkg"
   >
     <div flex="~ gap-2 items-center" text-left>
@@ -26,15 +26,13 @@ defineProps<{
       <DisplayModuleType :pkg />
       <DisplayNumberBadge
         v-if="payloads.available.flatDependents(pkg).length"
-        :number="payloads.available.flatDependents(pkg).length"
+        :value="payloads.available.flatDependents(pkg).length"
         icon="i-ph-arrow-elbow-down-right-duotone text-xs"
-        rounded-full text-sm
       />
       <DisplayNumberBadge
         v-if="payloads.available.flatDependencies(pkg).length"
-        :number="payloads.available.flatDependencies(pkg).length"
+        :value="payloads.available.flatDependencies(pkg).length"
         icon="i-ph-lego-duotone text-xs"
-        rounded-full text-sm
       />
 
       <DisplayFileSizeBadge

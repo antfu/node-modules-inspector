@@ -35,6 +35,29 @@ export default defineNuxtConfig({
   logLevel: 'verbose',
   srcDir: 'app',
 
+  components: {
+    dirs: [
+      // `@antfu/design` ships raw category-prefixed SFCs (DisplayDonut, FormCheckbox, …);
+      // register them for auto-import so they resolve like local components.
+      {
+        path: fileURLToPath(new URL('../../../node_modules/@antfu/design/components', import.meta.url)),
+        pathPrefix: false,
+        extensions: ['vue'],
+        ignore: [
+          // These need optional peers (splitpanes, @tanstack/vue-virtual, dompurify) we don't use.
+          '**/LayoutSplitPane.vue',
+          '**/LayoutVirtualList.vue',
+          '**/DisplayIconifyRemoteIcon.vue',
+          // Intentionally shadowed: the app keeps its own (deprecated/vulnerable
+          // coloring must inherit from context; the design one is self-colored).
+          '**/DisplayPackageName.vue',
+        ],
+      },
+      // Keep the default app components dir (registered last to win name conflicts).
+      '~/components',
+    ],
+  },
+
   eslint: {
     config: {
       standalone: false,
@@ -52,6 +75,11 @@ export default defineNuxtConfig({
 
   features: {
     inlineStyles: false,
+  },
+
+  // `@antfu/design` ships raw `.ts`/`.vue`; transpile it in the build.
+  build: {
+    transpile: ['@antfu/design'],
   },
 
   css: [
@@ -149,6 +177,8 @@ export default defineNuxtConfig({
       exclude: [
         'structured-clone-es',
         'birpc',
+        // Ships raw `.ts`/`.vue`; let Vite compile it in-place instead of prebundling.
+        '@antfu/design',
       ],
     },
     plugins: [

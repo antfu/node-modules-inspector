@@ -49,7 +49,7 @@ export default defineComponent({
             title: type.value.toUpperCase(),
           }, h('div', {
             class: [
-              'w-3 h-3 rounded-full border border-current!',
+              'w-3 h-3 ma rounded-full border border-current!',
               MODULE_TYPES_COLOR_BADGE[type.value],
             ],
           })),
@@ -62,7 +62,7 @@ export default defineComponent({
           class: [
             'select-none',
             MODULE_TYPES_COLOR_BADGE[type.value],
-            props.badge ? 'w-11 flex-none text-center px1 rounded text-sm' : 'bg-transparent! w-auto!',
+            props.badge ? 'w-11 flex-none text-center px1 rounded text-sm' : 'bg-transparent! border-none! w-auto!',
           ],
         }, MODULE_TYPES_NAME[type.value]),
         popper: () => h('div', { class: 'text-sm' }, description.value),

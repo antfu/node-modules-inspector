@@ -26,6 +26,9 @@
     "skills"
   ],
   "scripts": {
+    "storybook": "storybook dev -p 6006 --no-open",
+    "storybook:build": "storybook build",
+    "docs:overview": "node scripts/gen-overview.mjs",
     "dev": "pnpm run -r stub && (cd src && ROLLDOWN_OPTIONS_VALIDATION=loose nuxi dev)",
     "stub": "unbuild --stub",
     "build": "pnpm run wc:prepare && (cd src && ROLLDOWN_OPTIONS_VALIDATION=loose nuxi build) && unbuild",
@@ -61,12 +64,17 @@
     "verkit": "catalog:deps"
   },
   "devDependencies": {
+    "@antfu/design": "catalog:dev",
+    "@storybook/addon-docs": "catalog:storybook",
+    "@storybook/vue3-vite": "catalog:storybook",
     "@unocss/nuxt": "catalog:bundling",
     "@valibot/to-json-schema": "catalog:testing",
+    "@vitejs/plugin-vue": "catalog:frontend",
     "@vueuse/nuxt": "catalog:bundling",
     "@webcontainer/api": "catalog:frontend",
     "@xterm/addon-fit": "catalog:frontend",
     "@xterm/xterm": "catalog:frontend",
+    "colorjs.io": "catalog:dev",
     "d3": "catalog:frontend",
     "d3-hierarchy": "catalog:frontend",
     "d3-shape": "catalog:frontend",
@@ -75,7 +83,9 @@
     "idb-keyval": "catalog:frontend",
     "modern-screenshot": "catalog:frontend",
     "nanovis": "catalog:frontend",
+    "reka-ui": "catalog:frontend",
     "rollup": "catalog:bundling",
+    "storybook": "catalog:storybook",
     "theme-vitesse": "catalog:frontend",
     "vite-hot-client": "catalog:frontend"
   }

@@ -200,7 +200,7 @@ const thirdPartyServices = computed(() => {
       <button
         w-10 h-10 rounded-full
         op30
-        hover="op100 bg-active"
+        hover="op100 bg-hover"
         flex="~ items-center justify-center"
         @click="query.selected = undefined"
       >
@@ -218,7 +218,7 @@ const thirdPartyServices = computed(() => {
       <button
         v-tooltip="'Focus on this package and the dependencies it brings'"
         flex="~ items-center gap-1 justify-center"
-        px4 py1 rounded hover:bg-active
+        px4 py1 rounded hover:bg-hover
         :class="selectionMode === 'focus' ? 'text-teal bg-teal:10!' : 'op-fade'"
         @click="selectionMode = selectionMode === 'focus' ? 'none' : 'focus'"
       >
@@ -228,7 +228,7 @@ const thirdPartyServices = computed(() => {
       <button
         v-tooltip="'Focus on the packages that brings this package'"
         flex="~ items-center gap-1 justify-center"
-        px4 py1 rounded hover:bg-active
+        px4 py1 rounded hover:bg-hover
         :class="selectionMode === 'why' ? 'text-orange bg-orange:10!' : 'op-fade'"
         @click="selectionMode = selectionMode === 'why' ? 'none' : 'why'"
       >
@@ -238,7 +238,7 @@ const thirdPartyServices = computed(() => {
       <button
         v-tooltip="'Exclude this package and the dependencies it brings'"
         flex="~ items-center gap-1 justify-center" px4 py1 rounded
-        hover:bg-active border="~ transparent"
+        hover:bg-hover border="~ transparent"
         :class="[
           selectionMode === 'exclude'
             ? 'text-purple bg-purple:10!'
@@ -260,12 +260,12 @@ const thirdPartyServices = computed(() => {
       >
         <div i-ph-pipe-wrench-duotone flex-none op-fade />
         <span op-fade text-sm>Maintainer actions</span>
-        <DisplayNumberBadge :number="maintainerActionsCount" rounded-full text-sm color="badge-color-amber" />
+        <DisplayNumberBadge :value="maintainerActionsCount" color="amber" />
         <div flex-auto />
         <NuxtLink
           v-tooltip="'Open Maintainer Actions report'"
           :to="{ path: '/report/maintainer-actions', hash: location.hash }"
-          p1 rounded-full hover:bg-active
+          p1 rounded-full hover:bg-hover
           @click.stop
         >
           <div i-ph-arrow-square-out op-fade />
@@ -279,7 +279,7 @@ const thirdPartyServices = computed(() => {
           v-for="action of maintainerActions" :key="action.key"
           flex="~ items-center gap-2" w-full
           text-left text-sm
-          hover:bg-active rounded px2 py1
+          hover:bg-hover rounded px2 py1
           @click="openMaintainerAction(action)"
         >
           <PanelMaintainerActionTypePill :action="action" />
@@ -318,7 +318,7 @@ const thirdPartyServices = computed(() => {
         <div flex-auto />
         <button
           v-tooltip="'Toggle file composition'"
-          p1 rounded-full hover:bg-active mr--2
+          p1 rounded-full hover:bg-hover mr--2
           title="Toggle file composition"
         >
           <div i-ph-caret-down transition duration-300 :class="settings.showFileComposition ? 'op75' : 'rotate-90 op-mute'" />
@@ -345,7 +345,7 @@ const thirdPartyServices = computed(() => {
         <div flex-auto />
         <button
           v-tooltip="'Toggle third party services'"
-          p1 rounded-full hover:bg-active mr--2
+          p1 rounded-full hover:bg-hover mr--2
           title="Toggle third party services"
         >
           <div i-ph-caret-down transition duration-300 :class="settings.showThirdPartyServices ? 'op75' : 'rotate-90 op-mute'" />
@@ -357,7 +357,7 @@ const thirdPartyServices = computed(() => {
           :href="service.url"
           target="_blank"
           flex="~ items-center gap-1"
-          bg-active rounded-full px2
+          bg-ambient rounded-full px2
           op75 hover:op100
         >
           <img v-if="service.icon" :src="service.icon" w-4 h-4 rounded-sm :class="service.iconClass">
@@ -372,31 +372,29 @@ const thirdPartyServices = computed(() => {
       <div border="b base" w-2 />
       <button
         flex-1 border border-base rounded-t-lg p1 flex="~ items-center justify-center gap-1" transition-margin
-        :class="settings.packageDetailsTab === 'dependents' ? 'text-primary border-b-transparent' : 'saturate-0 hover:bg-active mt-5px'"
+        :class="settings.packageDetailsTab === 'dependents' ? 'text-primary border-b-transparent' : 'saturate-0 hover:bg-hover mt-5px'"
         @click="settings.packageDetailsTab = 'dependents'"
       >
         <span :class="settings.packageDetailsTab === 'dependents' ? '' : 'op30'">Used by</span>
         <DisplayNumberBadge
-          text-xs rounded-full
-          :number="settings.deepDependenciesTree ? payloads.available.flatDependents(pkg).length : payloads.available.dependents(pkg).length"
+          :value="settings.deepDependenciesTree ? payloads.available.flatDependents(pkg).length : payloads.available.dependents(pkg).length"
         />
       </button>
       <div border="b base" w-2 />
       <button
         flex-1 border border-base rounded-t-lg p1 flex="~ items-center justify-center gap-1" transition-margin
-        :class="settings.packageDetailsTab === 'dependencies' ? 'text-primary border-b-transparent' : 'saturate-0 hover:bg-active mt-5px'"
+        :class="settings.packageDetailsTab === 'dependencies' ? 'text-primary border-b-transparent' : 'saturate-0 hover:bg-hover mt-5px'"
         @click="settings.packageDetailsTab = 'dependencies'"
       >
         <span :class="settings.packageDetailsTab === 'dependencies' ? '' : 'op30'">Deps on</span>
         <DisplayNumberBadge
-          text-xs rounded-full
-          :number="settings.deepDependenciesTree ? payloads.available.flatDependencies(pkg).length : payloads.available.dependencies(pkg).length"
+          :value="settings.deepDependenciesTree ? payloads.available.flatDependencies(pkg).length : payloads.available.dependencies(pkg).length"
         />
       </button>
       <div border="b base" pt2 px2 flex="~ items-center gap-1">
         <button
           v-tooltip="`Group dependencies by: ${groupByMeta.label}`"
-          p1 rounded-full hover:bg-active
+          p1 rounded-full hover:bg-hover
           :title="`Group dependencies by: ${groupByMeta.label}`"
           @click="cycleDependenciesGroupBy"
         >
@@ -404,7 +402,7 @@ const thirdPartyServices = computed(() => {
         </button>
         <button
           v-tooltip="'Toggle deep dependencies tree'"
-          p1 rounded-full hover:bg-active
+          p1 rounded-full hover:bg-hover
           title="Toggle deep dependencies tree"
           @click="settings.deepDependenciesTree = !settings.deepDependenciesTree"
         >

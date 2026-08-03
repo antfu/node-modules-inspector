@@ -54,7 +54,7 @@ const timepassed = computed(() => rawPayload.value?.timestamp ? Date.now() - raw
         v-tooltip="'Collapse sidepanel'"
         w-10 h-10 mr--2
         rounded-full op30
-        hover="op100 bg-active"
+        hover="op100 bg-hover"
         title="Collapse sidepanel"
         flex="~ items-center justify-center"
         @click="settings.collapseSidepanel = !settings.collapseSidepanel"
@@ -82,46 +82,46 @@ const timepassed = computed(() => rawPayload.value?.timestamp ? Date.now() - raw
         <div v-if="rawPayload.packageManager === 'pnpm'" i-catppuccin-pnpm icon-catppuccin flex-none />
         <div v-else-if="rawPayload.packageManager === 'npm'" i-catppuccin-npm icon-catppuccin flex-none />
         <span>{{ rawPayload.packageManager }}</span>
-        <DisplayVersion :version="rawPayload.packageManagerVersion" prefix="@" op75 />
+        <DisplayVersion v-if="rawPayload.packageManagerVersion" :version="rawPayload.packageManagerVersion" text-xs prefix="@" op75 />
       </div>
       <div flex="~ gap-2 items-center">
         <div i-catppuccin-folder-packages-open icon-catppuccin flex-none />
-        <DisplayNumberBadge :number="payloads.workspace.packages.length" rounded-full text-sm mx--0.2 mt-3px color="badge-color-yellow" />
+        <DisplayNumberBadge :value="payloads.workspace.packages.length" text-xs color="yellow" />
         <span ml--0.5>workspace packages</span>
       </div>
       <NuxtLink flex="~ gap-2 items-center" :to="{ path: '/grid/depth', hash: location.hash }">
         <div i-catppuccin-java-class icon-catppuccin flex-none />
-        <DisplayNumberBadge :number="payloads.available.packages.length" rounded-full text-sm mx--0.2 mt-3px color="badge-color-primary" />
+        <DisplayNumberBadge :value="payloads.available.packages.length" text-xs color="primary" />
         <span ml--0.5>total packages</span>
       </NuxtLink>
       <NuxtLink v-if="totalDeprecatedCount" flex="~ gap-2 items-center" :to="{ path: '/report/deprecated', hash: location.hash }">
         <div i-ph-warning-duotone flex-none color-deprecated />
-        <DisplayNumberBadge :number="totalDeprecatedCount" rounded-full text-sm mx--0.2 mt-3px color="badge-color-red" color-deprecated />
+        <DisplayNumberBadge :value="totalDeprecatedCount" text-xs color="red" color-deprecated />
         <span ml--0.5 color-deprecated>deprecated packages</span>
       </NuxtLink>
       <NuxtLink v-if="multipleVersionsCount" flex="~ gap-2 items-center" :to="{ path: '/report/multiple-versions', hash: location.hash }">
         <div i-catppuccin-java-enum icon-catppuccin flex-none />
-        <DisplayNumberBadge :number="multipleVersionsCount" rounded-full text-sm mx--0.2 mt-3px color="badge-color-orange" />
+        <DisplayNumberBadge :value="multipleVersionsCount" text-xs color="orange" />
         <span ml--0.5>libraries with multiple versions</span>
       </NuxtLink>
       <NuxtLink flex="~ gap-2 items-center" :to="{ path: '/report/licenses', hash: location.hash }">
         <div i-catppuccin-license icon-catppuccin flex-none />
-        <DisplayNumberBadge :number="licensesCount" rounded-full text-sm mx--0.2 mt-3px color="badge-color-amber" />
+        <DisplayNumberBadge :value="licensesCount" text-xs color="amber" />
         <span ml--0.5>type of licenses</span>
       </NuxtLink>
       <NuxtLink flex="~ gap-2 items-center" :to="{ path: '/report/funding', hash: location.hash }">
         <div i-catppuccin-code-of-conduct icon-catppuccin flex-none />
-        <DisplayNumberBadge :number="fundingCount" rounded-full text-sm mx--0.2 mt-3px color="badge-color-pink" />
+        <DisplayNumberBadge :value="fundingCount" text-xs color="pink" />
         <span ml--0.5>packages request for funding</span>
       </NuxtLink>
       <NuxtLink flex="~ gap-2 items-center" :to="{ path: '/report/install-size', hash: location.hash }">
         <div i-catppuccin-binary icon-catppuccin flex-none />
-        <DisplayFileSizeBadge :bytes="totalWorkspaceSize" :percent="false" rounded-full text-sm mx--0.2 mt-3px color="badge-color-primary" />
+        <DisplayFileSizeBadge :bytes="totalWorkspaceSize" :percent="false" rounded-full text-xs color="primary" />
         <span ml--0.5>total node_modules size</span>
       </NuxtLink>
       <div v-if="timepassed >= mins10" flex="~ gap-2 items-center">
         <div i-catppuccin-changelog icon-catppuccin flex-none />
-        <DisplayDateBadge :time="rawPayload.timestamp" :colorize="false" rounded-full text-sm mx--0.2 mt-3px color="badge-color-primary" />
+        <DisplayDateBadge :time="rawPayload.timestamp" :colorize="false" rounded-full text-xs color="primary" />
         <span ml--0.5>last updated</span>
       </div>
     </div>
