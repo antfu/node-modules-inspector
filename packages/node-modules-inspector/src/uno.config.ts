@@ -49,7 +49,18 @@ export default defineConfig({
     // has no opinion on fonts — presetWebFonts below is the sole source of
     // truth for `font-sans`/`font-mono`, composed onto the base preset's own
     // fallback chain (see @antfu/design >=0.2.2).
-    presetAnthonyDesign(),
+    presetAnthonyDesign({
+      overrides: {
+        // `badge-color-*`'s light-mode text-700-on-bg-400/20 formula is
+        // marginally below WCAG AA (4.5:1) for these three hues specifically
+        // (~4.4-4.5:1, axe-core-measured) — bump to the 800 shade, which
+        // clears comfortably (~6.2:1) while staying in the same hue family.
+        // Reported upstream; drop these once a fixed @antfu/design ships.
+        'badge-color-orange': 'bg-orange-400/20 dark:bg-orange-400/10 text-orange-800 dark:text-orange-300 border border-orange-600/15 dark:border-orange-300/15',
+        'badge-color-yellow': 'bg-yellow-400/20 dark:bg-yellow-400/10 text-yellow-800 dark:text-yellow-300 border border-yellow-600/15 dark:border-yellow-300/15',
+        'badge-color-green': 'bg-green-400/20 dark:bg-green-400/10 text-green-800 dark:text-green-300 border border-green-600/15 dark:border-green-300/15',
+      },
+    }),
     presetWind3(),
     presetAttributify(),
     presetIcons({
