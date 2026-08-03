@@ -31,6 +31,8 @@ export default defineConfig({
       'z-panel-terminal': 'z-80',
       'z-drawer-backdrop': 'z-85',
       'z-drawer-content': 'z-90',
+      'z-modal-backdrop': 'z-95',
+      'z-modal-content': 'z-100',
 
       // App-specific tokens not covered by the design preset.
       // (icon-catppuccin now ships from @antfu/design >=0.3.0 — see unocss/shortcuts.ts)
@@ -64,6 +66,21 @@ export default defineConfig({
         fontServeBaseUrl: './fonts',
       }),
     }),
+  ],
+  safelist: [
+    'badge-color-amber',
+    'badge-color-blue',
+    'badge-color-cyan',
+    'badge-color-gray',
+    'badge-color-green',
+    'badge-color-lime',
+    'badge-color-orange',
+    'badge-color-pink',
+    'badge-color-purple',
+    'badge-color-red',
+    'badge-color-teal',
+    'badge-color-yellow',
+    'badge-color-primary',
   ],
   transformers: [
     transformerDirectives(),
