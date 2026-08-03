@@ -14,9 +14,9 @@ trustPolicyExclude:
   - tinyexec@1.2.2
 
 refs:
-  devframe: &devframe ^0.7.14
+  devframe: &devframe ^0.7.15
   nuxt-devtools: &nuxt-devtools ^4.0.0-alpha.9
-  vite-devtools: &vite-devtools ^0.4.9
+  vite-devtools: &vite-devtools ^0.4.10
 
 overrides:
   '@devframes/hub': *devframe
@@ -38,15 +38,15 @@ catalogs:
     '@rollup/plugin-commonjs': ^29.0.3
     '@rollup/plugin-node-resolve': ^16.0.3
     '@unocss/nuxt': ^66.7.5
-    '@vueuse/nuxt': ^14.3.0
+    '@vueuse/nuxt': ^14.4.0
     esbuild: ^0.28.1
     nuxt: npm:nuxt-nightly@5x
     rollup: ^4.62.3
     rollup-plugin-esbuild: ^6.2.1
     unbuild: ^3.6.1
-    vite: ^8.1.5
+    vite: ^8.2.0
   deps:
-    '@modelcontextprotocol/sdk': ^1.29.0
+    '@modelcontextprotocol/sdk': ^1.30.0
     ansis: ^4.3.1
     cac: ^7.0.0
     devframe: *devframe
@@ -62,18 +62,18 @@ catalogs:
     pathe: ^2.0.3
     publint: ^0.3.22
     stream-json: ^3.5.0
-    structured-clone-es: ^2.0.0
+    structured-clone-es: ^2.0.1
     tinyexec: ^1.2.4
     tinyglobby: ^0.2.17
     unconfig: ^7.5.0
     unstorage: ^1.17.5
     valibot: ^1.4.2
-    verkit: ^0.3.0
+    verkit: ^0.3.1
   dev:
     '@antfu/design': ^0.3.2
     '@antfu/ni': ^30.3.0
     '@nuxt/devtools': *nuxt-devtools
-    bumpp: ^11.1.0
+    bumpp: ^12.1.1
     colorjs.io: ^0.6.1
     skills-npm: ^1.2.0
     typescript: ^6.0.3
@@ -119,14 +119,14 @@ catalogs:
     storybook: ^10.4.6
   testing:
     '@axe-core/playwright': ^4.12.1
-    '@playwright/test': ^1.62.0
+    '@playwright/test': ^1.62.1
     '@valibot/to-json-schema': ^1.7.1
     mlly: ^1.8.2
     type-fest: 4.41.0
     vitest: ^4.1.10
   types:
     '@pnpm/list': ^1000.3.4
-    '@pnpm/types': ^1101.6.0
+    '@pnpm/types': ^1101.7.0
     '@types/d3': ^7.4.3
     '@types/d3-hierarchy': ^3.1.7
     '@types/js-yaml': ^4.0.9
