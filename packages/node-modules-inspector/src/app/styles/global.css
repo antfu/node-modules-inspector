@@ -17,10 +17,19 @@ html, body , #__nuxt{
   background-image: url('/dot-grid-dark.png');
 }
 
-/* `bg-base`/`color-base` come from `@antfu/design/styles` (base.css). */
+/* `bg-base` comes from `@antfu/design/styles` (base.css) applied to `html`.
+   `color-base` needs restating on `body`: UnoCSS's class-based dark variant
+   generates a *descendant* selector (`.dark html{…}`), which can never match
+   on the root element itself (`html` has no ancestor to carry `.dark`) — so
+   anything relying on pure inheritance from `html`'s own color silently gets
+   stuck on the light-mode value in dark mode. `body` doesn't have this
+   problem (`.dark body` is a normal, matchable descendant selector). */
 html {
   --at-apply: font-sans;
   scrollbar-gutter: stable;
+}
+body {
+  --at-apply: color-base;
 }
 
 summary::-webkit-details-marker {
