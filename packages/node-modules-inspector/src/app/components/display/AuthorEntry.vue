@@ -33,12 +33,16 @@ const href = computed(() => {
     <template
       v-if="author.type === 'github'"
     >
-      <DisplayAvatar
+      <DisplaySafeImage
         :src="author.avatar"
-        :name="author.github"
-        :size="props.size"
-        class="bg-ambient border border-base"
-      />
+        :alt="author.github"
+        class="rounded-full bg-ambient border border-base object-cover"
+        :style="{ width: `${props.size}px`, height: `${props.size}px` }"
+      >
+        <template #fallback>
+          <div i-ph-user-circle-duotone :style="{ width: `${props.size}px`, height: `${props.size}px` }" op-fade />
+        </template>
+      </DisplaySafeImage>
       <span font-mono>{{ author.github }}</span>
     </template>
     <template v-else>
