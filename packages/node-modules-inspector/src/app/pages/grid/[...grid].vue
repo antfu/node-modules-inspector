@@ -155,27 +155,33 @@ const groups = computed<Group[]>(() => {
       <div op-fade>
         Group by
       </div>
-      <NuxtLink btn-action as="button" :to="{ path: '/grid/depth', hash: location.hash }" active-class="text-primary bg-primary:5">
+      <!-- Two axe-core-measured contrast fixes on every active tab below:
+           `btn-action` always applies `op75`, so `op100!` is needed to stop
+           the active color being diluted toward its 5%-tint background; and
+           the plain `text-primary` DEFAULT shade is tuned for its own solid
+           swatch, not for sitting on that same near-white/near-black tint, so
+           `-700`/`dark:-300` (matching `PackageBorder.vue`) replace it. -->
+      <NuxtLink btn-action as="button" :to="{ path: '/grid/depth', hash: location.hash }" active-class="text-primary-700 dark:text-primary-300 bg-primary:5 op100!">
         <div i-ph-stack-simple-duotone />
         Depth
       </NuxtLink>
-      <NuxtLink btn-action as="button" :to="{ path: '/grid/module-type', hash: location.hash }" active-class="text-primary bg-primary:5">
+      <NuxtLink btn-action as="button" :to="{ path: '/grid/module-type', hash: location.hash }" active-class="text-primary-700 dark:text-primary-300 bg-primary:5 op100!">
         <div i-ph-file-code-duotone />
         Module Type
       </NuxtLink>
-      <NuxtLink btn-action as="button" :to="{ path: '/grid/clusters', hash: location.hash }" active-class="text-primary bg-primary:5">
+      <NuxtLink btn-action as="button" :to="{ path: '/grid/clusters', hash: location.hash }" active-class="text-primary-700 dark:text-primary-300 bg-primary:5 op100!">
         <div i-ph-exclude-duotone />
         Clusters
       </NuxtLink>
-      <NuxtLink btn-action as="button" :to="{ path: '/grid/authors', hash: location.hash }" active-class="text-primary bg-primary:5">
+      <NuxtLink btn-action as="button" :to="{ path: '/grid/authors', hash: location.hash }" active-class="text-primary-700 dark:text-primary-300 bg-primary:5 op100!">
         <div i-ph-user-circle-duotone />
         Authors
       </NuxtLink>
-      <NuxtLink btn-action as="button" :to="{ path: '/grid/licenses', hash: location.hash }" active-class="text-primary bg-primary:5">
+      <NuxtLink btn-action as="button" :to="{ path: '/grid/licenses', hash: location.hash }" active-class="text-primary-700 dark:text-primary-300 bg-primary:5 op100!">
         <div i-ph-file-text-duotone />
         License
       </NuxtLink>
-      <NuxtLink btn-action as="button" :to="{ path: '/grid/provenance', hash: location.hash }" active-class="text-primary bg-primary:5">
+      <NuxtLink btn-action as="button" :to="{ path: '/grid/provenance', hash: location.hash }" active-class="text-primary-700 dark:text-primary-300 bg-primary:5 op100!">
         <div i-ph:circle-wavy-check-duotone />
         Provenance
       </NuxtLink>

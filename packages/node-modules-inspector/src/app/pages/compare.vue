@@ -63,7 +63,10 @@ function reset() {
     </div>
     <div grid="~ cols-[1fr_max-content_1fr] gap-2">
       <div>
-        <div text-yellow p2 text-center op75>
+        <!-- `-700`/`dark:-300`, not the DEFAULT shade + `op75` — even at 700,
+             op75's dilution drops this under 4.5:1 (axe-core-measured, ~3.1:1),
+             so drop the opacity too rather than chase a shade that survives it. -->
+        <div text-yellow-700 dark:text-yellow-300 p2 text-center>
           Compare Group A
         </div>
         <OptionPackageMultiSelectInput v-model:selected="selectedA" :excludes="selectedAll">
@@ -76,7 +79,8 @@ function reset() {
         vs
       </div>
       <div>
-        <div text-purple p2 text-center op75>
+        <!-- See the note on "Compare Group A" above. -->
+        <div text-purple-700 dark:text-purple-300 p2 text-center>
           Compare Group B
         </div>
         <OptionPackageMultiSelectInput v-model:selected="selectedB" :excludes="selectedAll">

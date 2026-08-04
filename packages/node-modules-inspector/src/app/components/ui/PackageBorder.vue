@@ -71,9 +71,11 @@ const classesOuter = computed(() => {
 
   if (isSelected.value) {
     if (isFocused.value)
-      list.push('ring-3 ring-teal:25! text-teal-600 dark:text-teal-300 border-teal!')
+      list.push('ring-3 ring-teal:25! text-teal-700 dark:text-teal-300 border-teal!')
     else
-      list.push('ring-3 ring-primary:25! text-primary-600 dark:text-primary-300')
+      // text-primary-600 (#49833e) only clears ~4.05:1 against the bg-primary:10
+      // tint (axe-core-measured) — bump to 700 for a comfortable ~5.8:1.
+      list.push('ring-3 ring-primary:25! text-primary-700 dark:text-primary-300')
   }
 
   if (props.pkg?.private)

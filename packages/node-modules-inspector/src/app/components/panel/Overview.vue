@@ -39,7 +39,10 @@ const timepassed = computed(() => rawPayload.value?.timestamp ? Date.now() - raw
     <h1 text-lg p4 flex="~ gap-3 items-center">
       <UiLogo w-9 h-9 alt="Logo" class="hover:animate-spin-reverse" />
       <div flex="~ col gap-0" leading-none>
-        <span font-700 text-primary>Node Modules</span>
+        <!-- `dark:text-primary-300` — the DEFAULT shade (#49833e) only clears
+             ~4.14:1 against the dark-mode page background (axe-core-measured;
+             this 18px-bold text is just under axe's large-text exemption). -->
+        <span font-700 text-primary dark:text-primary-300>Node Modules</span>
         <div flex="~ gap-1 items-end">
           <div op75>
             Inspector
@@ -116,7 +119,14 @@ const timepassed = computed(() => rawPayload.value?.timestamp ? Date.now() - raw
       </NuxtLink>
       <NuxtLink flex="~ gap-2 items-center" :to="{ path: '/report/install-size', hash: location.hash }">
         <div i-catppuccin-binary icon-catppuccin flex-none />
-        <DisplayFileSizeBadge :bytes="totalWorkspaceSize" :percent="false" rounded-full text-xs color="primary" />
+        <!-- `color="primary"` isn't a real prop of `FileSizeBadge` — it falls
+             through onto the root element as a bare attribute, and (as an
+             attributify `text-primary` equivalent) only wins over the
+             component's own internal `color-scale-*` class by generation-order
+             luck. `!`-suffixed classes force it, and `-700`/`dark:-300` clear
+             4.5:1 at this badge's small text size (`text-primary` DEFAULT was
+             4.37:1, axe-core-measured). -->
+        <DisplayFileSizeBadge :bytes="totalWorkspaceSize" :percent="false" rounded-full text-xs class="text-primary-700! dark:text-primary-300!" />
         <span ml--0.5>total node_modules size</span>
       </NuxtLink>
       <div v-if="timepassed >= mins10" flex="~ gap-2 items-center">

@@ -276,10 +276,16 @@ onUnmounted(() => {
 
 <template>
   <div flex="~ gap-2 items-center wrap">
+    <!-- Two axe-core-measured contrast fixes on every active tab below:
+         `btn-action` always applies `op75`, so `op100!` is needed to stop the
+         active color being diluted toward its 5%-tint background; and the
+         plain `text-primary` DEFAULT shade is tuned for its own solid swatch,
+         not for sitting on that same near-white/near-black tint, so
+         `-700`/`dark:-300` (matching `PackageBorder.vue`) replace it. -->
     <NuxtLink
       btn-action as="button"
       :to="{ path: '/chart/treemap', hash: location.hash }"
-      active-class="text-primary bg-primary:5"
+      active-class="text-primary-700 dark:text-primary-300 bg-primary:5 op100!"
     >
       <div i-ph-checkerboard-duotone />
       Treemap
@@ -287,7 +293,7 @@ onUnmounted(() => {
     <NuxtLink
       btn-action as="button"
       :to="{ path: '/chart/sunburst', hash: location.hash }"
-      active-class="text-primary bg-primary:5"
+      active-class="text-primary-700 dark:text-primary-300 bg-primary:5 op100!"
     >
       <div i-ph-chart-donut-duotone />
       Sunburst
@@ -295,7 +301,7 @@ onUnmounted(() => {
     <NuxtLink
       btn-action as="button"
       :to="{ path: '/chart/flamegraph', hash: location.hash }"
-      active-class="text-primary bg-primary:5"
+      active-class="text-primary-700 dark:text-primary-300 bg-primary:5 op100!"
     >
       <div i-ph-chart-bar-horizontal-duotone />
       Flamegraph

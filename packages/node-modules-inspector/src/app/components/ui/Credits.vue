@@ -3,7 +3,10 @@
     Made with
     <a href="https://nuxt.com" target="_blank" rel="noopener" flex="~ gap-1.1 items-center">
       <div i-logos-nuxt-icon text-0.6rem mr--0.6 />
-      <span text-hex-01dc82>Nuxt</span>
+      <!-- Nuxt's brand green (#01dc82) only clears ~1.8:1 on white
+           (axe-core-measured) — darken for light mode, keep the bright brand
+           color (already ~10.4:1 on #111) for dark mode. -->
+      <span text-hex-005424 dark:text-hex-01dc82>Nuxt</span>
     </a>
     and
     <div i-ph-heart-duotone text-rose />
