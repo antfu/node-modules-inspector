@@ -33,7 +33,12 @@ const style = computed(() => ({
 <template>
   <Tooltip>
     <div flex="~ gap-1 items-center" text-sm pl1 pr2 rounded border-l-3 border :style>
-      <div v-if="parsed.namespace" text-xs op-fade>
+      <!-- Intentionally full-opacity: `op-fade` (65% light / 55% dark) dilutes
+           the already contrast-tuned hash color further toward the badge's own
+           background, dragging worst-case hues under 4.5:1 (axe-core-measured,
+           e.g. ~6.9:1 undiluted down to ~3.5:1). Same class of bug as
+           `Percentage.vue`'s percentage span. -->
+      <div v-if="parsed.namespace" text-xs>
         {{ parsed.namespace }}:
       </div>
       <div rounded-full font-mono>

@@ -372,10 +372,12 @@ const thirdPartyServices = computed(() => {
       <div border="b base" w-2 />
       <button
         flex-1 border border-base rounded-t-lg p1 flex="~ items-center justify-center gap-1" transition-margin
-        :class="settings.packageDetailsTab === 'dependents' ? 'text-primary border-b-transparent' : 'saturate-0 hover:bg-hover mt-5px'"
+        :class="settings.packageDetailsTab === 'dependents' ? 'text-primary-700 dark:text-primary-300 border-b-transparent' : 'saturate-0 hover:bg-hover mt-5px'"
         @click="settings.packageDetailsTab = 'dependents'"
       >
-        <span :class="settings.packageDetailsTab === 'dependents' ? '' : 'op30'">Used by</span>
+        <!-- `color-muted`, not `op30` — op30's alpha blend only clears
+             ~1.85:1 against the page background (axe-core-measured). -->
+        <span :class="settings.packageDetailsTab === 'dependents' ? '' : 'color-muted'">Used by</span>
         <DisplayNumberBadge
           :value="settings.deepDependenciesTree ? payloads.available.flatDependents(pkg).length : payloads.available.dependents(pkg).length"
         />
@@ -383,10 +385,11 @@ const thirdPartyServices = computed(() => {
       <div border="b base" w-2 />
       <button
         flex-1 border border-base rounded-t-lg p1 flex="~ items-center justify-center gap-1" transition-margin
-        :class="settings.packageDetailsTab === 'dependencies' ? 'text-primary border-b-transparent' : 'saturate-0 hover:bg-hover mt-5px'"
+        :class="settings.packageDetailsTab === 'dependencies' ? 'text-primary-700 dark:text-primary-300 border-b-transparent' : 'saturate-0 hover:bg-hover mt-5px'"
         @click="settings.packageDetailsTab = 'dependencies'"
       >
-        <span :class="settings.packageDetailsTab === 'dependencies' ? '' : 'op30'">Deps on</span>
+        <!-- See the `color-muted` note on the "Used by" tab above. -->
+        <span :class="settings.packageDetailsTab === 'dependencies' ? '' : 'color-muted'">Deps on</span>
         <DisplayNumberBadge
           :value="settings.deepDependenciesTree ? payloads.available.flatDependencies(pkg).length : payloads.available.dependencies(pkg).length"
         />
@@ -433,7 +436,11 @@ const thirdPartyServices = computed(() => {
             type="dependents"
           />
         </template>
-        <div v-else op-mute italic text-center py3>
+        <!-- `color-muted` (a solid neutral-600/400 shade), not `op-mute` (30%
+             opacity) — op-mute's alpha blend only clears ~1.85:1 against the
+             page background (axe-core-measured); this is real body text, not
+             a decorative/disabled affordance, so it needs the readable shade. -->
+        <div v-else color-muted italic text-center py3>
           No dependents
         </div>
       </template>
@@ -465,7 +472,8 @@ const thirdPartyServices = computed(() => {
             type="dependencies"
           />
         </template>
-        <div v-else op-mute italic text-center pb4>
+        <!-- See the `color-muted` note on the dependents empty state above. -->
+        <div v-else color-muted italic text-center pb4>
           No dependencies
         </div>
       </template>
