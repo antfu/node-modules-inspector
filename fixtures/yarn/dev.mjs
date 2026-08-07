@@ -3,12 +3,19 @@ import process from 'node:process'
 import { fileURLToPath } from 'node:url'
 import { x } from 'tinyexec'
 
-process.env.NMI_CWD = process.cwd()
+const cwd = process.cwd()
+const inspector = fileURLToPath(new URL('../../packages/node-modules-inspector', import.meta.url))
 
-await x('pnpm', ['run', 'dev'], {
+await x('pnpm', ['run', 'stub'], {
   nodeOptions: {
-    cwd: fileURLToPath(new URL('../../packages/node-modules-inspector', import.meta.url)),
+    cwd: inspector,
     stdio: 'inherit',
-    env: process.env,
+  },
+})
+
+await x('node', ['./bin.mjs', '--root', cwd], {
+  nodeOptions: {
+    cwd: inspector,
+    stdio: 'inherit',
   },
 })

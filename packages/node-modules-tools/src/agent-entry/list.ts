@@ -14,7 +14,8 @@ export async function listPackageDependenciesRaw(
 
   switch (manager) {
     case 'pnpm':
-    case 'pnpm@6': {
+    case 'pnpm@6':
+    case 'pnpm-rush': {
       result = await import('../agents/pnpm').then(r => r.listPackageDependencies(options))
       break
     }
@@ -27,12 +28,13 @@ export async function listPackageDependenciesRaw(
       break
     }
     case 'yarn@berry': {
-      console.warn('Yarn Berry support is experimental, if you encounter any issues, please open an issue with a reproduction')
       result = await import('../agents/berry').then(r => r.listPackageDependencies(options))
       break
     }
     case 'deno':
     case 'yarn':
+    case 'nub':
+    case 'aube':
       throw new Error(`Package manager ${manager} is not yet supported`)
     default:
       throw new Error(`Unknown package manager: ${manager satisfies never}`)

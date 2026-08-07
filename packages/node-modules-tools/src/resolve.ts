@@ -53,7 +53,8 @@ export async function resolvePackage(
   const _pkg = pkg as unknown as PackageNode
   if (_pkg.resolved)
     return _pkg
-  if (!_pkg.filepath) {
+  const filepath = pkg.filepath
+  if (!filepath) {
     _pkg.resolved = {
       module: 'unknown',
       packageJson: {},
@@ -61,7 +62,7 @@ export async function resolvePackage(
     return _pkg
   }
 
-  const path = join(pkg.filepath, 'package.json')
+  const path = join(filepath, 'package.json')
   if (existsSync(path)) {
     // In cases like optional dependencies, the package might not be installed.
     const content = await readFile(path, 'utf-8')
