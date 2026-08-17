@@ -101,9 +101,15 @@ export async function listPackageDependencies(
     resolveRoot(options),
   ])
 
-  if (!rootPackage)
-    throw new Error('Could not find root package.json')
-
+  if (!rootPackage) {
+    throw new Error(
+      'Could not find root package.json. '
+      + 'Make sure the root package.json has both `name` and `version` fields. '
+      + 'If you are in a monorepo, the root package.json may be missing `version` '
+      + '(some monorepos version workspaces independently). '
+      + 'Add a `version` field (e.g. `"version": "0.0.0"`) to fix this.',
+    )
+  }
   const packages = new Map<string, PackageNodeRaw>()
   // Used to link package deps with resolved version
   const packageSpecByLocation = new Map<string, string>()
