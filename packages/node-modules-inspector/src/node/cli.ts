@@ -1,23 +1,12 @@
-import { existsSync } from 'node:fs'
 import fs from 'node:fs/promises'
 import process from 'node:process'
 
 import c from 'ansis'
 import cac from 'cac'
+import { createBuild } from 'devframe/adapters/build'
 import { createDevServer, resolveDevServerPort } from 'devframe/adapters/dev'
-import {
-  DEVFRAME_CONNECTION_META_FILENAME,
-  DEVFRAME_RPC_DUMP_DIRNAME,
-  DEVFRAME_RPC_DUMP_MANIFEST_FILENAME,
-} from 'devframe/constants'
-import { createH3DevframeHost } from 'devframe/internal'
-import { createHostContext } from 'devframe/node'
-import { strictJsonStringify } from 'devframe/rpc'
-import { collectStaticRpcDump } from 'devframe/rpc/dump'
-import { structuredCloneStringify } from 'devframe/utils/structured-clone'
-import { dirname, relative, resolve } from 'pathe'
+import { relative, resolve } from 'pathe'
 import { glob } from 'tinyglobby'
-import { distDir } from '../dirs'
 import { MARK_CHECK, MARK_NODE } from './constants'
 import devframe from './devframe'
 
@@ -43,51 +32,17 @@ cli
       baseURL = `/${baseURL}`
     baseURL = baseURL.replace(/\/+/g, '/')
 
-    if (existsSync(outDir))
-      await fs.rm(outDir, { recursive: true })
-    await fs.mkdir(outDir, { recursive: true })
-    await fs.cp(distDir, outDir, { recursive: true })
+    // `createBuild` owns the whole static export (mode:'build' context + setup +
+    // SPA copy + `__connection.json` + sharded RPC dump). It calls
+    // `devframe.setup(ctx)` without a flag bag, so bridge the CLI flags the same
+    // way the `mcp` command does: root via cwd, config/depth via env vars.
+    if (options.config)
+      process.env.NMI_CLI_CONFIG = options.config
+    process.env.NMI_CLI_DEPTH = String(Number(options.depth))
+    if (cwd && cwd !== process.cwd())
+      process.chdir(cwd)
 
-    const ctx = await createHostContext({
-      cwd,
-      mode: 'build',
-      host: createH3DevframeHost({ origin: 'http://localhost', appName: devframe.id }),
-    })
-    await devframe.setup(ctx, {
-      flags: {
-        root: cwd,
-        config: options.config,
-        depth: Number(options.depth),
-      },
-    })
-
-    await fs.mkdir(resolve(outDir, DEVFRAME_RPC_DUMP_DIRNAME), { recursive: true })
-
-    const jsonSerializableMethods: string[] = []
-    for (const def of ctx.rpc.definitions.values()) {
-      if (def.jsonSerializable === true)
-        jsonSerializableMethods.push(def.name)
-    }
-    await fs.writeFile(
-      resolve(outDir, DEVFRAME_CONNECTION_META_FILENAME),
-      JSON.stringify({ backend: 'static', jsonSerializableMethods }, null, 2),
-      'utf-8',
-    )
-
-    const dump = await collectStaticRpcDump(ctx.rpc.definitions.values(), ctx)
-    for (const [filepath, file] of Object.entries(dump.files)) {
-      const fullpath = resolve(outDir, filepath)
-      await fs.mkdir(dirname(fullpath), { recursive: true })
-      const text = file.serialization === 'structured-clone'
-        ? structuredCloneStringify(file.data)
-        : strictJsonStringify(file.data, file.fnName)
-      await fs.writeFile(fullpath, text, 'utf-8')
-    }
-    await fs.writeFile(
-      resolve(outDir, DEVFRAME_RPC_DUMP_MANIFEST_FILENAME),
-      JSON.stringify(dump.manifest, null, 2),
-      'utf-8',
-    )
+    await createBuild(devframe, { outDir })
 
     if (baseURL !== '/') {
       const htmlFiles = await glob('**/*.html', { cwd: outDir, onlyFiles: true, dot: true, expandDirectories: false })
