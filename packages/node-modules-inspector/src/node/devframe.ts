@@ -1,5 +1,5 @@
 import process from 'node:process'
-import { defineDevframe } from 'devframe/types'
+import { defineDevframe } from 'devframe'
 import { description, homepage, name as packageName, version } from '../../package.json'
 import { distDir } from '../dirs'
 import { getPackagesNpmMetaRpc } from './rpc/get-packages-npm-meta'
@@ -26,6 +26,7 @@ export default defineDevframe({
   name: 'Node Modules Inspector',
   version,
   packageName,
+  importMetaUrl: import.meta.url,
   homepage,
   description,
   icon: 'ph:package-duotone',

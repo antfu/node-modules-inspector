@@ -10,7 +10,8 @@ import {
   DEVFRAME_RPC_DUMP_DIRNAME,
   DEVFRAME_RPC_DUMP_MANIFEST_FILENAME,
 } from 'devframe/constants'
-import { createH3DevframeHost, createHostContext } from 'devframe/node'
+import { createH3DevframeHost } from 'devframe/internal'
+import { createHostContext } from 'devframe/node'
 import { strictJsonStringify } from 'devframe/rpc'
 import { collectStaticRpcDump } from 'devframe/rpc/dump'
 import { structuredCloneStringify } from 'devframe/utils/structured-clone'
