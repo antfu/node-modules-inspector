@@ -46,7 +46,6 @@
     "cac": "catalog:deps",
     "devframe": "catalog:deps",
     "fast-npm-meta": "catalog:deps",
-    "get-port-please": "catalog:deps",
     "h3": "catalog:deps",
     "launch-editor": "catalog:deps",
     "mlly": "catalog:testing",
