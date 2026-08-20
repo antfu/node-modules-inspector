@@ -54,6 +54,16 @@ export default defineConfig({
       },
     },
     {
+      name: 'instant',
+      testMatch: /instant\.spec\.ts$/,
+      use: {
+        ...devices['Desktop Chrome'],
+        // Instant mode ships in the same hosted web build as webcontainer
+        // mode; registry traffic is intercepted with fixtures in the spec.
+        baseURL: `http://127.0.0.1:${PORT_WC}`,
+      },
+    },
+    {
       name: 'build-subbase',
       testMatch: /build-subbase\.spec\.ts$/,
       use: {
@@ -83,7 +93,7 @@ export default defineConfig({
     command: 'node test/e2e/utils/orchestrate.mjs',
     url: `http://127.0.0.1:${PORT_DEV}/__connection.json`,
     reuseExistingServer: !isCI,
-    // Cold start in CI has to do `pnpm wc:build`, `pnpm build`, plus the
+    // Cold start in CI has to do `pnpm web:build`, `pnpm build`, plus the
     // static export (which fetches npm meta for every dep) — together this
     // can take 5+ minutes on a fresh runner.
     timeout: 600_000,

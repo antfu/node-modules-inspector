@@ -4,9 +4,11 @@ import Inspect from 'vite-plugin-inspect'
 
 const NUXT_DEBUG_BUILD = !!process.env.NUXT_DEBUG_BUILD
 const backend = process.env.NMI_BACKEND ?? 'dev'
-const isWebContainer = backend === 'webcontainer'
+const isWeb = backend === 'web'
 
-const headers: Record<string, string> = isWebContainer
+// The hosted web build ships the WebContainer-backed "Sandbox Install" mode,
+// which requires cross-origin isolation (COOP/COEP) to boot.
+const headers: Record<string, string> = isWeb
   ? {
       'Cross-Origin-Embedder-Policy': 'require-corp',
       'Cross-Origin-Opener-Policy': 'same-origin',
@@ -22,10 +24,11 @@ export default defineNuxtConfig({
     '@unocss/nuxt',
     '@nuxt/eslint',
     'nuxt-eslint-auto-explicit-import',
-    ...isWebContainer ? ['./app/modules/webcontainer'] : [],
+    ...isWeb ? ['./app/modules/webcontainer'] : [],
   ],
 
   alias: {
+    'node-modules-tools/registry': fileURLToPath(new URL('../../node-modules-tools/src/registry.ts', import.meta.url)),
     'node-modules-tools/utils': fileURLToPath(new URL('../../node-modules-tools/src/utils.ts', import.meta.url)),
     'node-modules-tools/constants': fileURLToPath(new URL('../../node-modules-tools/src/constants.ts', import.meta.url)),
     'node-modules-tools': fileURLToPath(new URL('../../node-modules-tools/src/index.ts', import.meta.url)),

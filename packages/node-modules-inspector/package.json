@@ -37,8 +37,8 @@
     "prepack": "pnpm build && node scripts/copy-skills.mjs",
     "dev:prepare": "(cd src && nuxi prepare) && pnpm wc:prepare && node scripts/copy-skills.mjs",
     "wc:prepare": "(cd src && nuxi prepare) && rollup -c",
-    "wc:build": "pnpm run wc:prepare && NMI_BACKEND=webcontainer ROLLDOWN_OPTIONS_VALIDATION=loose nuxi build src && unbuild",
-    "wc:dev": "pnpm run -r stub && pnpm run wc:prepare && (cd src && NMI_BACKEND=webcontainer ROLLDOWN_OPTIONS_VALIDATION=loose nuxi dev)"
+    "web:build": "pnpm run wc:prepare && NMI_BACKEND=web ROLLDOWN_OPTIONS_VALIDATION=loose nuxi build src && unbuild",
+    "web:dev": "pnpm run -r stub && pnpm run wc:prepare && (cd src && NMI_BACKEND=web ROLLDOWN_OPTIONS_VALIDATION=loose nuxi dev)"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "catalog:deps",

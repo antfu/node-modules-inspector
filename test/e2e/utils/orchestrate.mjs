@@ -63,7 +63,7 @@ async function ensureWebcontainerFixture() {
     return
   }
   console.log('[e2e:orchestrate] Building webcontainer-mode bundle...')
-  run('pnpm -C packages/node-modules-inspector run wc:build')
+  run('pnpm -C packages/node-modules-inspector run web:build')
   await copyDir(DIST_PUBLIC, FIXTURE_WC)
   await writeMarker('webcontainer')
 }

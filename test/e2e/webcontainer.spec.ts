@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-// "Hosted webcontainer mode" = `pnpm wc:build` output, deployed at
+// "Hosted webcontainer mode" = `pnpm web:build` output, deployed at
 // node-modules.dev. The page shows a `pnpm install` landing prompt and only
 // works under COOP/COEP headers (required by the WebContainer runtime).
 //
@@ -14,12 +14,15 @@ test.describe('hosted webcontainer mode', () => {
     await page.goto('/')
     await expect(page).toHaveTitle(/Node Modules Inspector/)
 
-    // Landing renders the `pnpm install <input>` prompt.
-    await expect(page.getByText('pnpm', { exact: true })).toBeVisible({ timeout: 30_000 })
-    await expect(page.getByText('install', { exact: true })).toBeVisible()
+    // The landing defaults to Instant mode — switch to Sandbox Install to get
+    // the `pnpm install <input>` prompt.
+    await expect(page.getByPlaceholder('Enter package names')).toBeVisible({ timeout: 30_000 })
+    await page.getByRole('button', { name: 'Sandbox Install' }).click()
+    await expect(page.getByText('pnpm', { exact: true })).toBeVisible()
     await expect(page.getByPlaceholder('Enter package names')).toBeVisible()
 
     // The "WebContainer" link appears in the explanatory copy.
+    await page.getByPlaceholder('Enter package names').fill('vue')
     await expect(page.getByRole('link', { name: 'WebContainer' })).toBeVisible()
   })
 

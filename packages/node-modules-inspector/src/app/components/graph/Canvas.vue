@@ -295,6 +295,18 @@ function getLinkColor(link: Link) {
   return 'stroke-#8882'
 }
 
+/**
+ * A link is a peer-dependency edge when its target is listed in the source's
+ * `peerDependencies` set (populated by the registry resolver). Rendered dashed.
+ */
+function isPeerLink(link: Link) {
+  return !!link.source.data.peerDependencies?.has(link.target.data.spec)
+}
+
+const hasPeerLinks = computed(() =>
+  [...links.value, ...additionalLinks.value].some(isPeerLink),
+)
+
 function toggleRender() {
   settings.value.graphRender = settings.value.graphRender === 'normal' ? 'dots' : 'normal'
 }
@@ -338,6 +350,7 @@ onMounted(() => {
               :key="link.id"
               :d="generateLink(link)!"
               :class="getLinkColor(link)"
+              :stroke-dasharray="isPeerLink(link) ? '4 4' : undefined"
               fill="none"
             />
           </g>
@@ -348,6 +361,7 @@ onMounted(() => {
               v-for="link of activeLinks"
               :key="link.id"
               :d="generateLink(link)!"
+              :stroke-dasharray="isPeerLink(link) ? '4 4' : undefined"
               fill="none"
               class="stroke-primary:75"
             />
@@ -375,8 +389,19 @@ onMounted(() => {
     </div>
 
     <div
-      fixed right-4 bottom-4 z-panel-nav flex="~ col gap-2 items-center"
+      fixed right-4 bottom-4 z-panel-nav flex="~ col gap-2 items-end"
     >
+      <div
+        v-if="hasPeerLinks"
+        bg-glass rounded-lg border border-base shadow px3 py2
+        flex="~ gap-2 items-center" text-xs op-fade
+      >
+        <svg width="22" height="8" class="flex-none">
+          <line x1="0" y1="4" x2="22" y2="4" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 4" />
+        </svg>
+        <span>peer dependency</span>
+      </div>
+
       <div w-10 flex="~ items-center justify-center">
         <UiTimeoutView :content="`${Math.round(scale * 100)}%`" class="text-sm" />
       </div>

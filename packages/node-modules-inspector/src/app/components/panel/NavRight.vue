@@ -1,15 +1,5 @@
 <script setup lang="ts">
 import { isDark, toggleDark } from '../../composables/dark'
-import { rawPayload } from '../../state/data'
-
-const isWebContainer = import.meta.env.BACKEND === 'webcontainer'
-
-function newInspect() {
-  // eslint-disable-next-line no-alert
-  if (confirm('To start a new inspect, the current state will be lost. Continue?')) {
-    location.href = '/'
-  }
-}
 </script>
 
 <template>
@@ -19,13 +9,6 @@ function newInspect() {
       flex="~ items-center"
       bg-glass rounded-full border border-base shadow
     >
-      <ActionIconButton
-        v-if="isWebContainer && rawPayload"
-        tooltip="Start a new inspect"
-        icon="i-ph-plus-circle-duotone"
-        class="text-xl"
-        @click="newInspect()"
-      />
       <ActionIconButton
         tooltip="Check source code on GitHub"
         icon="i-ri-github-fill"
