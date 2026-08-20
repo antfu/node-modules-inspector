@@ -189,7 +189,7 @@ async function runSandbox(deps: Record<string, string>) {
             :class="mode === 'instant' ? 'bg-primary:10 text-primary' : 'op50 hover:op100'"
             @click="setMode('instant')"
           >
-            Instant
+            Registry Query
           </button>
           <button
             px4 py1.5 rounded-full transition-colors
@@ -219,7 +219,7 @@ async function runSandbox(deps: Record<string, string>) {
         </div>
         <label
           v-else
-          border="~ base rounded-full" bg-glass shadow transition-all
+          border="~ base rounded-full" bg-glass shadow transition-all w-180
           flex="~ gap-2 items-center" py3 px8 text-lg
           focus-within="shadow-xl ring-4 ring-primary:10"
           :class="isDragging ? 'ring-4 ring-primary:20' : ''"
@@ -229,14 +229,14 @@ async function runSandbox(deps: Record<string, string>) {
               <span text-orange>pnpm</span> <span op-fade>install</span>
             </template>
             <template v-else>
-              <span text-primary>inspect</span>
+              <span text-primary>query</span>
             </template>
           </div>
           <input
             v-model="input"
             placeholder="Enter package names"
             :disabled="isLoading"
-            w-120 px1 py2 font-mono bg-transparent outline-none
+            w-full px1 py2 font-mono bg-transparent outline-none
             placeholder-gray:40
             @keydown.enter="!isComposing && run()"
             @compositionstart="isComposing = true"
@@ -244,16 +244,16 @@ async function runSandbox(deps: Record<string, string>) {
             @paste="handlePaste"
           >
         </label>
-        <div text-center transition duration-500 italic :class="input || packageJson ? 'op35' : 'op0'">
+        <div text-center transition duration-500 italic op35>
           <template v-if="mode === 'sandbox'">
-            This will run a pnpm install inside your browser with <a href="https://webcontainers.io/" target="_blank" hover:underline>WebContainer</a>.
+            This will run a full pnpm install inside your browser with <a href="https://webcontainers.io/" target="_blank" font-bold hover:underline>WebContainer</a>. Slower but most accurate.
           </template>
           <template v-else>
-            Dependencies are resolved instantly from the <a href="https://registry.npmjs.org" target="_blank" hover:underline>npm registry</a> — an approximation of a fresh install.
+            Dependencies are resolved by directly querying <a href="https://registry.npmjs.org" target="_blank" font-bold hover:underline>npm registry</a>, less accurate but faster.
           </template>
         </div>
 
-        <div v-if="isLoading && mode === 'instant'" w-120 flex="~ col gap-2 items-center" mt2>
+        <div v-if="isLoading && mode === 'instant'" w-180 flex="~ col gap-2 items-center" mt2>
           <div h-1 w-full rounded-full bg-gray:15 of-hidden>
             <div h-full rounded-full bg-primary transition-all duration-300 :style="{ width: progressPercent }" />
           </div>
@@ -279,7 +279,7 @@ async function runSandbox(deps: Record<string, string>) {
           </div>
         </div>
 
-        <div p2 mt3 text-center flex="~ col gap-2">
+        <div p2 mt10 text-center flex="~ col gap-2">
           <div op35>
             Paste or drop a package.json to inspect a whole project.
           </div>
