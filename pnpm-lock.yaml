@@ -129,6 +129,9 @@ catalogs:
       specifier: ^3.3.9
       version: 3.3.9
   frontend:
+    '@hpcc-js/wasm-graphviz':
+      specifier: ^1.28.0
+      version: 1.28.0
     '@vitejs/plugin-vue':
       specifier: ^6.0.8
       version: 6.0.8
@@ -144,9 +147,6 @@ catalogs:
     d3:
       specifier: ^7.9.0
       version: 7.9.0
-    d3-dag:
-      specifier: ^1.2.2
-      version: 1.2.2
     d3-hierarchy:
       specifier: ^3.1.2
       version: 3.1.2
@@ -494,6 +494,9 @@ importers:
       '@antfu/design':
         specifier: catalog:dev
         version: 0.3.3(@antfu/utils@9.3.0)(@axe-core/playwright@4.12.1(playwright-core@1.62.1))(@iconify-json/catppuccin@1.2.17)(@tanstack/vue-virtual@3.13.35(vue@3.5.41(typescript@5.9.3)))(@unocss/core@66.7.5)(colorjs.io@0.7.1)(floating-vue@5.2.2(@nuxt/kit-nightly@5.0.0-29785913.e511e20c(confbox@0.2.4)(dotenv@17.4.2)(giget@3.3.1)(jiti@2.7.0)(magic-string@1.2.0)(mlly@1.8.2)(oxc-parser@0.131.0)(rolldown@1.2.4)(unplugin@3.3.0(esbuild@0.28.1)(rolldown@1.2.4)(rollup@4.62.4)(vite@8.2.1)(webpack@5.98.0(esbuild@0.28.1))))(vue@3.5.41(typescript@5.9.3)))(playwright@1.62.1)(reka-ui@2.10.1(vue@3.5.41(typescript@5.9.3)))(unocss@66.7.5(@unocss/webpack@66.7.5(esbuild@0.28.1)(rolldown@1.2.4)(rollup@4.62.4)(vite@8.2.1)(webpack@5.98.0(esbuild@0.28.1)))(vite@8.2.1))(vue@3.5.41(typescript@5.9.3))
+      '@hpcc-js/wasm-graphviz':
+        specifier: catalog:frontend
+        version: 1.28.0
       '@storybook/addon-docs':
         specifier: catalog:storybook
         version: 10.5.5(@types/react@19.2.18)(esbuild@0.28.1)(rollup@4.62.4)(storybook@10.5.5(@types/react@19.2.18)(react@19.2.8))(vite@8.2.1)(webpack@5.98.0(esbuild@0.28.1))
@@ -527,9 +530,6 @@ importers:
       d3:
         specifier: catalog:frontend
         version: 7.9.0
-      d3-dag:
-        specifier: catalog:frontend
-        version: 1.2.2
       d3-hierarchy:
         specifier: catalog:frontend
         version: 3.1.2
@@ -1490,6 +1490,9 @@ packages:
     engines: {node: '>=18.14.1'}
     peerDependencies:
       hono: ^4
+
+  '@hpcc-js/wasm-graphviz@1.28.0':
+    resolution: {integrity: sha512-KqvPy7ckxPc1xv8Kt7H3bo9cj8U4gfOXxQ8grLZvDZxyQQjnXsKxrweJLLJtEoWWtQqAk4biUB0g2qsjkTiMVA==}
 
   '@humanfs/core@0.19.1':
     resolution: {integrity: sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA==}
@@ -4562,9 +4565,6 @@ packages:
     resolution: {integrity: sha512-4EzFTRIikzs47RGmdxbeUvLWtGedDUNkTcmzoeyg4sP/dvCexO47AaQL7VKy/gul85TOxw+IBgA8US2xwbToNA==}
     engines: {node: '>=12'}
 
-  d3-dag@1.2.2:
-    resolution: {integrity: sha512-RT4+IEUEthIeIiTb4TUfmrw8o7qINmeRjtvrokmuhfk3KXp8YQX6yZOFUJIq7sHhv5JMpDKR3hHWzYb9q/jUaQ==}
-
   d3-delaunay@6.0.4:
     resolution: {integrity: sha512-mdjtIZ1XLAM8bm/hx3WwjfHt6Sggek7qH043O8KEjDXN40xi3vx/6pYSVTwLjEgiXQTbvaouWKynLBiUZ6SK6A==}
     engines: {node: '>=12'}
@@ -5382,10 +5382,6 @@ packages:
     resolution: {integrity: sha512-ro+DiMu5DXgRBabqXupW38h7WPZ9+Ad8UjwhvsmmN8w1sU7ab0nzAXvVZ4kqYg57OrqomRtJvepX5/xvFKNtjA==}
     engines: {node: '>=12.17'}
 
-  get-own-enumerable-keys@1.0.0:
-    resolution: {integrity: sha512-PKsK2FSrQCyxcGHsGrLDcK0lx+0Ke+6e8KFFozA9/fIQLhQzPaRvJFdcz7+Axg3jUH/Mq+NI4xa5u/UT2tQskA==}
-    engines: {node: '>=14.16'}
-
   get-port-please@3.2.0:
     resolution: {integrity: sha512-I9QVvBw5U/hw3RmWpYKRumUeaDgxTPd401x364rLmWBJcOQ753eov1eTgzDqRG9bqFIfDc7gfzcQEWrUri3o1A==}
 
@@ -5645,10 +5641,6 @@ packages:
   is-module@1.0.0:
     resolution: {integrity: sha512-51ypPSPCoTEIN9dy5Oy+h4pShgJmPCygKfyRCISBI+JoWT/2oJvK8QPxmwv7b/p239jXrm9M1mlQbyKJ5A152g==}
 
-  is-obj@3.0.0:
-    resolution: {integrity: sha512-IlsXEHOjtKhpN8r/tRFj2nDyTmHvcfNeu/nrRIcXE17ROeatXchkojffa1SpdqW4cr/Fj6QkEf/Gn4zf6KKvEQ==}
-    engines: {node: '>=12'}
-
   is-plain-obj@2.1.0:
     resolution: {integrity: sha512-YWnfyRwxL/+SsrWYfOpUtz5b3YD+nyfkHvjbcanzk8zgyO4ASD67uVMRt8k5bM4lLMDnXfriRhOpemw+NfT1eA==}
     engines: {node: '>=8'}
@@ -5665,10 +5657,6 @@ packages:
   is-regex@1.2.1:
     resolution: {integrity: sha512-MjYsKHO5O7mCsmRGxWcLWheFqN9DJ/2TmngvjKXihe6efViPqc274+Fx/4fYj/r03+ESvBdTXK0V6tA3rgez1g==}
     engines: {node: '>= 0.4'}
-
-  is-regexp@3.1.0:
-    resolution: {integrity: sha512-rbku49cWloU5bSMI+zaRaXdQHXnthP6DZ/vLnfdSKyL4zUzuWnomtOEiZZOd+ioQ+avFo/qau3KPTc7Fjy1uPA==}
-    engines: {node: '>=12'}
 
   is-stream@2.0.1:
     resolution: {integrity: sha512-hFoiJiTl63nn+kstHGBtewWSKnQLpyb155KHheA1l39uvtO9nWIop1p3udqPcUd/xbF1VLMO4n7OI6p7RbngDg==}
@@ -5688,9 +5676,6 @@ packages:
 
   isexe@2.0.0:
     resolution: {integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==}
-
-  javascript-lp-solver@1.0.3:
-    resolution: {integrity: sha512-+qUYrubmn227YTz25uf9wOTlgB3wFKGtutECxL1shjOkgi/Tcn3SpnC7+T9rxhv/JNOxLIfZ3O6wEx0FwLlXbw==}
 
   jest-worker@27.5.1:
     resolution: {integrity: sha512-7vuh85V5cdDofPyxn58nrPjBktZo0u9x1g8WtjQol+jZDaE+fhN+cIvTj11GndBnMnyfrUOG1sZQxCdjKh+DKg==}
@@ -7049,10 +7034,6 @@ packages:
     resolution: {integrity: sha512-Rzq0KEyX/w/tEybncDgdkZrJgVUsUMk3xjh3t5bv3S1HTAtg+uOYt72+ZfwiQwKdysThkTBdL/rTi6HDmX9Ddw==}
     engines: {node: '>=0.6'}
 
-  quadprog@1.6.1:
-    resolution: {integrity: sha512-fN5Jkcjlln/b3pJkseDKREf89JkKIyu6cKIVXisgL6ocKPQ0yTp9n6NZUAq3otEPPw78WZMG9K0o9WsfKyMWJw==}
-    engines: {node: '>=8.x'}
-
   quansync@0.2.11:
     resolution: {integrity: sha512-AifT7QEbW9Nri4tAwR5M/uzpBuqfZf+zwaEM/QkzEjj7NBuFD2rBuy0K3dE+8wltbezDV7JMA0WfnCPYRSYbXA==}
 
@@ -7476,10 +7457,6 @@ packages:
   string-width@7.2.0:
     resolution: {integrity: sha512-tsaTIkKW9b4N+AEj+SVA+WhJzV7/zMhcSu78mLKWSk7cXMOSHsBKFWUs0fWwq8QyK3MgJBQRX6Gbi4kYbdvGkQ==}
     engines: {node: '>=18'}
-
-  stringify-object@6.0.0:
-    resolution: {integrity: sha512-6f94vIED6vmJJfh3lyVsVWxCYSfI5uM+16ntED/Ql37XIyV6kj0mRAAiTeMMc/QLYIaizC3bUprQ8pQnDDrKfA==}
-    engines: {node: '>=20'}
 
   strip-ansi@7.2.0:
     resolution: {integrity: sha512-yDPMNjp4WyfYBkHnjIRLfca1i6KMyGCtsVgoKe/z1+6vukgaENdgGBZt+ZmKPc4gavvEZ5OgHfHdrazhgNyG7w==}
@@ -9470,6 +9447,8 @@ snapshots:
   '@hono/node-server@1.19.14(hono@4.12.23)':
     dependencies:
       hono: 4.12.23
+
+  '@hpcc-js/wasm-graphviz@1.28.0': {}
 
   '@humanfs/core@0.19.1': {}
 
@@ -13534,13 +13513,6 @@ snapshots:
     dependencies:
       d3-array: 3.2.4
 
-  d3-dag@1.2.2:
-    dependencies:
-      d3-array: 3.2.4
-      javascript-lp-solver: 1.0.3
-      quadprog: 1.6.1
-      stringify-object: 6.0.0
-
   d3-delaunay@6.0.4:
     dependencies:
       delaunator: 5.0.1
@@ -14477,8 +14449,6 @@ snapshots:
 
   get-npm-tarball-url@2.1.0: {}
 
-  get-own-enumerable-keys@1.0.0: {}
-
   get-port-please@3.2.0: {}
 
   get-proto@1.0.1:
@@ -14732,8 +14702,6 @@ snapshots:
 
   is-module@1.0.0: {}
 
-  is-obj@3.0.0: {}
-
   is-plain-obj@2.1.0: {}
 
   is-promise@2.2.2: {}
@@ -14751,8 +14719,6 @@ snapshots:
       has-tostringtag: 1.0.2
       hasown: 2.0.2
 
-  is-regexp@3.1.0: {}
-
   is-stream@2.0.1: {}
 
   is-subdir@1.2.0:
@@ -14766,8 +14732,6 @@ snapshots:
       is-inside-container: 1.0.0
 
   isexe@2.0.0: {}
-
-  javascript-lp-solver@1.0.3: {}
 
   jest-worker@27.5.1:
     dependencies:
@@ -16874,8 +16838,6 @@ snapshots:
     dependencies:
       side-channel: 1.1.0
 
-  quadprog@1.6.1: {}
-
   quansync@0.2.11: {}
 
   quansync@1.0.0: {}
@@ -17406,13 +17368,6 @@ snapshots:
       get-east-asian-width: 1.6.0
       strip-ansi: 7.2.0
     optional: true
-
-  stringify-object@6.0.0:
-    dependencies:
-      get-own-enumerable-keys: 1.0.0
-      is-identifier: 1.1.0
-      is-obj: 3.0.0
-      is-regexp: 3.1.0
 
   strip-ansi@7.2.0:
     dependencies:

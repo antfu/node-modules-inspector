@@ -1,14 +1,13 @@
 <script setup lang="ts">
-import type { GraphNode as DagNode } from 'd3-dag'
 import type { HierarchyLink, HierarchyNode } from 'd3-hierarchy'
 import type { PackageNode } from 'node-modules-tools'
 import type { HighlightMode } from '../../state/highlight'
 import type { ComputedPayload } from '../../state/payload'
+import type { GraphvizLayoutRequest, GraphvizLayoutResponse } from '../../utils/graphviz-worker'
 import { onKeyPressed, useEventListener, useMagicKeys } from '@vueuse/core'
-import { coordCenter, decrossDfs, decrossTwoLayer, graphStratify, layeringSimplex, sugiyama, tweakFlip, twolayerAgg } from 'd3-dag'
 import { hierarchy, tree } from 'd3-hierarchy'
 import { linkHorizontal, linkVertical } from 'd3-shape'
-import { computed, nextTick, onMounted, reactive, ref, shallowReactive, shallowRef, useTemplateRef, watch } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, reactive, ref, shallowReactive, shallowRef, useTemplateRef, watch } from 'vue'
 import { useZoomElement } from '../../composables/zoomElement'
 import { selectedNode } from '../../state/current'
 import { getCompareHighlight } from '../../state/highlight'
@@ -80,21 +79,56 @@ function nodeWidth(spec: string) {
   return nodeSizes.get(spec)?.[0] ?? SPACING.width
 }
 
-// Below this number of nodes, use the higher-quality (but slower) crossing reduction
-const DECROSS_QUALITY_THRESHOLD = 500
+// The Graphviz layout runs in a Web Worker, as it can take a while on large graphs
+let graphvizWorker: Worker | undefined
+let graphvizRequestId = 0
+
+interface GraphvizJson {
+  bb?: string
+  objects?: { name: string, pos?: string }[]
+}
+
+function runGraphvizLayout(dot: string): Promise<GraphvizJson> {
+  graphvizWorker ||= new Worker(
+    new URL('../../utils/graphviz-worker.ts', import.meta.url),
+    { type: 'module' },
+  )
+  const worker = graphvizWorker
+  const id = ++graphvizRequestId
+  return new Promise((resolve, reject) => {
+    const onMessage = (event: MessageEvent<GraphvizLayoutResponse>) => {
+      if (event.data.id !== id)
+        return
+      worker.removeEventListener('message', onMessage)
+      if (event.data.error != null)
+        reject(new Error(event.data.error))
+      else
+        resolve(JSON.parse(event.data.json!))
+    }
+    worker.addEventListener('message', onMessage)
+    worker.postMessage({ id, dot } satisfies GraphvizLayoutRequest)
+  })
+}
+
+function dotEscape(id: string) {
+  return id.replace(/\\/g, '\\\\').replace(/"/g, '\\"')
+}
+
+// Graphviz sizes are given in inches (72pt each); we treat 1pt as 1px
+const PX_PER_INCH = 72
 
 /**
- * Refine node positions with a Sugiyama layered DAG layout
- * (adapted from npmgraph's Graphviz `dot` node allocation).
+ * Refine node positions with Graphviz's `dot` layered layout
+ * (adapted from npmgraph's node allocation).
  *
  * Unlike the provisional tidy-tree layout, this considers every edge of the
  * dependency DAG (not only the rendered spanning tree) and shrink-wraps nodes
  * to their measured sizes, producing a much more compact graph.
  */
-function layoutDag(_nodes: HierarchyNode<PackageNode>[]) {
+async function layoutDag(_nodes: HierarchyNode<PackageNode>[]) {
   const pkgNodes = _nodes.filter(n => n.data.spec !== '~root')
   if (!pkgNodes.length)
-    return
+    return undefined
 
   // Measure the rendered node sizes, so that the layout can shrink-wrap them
   nodeSizes.clear()
@@ -105,49 +139,50 @@ function layoutDag(_nodes: HierarchyNode<PackageNode>[]) {
       : [SPACING.width, SPACING.height])
   }
 
-  // Collect the full DAG edges among the rendered nodes
-  const parentIds = new Map<string, string[]>()
-  for (const node of pkgNodes)
-    parentIds.set(node.data.spec, [])
+  const lines: string[] = [
+    'digraph {',
+    'rankdir="LR"',
+    // We only take the node positions, so skip the edge routing entirely
+    'splines=none',
+    `ranksep=${(SPACING.gapX / PX_PER_INCH).toFixed(4)}`,
+    `nodesep=${(SPACING.gapY / PX_PER_INCH).toFixed(4)}`,
+    'node [shape=box fixedsize=true label=""]',
+  ]
+
+  for (const node of pkgNodes) {
+    const [w, h] = nodeSizes.get(node.data.spec)!
+    lines.push(`"${dotEscape(node.data.spec)}" [width=${(w / PX_PER_INCH).toFixed(4)} height=${(h / PX_PER_INCH).toFixed(4)}]`)
+  }
+
+  // Feed the full DAG (not only the rendered spanning tree) to the layout
   for (const node of pkgNodes) {
     for (const dep of payload.dependencies(node.data)) {
       if (dep.spec !== node.data.spec)
-        parentIds.get(dep.spec)?.push(node.data.spec)
+        lines.push(`"${dotEscape(node.data.spec)}" -> "${dotEscape(dep.spec)}"`)
     }
   }
 
-  const dag = graphStratify()(pkgNodes.map(node => ({
-    id: node.data.spec,
-    parentIds: parentIds.get(node.data.spec)!,
-  })))
+  lines.push('}')
 
-  const layout = sugiyama()
-    .layering(layeringSimplex())
-    .decross(dag.nnodes() <= DECROSS_QUALITY_THRESHOLD
-      ? decrossTwoLayer().order(twolayerAgg()).passes(1)
-      : decrossDfs())
-    // `coordCenter` packs each layer tightly, producing the most compact result
-    // (`coordGreedy` leaves large gaps, `coordSimplex`/`coordQuad` are far too slow)
-    .coord(coordCenter())
-    // Sizes and gaps are given in the pre-flip orientation: [vertical, horizontal]
-    .nodeSize((node: DagNode<{ id: string, parentIds: string[] }>) => {
-      const [w, h] = nodeSizes.get(node.data.id)!
-      return [h, w] as const
-    })
-    .gap([SPACING.gapY, SPACING.gapX])
-    // Flip the layout from top-down to left-right
-    .tweaks([tweakFlip('diagonal')])
+  const json = await runGraphvizLayout(lines.join('\n'))
 
-  layout(dag)
-
-  for (const dagNode of dag.nodes()) {
-    const node = nodesMap.get(dagNode.data.id)
-    if (node) {
-      node.x = dagNode.x
-      node.y = dagNode.y
-    }
+  // Graphviz positions are node centers in points, with the origin at the
+  // bottom-left corner — flip the y axis
+  const bbHeight = Number(json.bb?.split(',')[3] ?? 0)
+  const positions = new Map<string, readonly [number, number]>()
+  for (const object of json.objects ?? []) {
+    if (!object.pos)
+      continue
+    const [x = 0, y = 0] = object.pos.split(',').map(Number)
+    positions.set(object.name, [x, bbHeight - y] as const)
   }
+  return positions
 }
+
+onUnmounted(() => {
+  graphvizWorker?.terminate()
+  graphvizWorker = undefined
+})
 
 // Offset the graph to leave a margin around it
 function applyGraphOffset(_nodes: HierarchyNode<PackageNode>[]) {
@@ -240,11 +275,20 @@ async function calculateGraph() {
     return
 
   try {
-    layoutDag(_nodes)
-    applyGraphOffset(_nodes)
-    // Reassign to trigger a re-render with the updated positions
-    nodes.value = [..._nodes]
-    links.value = [..._links]
+    const positions = await layoutDag(_nodes)
+    if (generation !== layoutGeneration)
+      return
+    if (positions) {
+      for (const node of _nodes) {
+        const pos = positions.get(node.data.spec)
+        if (pos)
+          [node.x, node.y] = pos
+      }
+      applyGraphOffset(_nodes)
+      // Reassign to trigger a re-render with the updated positions
+      nodes.value = [..._nodes]
+      links.value = [..._links]
+    }
   }
   catch (error) {
     console.error('[node-modules-inspector] Failed to calculate the DAG layout, falling back to the tree layout', error)
