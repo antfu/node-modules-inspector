@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { useRoute } from '#app/composables/router'
 import { selectedNode } from '../../state/current'
+import { rawPayload } from '../../state/data'
 import { filters } from '../../state/filters'
 import { settings } from '../../state/settings'
 import { isFiltersOpen, isSettingOpen, isSidepanelCollapsed } from '../../state/ui'
+
+const isWebContainer = import.meta.env.BACKEND === 'webcontainer'
 
 const route = useRoute()
 const location = window.location
@@ -53,6 +56,14 @@ function toggleSetting() {
 function toggleFilters() {
   isFiltersOpen.value = !isFiltersOpen.value
 }
+
+function newInspect() {
+  // we ask for confirmation only when in webcontainer mode
+  // eslint-disable-next-line no-alert
+  if (rawPayload.value?.packageManager === 'npm-registry' || confirm('To start a new inspect, the current state will be lost. Continue?')) {
+    location.href = '/'
+  }
+}
 </script>
 
 <template>
@@ -88,6 +99,16 @@ function toggleFilters() {
       bg-glass rounded-full border border-base shadow px3 py2 flex-none
       flex="~ items-center gap-1" w-max
     >
+      <template v-if="isWebContainer && rawPayload">
+        <ActionIconButton
+          class="w-10 h-10"
+          tooltip="Start a new inspect"
+          icon="i-ph-caret-left"
+          @click="newInspect()"
+        />
+        <div w-1px h-20px mx1 border="l base" />
+      </template>
+
       <template v-for="tab of tabsMeta" :key="tab.path">
         <RouterLink
           v-tooltip="tab.name"
