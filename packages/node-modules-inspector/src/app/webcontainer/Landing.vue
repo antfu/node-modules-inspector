@@ -1,17 +1,31 @@
 <script setup lang="ts">
-import { onMounted, ref, shallowRef } from 'vue'
+import { parseInstallSpecs } from 'node-modules-tools/registry'
+import { computed, onMounted, ref, shallowRef } from 'vue'
 import { backend } from '../backends'
 import MainEntry from '../entries/main.vue'
+import { createRegistryBackend, registryProgress } from '../registry'
 import { fetchData, rawPayload } from '../state/data'
 import { query } from '../state/query'
 import { openTerminal, showTerminal } from '../state/terminal'
 import { getContainer, install } from './container'
 
-showTerminal.value = true
+type WebMode = 'instant' | 'sandbox'
+
+const mode = shallowRef<WebMode>(query.mode === 'sandbox' ? 'sandbox' : 'instant')
 const input = shallowRef(query.install?.trim().replace(/\+/g, ' ') || '')
+const packageJson = shallowRef<{ name?: string, dependencies: Record<string, string> } | null>(null)
 const error = shallowRef<any>()
 const isLoading = shallowRef(false)
 const isComposing = ref(false)
+const isDragging = shallowRef(false)
+const fallbackNotice = shallowRef(false)
+
+function setMode(value: WebMode) {
+  mode.value = value
+  query.mode = value === 'sandbox' ? 'sandbox' : ''
+  if (value === 'sandbox')
+    getContainer()
+}
 
 function handleCompositionEnd(_event: CompositionEvent) {
   isComposing.value = false
@@ -19,47 +33,193 @@ function handleCompositionEnd(_event: CompositionEvent) {
 }
 
 onMounted(() => {
-  getContainer()
+  if (mode.value === 'sandbox')
+    getContainer()
   run()
 })
 
+function tryUsePackageJson(text: string): boolean {
+  const trimmed = text.trim()
+  if (!trimmed.startsWith('{'))
+    return false
+  try {
+    const json = JSON.parse(trimmed)
+    if (!json || typeof json !== 'object' || typeof json.dependencies !== 'object' || !json.dependencies)
+      return false
+    packageJson.value = { name: json.name, dependencies: json.dependencies }
+    input.value = ''
+    query.install = ''
+    error.value = undefined
+    return true
+  }
+  catch {
+    return false
+  }
+}
+
+function handlePaste(event: ClipboardEvent) {
+  const text = event.clipboardData?.getData('text')
+  if (text && tryUsePackageJson(text)) {
+    event.preventDefault()
+    run()
+  }
+}
+
+async function handleDrop(event: DragEvent) {
+  isDragging.value = false
+  const file = event.dataTransfer?.files?.[0]
+  if (!file)
+    return
+  const text = await file.text()
+  if (tryUsePackageJson(text))
+    run()
+  else
+    error.value = new Error(`"${file.name}" does not look like a package.json with dependencies`)
+}
+
+function clearPackageJson() {
+  packageJson.value = null
+}
+
+const dependencies = computed<Record<string, string> | null>(() => {
+  if (packageJson.value)
+    return packageJson.value.dependencies
+  const trimmed = input.value?.trim()
+  if (!trimmed)
+    return null
+  return parseInstallSpecs(trimmed)
+})
+
+const progressText = computed(() => {
+  if (registryProgress.phase === 'manifests')
+    return `Fetching package manifests ${registryProgress.count} / ${registryProgress.total}`
+  return `Resolved ${registryProgress.count} packages...`
+})
+
+const progressPercent = computed(() => {
+  if (registryProgress.phase === 'manifests' && registryProgress.total)
+    return `${Math.round(registryProgress.count / registryProgress.total * 100)}%`
+  // The total is unknown while resolving — ease towards 90%
+  return `${Math.round(registryProgress.count / (registryProgress.count + 20) * 90)}%`
+})
+
 async function run() {
-  if (!input.value?.trim()) {
+  const deps = dependencies.value
+  if (!deps || !Object.keys(deps).length) {
     input.value = ''
     return
   }
 
   isLoading.value = true
-  query.install = input.value.replace(/\s+/g, '+')
+  error.value = undefined
+  if (!packageJson.value)
+    query.install = input.value.trim().replace(/\s+/g, '+')
+
   try {
-    openTerminal.value = true
-    backend.value = await install(input.value.split(' '))
-    await fetchData(false, true)
+    if (mode.value === 'sandbox')
+      await runSandbox(deps)
+    else
+      await runInstant(deps)
   }
   catch (e) {
     console.error(e)
     error.value = e
   }
   finally {
-    openTerminal.value = true
     isLoading.value = false
+  }
+}
+
+async function runInstant(deps: Record<string, string>) {
+  backend.value = createRegistryBackend(deps, { name: packageJson.value?.name })
+  await fetchData(false, true)
+}
+
+async function runSandbox(deps: Record<string, string>) {
+  const args = Object.entries(deps)
+    .map(([name, range]) => (!range || range === '*') ? name : `${name}@${range}`)
+  try {
+    showTerminal.value = true
+    openTerminal.value = true
+    backend.value = await install(args)
+    await fetchData(false, true)
+    openTerminal.value = true
+  }
+  catch (e) {
+    console.error(e)
+    // The WebContainer could not boot (e.g. missing cross-origin isolation) —
+    // fall back to Instant mode automatically.
+    openTerminal.value = false
+    showTerminal.value = false
+    setMode('instant')
+    fallbackNotice.value = true
+    await runInstant(deps)
   }
 }
 </script>
 
 <template>
   <template v-if="!backend || !rawPayload">
-    <div flex="~ col items-center gap-5" p10>
+    <div
+      flex="~ col items-center gap-5" p10
+      @dragover.prevent="isDragging = true"
+      @dragleave="isDragging = false"
+      @drop.prevent="handleDrop"
+    >
       <div min-h-120 flex="~ col gap-2 items-center justify-center" flex-auto>
         <UiTitle :has-error="!!error" :is-loading="isLoading" />
 
+        <div
+          flex="~ items-center" border="~ base rounded-full" bg-glass shadow-sm
+          text-sm select-none of-hidden mb2
+        >
+          <button
+            px4 py1.5 rounded-full transition-colors
+            :class="mode === 'instant' ? 'bg-primary:10 text-primary' : 'op50 hover:op100'"
+            @click="setMode('instant')"
+          >
+            Instant
+          </button>
+          <button
+            px4 py1.5 rounded-full transition-colors
+            :class="mode === 'sandbox' ? 'bg-primary:10 text-primary' : 'op50 hover:op100'"
+            @click="setMode('sandbox')"
+          >
+            Sandbox Install
+          </button>
+        </div>
+
+        <div
+          v-if="packageJson"
+          border="~ base rounded-full" bg-glass shadow transition-all
+          flex="~ gap-3 items-center" py3 px8 text-lg
+        >
+          <div i-catppuccin-package-json icon-catppuccin flex-none />
+          <span font-mono>{{ packageJson.name || 'package.json' }}</span>
+          <span op50 text-sm>{{ Object.keys(packageJson.dependencies).length }} dependencies</span>
+          <button
+            v-tooltip="'Clear'"
+            op50 hover:op100 flex="~ items-center justify-center"
+            :disabled="isLoading"
+            @click="clearPackageJson()"
+          >
+            <div i-ph-x />
+          </button>
+        </div>
         <label
+          v-else
           border="~ base rounded-full" bg-glass shadow transition-all
           flex="~ gap-2 items-center" py3 px8 text-lg
           focus-within="shadow-xl ring-4 ring-primary:10"
+          :class="isDragging ? 'ring-4 ring-primary:20' : ''"
         >
           <div flex-none font-mono select-none flex="~ gap-2 items-center">
-            <span text-orange>pnpm</span> <span op-fade>install</span>
+            <template v-if="mode === 'sandbox'">
+              <span text-orange>pnpm</span> <span op-fade>install</span>
+            </template>
+            <template v-else>
+              <span text-primary>inspect</span>
+            </template>
           </div>
           <input
             v-model="input"
@@ -70,15 +230,38 @@ async function run() {
             @keydown.enter="!isComposing && run()"
             @compositionstart="isComposing = true"
             @compositionend="handleCompositionEnd"
+            @paste="handlePaste"
           >
         </label>
-        <div text-center transition duration-500 italic :class="input ? 'op35' : 'op0'">
-          This will run a pnpm install inside your browser with <a href="https://webcontainers.io/" target="_blank" hover:underline>WebContainer</a>.
+        <div text-center transition duration-500 italic :class="input || packageJson ? 'op35' : 'op0'">
+          <template v-if="mode === 'sandbox'">
+            This will run a pnpm install inside your browser with <a href="https://webcontainers.io/" target="_blank" hover:underline>WebContainer</a>.
+          </template>
+          <template v-else>
+            Dependencies are resolved instantly from the <a href="https://registry.npmjs.org" target="_blank" hover:underline>npm registry</a> — an approximation of a fresh install.
+          </template>
         </div>
 
-        <div v-if="error" h-20 text-red rounded p2 flex="~ col items-center">
+        <div v-if="isLoading && mode === 'instant'" w-120 flex="~ col gap-2 items-center" mt2>
+          <div h-1 w-full rounded-full bg-gray:15 of-hidden>
+            <div h-full rounded-full bg-primary transition-all duration-300 :style="{ width: progressPercent }" />
+          </div>
+          <div text-sm op50 font-mono>
+            {{ progressText }}
+          </div>
+        </div>
+
+        <div v-if="fallbackNotice" rounded-lg badge-color-amber px4 py2 flex="~ gap-2 items-center" text-sm>
+          <div i-ph-warning-duotone flex-none />
+          <span>WebContainer failed to boot in this browser — switched to Instant mode.</span>
+          <button op50 hover:op100 flex-none flex="~ items-center" @click="fallbackNotice = false">
+            <div i-ph-x />
+          </button>
+        </div>
+
+        <div v-if="error" text-red rounded p2 flex="~ col items-center">
           <div font-bold>
-            Failed to Connect to the Backend
+            {{ mode === 'sandbox' ? 'Failed to Connect to the Backend' : 'Failed to Resolve Dependencies' }}
           </div>
           <div text-red5 dark:text-red3>
             {{ error }}
@@ -86,6 +269,9 @@ async function run() {
         </div>
 
         <div p2 mt3 text-center flex="~ col gap-2">
+          <div op35>
+            Paste or drop a package.json to inspect a whole project.
+          </div>
           <div>
             <span op35>Or run in your local project with</span> <a href="https://github.com/antfu/node-modules-inspector" target="_blank"><code badge-color-gray important-bg-gray:3 font-mono px2 py1 rounded>pnpx <span text-primary:90>node-modules-inspector</span></code></a>
           </div>
@@ -100,5 +286,6 @@ async function run() {
     </div>
   </template>
   <MainEntry v-else />
+  <RegistryWarnings />
   <LazyPanelTerminal />
 </template>

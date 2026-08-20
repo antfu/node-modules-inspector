@@ -8,6 +8,7 @@ import { filters, FILTERS_SCHEMA, filtersDefault, isDeepEqual } from './filters'
 export interface QueryOptions extends Partial<{ [x in keyof FilterOptions]?: string }> {
   selected?: string
   install?: string
+  mode?: string
   selectedAction?: string
   selectedAuthors?: string
   actionAll?: string
@@ -19,6 +20,7 @@ export interface QueryOptions extends Partial<{ [x in keyof FilterOptions]?: str
 export const query = reactive<QueryOptions>({
   selected: '',
   install: '',
+  mode: '',
   selectedAction: '',
   selectedAuthors: '',
   actionAll: '',

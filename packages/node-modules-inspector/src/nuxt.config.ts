@@ -26,6 +26,7 @@ export default defineNuxtConfig({
   ],
 
   alias: {
+    'node-modules-tools/registry': fileURLToPath(new URL('../../node-modules-tools/src/registry.ts', import.meta.url)),
     'node-modules-tools/utils': fileURLToPath(new URL('../../node-modules-tools/src/utils.ts', import.meta.url)),
     'node-modules-tools/constants': fileURLToPath(new URL('../../node-modules-tools/src/constants.ts', import.meta.url)),
     'node-modules-tools': fileURLToPath(new URL('../../node-modules-tools/src/index.ts', import.meta.url)),

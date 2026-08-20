@@ -54,6 +54,16 @@ export default defineConfig({
       },
     },
     {
+      name: 'instant',
+      testMatch: /instant\.spec\.ts$/,
+      use: {
+        ...devices['Desktop Chrome'],
+        // Instant mode ships in the same hosted web build as webcontainer
+        // mode; registry traffic is intercepted with fixtures in the spec.
+        baseURL: `http://127.0.0.1:${PORT_WC}`,
+      },
+    },
+    {
       name: 'build-subbase',
       testMatch: /build-subbase\.spec\.ts$/,
       use: {
