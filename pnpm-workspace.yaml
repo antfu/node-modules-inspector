@@ -1,17 +1,17 @@
-trustPolicy: no-downgrade
+ignoreWorkspaceRootCheck: true
 minimumReleaseAge: 0
-
-packages:
-  - packages/*
 
 shamefullyHoist: true
 strictPeerDependencies: false
 shellEmulator: true
-ignoreWorkspaceRootCheck: true
+trustPolicy: no-downgrade
 trustPolicyExclude:
   - undici-types@6.20.0
   - '@pnpm/modules-yaml'
   - tinyexec@1.2.2
+
+packages:
+  - packages/*
 
 refs:
   devframe: &devframe ^0.9.4
@@ -33,9 +33,6 @@ overrides:
   chokidar: 5.0.0
   devframe: *devframe
   semver: 7.8.0
-
-patchedDependencies:
-  '@nuxt/nitro-server-nightly@5.0.0-29666842.2bab300c': patches/@nuxt__nitro-server-nightly@5.0.0-29666842.2bab300c.patch
 
 catalogs:
   bundling:
