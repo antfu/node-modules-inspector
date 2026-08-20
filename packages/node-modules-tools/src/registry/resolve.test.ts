@@ -319,10 +319,10 @@ describe('resolveRegistryDependencies', () => {
 
   it('excludes a package and its exclusively-reachable dependencies', async () => {
     const { fetch, requests } = createMockRegistry({
-      nuxt: { versions: { '3.0.0': { dependencies: { '@nuxt/kit': '^3.0.0', 'h3': '^1.0.0' } } } },
-      '@nuxt/kit': { versions: { '3.0.0': { dependencies: { 'unctx': '^2.0.0' } } } },
-      unctx: { versions: { '2.0.0': {} } },
-      h3: { versions: { '1.0.0': {} } },
+      'nuxt': { versions: { '3.0.0': { dependencies: { '@nuxt/kit': '^3.0.0', 'h3': '^1.0.0' } } } },
+      '@nuxt/kit': { versions: { '3.0.0': { dependencies: { unctx: '^2.0.0' } } } },
+      'unctx': { versions: { '2.0.0': {} } },
+      'h3': { versions: { '1.0.0': {} } },
     })
 
     const result = await resolveRegistryDependencies({
@@ -341,9 +341,9 @@ describe('resolveRegistryDependencies', () => {
 
   it('keeps a shared dep still reachable from a non-excluded path', async () => {
     const { fetch } = createMockRegistry({
-      nuxt: { versions: { '3.0.0': { dependencies: { '@nuxt/kit': '^3.0.0', 'vite': '^5.0.0' } } } },
+      'nuxt': { versions: { '3.0.0': { dependencies: { '@nuxt/kit': '^3.0.0', 'vite': '^5.0.0' } } } },
       '@nuxt/kit': { versions: { '3.0.0': { dependencies: { vite: '^5.0.0' } } } },
-      vite: { versions: { '5.0.0': {} } },
+      'vite': { versions: { '5.0.0': {} } },
     })
 
     const result = await resolveRegistryDependencies({

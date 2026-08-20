@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { InstallExcludeSpec } from 'node-modules-tools/registry'
 import { parseInstallSpecs } from 'node-modules-tools/registry'
-import { computed, onMounted, ref, shallowRef } from 'vue'
+import { computed, defineAsyncComponent, onMounted, ref, shallowRef } from 'vue'
 import { backend } from '../backends'
 import RegistryWarnings from '../components/registry/Warnings.vue'
 import UiCredits from '../components/ui/Credits.vue'
@@ -11,6 +11,10 @@ import { createRegistryBackend, registryProgress } from '../registry'
 import { fetchData, rawPayload } from '../state/data'
 import { query } from '../state/query'
 import { openTerminal, showTerminal } from '../state/terminal'
+
+// Lazy-loaded: the terminal (and its xterm.js dependency) is only needed
+// once Sandbox Install boots, so keep it out of the initial bundle.
+const LazyPanelTerminal = defineAsyncComponent(() => import('../components/panel/Terminal.vue'))
 
 type WebMode = 'instant' | 'sandbox'
 
