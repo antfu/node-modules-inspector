@@ -14,7 +14,7 @@ RPC functions live in `packages/node-modules-inspector/src/node/rpc/<name>.ts` �
 
 - `pnpm dev` — dev server
 - `pnpm build` — full build
-- `pnpm test` / `pnpm test:e2e` — vitest / playwright
+- `pnpm test` / `pnpm test:e2e` / `pnpm test:a11y` — vitest / playwright e2e / playwright accessibility (axe-core)
 - `pnpm lint` / `pnpm typecheck`
 
 ## Conventions

@@ -17,7 +17,8 @@
     "prepare": "npx simple-git-hooks && pnpm -C packages/node-modules-inspector run dev:prepare && skills-npm",
     "lint": "pnpm -C packages/node-modules-inspector run dev:prepare && eslint .",
     "test": "vitest",
-    "test:e2e": "playwright test",
+    "test:e2e": "playwright test --project=dev --project=build --project=webcontainer --project=instant --project=build-subbase",
+    "test:a11y": "playwright test --project=a11y",
     "test:e2e:install": "playwright install chromium",
     "release": "bumpp -r",
     "typecheck": "vue-tsc --noEmit"
