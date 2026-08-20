@@ -3,7 +3,7 @@ publish = "packages/node-modules-inspector/dist/public"
 command = "pnpm run web:build"
 
 [build.environment]
-NODE_VERSION = "22"
+NODE_VERSION = "24"
 
 [[headers]]
 for = "/*"
