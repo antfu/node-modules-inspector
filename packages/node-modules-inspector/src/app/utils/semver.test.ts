@@ -13,6 +13,20 @@ describe('parseSemverRange', () => {
     })
   })
 
+  it('supports compound (space-separated AND) ranges without crashing', () => {
+    // Regression: `14 >=14.17.0` used to be whitespace-collapsed into the
+    // invalid version `14>=14.17.0` and thrown at in `compareSemver`.
+    const parsed = parseSemverRange('14 >=14.17.0')
+    expect(parsed.valid).toBe(true)
+    expect(parsed.lowest).toBe('14.17.0')
+    expect(parsed.highest).toBe('14.17.0')
+  })
+
+  it('handles hyphen and mixed-operator ranges', () => {
+    expect(parseSemverRange('>=16.0.0 <21').valid).toBe(true)
+    expect(parseSemverRange('12 - 14')).toMatchObject({ valid: true, lowest: '12.0.0' })
+  })
+
   it('preserves prerelease versions', () => {
     expect(parseSemverRange('^1.0.0-beta.1')).toMatchObject({
       valid: true,
