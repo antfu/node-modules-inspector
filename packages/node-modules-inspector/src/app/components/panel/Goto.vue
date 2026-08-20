@@ -2,6 +2,7 @@
 import type { PackageNode } from 'node-modules-tools'
 import { ref, useTemplateRef } from 'vue'
 import { selectedNode } from '../../state/current'
+import OptionPackageSelect from '../option/PackageSelect.vue'
 
 const input = ref('')
 

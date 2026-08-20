@@ -3,6 +3,7 @@ import type { PackageModuleType, PackageNode } from 'node-modules-tools'
 import { computed } from 'vue'
 import { payloads } from '../../state/payload'
 import { getModuleTypeCounts, MODULE_TYPES_COLOR_BADGE } from '../../utils/module-type'
+import UiPercentage from './Percentage.vue'
 
 const props = withDefaults(
   defineProps<{

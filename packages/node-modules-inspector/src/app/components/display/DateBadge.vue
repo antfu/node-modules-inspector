@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
+import DisplayDate from '@antfu/design/components/Display/DisplayDate.vue'
 import { computed } from 'vue'
 import { getPublishTime } from '../../state/payload'
 import { settings } from '../../state/settings'

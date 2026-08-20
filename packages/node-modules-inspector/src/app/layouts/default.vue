@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRuntimeHook } from '#app/composables/runtime-hook'
+import UiLogo from '../components/ui/Logo.vue'
 import { isSidepanelCollapsed } from '../state/ui'
 
 const isLoading = ref(false)

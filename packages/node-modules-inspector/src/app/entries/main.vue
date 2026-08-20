@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import type { Backend } from '../types/backend'
 import { computed } from 'vue'
+import { NuxtLayout, NuxtPage } from '#components'
 import { backend } from '../backends'
+import PanelMaintainerActionDrawer from '../components/panel/MaintainerActionDrawer.vue'
+import PanelNav from '../components/panel/Nav.vue'
+import UiTitle from '../components/ui/Title.vue'
 import { rawPayload } from '../state/data'
 
 const props = defineProps<{

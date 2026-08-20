@@ -2,6 +2,7 @@
 import type { PackageNode, PublintMessage } from 'node-modules-tools'
 import { formatMessage } from 'publint/utils'
 import { settings } from '../../state/settings'
+import IntegrationsPublintCounts from './PublintCounts.vue'
 
 const props = defineProps<{
   pkg: PackageNode

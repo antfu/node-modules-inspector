@@ -1,8 +1,13 @@
 <script setup lang="ts">
+import FormCheckbox from '@antfu/design/components/Form/FormCheckbox.vue'
 import { ref } from 'vue'
 import { getBackend } from '../../backends'
 import { fetchData } from '../../state/data'
 import { settings } from '../../state/settings'
+import OptionItem from '../option/Item.vue'
+import OptionSelectGroup from '../option/SelectGroup.vue'
+import PanelFiltersOptionExcludes from './FiltersOptionExcludes.vue'
+import PanelSettingsConfigDialog from './SettingsConfigDialog.vue'
 
 const backend = getBackend()
 

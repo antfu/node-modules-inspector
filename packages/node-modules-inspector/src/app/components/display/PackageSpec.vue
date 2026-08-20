@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
+import DisplayVersion from '@antfu/design/components/Display/DisplayVersion.vue'
 import { computed } from 'vue'
 import { getDeprecatedInfo, getVulnerability } from '../../state/payload'
+import DisplayPackageName from './PackageName.vue'
 
 const props = defineProps<{
   pkg: PackageNode

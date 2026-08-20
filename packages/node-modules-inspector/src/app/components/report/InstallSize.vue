@@ -2,6 +2,11 @@
 import { computed } from 'vue'
 import { selectedNode } from '../../state/current'
 import { payloads } from '../../state/payload'
+import DisplayFileSizeBadge from '../display/FileSizeBadge.vue'
+import DisplayPackageSpec from '../display/PackageSpec.vue'
+import UiEmptyState from '../ui/EmptyState.vue'
+import UiPercentageFileCategories from '../ui/PercentageFileCategories.vue'
+import ReportExpendableContainer from './ExpendableContainer.vue'
 
 const sorted = computed(() =>
   Array.from(payloads.filtered.packages)

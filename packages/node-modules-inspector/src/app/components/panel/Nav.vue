@@ -1,10 +1,16 @@
 <script setup lang="ts">
+import ActionIconButton from '@antfu/design/components/Action/ActionIconButton.vue'
 import { useRoute } from '#app/composables/router'
 import { selectedNode } from '../../state/current'
 import { rawPayload } from '../../state/data'
 import { filters } from '../../state/filters'
 import { settings } from '../../state/settings'
 import { isFiltersOpen, isSettingOpen, isSidepanelCollapsed } from '../../state/ui'
+import PanelFilters from './Filters.vue'
+import PanelGoto from './Goto.vue'
+import PanelOverview from './Overview.vue'
+import PanelPackageDetails from './PackageDetails.vue'
+import PanelSettings from './Settings.vue'
 
 const isWeb = import.meta.env.BACKEND === 'web'
 

@@ -5,6 +5,7 @@ import { Menu as VMenu } from 'floating-vue'
 import Fuse from 'fuse.js'
 import { computed, ref, watch } from 'vue'
 import { payloads } from '../../state/payload'
+import TreeItem from '../tree/Item.vue'
 
 const props = withDefaults(
   defineProps<{

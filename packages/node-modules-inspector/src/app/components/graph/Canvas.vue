@@ -13,6 +13,7 @@ import { getCompareHighlight } from '../../state/highlight'
 import { payloads } from '../../state/payload'
 import { query } from '../../state/query'
 import { settings } from '../../state/settings'
+import UiTimeoutView from '../ui/TimeoutView.vue'
 import GraphDot from './Dot.vue'
 import GraphNode from './Node.vue'
 

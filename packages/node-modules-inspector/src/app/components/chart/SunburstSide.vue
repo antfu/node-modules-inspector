@@ -3,6 +3,9 @@ import type { GraphBaseOptions } from 'nanovis'
 import type { PackageNode } from 'node-modules-tools'
 import type { ChartNode } from '../../types/chart'
 import { colorToCssBackground } from 'nanovis'
+import DisplayFileSizeBadge from '../display/FileSizeBadge.vue'
+import DisplayPackageSpec from '../display/PackageSpec.vue'
+import ChartNavBreadcrumb from './NavBreadcrumb.vue'
 
 defineProps<{
   selected?: ChartNode

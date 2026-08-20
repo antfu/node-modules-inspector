@@ -1,8 +1,14 @@
 <script setup lang="ts">
 import type { PackageModuleType, PackageNode } from 'node-modules-tools'
 import type { ParsedAuthor } from 'node-modules-tools/utils'
+import DisplayNumberBadge from '@antfu/design/components/Display/DisplayNumberBadge.vue'
 import { computed } from 'vue'
 import { useRoute } from '#app/composables/router'
+import { NuxtLink } from '#components'
+import DisplayAuthors from '../../components/display/Authors.vue'
+import DisplayClusterBadge from '../../components/display/ClusterBadge.vue'
+import DisplayModuleType from '../../components/display/ModuleType'
+import GridExpand from '../../components/grid/Expand.vue'
 import { getNpmMeta, payloads } from '../../state/payload'
 import { getModuleType } from '../../utils/module-type'
 

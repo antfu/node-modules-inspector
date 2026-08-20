@@ -1,10 +1,18 @@
 <script setup lang="ts">
+import DisplayNumberBadge from '@antfu/design/components/Display/DisplayNumberBadge.vue'
+import DisplayVersion from '@antfu/design/components/Display/DisplayVersion.vue'
 import { computed } from 'vue'
+import { NuxtLink } from '#components'
 import { version } from '../../../../package.json'
 import { getBackend } from '../../backends'
 import { rawPayload } from '../../state/data'
 import { getDeprecatedInfo, payloads, totalWorkspaceSize } from '../../state/payload'
 import { settings } from '../../state/settings'
+import DisplayDateBadge from '../display/DateBadge.vue'
+import DisplayFileSizeBadge from '../display/FileSizeBadge.vue'
+import UiCredits from '../ui/Credits.vue'
+import UiLogo from '../ui/Logo.vue'
+import UiPercentageModuleType from '../ui/PercentageModuleType.vue'
 
 const location = window.location
 
@@ -71,7 +79,7 @@ const timepassed = computed(() => rawPayload.value?.timestamp ? Date.now() - raw
         flex="~ gap-2 items-center"
       >
         <div i-catppuccin-npm icon-catppuccin flex-none />
-        <span>npm registry</span>
+        <a break-after-all text-left leading-none href="https://registry.npmjs.org" target="_blank" hover="underline">npm registry</a>
         <span
           v-tooltip="'The graph is resolved from registry metadata without a real install — versions, deduplication, and sizes are approximate. Use Sandbox Install mode for full fidelity.'"
           badge-color-amber px1.5 rounded text-xs

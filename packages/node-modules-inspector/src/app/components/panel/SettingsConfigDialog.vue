@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import OverlayModal from '@antfu/design/components/Overlay/OverlayModal.vue'
 import { useClipboard } from '@vueuse/core'
 import { computed } from 'vue'
 import { generateConfigFile } from '../../utils/config'

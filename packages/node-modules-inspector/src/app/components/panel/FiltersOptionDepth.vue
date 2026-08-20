@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import DisplayNumberBadge from '@antfu/design/components/Display/DisplayNumberBadge.vue'
+import FormCheckbox from '@antfu/design/components/Form/FormCheckbox.vue'
 import { computed } from 'vue'
 import { filters } from '../../state/filters'
 import { payloads } from '../../state/payload'

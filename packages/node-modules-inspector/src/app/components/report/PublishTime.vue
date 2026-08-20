@@ -1,8 +1,15 @@
 <script setup lang="ts">
+import DisplayVersion from '@antfu/design/components/Display/DisplayVersion.vue'
 import { computed } from 'vue'
-import { DisplayDateBadge } from '#components'
 import { selectedNode } from '../../state/current'
 import { getNpmMetaLatest, getPublishTime, payloads } from '../../state/payload'
+import DisplayDateBadge from '../display/DateBadge.vue'
+import DisplayDurationBadge from '../display/DurationBadge.vue'
+import DisplayModuleType from '../display/ModuleType'
+import DisplayPackageName from '../display/PackageName.vue'
+import DisplayPackageSpec from '../display/PackageSpec.vue'
+import UiEmptyState from '../ui/EmptyState.vue'
+import ReportExpendableContainer from './ExpendableContainer.vue'
 
 const packages = computed(() =>
   Array.from(payloads.filtered.packages)

@@ -38,27 +38,20 @@ export default defineNuxtConfig({
   logLevel: 'verbose',
   srcDir: 'app',
 
+  // Components (both local `~/components` and `@antfu/design/components`) are
+  // explicitly imported everywhere, so directory scanning/global registration
+  // is disabled. Nuxt's own built-ins (NuxtLink, NuxtLayout, NuxtPage, …) are
+  // registered independently of this and remain available via `#components`.
   components: {
-    dirs: [
-      // `@antfu/design` ships raw category-prefixed SFCs (DisplayDonut, FormCheckbox, …);
-      // register them for auto-import so they resolve like local components.
-      {
-        path: fileURLToPath(new URL('../../../node_modules/@antfu/design/components', import.meta.url)),
-        pathPrefix: false,
-        extensions: ['vue'],
-        ignore: [
-          // These need optional peers (splitpanes, @tanstack/vue-virtual, dompurify) we don't use.
-          '**/LayoutSplitPane.vue',
-          '**/LayoutVirtualList.vue',
-          '**/DisplayIconifyRemoteIcon.vue',
-          // Intentionally shadowed: the app keeps its own (deprecated/vulnerable
-          // coloring must inherit from context; the design one is self-colored).
-          '**/DisplayPackageName.vue',
-        ],
-      },
-      // Keep the default app components dir (registered last to win name conflicts).
-      '~/components',
-    ],
+    dirs: [],
+  },
+
+  // Composables/utils (`app/composables`, `app/utils`) are explicitly imported
+  // everywhere; disable Nuxt's auto-import transform. `nuxt-eslint-auto-explicit-import`
+  // (see `modules` above) still auto-inserts the right import via `eslint --fix`
+  // if one is ever forgotten.
+  imports: {
+    autoImport: false,
   },
 
   eslint: {

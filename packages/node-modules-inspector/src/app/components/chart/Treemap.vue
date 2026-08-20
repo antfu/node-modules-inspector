@@ -3,6 +3,7 @@ import type { GraphBase, GraphBaseOptions } from 'nanovis'
 import type { PackageNode } from 'node-modules-tools'
 import type { ChartNode } from '../../types/chart'
 import { useTemplateRef, watchEffect } from 'vue'
+import ChartNavBreadcrumb from './NavBreadcrumb.vue'
 
 const props = defineProps<{
   graph: GraphBase<PackageNode | undefined, GraphBaseOptions<PackageNode | undefined>>
