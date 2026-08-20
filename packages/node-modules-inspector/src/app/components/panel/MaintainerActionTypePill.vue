@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { MaintainerActionItem } from '../../state/maintainer-actions'
+import DisplayBadge from '@antfu/design/components/Display/DisplayBadge.vue'
 
 defineProps<{
   action: MaintainerActionItem

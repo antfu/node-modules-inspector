@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { DisplayNodeVersionRange } from '#components'
 import { selectedNode } from '../../state/current'
 import { payloads } from '../../state/payload'
 import { compareSemverRange, parseSemverRange } from '../../utils/semver'
+import DisplayModuleType from '../display/ModuleType'
+import DisplayNodeVersionRange from '../display/NodeVersionRange.vue'
+import DisplayPackageSpec from '../display/PackageSpec.vue'
+import UiEmptyState from '../ui/EmptyState.vue'
+import ReportExpendableContainer from './ExpendableContainer.vue'
 
 const transitiveDeps = computed(() =>
   Array.from(payloads.filtered.packages)

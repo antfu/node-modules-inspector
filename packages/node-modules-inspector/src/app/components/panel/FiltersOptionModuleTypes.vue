@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import type { PackageModuleType } from 'node-modules-tools'
 import type { WritableComputedRef } from 'vue'
+import FormCheckbox from '@antfu/design/components/Form/FormCheckbox.vue'
 import { computed } from 'vue'
 import { filters } from '../../state/filters'
 import { MODULE_TYPES_FULL_SELECT, moduleTypesAvailableSelect } from '../../utils/module-type'
+import DisplayModuleType from '../display/ModuleType'
 
 function createModuleTypeRef(name: PackageModuleType) {
   return computed({

@@ -1,10 +1,18 @@
 <script setup lang="ts">
+import DisplayNumberBadge from '@antfu/design/components/Display/DisplayNumberBadge.vue'
+import DisplayVersion from '@antfu/design/components/Display/DisplayVersion.vue'
 import { computed } from 'vue'
+import { NuxtLink } from '#components'
 import { version } from '../../../../package.json'
 import { getBackend } from '../../backends'
 import { rawPayload } from '../../state/data'
 import { getDeprecatedInfo, payloads, totalWorkspaceSize } from '../../state/payload'
 import { settings } from '../../state/settings'
+import DisplayDateBadge from '../display/DateBadge.vue'
+import DisplayFileSizeBadge from '../display/FileSizeBadge.vue'
+import UiCredits from '../ui/Credits.vue'
+import UiLogo from '../ui/Logo.vue'
+import UiPercentageModuleType from '../ui/PercentageModuleType.vue'
 
 const location = window.location
 

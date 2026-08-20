@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { ParsedAuthor } from 'node-modules-tools/utils'
 import type { MaintainerActionGroup, MaintainerActionItem } from '../../state/maintainer-actions'
+import DisplayNumberBadge from '@antfu/design/components/Display/DisplayNumberBadge.vue'
+import FormCheckbox from '@antfu/design/components/Form/FormCheckbox.vue'
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
 import { computed, ref } from 'vue'
 import { getBackend } from '../../backends'
@@ -18,6 +20,11 @@ import {
   viewAllMaintainerActions,
 } from '../../state/maintainer-actions'
 import { payloads } from '../../state/payload'
+import DisplayAuthorEntry from '../display/AuthorEntry.vue'
+import OptionSelectGroup from '../option/SelectGroup.vue'
+import UiEmptyState from '../ui/EmptyState.vue'
+import UiSubTitle from '../ui/SubTitle.vue'
+import ReportMaintainerActionsGrid from './MaintainerActionsGrid.vue'
 
 const SORT_OPTIONS = ['depth', 'migration', 'latest'] as const
 const SORT_TITLES = ['Depth', 'Migration rate', 'Latest released']

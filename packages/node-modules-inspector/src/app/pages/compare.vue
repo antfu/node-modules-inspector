@@ -2,6 +2,8 @@
 import type { PackageNode } from 'node-modules-tools'
 import { computed, shallowReactive } from 'vue'
 import { definePageMeta } from '#imports'
+import GraphCanvas from '../components/graph/Canvas.vue'
+import OptionPackageMultiSelectInput from '../components/option/PackageMultiSelectInput.vue'
 import { selectedNode } from '../state/current'
 import { filters } from '../state/filters'
 import { payloads } from '../state/payload'

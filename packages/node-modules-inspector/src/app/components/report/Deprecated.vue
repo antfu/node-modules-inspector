@@ -1,12 +1,18 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
 import type { DeprecationType } from '../../state/payload'
+import DisplayNumberBadge from '@antfu/design/components/Display/DisplayNumberBadge.vue'
 import { computed, nextTick } from 'vue'
 import { useRouter } from '#app/composables/router'
-import { DisplayDateBadge } from '#components'
 import { selectedNode } from '../../state/current'
 import { filters } from '../../state/filters'
 import { getDeprecatedInfo, payloads } from '../../state/payload'
+import DisplayDateBadge from '../display/DateBadge.vue'
+import DisplayDeprecationMessage from '../display/DeprecationMessage.vue'
+import DisplayModuleType from '../display/ModuleType'
+import DisplayPackageSpec from '../display/PackageSpec.vue'
+import UiEmptyState from '../ui/EmptyState.vue'
+import UiSubTitle from '../ui/SubTitle.vue'
 
 const router = useRouter()
 

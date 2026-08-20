@@ -1,8 +1,16 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
+import DisplayNumberBadge from '@antfu/design/components/Display/DisplayNumberBadge.vue'
 import { selectedNode } from '../../state/current'
 import { payloads } from '../../state/payload'
 import { settings } from '../../state/settings'
+import DisplayDateBadge from '../display/DateBadge.vue'
+import DisplayFileSizeBadge from '../display/FileSizeBadge.vue'
+import DisplayModuleType from '../display/ModuleType'
+import DisplayPackageSpec from '../display/PackageSpec.vue'
+import DisplayProvenanceBadge from '../display/ProvenanceBadge.vue'
+import DisplaySourceTypeBadge from '../display/SourceTypeBadge.vue'
+import UiPackageBorder from '../ui/PackageBorder.vue'
 
 defineProps<{
   pkg: PackageNode

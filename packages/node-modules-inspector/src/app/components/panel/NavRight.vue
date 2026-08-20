@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import ActionIconButton from '@antfu/design/components/Action/ActionIconButton.vue'
 import { isDark, toggleDark } from '../../composables/dark'
+import PanelFiltersMini from './FiltersMini.vue'
 </script>
 
 <template>

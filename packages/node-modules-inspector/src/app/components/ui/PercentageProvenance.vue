@@ -2,6 +2,7 @@
 import type { PackageNode } from 'node-modules-tools'
 import { computed } from 'vue'
 import { getNpmMeta, payloads } from '../../state/payload'
+import UiPercentage from './Percentage.vue'
 
 const props = withDefaults(
   defineProps<{

@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import DisplayNumberBadge from '@antfu/design/components/Display/DisplayNumberBadge.vue'
 import { payloads } from '../../state/payload'
+import UiPercentageModuleType from '../ui/PercentageModuleType.vue'
 </script>
 
 <template>

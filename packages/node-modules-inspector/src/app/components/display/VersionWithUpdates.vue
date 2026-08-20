@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import type { NpmMetaLatest } from 'node-modules-tools'
+import DisplayVersion from '@antfu/design/components/Display/DisplayVersion.vue'
 import { Tooltip } from 'floating-vue'
 import { difference, isGreater } from 'verkit'
 import { computed } from 'vue'
+import DisplayDateBadge from './DateBadge.vue'
 
 const props = withDefaults(defineProps<{
   version?: string

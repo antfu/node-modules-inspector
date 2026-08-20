@@ -1,9 +1,15 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
+import DisplayNumberBadge from '@antfu/design/components/Display/DisplayNumberBadge.vue'
+import FormCheckbox from '@antfu/design/components/Form/FormCheckbox.vue'
 import { computed, ref } from 'vue'
 import { selectedNode } from '../../state/current'
 import { payloads } from '../../state/payload'
 import { settings } from '../../state/settings'
+import DisplayPackageSpec from '../display/PackageSpec.vue'
+import DisplaySourceTypeBadge from '../display/SourceTypeBadge.vue'
+import UiEmptyState from '../ui/EmptyState.vue'
+import ReportExpendableContainer from './ExpendableContainer.vue'
 
 const PERMISSIVE_LICENSES = [
   'MIT',
