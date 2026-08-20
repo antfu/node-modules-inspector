@@ -71,7 +71,7 @@ const timepassed = computed(() => rawPayload.value?.timestamp ? Date.now() - raw
         flex="~ gap-2 items-center"
       >
         <div i-catppuccin-npm icon-catppuccin flex-none />
-        <span>npm registry</span>
+        <a break-after-all text-left leading-none href="https://registry.npmjs.org" target="_blank" hover="underline">npm registry</a>
         <span
           v-tooltip="'The graph is resolved from registry metadata without a real install — versions, deduplication, and sizes are approximate. Use Sandbox Install mode for full fidelity.'"
           badge-color-amber px1.5 rounded text-xs
