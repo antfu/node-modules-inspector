@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-// "Hosted webcontainer mode" = `pnpm wc:build` output, deployed at
+// "Hosted webcontainer mode" = `pnpm web:build` output, deployed at
 // node-modules.dev. The page shows a `pnpm install` landing prompt and only
 // works under COOP/COEP headers (required by the WebContainer runtime).
 //

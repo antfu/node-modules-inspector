@@ -1,7 +1,7 @@
 import type { Page } from '@playwright/test'
 import { expect, test } from '@playwright/test'
 
-// "Instant mode" of the hosted web build (`pnpm wc:build` output): the
+// "Instant mode" of the hosted web build (`pnpm web:build` output): the
 // dependency graph is resolved purely from npm-registry metadata in the
 // browser — no WebContainer boot. We intercept all registry traffic with
 // fixtures so the test is deterministic and offline.

@@ -93,7 +93,7 @@ jobs:
       - name: Install
         run: nci
 
-      # The orchestrator runs `pnpm build` + `pnpm wc:build` itself; no
+      # The orchestrator runs `pnpm build` + `pnpm web:build` itself; no
       # separate build step needed here.
 
       - name: Get Playwright version
