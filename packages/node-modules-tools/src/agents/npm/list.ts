@@ -5,10 +5,10 @@ import { x } from 'tinyexec'
 import { CLUSTER_DEP_DEV, CLUSTER_DEP_OPTIONAL, CLUSTER_DEP_PROD } from '../../constants'
 
 type NpmPackageNode = BaseManifest & {
-  name: string
-  version: string
+  name?: string
+  version?: string
   private?: false
-  _id: string
+  _id?: string
   pkgid: string
   location: string
   path: string
@@ -21,6 +21,26 @@ type NpmPackageNode = BaseManifest & {
   deduped: boolean
   overridden: boolean
   queryContext: Record<any, any>
+}
+
+/**
+ * `npm query` omits `name`/`version`/`_id` entirely for packages whose
+ * `package.json` doesn't declare them (most commonly the root `package.json`
+ * in a monorepo that doesn't version itself independently). Synthesize sane
+ * fallbacks so those packages are still represented instead of being dropped.
+ */
+function resolveIdentity(pkg: NpmPackageNode, root: string, fallbackName: string) {
+  let name = pkg.name
+  if (!name) {
+    let path = relative(root, pkg.path)
+    if (path === '.')
+      path = ''
+    const suffix = path.toLowerCase().replace(/[^a-z0-9-]+/g, '_').slice(0, 20)
+    name = suffix ? `#workspace-${suffix}` : fallbackName
+  }
+  const version = pkg.version || '0.0.0'
+  const id = pkg._id || pkg.pkgid || `${name}@${version}`
+  return { name, version, id }
 }
 
 async function resolveRoot(options: ListPackageDependenciesOptions) {
@@ -68,13 +88,20 @@ async function queryDependencies(options: ListPackageDependenciesOptions, query:
     throw new Error(`Failed to parse \`npm query\` output, expected an array but got: ${String(json)}`)
 
   return json.filter((pkg): pkg is NpmPackageNode => {
-    return (
-      pkg
-      && typeof pkg === 'object'
-      && typeof pkg._id === 'string'
-      && typeof pkg.name === 'string'
-      && typeof pkg.version === 'string'
-    )
+    if (!pkg || typeof pkg !== 'object' || typeof pkg.pkgid !== 'string' || typeof pkg.location !== 'string' || typeof pkg.path !== 'string')
+      return false
+
+    // `--package-lock-only` reads straight from the lockfile/project structure
+    // (used for `:root` and `.workspace`), so `name`/`version` can legitimately
+    // be missing there (e.g. an unversioned monorepo root) — keep those entries
+    // and synthesize fallbacks for them later.
+    // Regular queries scan the installed `node_modules` tree instead, where a
+    // missing `name`/`version` means npm left behind a broken/leftover
+    // directory rather than a real package — keep filtering those out.
+    if (!lockfileOnly && (typeof pkg.name !== 'string' || typeof pkg.version !== 'string'))
+      return false
+
+    return true
   })
 }
 
@@ -108,11 +135,12 @@ export async function listPackageDependencies(
   // Used to link package deps with resolved version
   const packageSpecByLocation = new Map<string, string>()
 
-  packageSpecByLocation.set(rootPackage.location, rootPackage._id)
-  packages.set(rootPackage._id, {
-    name: rootPackage.name,
-    version: rootPackage.version,
-    spec: rootPackage._id,
+  const rootIdentity = resolveIdentity(rootPackage, root, '#workspace-root')
+  packageSpecByLocation.set(rootPackage.location, rootIdentity.id)
+  packages.set(rootIdentity.id, {
+    name: rootIdentity.name,
+    version: rootIdentity.version,
+    spec: rootIdentity.id,
     private: rootPackage.private,
     filepath: rootPackage.path,
     workspace: true,
@@ -121,17 +149,9 @@ export async function listPackageDependencies(
   })
 
   workspaces.forEach((pkg, i) => {
-    let name = pkg.name
-    if (!name) {
-      let path = relative(root, pkg.path)
-      if (path === '.')
-        path = ''
-      const suffix = path.toLowerCase().replace(/[^a-z0-9-]+/g, '_').slice(0, 20)
-      name = suffix ? `#workspace-${suffix}` : `#workspace-package-${i + 1}`
-    }
-    const version = pkg.version || '0.0.0'
+    const { name, version, id } = resolveIdentity(pkg, root, `#workspace-package-${i + 1}`)
     const node: PackageNodeRaw = {
-      spec: pkg._id,
+      spec: id,
       name,
       version,
       filepath: pkg.path,
@@ -148,14 +168,17 @@ export async function listPackageDependencies(
     raw: NpmPackageNode,
     clusters: Iterable<string>,
   ) {
-    if (packages.has(raw._id))
+    if (packageSpecByLocation.has(raw.location))
       return
 
-    packageSpecByLocation.set(raw.location, raw._id)
-    packages.set(raw._id, {
-      name: raw.name,
-      version: raw.version,
-      spec: raw._id,
+    const { name, version, id } = resolveIdentity(raw, root, `#dependency-${raw.location.toLowerCase().replace(/[^a-z0-9-]+/g, '_').slice(0, 20)}`)
+    packageSpecByLocation.set(raw.location, id)
+    if (packages.has(id))
+      return
+    packages.set(id, {
+      name,
+      version,
+      spec: id,
       private: raw.private,
       filepath: raw.path,
       workspace: false,
@@ -182,7 +205,8 @@ export async function listPackageDependencies(
     ...workspaces,
     rootPackage,
   ).forEach((raw) => {
-    const pkg = packages.get(raw._id)
+    const spec = packageSpecByLocation.get(raw.location)
+    const pkg = spec ? packages.get(spec) : undefined
     if (!pkg)
       return
 

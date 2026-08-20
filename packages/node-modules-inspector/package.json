@@ -36,7 +36,7 @@
     "start": "node ./bin.mjs",
     "prepack": "pnpm build && node scripts/copy-skills.mjs",
     "dev:prepare": "(cd src && nuxi prepare) && pnpm wc:prepare && node scripts/copy-skills.mjs",
-    "wc:prepare": "rollup -c",
+    "wc:prepare": "(cd src && nuxi prepare) && rollup -c",
     "web:build": "pnpm run wc:prepare && NMI_BACKEND=webcontainer ROLLDOWN_OPTIONS_VALIDATION=loose nuxi build src && unbuild",
     "web:dev": "pnpm run -r stub && pnpm run wc:prepare && (cd src && NMI_BACKEND=webcontainer ROLLDOWN_OPTIONS_VALIDATION=loose nuxi dev)"
   },
