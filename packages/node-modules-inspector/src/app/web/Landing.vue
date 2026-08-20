@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { InstallExcludeSpec } from 'node-modules-tools/registry'
 import { parseInstallSpecs } from 'node-modules-tools/registry'
 import { computed, onMounted, ref, shallowRef } from 'vue'
 import { backend } from '../backends'
@@ -97,7 +98,16 @@ const dependencies = computed<Record<string, string> | null>(() => {
   const trimmed = input.value?.trim()
   if (!trimmed)
     return null
-  return parseInstallSpecs(trimmed)
+  return parseInstallSpecs(trimmed).dependencies
+})
+
+const excludes = computed<InstallExcludeSpec[]>(() => {
+  if (packageJson.value)
+    return []
+  const trimmed = input.value?.trim()
+  if (!trimmed)
+    return []
+  return parseInstallSpecs(trimmed).excludes
 })
 
 const progressText = computed(() => {
@@ -141,7 +151,7 @@ async function run() {
 }
 
 async function runInstant(deps: Record<string, string>) {
-  backend.value = createRegistryBackend(deps, { name: packageJson.value?.name })
+  backend.value = createRegistryBackend(deps, { name: packageJson.value?.name, excludes: excludes.value })
   await fetchData(false, true)
 }
 
@@ -234,7 +244,7 @@ async function runSandbox(deps: Record<string, string>) {
           </div>
           <input
             v-model="input"
-            placeholder="Enter package names"
+            :placeholder="mode === 'sandbox' ? 'Enter package names' : 'Enter package names, prefix with - to exclude'"
             :disabled="isLoading"
             w-full px1 py2 font-mono bg-transparent outline-none
             placeholder-gray:40
@@ -250,6 +260,7 @@ async function runSandbox(deps: Record<string, string>) {
           </template>
           <template v-else>
             Dependencies are resolved by directly querying <a href="https://registry.npmjs.org" target="_blank" font-bold hover:underline>npm registry</a>, less accurate but faster.
+            Prefix a package with <code font-mono>-</code> to exclude it and its dependencies (e.g. <code font-mono>nuxt -vite</code>).
           </template>
         </div>
 

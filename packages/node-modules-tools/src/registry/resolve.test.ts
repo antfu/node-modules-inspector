@@ -317,6 +317,99 @@ describe('resolveRegistryDependencies', () => {
     expect(requests).toContain('/@scope%2Fpkg')
   })
 
+  it('excludes a package and its exclusively-reachable dependencies', async () => {
+    const { fetch, requests } = createMockRegistry({
+      nuxt: { versions: { '3.0.0': { dependencies: { '@nuxt/kit': '^3.0.0', 'h3': '^1.0.0' } } } },
+      '@nuxt/kit': { versions: { '3.0.0': { dependencies: { 'unctx': '^2.0.0' } } } },
+      unctx: { versions: { '2.0.0': {} } },
+      h3: { versions: { '1.0.0': {} } },
+    })
+
+    const result = await resolveRegistryDependencies({
+      dependencies: { nuxt: '*' },
+      excludes: [{ name: '@nuxt/kit', range: '*' }],
+      fetch,
+    })
+
+    // @nuxt/kit and its only-reachable dep unctx are gone; h3 stays
+    expect(specs(result)).toEqual(['h3@1.0.0', 'nuxt@3.0.0', ROOT_SPEC])
+    expect([...result.packages.get('nuxt@3.0.0')!.dependencies]).toEqual(['h3@1.0.0'])
+    // Metadata for the excluded subtree is never fetched
+    expect(requests.some(p => p.includes('@nuxt%2Fkit'))).toBe(false)
+    expect(requests.some(p => p.startsWith('/unctx'))).toBe(false)
+  })
+
+  it('keeps a shared dep still reachable from a non-excluded path', async () => {
+    const { fetch } = createMockRegistry({
+      nuxt: { versions: { '3.0.0': { dependencies: { '@nuxt/kit': '^3.0.0', 'vite': '^5.0.0' } } } },
+      '@nuxt/kit': { versions: { '3.0.0': { dependencies: { vite: '^5.0.0' } } } },
+      vite: { versions: { '5.0.0': {} } },
+    })
+
+    const result = await resolveRegistryDependencies({
+      dependencies: { nuxt: '*' },
+      excludes: [{ name: '@nuxt/kit', range: '*' }],
+      fetch,
+    })
+
+    // vite is still a direct dep of nuxt, so it stays
+    expect(specs(result)).toEqual(['nuxt@3.0.0', ROOT_SPEC, 'vite@5.0.0'])
+  })
+
+  it('excludes an explicit root (exclude wins)', async () => {
+    const { fetch } = createMockRegistry({
+      nuxt: { versions: { '3.0.0': {} } },
+      vite: { versions: { '5.0.0': {} } },
+    })
+
+    const result = await resolveRegistryDependencies({
+      dependencies: { nuxt: '*', vite: '*' },
+      excludes: [{ name: 'vite', range: '*' }],
+      fetch,
+    })
+
+    expect(specs(result)).toEqual(['nuxt@3.0.0', ROOT_SPEC])
+  })
+
+  it('matches ranged excludes against the requested range', async () => {
+    const { fetch } = createMockRegistry({
+      app: { versions: { '1.0.0': { dependencies: { vite: '^5.0.0' } } } },
+      vite: { versions: { '5.0.0': {} } },
+    })
+
+    // exclude vite@4 should NOT match a request for ^5
+    const kept = await resolveRegistryDependencies({
+      dependencies: { app: '*' },
+      excludes: [{ name: 'vite', range: '4' }],
+      fetch,
+    })
+    expect(specs(kept)).toEqual(['app@1.0.0', ROOT_SPEC, 'vite@5.0.0'])
+
+    // exclude vite@5 should match a request for ^5
+    const dropped = await resolveRegistryDependencies({
+      dependencies: { app: '*' },
+      excludes: [{ name: 'vite', range: '5' }],
+      fetch,
+    })
+    expect(specs(dropped)).toEqual(['app@1.0.0', ROOT_SPEC])
+  })
+
+  it('excludes peer dependencies too', async () => {
+    const { fetch } = createMockRegistry({
+      lib: { versions: { '1.0.0': { peerDependencies: { react: '>=16' } } } },
+      react: { versions: { '18.0.0': {} } },
+    })
+
+    const result = await resolveRegistryDependencies({
+      dependencies: { lib: '*' },
+      excludes: [{ name: 'react', range: '*' }],
+      fetch,
+    })
+
+    expect(specs(result)).toEqual(['lib@1.0.0', ROOT_SPEC])
+    expect([...result.packages.get('lib@1.0.0')!.dependencies]).toEqual([])
+  })
+
   it('reports progress and uses caches', async () => {
     const { fetch, requests } = createMockRegistry({
       a: { versions: { '1.0.0': { dependencies: { b: '*' } } } },

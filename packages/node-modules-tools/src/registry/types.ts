@@ -1,4 +1,5 @@
 import type { ListPackageDependenciesResult } from '../types'
+import type { InstallExcludeSpec } from './spec'
 
 /**
  * A single version entry of an abbreviated ("corgi") packument.
@@ -74,6 +75,14 @@ export interface ResolveRegistryDependenciesOptions {
    * (e.g. `{ vue: '^3.4.0', react: 'latest' }`).
    */
   dependencies: Record<string, string>
+  /**
+   * Packages to exclude from the resolved graph. An excluded package is
+   * never added and its dependency/peer edges are never expanded, so a
+   * transitive dependency only reachable through an excluded package is
+   * skipped (and its metadata never fetched), while one still reachable
+   * from a non-excluded path is kept. Applied to root inputs too.
+   */
+  excludes?: InstallExcludeSpec[]
   /**
    * Registry base URL
    * @default 'https://registry.npmjs.org'
