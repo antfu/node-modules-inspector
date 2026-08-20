@@ -2,6 +2,7 @@
 import type { PackageNode } from 'node-modules-tools'
 import { computed } from 'vue'
 import { definePageMeta } from '#imports'
+import GraphCanvas from '../components/graph/Canvas.vue'
 import { filters } from '../state/filters'
 import { payloads } from '../state/payload'
 

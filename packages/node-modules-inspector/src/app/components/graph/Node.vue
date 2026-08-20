@@ -3,6 +3,10 @@ import type { PackageNode } from 'node-modules-tools'
 import type { HighlightMode } from '../../state/highlight'
 import { selectedNode } from '../../state/current'
 import { settings } from '../../state/settings'
+import DisplayFileSizeBadge from '../display/FileSizeBadge.vue'
+import DisplayModuleType from '../display/ModuleType'
+import DisplayPackageSpec from '../display/PackageSpec.vue'
+import UiPackageBorder from '../ui/PackageBorder.vue'
 
 defineProps<{
   pkg: PackageNode

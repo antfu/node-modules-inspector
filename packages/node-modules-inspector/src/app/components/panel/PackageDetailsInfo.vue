@@ -1,13 +1,24 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
+import DisplayVersion from '@antfu/design/components/Display/DisplayVersion.vue'
 import { Menu as VMenu } from 'floating-vue'
 import { computed, nextTick } from 'vue'
 import { useRouter } from '#app/composables/router'
+import { NuxtLink } from '#components'
 import { getBackend } from '../../backends'
 import { selectedNode } from '../../state/current'
 import { filters } from '../../state/filters'
 import { getDeprecatedInfo, getNpmMeta, getNpmMetaLatest, getPublishTime, payloads } from '../../state/payload'
 import { settings } from '../../state/settings'
+import DisplayAuthors from '../display/Authors.vue'
+import DisplayDateBadge from '../display/DateBadge.vue'
+import DisplayModuleType from '../display/ModuleType'
+import DisplayNodeVersionRange from '../display/NodeVersionRange.vue'
+import DisplayPackageName from '../display/PackageName.vue'
+import DisplayProvenanceBadge from '../display/ProvenanceBadge.vue'
+import DisplaySourceTypeBadge from '../display/SourceTypeBadge.vue'
+import DisplayVersionWithUpdates from '../display/VersionWithUpdates.vue'
+import PanelPackageFunding from './PackageFunding.vue'
 
 const props = defineProps<{
   pkg: PackageNode

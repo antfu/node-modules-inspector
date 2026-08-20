@@ -63,6 +63,12 @@ export default defineConfig({
         'badge-color-green': 'bg-green-400/20 dark:bg-green-400/10 text-green-800 dark:text-green-300 border border-green-600/15 dark:border-green-300/15',
         'badge-color-lime': 'bg-lime-400/20 dark:bg-lime-400/10 text-lime-800 dark:text-lime-300 border border-lime-600/15 dark:border-lime-300/15',
         'badge-color-teal': 'bg-teal-400/20 dark:bg-teal-400/10 text-teal-800 dark:text-teal-300 border border-teal-600/15 dark:border-teal-300/15',
+        // `NodeVersionRange` pairs this badge with `!bg-active` (the surface
+        // color for a "valid" engine range) instead of the badge's own
+        // translucent bg-400/10 — against that solid, lighter surface, the
+        // default `dark:text-gray-300` only clears 4.13:1 (axe-core-measured).
+        // Bump to the 200 shade (~4.9:1) like the hue-specific overrides above.
+        'badge-color-gray': 'bg-gray-400/20 dark:bg-gray-400/10 text-gray-700 dark:text-gray-200 border border-gray-600/15 dark:border-gray-300/15',
       },
     }),
     presetWind3(),

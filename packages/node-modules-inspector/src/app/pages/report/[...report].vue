@@ -1,6 +1,18 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute } from '#app/composables/router'
+import { NuxtLink } from '#components'
+import ReportDeprecated from '../../components/report/Deprecated.vue'
+import ReportEngines from '../../components/report/Engines.vue'
+import ReportFunding from '../../components/report/Funding.vue'
+import ReportInstallSize from '../../components/report/InstallSize.vue'
+import ReportLicenses from '../../components/report/Licenses.vue'
+import ReportMaintainerActions from '../../components/report/MaintainerActions.vue'
+import ReportMultipleVersions from '../../components/report/MultipleVersions.vue'
+import ReportPublishTime from '../../components/report/PublishTime.vue'
+import ReportTransitiveDeps from '../../components/report/TransitiveDeps.vue'
+import ReportUsedBy from '../../components/report/UsedBy.vue'
+import ReportVulnerability from '../../components/report/Vulnerability.vue'
 
 const location = window.location
 

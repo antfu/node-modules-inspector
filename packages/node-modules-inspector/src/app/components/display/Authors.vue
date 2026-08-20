@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { ParsedAuthor } from 'node-modules-tools/utils'
+import DisplayAuthorEntry from './AuthorEntry.vue'
 
 withDefaults(defineProps<{
   authors: ParsedAuthor[]

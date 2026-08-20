@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
+import GridItem from './Item.vue'
 
 defineProps<{
   packages: PackageNode[]

@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
 import type { MaintainerActionItem } from '../../state/maintainer-actions'
+import DisplayNumberBadge from '@antfu/design/components/Display/DisplayNumberBadge.vue'
 import { computed, watch } from 'vue'
+import { NuxtLink } from '#components'
 import { selectedAction } from '../../state/current'
 import { fetchPublintMessages, rawPublintMessages } from '../../state/data'
 import { filters } from '../../state/filters'
@@ -9,6 +11,16 @@ import { getMaintainerActionsFor, viewAllMaintainerActions } from '../../state/m
 import { payloads } from '../../state/payload'
 import { query } from '../../state/query'
 import { settings } from '../../state/settings'
+import DisplayClusterBadge from '../display/ClusterBadge.vue'
+import DisplayDeprecationMessage from '../display/DeprecationMessage.vue'
+import DisplayFileSizeBadge from '../display/FileSizeBadge.vue'
+import IntegrationsPublintCounts from '../integrations/PublintCounts.vue'
+import TreeDependencies from '../tree/Dependencies.vue'
+import UiPercentageFileCategories from '../ui/PercentageFileCategories.vue'
+import UiPercentageModuleType from '../ui/PercentageModuleType.vue'
+import UiPercentageProvenance from '../ui/PercentageProvenance.vue'
+import PanelMaintainerActionTypePill from './MaintainerActionTypePill.vue'
+import PanelPackageDetailsInfo from './PackageDetailsInfo.vue'
 
 const props = defineProps<{
   pkg: PackageNode

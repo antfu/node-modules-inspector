@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import DisplayNumberBadge from '@antfu/design/components/Display/DisplayNumberBadge.vue'
+import FormCheckbox from '@antfu/design/components/Form/FormCheckbox.vue'
 import { computed } from 'vue'
 import { filters } from '../../state/filters'
 import { payloads } from '../../state/payload'
@@ -6,7 +8,7 @@ import { payloads } from '../../state/payload'
 const availableDepths = computed(() => {
   let max = 0
   for (const pkg of payloads.available.packages) {
-    if (pkg.depth > max) {
+    if (pkg.depth != null && !Number.isNaN(pkg.depth) && pkg.depth > max && pkg.depth !== Infinity) {
       max = pkg.depth
     }
   }

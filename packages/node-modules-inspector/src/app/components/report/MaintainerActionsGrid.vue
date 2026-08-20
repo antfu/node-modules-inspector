@@ -1,7 +1,14 @@
 <script setup lang="ts">
 import type { MaintainerActionGroup, MaintainerActionItem } from '../../state/maintainer-actions'
+import DisplayDonut from '@antfu/design/components/Display/DisplayDonut.vue'
 import { selectedAction } from '../../state/current'
 import { getNpmMetaLatest } from '../../state/payload'
+import DisplayAuthors from '../display/Authors.vue'
+import DisplayDateBadge from '../display/DateBadge.vue'
+import DisplayPackageSpec from '../display/PackageSpec.vue'
+import DisplayVersionWithUpdates from '../display/VersionWithUpdates.vue'
+import IntegrationsPublintCounts from '../integrations/PublintCounts.vue'
+import PanelMaintainerActionTypePill from '../panel/MaintainerActionTypePill.vue'
 
 defineProps<{
   groups: MaintainerActionGroup[]

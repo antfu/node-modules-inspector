@@ -1,7 +1,12 @@
 <script setup lang="ts">
+import DisplayNumberBadge from '@antfu/design/components/Display/DisplayNumberBadge.vue'
 import { computed } from 'vue'
 import { selectedNode } from '../../state/current'
 import { payloads } from '../../state/payload'
+import DisplayModuleType from '../display/ModuleType'
+import DisplayPackageSpec from '../display/PackageSpec.vue'
+import UiEmptyState from '../ui/EmptyState.vue'
+import ReportExpendableContainer from './ExpendableContainer.vue'
 
 const transitiveDeps = computed(() =>
   Array.from(payloads.filtered.packages)

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { version } from '../../../../package.json'
+import UiLogo from './Logo.vue'
 
 defineProps<{
   isLoading?: boolean

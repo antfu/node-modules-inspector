@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { PublintMessage } from 'node-modules-tools'
+import DisplayNumberBadge from '@antfu/design/components/Display/DisplayNumberBadge.vue'
 import { computed } from 'vue'
 
 const props = defineProps<{

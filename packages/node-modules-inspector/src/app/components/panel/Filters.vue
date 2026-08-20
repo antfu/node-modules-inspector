@@ -1,5 +1,13 @@
 <script setup lang="ts">
 import { filters } from '../../state/filters'
+import OptionItem from '../option/Item.vue'
+import OptionSelectGroup from '../option/SelectGroup.vue'
+import PanelFiltersOptionClusters from './FiltersOptionClusters.vue'
+import PanelFiltersOptionDepth from './FiltersOptionDepth.vue'
+import PanelFiltersOptionFocus from './FiltersOptionFocus.vue'
+import PanelFiltersOptionModuleTypes from './FiltersOptionModuleTypes.vue'
+import PanelFiltersOptionWhy from './FiltersOptionWhy.vue'
+import PanelFiltersResults from './FiltersResults.vue'
 </script>
 
 <template>

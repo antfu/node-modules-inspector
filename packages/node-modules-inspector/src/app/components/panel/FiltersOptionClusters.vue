@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import type { WritableComputedRef } from 'vue'
+import FormCheckbox from '@antfu/design/components/Form/FormCheckbox.vue'
 import { computed } from 'vue'
 import { filters } from '../../state/filters'
 import { payloads } from '../../state/payload'
+import DisplayClusterBadge from '../display/ClusterBadge.vue'
+import OptionSelectGroup from '../option/SelectGroup.vue'
 
 const clustersAvailableSelect = computed(() => {
   const clusters = new Set<string>()

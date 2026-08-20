@@ -1,9 +1,15 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
 import type { ParsedFunding } from 'node-modules-tools/utils'
+import DisplayNumberBadge from '@antfu/design/components/Display/DisplayNumberBadge.vue'
 import { computed } from 'vue'
 import { selectedNode } from '../../state/current'
 import { payloads } from '../../state/payload'
+import DisplayFundingEntry from '../display/FundingEntry.vue'
+import TreeItem from '../tree/Item.vue'
+import UiEmptyState from '../ui/EmptyState.vue'
+import UiSubTitle from '../ui/SubTitle.vue'
+import ReportExpendableContainer from './ExpendableContainer.vue'
 
 const fundingGroup = computed(() => {
   const map = new Map<string, {

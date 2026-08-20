@@ -1,9 +1,18 @@
 <script setup lang="ts">
+import ActionIconButton from '@antfu/design/components/Action/ActionIconButton.vue'
 import { useRoute } from '#app/composables/router'
 import { selectedNode } from '../../state/current'
+import { rawPayload } from '../../state/data'
 import { filters } from '../../state/filters'
 import { settings } from '../../state/settings'
 import { isFiltersOpen, isSettingOpen, isSidepanelCollapsed } from '../../state/ui'
+import PanelFilters from './Filters.vue'
+import PanelGoto from './Goto.vue'
+import PanelOverview from './Overview.vue'
+import PanelPackageDetails from './PackageDetails.vue'
+import PanelSettings from './Settings.vue'
+
+const isWeb = import.meta.env.BACKEND === 'web'
 
 const route = useRoute()
 const location = window.location
@@ -53,6 +62,15 @@ function toggleSetting() {
 function toggleFilters() {
   isFiltersOpen.value = !isFiltersOpen.value
 }
+
+function newInspect() {
+  // Registry (Instant) mode has no expensive state to lose; only the
+  // WebContainer sandbox install warrants a confirmation.
+  // eslint-disable-next-line no-alert
+  if (rawPayload.value?.packageManager === 'npm-registry' || confirm('To start a new inspect, the current state will be lost. Continue?')) {
+    location.href = '/'
+  }
+}
 </script>
 
 <template>
@@ -88,6 +106,16 @@ function toggleFilters() {
       bg-glass rounded-full border border-base shadow px3 py2 flex-none
       flex="~ items-center gap-1" w-max
     >
+      <template v-if="isWeb && rawPayload">
+        <ActionIconButton
+          class="w-10 h-10"
+          tooltip="Start a new inspect"
+          icon="i-ph-caret-left"
+          @click="newInspect()"
+        />
+        <div w-1px h-20px mx1 border="l base" />
+      </template>
+
       <template v-for="tab of tabsMeta" :key="tab.path">
         <RouterLink
           v-tooltip="tab.name"

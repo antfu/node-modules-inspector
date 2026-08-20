@@ -3,41 +3,9 @@ import type { PackageJson } from 'pkg-types'
 import type { BaseOptions, PackageNode, PackageNodeBase } from './types'
 import { existsSync } from 'node:fs'
 import { readFile } from 'node:fs/promises'
-import { objectPick } from '@antfu/utils'
 import { join } from 'pathe'
-import { analyzePackageModuleType } from './analyze-esm'
+import { resolvePackageJsonFields } from './resolve-json'
 import { getPackageInstallSize } from './size'
-import { normalizePkgAuthors, normalizePkgFundings, normalizePkgLicense, normalizePkgRepository } from './utils/package-json'
-
-// @keep-unique
-// @keep-sorted
-export const PACKAGE_JSON_KEYS = [
-  'author',
-  'authors',
-  'bin',
-  'bugs',
-  'dependencies',
-  'description',
-  'devDependencies',
-  'engines',
-  'exports',
-  'funding',
-  'fundings',
-  'homepage',
-  'imports',
-  'keywords',
-  'license',
-  'licenses',
-  'main',
-  'module',
-  'name',
-  'optionalDependencies',
-  'peerDependencies',
-  'peerDependenciesMeta',
-  'repository',
-  'types',
-  'version',
-] satisfies (keyof PackageJson)[]
 
 /**
  * Analyze a package node, and return a resolved package node.
@@ -61,13 +29,8 @@ export async function resolvePackage(
     const json = JSON.parse(stripBomTag(content)) as PackageJson
 
     _pkg.resolved = {
-      module: analyzePackageModuleType(json),
-      packageJson: objectPick(json, PACKAGE_JSON_KEYS),
+      ...resolvePackageJsonFields(json),
       installSize: await getPackageInstallSize(_pkg),
-      authors: normalizePkgAuthors(json),
-      repository: normalizePkgRepository(json),
-      license: normalizePkgLicense(json),
-      fundings: normalizePkgFundings(json),
     }
   }
   else {

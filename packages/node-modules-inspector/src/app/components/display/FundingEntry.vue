@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { ParsedFunding } from 'node-modules-tools/utils'
+import DisplayAvatar from '@antfu/design/components/Display/DisplayAvatar.vue'
 
 defineProps<{
   funding: ParsedFunding

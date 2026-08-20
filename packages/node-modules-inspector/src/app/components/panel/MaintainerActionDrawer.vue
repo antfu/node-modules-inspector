@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import type { DepUpgradeAction, MaintainerActionItem, PublintAction } from '../../state/maintainer-actions'
+import DisplayDonut from '@antfu/design/components/Display/DisplayDonut.vue'
+import OverlayDrawer from '@antfu/design/components/Overlay/OverlayDrawer.vue'
 import { useClipboard } from '@vueuse/core'
 import { computed, watch } from 'vue'
 import { selectedAction } from '../../state/current'
@@ -7,6 +9,8 @@ import { fetchPublintMessages } from '../../state/data'
 import { getMaintainerActionsFor, viewAllMaintainerActions } from '../../state/maintainer-actions'
 import { query } from '../../state/query'
 import { buildAgentPrompt, buildAgentPromptAll, buildPublintPrompt } from '../../utils/prompts'
+import PanelMaintainerActionPublintFindings from './MaintainerActionPublintFindings.vue'
+import PanelPackageDetailsInfo from './PackageDetailsInfo.vue'
 
 const item = computed(() => selectedAction.value)
 

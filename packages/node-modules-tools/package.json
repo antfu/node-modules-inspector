@@ -1,7 +1,7 @@
 {
   "name": "node-modules-tools",
   "type": "module",
-  "version": "2.3.3",
+  "version": "2.4.0",
   "description": "Tools for inspecting node_modules",
   "author": "Anthony Fu <anthonyfu117@hotmail.com>",
   "license": "MIT",
@@ -17,6 +17,7 @@
   "sideEffects": false,
   "exports": {
     ".": "./dist/index.mjs",
+    "./registry": "./dist/registry.mjs",
     "./utils": "./dist/utils.mjs",
     "./constants": "./dist/constants.mjs"
   },

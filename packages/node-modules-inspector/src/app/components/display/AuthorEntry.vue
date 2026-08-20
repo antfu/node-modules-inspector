@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { ParsedAuthor } from 'node-modules-tools/utils'
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 const props = withDefaults(defineProps<{
   author: ParsedAuthor
@@ -18,6 +18,15 @@ const href = computed(() => {
     return `https://github.com/${props.author.github}`
   return props.author.url
 })
+
+// Avatars are served cross-origin (e.g. avatars.antfu.dev). The hosted web
+// build sets COEP `require-corp` (for WebContainer), which blocks cross-origin
+// images unless they are requested in CORS mode — hence `crossorigin`. Fall
+// back to an icon if the image fails.
+const avatarErrored = ref(false)
+watch(() => props.author, () => {
+  avatarErrored.value = false
+})
 </script>
 
 <template>
@@ -33,16 +42,17 @@ const href = computed(() => {
     <template
       v-if="author.type === 'github'"
     >
-      <DisplaySafeImage
+      <img
+        v-if="author.avatar && !avatarErrored"
         :src="author.avatar"
         :alt="author.github"
+        crossorigin="anonymous"
+        loading="lazy"
         class="rounded-full bg-ambient border border-base object-cover"
         :style="{ width: `${props.size}px`, height: `${props.size}px` }"
+        @error="avatarErrored = true"
       >
-        <template #fallback>
-          <div i-ph-user-circle-duotone :style="{ width: `${props.size}px`, height: `${props.size}px` }" op-fade />
-        </template>
-      </DisplaySafeImage>
+      <div v-else i-ph-user-circle-duotone :style="{ width: `${props.size}px`, height: `${props.size}px` }" op-fade />
       <span font-mono>{{ author.github }}</span>
     </template>
     <template v-else>

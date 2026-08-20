@@ -1,5 +1,7 @@
 <script setup lang="ts" generic="T">
+import DisplayNumberBadge from '@antfu/design/components/Display/DisplayNumberBadge.vue'
 import { computed } from 'vue'
+import UiSubTitle from '../ui/SubTitle.vue'
 
 const props = withDefaults(
   defineProps<{

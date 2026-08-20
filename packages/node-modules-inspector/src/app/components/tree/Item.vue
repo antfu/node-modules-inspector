@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
 import { selectedNode } from '../../state/current'
+import DisplayModuleType from '../display/ModuleType'
+import DisplayPackageSpec from '../display/PackageSpec.vue'
+import DisplayProvenanceBadge from '../display/ProvenanceBadge.vue'
+import DisplaySourceTypeBadge from '../display/SourceTypeBadge.vue'
 
 withDefaults(
   defineProps<{

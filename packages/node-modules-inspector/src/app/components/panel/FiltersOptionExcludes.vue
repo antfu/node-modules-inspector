@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import FormCheckbox from '@antfu/design/components/Form/FormCheckbox.vue'
 import { filters } from '../../state/filters'
+import OptionItem from '../option/Item.vue'
 </script>
 
 <template>

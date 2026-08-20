@@ -1,14 +1,18 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
+import DisplayNumberBadge from '@antfu/design/components/Display/DisplayNumberBadge.vue'
 import { computed, nextTick } from 'vue'
 import { useRouter } from '#app/composables/router'
-import { DisplayDateBadge } from '#components'
 import { selectedNode } from '../../state/current'
 import { rawPayload } from '../../state/data'
 import { filters } from '../../state/filters'
 import { payloads } from '../../state/payload'
 import { settings } from '../../state/settings'
 import { compareSemver } from '../../utils/semver'
+import DisplayDateBadge from '../display/DateBadge.vue'
+import DisplayModuleType from '../display/ModuleType'
+import UiEmptyState from '../ui/EmptyState.vue'
+import UiSubTitle from '../ui/SubTitle.vue'
 
 const router = useRouter()
 

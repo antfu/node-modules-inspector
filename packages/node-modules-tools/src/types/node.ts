@@ -19,6 +19,14 @@ export interface PackageNodeRaw {
   filepath: string
   /** Direct dependencies of this package */
   dependencies: Set<string>
+  /**
+   * Direct dependencies of this package that are satisfied via a
+   * `peerDependencies` requirement. This is a subset of {@link dependencies}
+   * (the specs are also present there so graph reachability is unaffected);
+   * it only marks which edges originate from a peer relationship, e.g. so the
+   * graph can render them differently.
+   */
+  peerDependencies?: Set<string>
 
   /** Is this package from local workspace */
   workspace?: boolean

@@ -4,6 +4,7 @@ import { objectEntries } from '@antfu/utils'
 import { computed } from 'vue'
 import { FILE_CATEGORIES_COLOR_BADGE } from '../../utils/file-category'
 import { bytesToHumanSize } from '../../utils/format'
+import UiPercentage from './Percentage.vue'
 
 const props = withDefaults(
   defineProps<{

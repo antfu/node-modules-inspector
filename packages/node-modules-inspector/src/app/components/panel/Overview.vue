@@ -1,10 +1,18 @@
 <script setup lang="ts">
+import DisplayNumberBadge from '@antfu/design/components/Display/DisplayNumberBadge.vue'
+import DisplayVersion from '@antfu/design/components/Display/DisplayVersion.vue'
 import { computed } from 'vue'
+import { NuxtLink } from '#components'
 import { version } from '../../../../package.json'
 import { getBackend } from '../../backends'
 import { rawPayload } from '../../state/data'
 import { getDeprecatedInfo, payloads, totalWorkspaceSize } from '../../state/payload'
 import { settings } from '../../state/settings'
+import DisplayDateBadge from '../display/DateBadge.vue'
+import DisplayFileSizeBadge from '../display/FileSizeBadge.vue'
+import UiCredits from '../ui/Credits.vue'
+import UiLogo from '../ui/Logo.vue'
+import UiPercentageModuleType from '../ui/PercentageModuleType.vue'
 
 const location = window.location
 
@@ -67,7 +75,18 @@ const timepassed = computed(() => rawPayload.value?.timestamp ? Date.now() - raw
     </h1>
     <div v-if="rawPayload" border="t base" flex="~ col gap-3" p5>
       <div
-        v-if="backend.name === 'webcontainer'"
+        v-if="backend.name === 'registry'"
+        flex="~ gap-2 items-center"
+      >
+        <div i-catppuccin-npm icon-catppuccin flex-none />
+        <a break-after-all text-left leading-none href="https://registry.npmjs.org" target="_blank" hover="underline">npm registry</a>
+        <span
+          v-tooltip="'The graph is resolved from registry metadata without a real install — versions, deduplication, and sizes are approximate. Use Sandbox Install mode for full fidelity.'"
+          badge-color-amber px1.5 rounded text-xs
+        >approximate</span>
+      </div>
+      <div
+        v-else-if="backend.name === 'webcontainer'"
         flex="~ gap-2 items-center"
       >
         <div i-catppuccin-stackblitz icon-catppuccin flex-none />
@@ -81,7 +100,7 @@ const timepassed = computed(() => rawPayload.value?.timestamp ? Date.now() - raw
         <div i-catppuccin-folder-node-open icon-catppuccin flex-none />
         <span font-mono break-after-all text-left leading-none>{{ rawPayload.config?.name ?? rawPayload.root }}</span>
       </button>
-      <div flex="~ gap-2 items-center">
+      <div v-if="rawPayload.packageManager !== 'npm-registry'" flex="~ gap-2 items-center">
         <div v-if="rawPayload.packageManager === 'pnpm'" i-catppuccin-pnpm icon-catppuccin flex-none />
         <div v-else-if="rawPayload.packageManager === 'npm'" i-catppuccin-npm icon-catppuccin flex-none />
         <span>{{ rawPayload.packageManager }}</span>
