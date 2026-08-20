@@ -50,5 +50,5 @@ export const FILTERS_SCHEMA: {
   excludeDev: { type: Boolean, default: false, category: 'exclude' },
   excludeOptional: { type: Boolean, default: true, category: 'exclude' },
   excludePrivate: { type: Boolean, default: false, category: 'exclude' },
-  excludeWorkspace: { type: Boolean, default: import.meta.env.BACKEND === 'webcontainer', category: 'exclude' },
+  excludeWorkspace: { type: Boolean, default: import.meta.env.BACKEND === 'web', category: 'exclude' },
 }

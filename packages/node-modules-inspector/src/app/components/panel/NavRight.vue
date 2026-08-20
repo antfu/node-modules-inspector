@@ -2,7 +2,7 @@
 import { isDark, toggleDark } from '../../composables/dark'
 import { rawPayload } from '../../state/data'
 
-const isWebContainer = import.meta.env.BACKEND === 'webcontainer'
+const isWeb = import.meta.env.BACKEND === 'web'
 
 function newInspect() {
   // eslint-disable-next-line no-alert
@@ -20,7 +20,7 @@ function newInspect() {
       bg-glass rounded-full border border-base shadow
     >
       <ActionIconButton
-        v-if="isWebContainer && rawPayload"
+        v-if="isWeb && rawPayload"
         tooltip="Start a new inspect"
         icon="i-ph-plus-circle-duotone"
         class="text-xl"

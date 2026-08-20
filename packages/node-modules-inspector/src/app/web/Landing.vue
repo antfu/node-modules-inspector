@@ -7,9 +7,19 @@ import { createRegistryBackend, registryProgress } from '../registry'
 import { fetchData, rawPayload } from '../state/data'
 import { query } from '../state/query'
 import { openTerminal, showTerminal } from '../state/terminal'
-import { getContainer, install } from './container'
 
 type WebMode = 'instant' | 'sandbox'
+
+// The WebContainer SDK (`@webcontainer/api`) is heavy and only needed for
+// "Sandbox Install" mode. Load `./container` lazily so the default Instant
+// (npm-registry) mode never pulls the SDK into the initial bundle.
+function loadContainer() {
+  return import('../webcontainer/container')
+}
+
+function bootContainer() {
+  loadContainer().then(({ getContainer }) => getContainer())
+}
 
 const mode = shallowRef<WebMode>(query.mode === 'sandbox' ? 'sandbox' : 'instant')
 const input = shallowRef(query.install?.trim().replace(/\+/g, ' ') || '')
@@ -24,7 +34,7 @@ function setMode(value: WebMode) {
   mode.value = value
   query.mode = value === 'sandbox' ? 'sandbox' : ''
   if (value === 'sandbox')
-    getContainer()
+    bootContainer()
 }
 
 function handleCompositionEnd(_event: CompositionEvent) {
@@ -34,7 +44,7 @@ function handleCompositionEnd(_event: CompositionEvent) {
 
 onMounted(() => {
   if (mode.value === 'sandbox')
-    getContainer()
+    bootContainer()
   run()
 })
 
@@ -141,6 +151,7 @@ async function runSandbox(deps: Record<string, string>) {
   try {
     showTerminal.value = true
     openTerminal.value = true
+    const { install } = await loadContainer()
     backend.value = await install(args)
     await fetchData(false, true)
     openTerminal.value = true
