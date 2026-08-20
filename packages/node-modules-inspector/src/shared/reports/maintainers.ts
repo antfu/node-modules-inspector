@@ -1,6 +1,6 @@
 import type { PackageNode, PublintMessage } from 'node-modules-tools'
 import type { ParsedAuthor } from 'node-modules-tools/utils'
-import { getMajor, getPrerelease, isGreaterThanRange, satisfies } from 'verkit'
+import { getMajor, isGreaterThanRange, isStable, satisfies } from 'verkit'
 import { compareSemver } from '../semver'
 
 export function authorKey(author: ParsedAuthor): string {
@@ -100,13 +100,6 @@ function safeGtr(version: string, range: string) {
   catch {
     return null
   }
-}
-
-function isStable(version: string) {
-  // verkit's runtime returns `[]` for stable versions (its own .d.ts says
-  // `null`) — check both so this doesn't re-break if that's ever "fixed".
-  const prerelease = getPrerelease(version)
-  return prerelease == null || prerelease.length === 0
 }
 
 function getPublintMessagesFor(
