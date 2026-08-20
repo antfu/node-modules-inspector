@@ -34,6 +34,9 @@ overrides:
   devframe: *devframe
   semver: 7.8.0
 
+patchedDependencies:
+  '@nuxt/nitro-server-nightly@5.0.0-29666842.2bab300c': patches/@nuxt__nitro-server-nightly@5.0.0-29666842.2bab300c.patch
+
 catalogs:
   bundling:
     '@rollup/plugin-alias': ^6.0.0
