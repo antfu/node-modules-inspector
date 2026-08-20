@@ -27,4 +27,25 @@ describe('listNpmPackageDependencies', () => {
     expect(list.packages.size).toBe(2)
     expect(Array.from(list.packages.values()).every(i => i.name)).toBe(true)
   })
+
+  it('handles a root package.json missing name/version', async () => {
+    const list = await listPackageDependencies({
+      cwd: fileURLToPath(new URL('./fixtures/root-missing-version', import.meta.url)),
+      depth: 25,
+      monorepo: true,
+      workspace: false,
+    })
+
+    expect(list.packageManager).toBe('npm')
+    expect(list.packages.size).toBe(2)
+
+    const root = Array.from(list.packages.values()).find(i => i.workspace && i.name !== 'child-package-json')
+    expect(root).toBeDefined()
+    expect(root!.name).toBeTruthy()
+    expect(root!.version).toBe('0.0.0')
+
+    const child = Array.from(list.packages.values()).find(i => i.name === 'child-package-json')
+    expect(child).toBeDefined()
+    expect(child!.version).toBe('1.0.0')
+  })
 })
