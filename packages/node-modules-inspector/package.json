@@ -75,6 +75,7 @@
     "@xterm/xterm": "catalog:frontend",
     "colorjs.io": "catalog:dev",
     "d3": "catalog:frontend",
+    "d3-dag": "catalog:frontend",
     "d3-hierarchy": "catalog:frontend",
     "d3-shape": "catalog:frontend",
     "floating-vue": "catalog:frontend",

@@ -1,9 +1,11 @@
 <script setup lang="ts">
+import type { GraphNode as DagNode } from 'd3-dag'
 import type { HierarchyLink, HierarchyNode } from 'd3-hierarchy'
 import type { PackageNode } from 'node-modules-tools'
 import type { HighlightMode } from '../../state/highlight'
 import type { ComputedPayload } from '../../state/payload'
 import { onKeyPressed, useEventListener, useMagicKeys } from '@vueuse/core'
+import { coordCenter, decrossDfs, decrossTwoLayer, graphStratify, layeringSimplex, sugiyama, tweakFlip, twolayerAgg } from 'd3-dag'
 import { hierarchy, tree } from 'd3-hierarchy'
 import { linkHorizontal, linkVertical } from 'd3-shape'
 import { computed, nextTick, onMounted, reactive, ref, shallowReactive, shallowRef, useTemplateRef, watch } from 'vue'
@@ -61,14 +63,107 @@ onKeyPressed(['=', '+'], (e) => {
 const nodesRefMap = new Map<string, HTMLDivElement>()
 
 const SPACING = reactive({
-  width: computed(() => settings.value.graphRender === 'normal' ? 300 : 10),
-  height: computed(() => settings.value.graphRender === 'normal' ? 30 : 20),
+  width: computed(() => settings.value.graphRender === 'normal' ? 300 : 16),
+  height: computed(() => settings.value.graphRender === 'normal' ? 30 : 16),
   linkOffset: computed(() => settings.value.graphRender === 'normal' ? 20 : 0),
   margin: computed(() => 800),
   gap: computed(() => settings.value.graphRender === 'normal' ? 150 : 100),
+  // Gaps between nodes for the layered DAG layout
+  gapX: computed(() => settings.value.graphRender === 'normal' ? 100 : 60),
+  gapY: computed(() => settings.value.graphRender === 'normal' ? 12 : 8),
 })
 
-function calculateGraph() {
+// Measured sizes of the rendered nodes, keyed by package spec
+const nodeSizes = new Map<string, readonly [width: number, height: number]>()
+
+function nodeWidth(spec: string) {
+  return nodeSizes.get(spec)?.[0] ?? SPACING.width
+}
+
+// Below this number of nodes, use the higher-quality (but slower) crossing reduction
+const DECROSS_QUALITY_THRESHOLD = 500
+
+/**
+ * Refine node positions with a Sugiyama layered DAG layout
+ * (adapted from npmgraph's Graphviz `dot` node allocation).
+ *
+ * Unlike the provisional tidy-tree layout, this considers every edge of the
+ * dependency DAG (not only the rendered spanning tree) and shrink-wraps nodes
+ * to their measured sizes, producing a much more compact graph.
+ */
+function layoutDag(_nodes: HierarchyNode<PackageNode>[]) {
+  const pkgNodes = _nodes.filter(n => n.data.spec !== '~root')
+  if (!pkgNodes.length)
+    return
+
+  // Measure the rendered node sizes, so that the layout can shrink-wrap them
+  nodeSizes.clear()
+  for (const node of pkgNodes) {
+    const el = nodesRefMap.get(node.data.spec)
+    nodeSizes.set(node.data.spec, el?.offsetWidth
+      ? [el.offsetWidth, el.offsetHeight]
+      : [SPACING.width, SPACING.height])
+  }
+
+  // Collect the full DAG edges among the rendered nodes
+  const parentIds = new Map<string, string[]>()
+  for (const node of pkgNodes)
+    parentIds.set(node.data.spec, [])
+  for (const node of pkgNodes) {
+    for (const dep of payload.dependencies(node.data)) {
+      if (dep.spec !== node.data.spec)
+        parentIds.get(dep.spec)?.push(node.data.spec)
+    }
+  }
+
+  const dag = graphStratify()(pkgNodes.map(node => ({
+    id: node.data.spec,
+    parentIds: parentIds.get(node.data.spec)!,
+  })))
+
+  const layout = sugiyama()
+    .layering(layeringSimplex())
+    .decross(dag.nnodes() <= DECROSS_QUALITY_THRESHOLD
+      ? decrossTwoLayer().order(twolayerAgg()).passes(1)
+      : decrossDfs())
+    // `coordCenter` packs each layer tightly, producing the most compact result
+    // (`coordGreedy` leaves large gaps, `coordSimplex`/`coordQuad` are far too slow)
+    .coord(coordCenter())
+    // Sizes and gaps are given in the pre-flip orientation: [vertical, horizontal]
+    .nodeSize((node: DagNode<{ id: string, parentIds: string[] }>) => {
+      const [w, h] = nodeSizes.get(node.data.id)!
+      return [h, w] as const
+    })
+    .gap([SPACING.gapY, SPACING.gapX])
+    // Flip the layout from top-down to left-right
+    .tweaks([tweakFlip('diagonal')])
+
+  layout(dag)
+
+  for (const dagNode of dag.nodes()) {
+    const node = nodesMap.get(dagNode.data.id)
+    if (node) {
+      node.x = dagNode.x
+      node.y = dagNode.y
+    }
+  }
+}
+
+// Offset the graph to leave a margin around it
+function applyGraphOffset(_nodes: HierarchyNode<PackageNode>[]) {
+  const minX = Math.min(..._nodes.map(n => n.x!))
+  const minY = Math.min(..._nodes.map(n => n.y!))
+  for (const node of _nodes) {
+    node.x! += SPACING.margin - minX
+    node.y! += SPACING.margin - minY
+  }
+}
+
+let layoutGeneration = 0
+
+async function calculateGraph() {
+  const generation = ++layoutGeneration
+
   // Unset the canvas size, and recalculate again after nodes are rendered
   width.value = window.innerWidth
   height.value = window.innerHeight
@@ -89,7 +184,8 @@ function calculateGraph() {
     },
   )
 
-  // Calculate the layout
+  // Calculate a provisional tidy-tree layout, so that nodes can be rendered
+  // and measured right away (also the fallback if the DAG layout fails)
   const layout = tree<PackageNode>()
     .nodeSize([SPACING.height, SPACING.width + SPACING.gap])
   layout(root)
@@ -100,19 +196,7 @@ function calculateGraph() {
     [node.x, node.y] = [node.y! - SPACING.width, node.x!]
   }
 
-  // Offset the graph and adding margin
-  const minX = Math.min(..._nodes.map(n => n.x!))
-  const minY = Math.min(..._nodes.map(n => n.y!))
-  if (minX < SPACING.margin) {
-    for (const node of _nodes) {
-      node.x! += Math.abs(minX) + SPACING.margin
-    }
-  }
-  if (minY < SPACING.margin) {
-    for (const node of _nodes) {
-      node.y! += Math.abs(minY) + SPACING.margin
-    }
-  }
+  applyGraphOffset(_nodes)
 
   nodes.value = _nodes
   nodesMap.clear()
@@ -150,15 +234,33 @@ function calculateGraph() {
 
   links.value = _links
 
-  nextTick(() => {
-    width.value = (container.value!.scrollWidth / scale.value + SPACING.margin)
-    height.value = (container.value!.scrollHeight / scale.value + SPACING.margin)
+  // Wait for the nodes to render, then refine the positions with the DAG layout
+  await nextTick()
+  if (generation !== layoutGeneration)
+    return
 
-    if (query.selected)
-      focusOn(query.selected, false)
-    else if (payload.packages[0])
-      focusOn(payload.packages[0].spec, false)
-  })
+  try {
+    layoutDag(_nodes)
+    applyGraphOffset(_nodes)
+    // Reassign to trigger a re-render with the updated positions
+    nodes.value = [..._nodes]
+    links.value = [..._links]
+  }
+  catch (error) {
+    console.error('[node-modules-inspector] Failed to calculate the DAG layout, falling back to the tree layout', error)
+  }
+
+  await nextTick()
+  if (generation !== layoutGeneration)
+    return
+
+  width.value = (container.value!.scrollWidth / scale.value + SPACING.margin)
+  height.value = (container.value!.scrollHeight / scale.value + SPACING.margin)
+
+  if (query.selected)
+    focusOn(query.selected, false)
+  else if (payload.packages[0])
+    focusOn(payload.packages[0].spec, false)
 }
 
 const isGrabbing = shallowRef(false)
@@ -261,16 +363,17 @@ const createLinkVertical = linkVertical()
   .y(d => d[1])
 
 function generateLink(link: HierarchyLink<PackageNode>) {
-  if (link.target.x! <= link.source.x!) {
-    return createLinkVertical({
-      source: [link.source.x! + SPACING.width / 2 - SPACING.linkOffset, link.source.y!],
-      target: [link.target.x! - SPACING.width / 2 + SPACING.linkOffset, link.target.y!],
-    })
-  }
-  return createLinkHorizontal({
-    source: [link.source.x! + SPACING.width / 2 - SPACING.linkOffset, link.source.y!],
-    target: [link.target.x! - SPACING.width / 2 + SPACING.linkOffset, link.target.y!],
-  })
+  const source: [number, number] = [
+    link.source.x! + nodeWidth(link.source.data.spec) / 2 - SPACING.linkOffset,
+    link.source.y!,
+  ]
+  const target: [number, number] = [
+    link.target.x! - nodeWidth(link.target.data.spec) / 2 + SPACING.linkOffset,
+    link.target.y!,
+  ]
+  if (link.target.x! <= link.source.x!)
+    return createLinkVertical({ source, target })
+  return createLinkHorizontal({ source, target })
 }
 
 function getLinkColor(link: Link) {
@@ -366,7 +469,6 @@ onMounted(() => {
               :style="{
                 left: `${node.x}px`,
                 top: `${node.y}px`,
-                minWidth: settings.graphRender === 'normal' ? `${SPACING.width}px` : undefined,
               }"
             />
           </template>
