@@ -1,5 +1,5 @@
 import type { NpmMeta, NpmMetaLatest } from 'node-modules-tools'
-import type { RegistryResolveWarning } from 'node-modules-tools/registry'
+import type { InstallExcludeSpec, RegistryResolveWarning } from 'node-modules-tools/registry'
 import type { NodeModulesInspectorPayload } from '../../shared/types'
 import type { Backend } from '../types/backend'
 import { resolveRegistryDependencies } from 'node-modules-tools/registry'
@@ -31,7 +31,7 @@ export const registryWarnings = shallowRef<RegistryResolveWarning[]>([])
  */
 export function createRegistryBackend(
   dependencies: Record<string, string>,
-  options?: { name?: string },
+  options?: { name?: string, excludes?: InstallExcludeSpec[] },
 ): Backend {
   const error = shallowRef<unknown | undefined>(undefined)
 
@@ -57,6 +57,7 @@ export function createRegistryBackend(
     try {
       const { warnings, ...result } = await resolveRegistryDependencies({
         dependencies,
+        excludes: options?.excludes,
         cachePackument: storagePackument,
         cacheManifest: storageManifest,
         onProgress(progress) {

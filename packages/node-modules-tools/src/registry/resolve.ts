@@ -11,7 +11,7 @@ import { compare, findMaxSatisfying, satisfies } from 'verkit'
 import { populateRawResult } from '../graph'
 import { resolvePackageJsonFields } from '../resolve-json'
 import { createRegistryFetcher } from './fetch'
-import { isRegistryResolvableSpec, parseNpmAlias } from './spec'
+import { constructExcludeMatcher, isRegistryResolvableSpec, parseNpmAlias } from './spec'
 
 export const REGISTRY_PACKAGE_MANAGER = 'npm-registry'
 
@@ -50,6 +50,10 @@ export async function resolveRegistryDependencies(
 
   const fetcher = createRegistryFetcher(options)
   const limit = pLimit(concurrency)
+
+  // An excluded edge is pruned before its version is resolved, so the
+  // excluded package's metadata is never fetched.
+  const isExcluded = constructExcludeMatcher(options.excludes || [])
 
   const packages = new Map<string, PackageNodeRaw>()
   const versionMeta = new Map<string, RegistryAbbreviatedVersion>()
@@ -140,6 +144,10 @@ export async function resolveRegistryDependencies(
       range = alias.range
     }
 
+    // Excluded: never add the node nor expand its edges (skip metadata fetch)
+    if (isExcluded(name, range))
+      return Promise.resolve(null)
+
     const key = `${name}@${range}`
     if (!resolutions.has(key)) {
       resolutions.set(key, (async () => {
@@ -197,6 +205,8 @@ export async function resolveRegistryDependencies(
 
     for (const [peerName, peerRange] of Object.entries(meta.peerDependencies || {})) {
       if (meta.peerDependenciesMeta?.[peerName]?.optional)
+        continue
+      if (isExcluded(peerName, peerRange))
         continue
       peerTasks.push({ dependentNode: node, name: peerName, range: peerRange, depth })
     }

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { InstallExcludeSpec } from 'node-modules-tools/registry'
 import { parseInstallSpecs } from 'node-modules-tools/registry'
 import { computed, onMounted, ref, shallowRef } from 'vue'
 import { backend } from '../backends'
@@ -97,7 +98,16 @@ const dependencies = computed<Record<string, string> | null>(() => {
   const trimmed = input.value?.trim()
   if (!trimmed)
     return null
-  return parseInstallSpecs(trimmed)
+  return parseInstallSpecs(trimmed).dependencies
+})
+
+const excludes = computed<InstallExcludeSpec[]>(() => {
+  if (packageJson.value)
+    return []
+  const trimmed = input.value?.trim()
+  if (!trimmed)
+    return []
+  return parseInstallSpecs(trimmed).excludes
 })
 
 const progressText = computed(() => {
@@ -141,7 +151,7 @@ async function run() {
 }
 
 async function runInstant(deps: Record<string, string>) {
-  backend.value = createRegistryBackend(deps, { name: packageJson.value?.name })
+  backend.value = createRegistryBackend(deps, { name: packageJson.value?.name, excludes: excludes.value })
   await fetchData(false, true)
 }
 
@@ -234,7 +244,7 @@ async function runSandbox(deps: Record<string, string>) {
           </div>
           <input
             v-model="input"
-            placeholder="Enter package names"
+            placeholder="enter package names"
             :disabled="isLoading"
             w-full px1 py2 font-mono bg-transparent outline-none
             placeholder-gray:40
@@ -244,7 +254,7 @@ async function runSandbox(deps: Record<string, string>) {
             @paste="handlePaste"
           >
         </label>
-        <div text-center transition duration-500 italic op35>
+        <div text-center transition duration-50 op50>
           <template v-if="mode === 'sandbox'">
             This will run a full pnpm install inside your browser with <a href="https://webcontainers.io/" target="_blank" font-bold hover:underline>WebContainer</a>. Slower but most accurate.
           </template>
@@ -291,6 +301,9 @@ async function runSandbox(deps: Record<string, string>) {
           </div>
         </div>
         <div absolute left-0 right-0 bottom-0 flex="~ col items-center gap-2" p4>
+          <div text-sm>
+            <span op35>Tips: prefix package names with</span> <code badge-color-gray text-sm important-bg-gray:3 font-mono px1 rounded>-</code> <span op35>to exclude them from the graph. For example, </span><code badge-color-gray important-bg-gray:3 font-mono px1 rounded>nuxt -vite</code> <span op35> shows deps of Nuxt without Vite.</span>
+          </div>
           <UiCredits />
         </div>
       </div>
