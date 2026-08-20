@@ -64,6 +64,7 @@
   },
   "devDependencies": {
     "@antfu/design": "catalog:dev",
+    "@hpcc-js/wasm-graphviz": "catalog:frontend",
     "@storybook/addon-docs": "catalog:storybook",
     "@storybook/vue3-vite": "catalog:storybook",
     "@unocss/nuxt": "catalog:bundling",
@@ -74,7 +75,6 @@
     "@xterm/addon-fit": "catalog:frontend",
     "@xterm/xterm": "catalog:frontend",
     "colorjs.io": "catalog:dev",
-    "@hpcc-js/wasm-graphviz": "catalog:frontend",
     "d3": "catalog:frontend",
     "d3-hierarchy": "catalog:frontend",
     "d3-shape": "catalog:frontend",
