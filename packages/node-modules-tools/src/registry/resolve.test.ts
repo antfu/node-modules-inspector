@@ -158,7 +158,10 @@ describe('resolveRegistryDependencies', () => {
 
     // react@19 exists and satisfies >=16, but 18.2.0 is already in the tree
     expect(specs(result)).toEqual(['lib@1.0.0', 'react@18.2.0', ROOT_SPEC])
-    expect([...result.packages.get('lib@1.0.0')!.dependencies]).toEqual(['react@18.2.0'])
+    const lib = result.packages.get('lib@1.0.0')!
+    expect([...lib.dependencies]).toEqual(['react@18.2.0'])
+    // The edge is recorded as a peer relationship (subset of dependencies)
+    expect([...lib.peerDependencies!]).toEqual(['react@18.2.0'])
   })
 
   it('auto-installs unsatisfied peers, including their dependencies', async () => {
@@ -174,7 +177,11 @@ describe('resolveRegistryDependencies', () => {
     })
 
     expect(specs(result)).toEqual(['lib@1.0.0', 'peer@2.1.0', ROOT_SPEC, 'transitive@1.0.0'])
-    expect([...result.packages.get('lib@1.0.0')!.dependencies]).toEqual(['peer@2.1.0'])
+    const lib = result.packages.get('lib@1.0.0')!
+    expect([...lib.dependencies]).toEqual(['peer@2.1.0'])
+    expect([...lib.peerDependencies!]).toEqual(['peer@2.1.0'])
+    // A regular (non-peer) dependency is NOT marked as a peer edge
+    expect([...result.packages.get('peer@2.1.0')!.peerDependencies!]).toEqual([])
   })
 
   it('skips optional peers and optional dependencies', async () => {

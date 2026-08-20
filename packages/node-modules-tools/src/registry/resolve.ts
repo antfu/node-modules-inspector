@@ -160,6 +160,7 @@ export async function resolveRegistryDependencies(
             // installed in the idealized tree.
             filepath: `node_modules/.pnpm/${name.replace('/', '+')}@${version}/node_modules/${name}`,
             dependencies: new Set(),
+            peerDependencies: new Set(),
             clusters: new Set(),
           }
           packages.set(spec, node)
@@ -214,13 +215,17 @@ export async function resolveRegistryDependencies(
       .sort(compare)
 
     if (existing.length) {
-      dependentNode.dependencies.add(`${name}@${existing[existing.length - 1]}`)
+      const spec = `${name}@${existing[existing.length - 1]}`
+      dependentNode.dependencies.add(spec)
+      dependentNode.peerDependencies!.add(spec)
       return
     }
 
     const spec = await addPackage(name, range, depth + 1, dependentNode.spec)
-    if (spec)
+    if (spec) {
       dependentNode.dependencies.add(spec)
+      dependentNode.peerDependencies!.add(spec)
+    }
   }
 
   // ---- Phase 1: resolve the graph ----
@@ -248,6 +253,7 @@ export async function resolveRegistryDependencies(
     spec: rootSpec,
     filepath: '.',
     dependencies: rootDependencies,
+    peerDependencies: new Set(),
     workspace: true,
     private: true,
     clusters: new Set(),
