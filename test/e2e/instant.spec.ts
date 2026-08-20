@@ -87,7 +87,7 @@ async function mockRegistry(page: Page): Promise<void> {
 test.describe('hosted instant mode', () => {
   test('landing defaults to Instant mode with a Sandbox toggle', async ({ page }) => {
     await page.goto('/')
-    await expect(page.getByRole('button', { name: 'Instant', exact: true })).toBeVisible({ timeout: 30_000 })
+    await expect(page.getByRole('button', { name: 'Registry Query', exact: true })).toBeVisible({ timeout: 30_000 })
     await expect(page.getByRole('button', { name: 'Sandbox Install' })).toBeVisible()
     await expect(page.getByPlaceholder('Enter package names')).toBeVisible()
 
