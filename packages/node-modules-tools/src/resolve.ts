@@ -1,4 +1,4 @@
-import type { AgentName } from 'package-manager-detector'
+import type { Agent } from 'package-manager-detector'
 import type { PackageJson } from 'pkg-types'
 import type { BaseOptions, PackageNode, PackageNodeBase } from './types'
 import { existsSync } from 'node:fs'
@@ -46,15 +46,23 @@ export const PACKAGE_JSON_KEYS = [
  * - Set `module` to the resolved module type (cjs, esm, dual, faux, none).
  */
 export async function resolvePackage(
-  _packageManager: AgentName,
+  _packageManager: Agent,
   pkg: PackageNodeBase,
   _options: BaseOptions,
 ): Promise<PackageNode> {
   const _pkg = pkg as unknown as PackageNode
   if (_pkg.resolved)
     return _pkg
+  const filepath = pkg.filepath
+  if (!filepath) {
+    _pkg.resolved = {
+      module: 'unknown',
+      packageJson: {},
+    }
+    return _pkg
+  }
 
-  const path = join(pkg.filepath, 'package.json')
+  const path = join(filepath, 'package.json')
   if (existsSync(path)) {
     // In cases like optional dependencies, the package might not be installed.
     const content = await readFile(path, 'utf-8')

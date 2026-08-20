@@ -1,0 +1,17 @@
+{
+  "name": "node-modules-inspector-yarn-fixture",
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "packageManager": "yarn@4.7.0",
+  "scripts": {
+    "dev": "node dev.mjs"
+  },
+  "dependencies": {
+    "vite": "^6.0.0",
+    "vite-plugin-inspect": "^11.0.0"
+  },
+  "devDependencies": {
+    "tinyexec": "^0.3.2"
+  }
+}

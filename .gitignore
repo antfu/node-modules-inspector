@@ -22,3 +22,6 @@ playwright-report
 
 # Copied at publish time from root /skills/ by scripts/copy-skills.mjs
 packages/node-modules-inspector/skills/
+
+.pnp*
+.yarn

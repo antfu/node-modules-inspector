@@ -12,7 +12,7 @@ Visualize your node_modules, inspect dependencies, and more.
 
 ## Quick Start
 
-Try it by running following command under your `pnpm`/`npm`/`bun` project.
+Try it by running the matching command under your `pnpm`/`npm`/`bun`/Yarn Berry project.
 
 ```bash
 pnpx node-modules-inspector
@@ -23,8 +23,11 @@ npx node-modules-inspector
 ```bash
 bunx node-modules-inspector
 ```
+```bash
+yarn dlx node-modules-inspector
+```
 
-> Currently supports `pnpm`, `npm`, and `bun` projects. We are counting on the community to bring support for other package managers.
+> Currently supports `pnpm`, `npm`, `bun`, and Yarn Berry projects using the `node-modules` linker. Yarn Plug'n'Play isn't supported because the inspector needs a physical `node_modules` tree to analyze package files and install sizes. To use Yarn Berry, set `nodeLinker: node-modules` in `.yarnrc.yml` and run `yarn install` first.
 
 ### Online Version
 
