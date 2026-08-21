@@ -1,17 +1,17 @@
-ignoreWorkspaceRootCheck: true
+trustPolicy: no-downgrade
 minimumReleaseAge: 0
+
+packages:
+  - packages/*
 
 shamefullyHoist: true
 strictPeerDependencies: false
 shellEmulator: true
-trustPolicy: no-downgrade
+ignoreWorkspaceRootCheck: true
 trustPolicyExclude:
   - undici-types@6.20.0
   - '@pnpm/modules-yaml'
   - tinyexec@1.2.2
-
-packages:
-  - packages/*
 
 refs:
   devframe: &devframe ^0.9.4
@@ -33,6 +33,9 @@ overrides:
   chokidar: 5.0.0
   devframe: *devframe
   semver: 7.8.0
+
+patchedDependencies:
+  '@nuxt/nitro-server-nightly@5.0.0-29666842.2bab300c': patches/@nuxt__nitro-server-nightly@5.0.0-29666842.2bab300c.patch
 
 catalogs:
   bundling:
@@ -81,7 +84,6 @@ catalogs:
     vite-plugin-inspect: ^12.0.2
     vue-tsc: ^3.3.10
   frontend:
-    '@hpcc-js/wasm-graphviz': ^1.28.0
     '@vitejs/plugin-vue': ^6.0.8
     '@webcontainer/api': ^1.6.4
     '@xterm/addon-fit': ^0.11.0
