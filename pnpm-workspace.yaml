@@ -14,8 +14,8 @@ trustPolicyExclude:
   - tinyexec@1.2.2
 
 refs:
-  devframe: &devframe ^0.9.4
-  nuxt-devtools: &nuxt-devtools ^4.0.0-alpha.12
+  devframe: &devframe ^0.9.5
+  nuxt-devtools: &nuxt-devtools ^4.0.0-alpha.14
   vite-devtools: &vite-devtools ^0.5.1
 
 overrides:
