@@ -20,11 +20,12 @@ defineProps<{
     as="button"
     outer="graph-node"
     inner="graph-node-button"
+    class="max-w-90 of-hidden text-ellipsis hover:max-w-max"
     :fade="true"
     :highlight-mode="highlightMode"
     @click="selectedNode = pkg === selectedNode ? undefined : pkg"
   >
-    <DisplayPackageSpec :pkg flex-auto justify-start text-left />
+    <DisplayPackageSpec :pkg flex-auto justify-start text-left version-size="small" version-prefix=" " />
     <DisplayModuleType text-xs justify-end ml2 :pkg :badge="false" />
     <DisplayFileSizeBadge
       v-if="settings.showInstallSizeBadge"

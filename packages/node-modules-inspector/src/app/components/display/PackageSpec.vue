@@ -7,6 +7,8 @@ import DisplayPackageName from './PackageName.vue'
 
 const props = defineProps<{
   pkg: PackageNode
+  versionSize?: 'small' | 'normal'
+  versionPrefix?: string
 }>()
 
 const deprecation = computed(() => getDeprecatedInfo(props.pkg))
@@ -34,13 +36,14 @@ const vulnerability = computed(() => getVulnerability(props.pkg))
       v-tooltip="deprecation?.current ? `Current version is deprecated: ${deprecation.current}` : undefined"
       color-base
       :version="props.pkg.version"
-      prefix="@"
+      :prefix="versionPrefix || '@'"
       :class="{
         'text-red-700! dark:text-red-300! line-through': deprecation?.current || vulnerability?.level === 'critical',
         'text-orange-700! dark:text-orange-300! line-through': vulnerability?.level === 'high',
         'text-yellow-700! dark:text-yellow-300! line-through': vulnerability?.level === 'moderate',
         'text-gray-700! dark:text-gray-300! line-through': vulnerability?.level === 'low',
         'op-fade': !deprecation?.current && !vulnerability,
+        'text-sm': 'small' === versionSize,
       }"
     />
     <slot />

@@ -13,6 +13,7 @@ import { getCompareHighlight } from '../../state/highlight'
 import { payloads } from '../../state/payload'
 import { query } from '../../state/query'
 import { settings } from '../../state/settings'
+import { isSidepanelCollapsed } from '../../state/ui'
 import UiTimeoutView from '../ui/TimeoutView.vue'
 import GraphDot from './Dot.vue'
 import GraphNode from './Node.vue'
@@ -40,13 +41,15 @@ const links = shallowRef<Link[]>([])
 const nodesMap = shallowReactive(new Map<string, HierarchyNode<PackageNode>>())
 const linksMap = shallowReactive(new Map<string, Link>())
 
-const ZOOM_MIN = 0.4
+const ZOOM_MIN = 0.2
 const ZOOM_MAX = 2
 const { control } = useMagicKeys()
 const { scale, zoomIn, zoomOut } = useZoomElement(container, {
   wheel: control,
-  minScale: ZOOM_MIN,
-  maxScale: ZOOM_MAX,
+  scaleDefault: 0.8,
+  scaleMin: ZOOM_MIN,
+  scaleMax: ZOOM_MAX,
+  scaleStep: 0.1,
 })
 
 onKeyPressed(['-', '_'], (e) => {
@@ -68,6 +71,17 @@ const SPACING = reactive({
   margin: computed(() => 800),
   gap: computed(() => settings.value.graphRender === 'normal' ? 150 : 100),
 })
+
+/**
+ * Shift the focus point away from the container's center, in screen pixels.
+ * The side panel (`panel/Nav.vue`, `left-4 w-100`) floats over the canvas, so a
+ * node centered in the scroll container lands behind it. Pushing the focus point
+ * right by half of the panel's footprint centers the node in what's visible.
+ */
+const SIDEPANEL_FOOTPRINT = 16 + 400
+const focusOffset = computed(() => ({
+  x: isSidepanelCollapsed.value ? 0 : SIDEPANEL_FOOTPRINT / 2,
+}))
 
 function calculateGraph() {
   // Unset the canvas size, and recalculate again after nodes are rendered
@@ -156,9 +170,9 @@ function calculateGraph() {
     height.value = (container.value!.scrollHeight / scale.value + SPACING.margin)
 
     if (query.selected)
-      focusOn(query.selected, false)
+      focusOn(query.selected, false, focusOffset.value)
     else if (payload.packages[0])
-      focusOn(payload.packages[0].spec, false)
+      focusOn(payload.packages[0].spec, false, { x: focusOffset.value.x - 1100, y: 0 })
   })
 }
 
@@ -238,11 +252,27 @@ const activeLinks = computed(() => {
   ]
 })
 
-function focusOn(spec: string, animated = true) {
+/**
+ * Scroll the node of `spec` to the center of the canvas.
+ *
+ * `offset` moves the focus point off that center, in screen pixels - positive
+ * `x` moves the node right, positive `y` moves it down. It is applied in screen
+ * space, so it is independent of the current zoom `scale`.
+ */
+function focusOn(spec: string, animated = true, offset: { x?: number, y?: number } = {}) {
   const el = nodesRefMap.get(spec)
-  el?.scrollIntoView({
-    block: 'center',
-    inline: 'center',
+  const root = container.value
+  if (!el || !root)
+    return
+
+  const elRect = el.getBoundingClientRect()
+  const rootRect = root.getBoundingClientRect()
+
+  // Distance from the element to the center of the container, in screen pixels.
+  // Scrolling by that amount is 1:1 with the visual shift, transform included.
+  root.scrollTo({
+    left: root.scrollLeft + (elRect.left - rootRect.left) - (rootRect.width - elRect.width) / 2 - (offset.x ?? 0),
+    top: root.scrollTop + (elRect.top - rootRect.top) - (rootRect.height - elRect.height) / 2 - (offset.y ?? 0),
     behavior: animated ? 'smooth' : 'instant',
   })
 }
@@ -325,7 +355,7 @@ onMounted(() => {
     () => query.selected,
     () => {
       if (query.selected)
-        focusOn(query.selected)
+        focusOn(query.selected, true, focusOffset.value)
     },
     { flush: 'post' },
   )

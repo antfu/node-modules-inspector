@@ -7,15 +7,19 @@ export function useZoomElement(
   target: MaybeElementRef<HTMLElement | null>,
   {
     wheel = true,
-    minScale = 0.5,
-    maxScale = 2,
+    scaleStep = 0.2,
+    scaleDefault = 1,
+    scaleMin = 0.5,
+    scaleMax = 2,
   }: {
     wheel?: MaybeRef<boolean>
-    minScale?: number
-    maxScale?: number
+    scaleStep?: number
+    scaleDefault?: number
+    scaleMin?: number
+    scaleMax?: number
   } = {},
 ) {
-  const scale = ref(1)
+  const scale = ref(scaleDefault)
 
   function zoom(factor: number, clientX?: number, clientY?: number) {
     const el = toValue(target)
@@ -32,7 +36,7 @@ export function useZoomElement(
     const offsetY = y - top
     const oldScale = scale.value
 
-    scale.value = Math.max(minScale, Math.min(maxScale, oldScale + factor))
+    scale.value = Math.max(scaleMin, Math.min(scaleMax, oldScale + factor))
 
     const ratio = scale.value / oldScale
 
@@ -58,11 +62,11 @@ export function useZoomElement(
     }
   }
 
-  function zoomIn(factor = 0.2) {
+  function zoomIn(factor = scaleStep) {
     zoom(factor)
   }
 
-  function zoomOut(factor = 0.2) {
+  function zoomOut(factor = scaleStep) {
     zoom(factor * -1)
   }
 
