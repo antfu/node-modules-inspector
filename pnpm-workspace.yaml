@@ -34,9 +34,6 @@ overrides:
   devframe: *devframe
   semver: 7.8.0
 
-patchedDependencies:
-  '@nuxt/nitro-server-nightly@5.0.0-29666842.2bab300c': patches/@nuxt__nitro-server-nightly@5.0.0-29666842.2bab300c.patch
-
 catalogs:
   bundling:
     '@rollup/plugin-alias': ^6.0.0
@@ -46,7 +43,7 @@ catalogs:
     '@vueuse/nuxt': ^14.4.0
     esbuild: ^0.28.2
     nuxt: npm:nuxt-nightly@5x
-    rollup: ^4.62.4
+    rollup: ^4.62.5
     rollup-plugin-esbuild: ^6.2.1
     unbuild: ^3.6.1
     vite: ^8.2.2
@@ -56,7 +53,7 @@ catalogs:
     cac: ^7.0.0
     devframe: *devframe
     fast-npm-meta: ^2.2.0
-    h3: ^2.0.1-rc.27
+    h3: ^2.0.1-rc.29
     js-yaml: ^5.3.0
     launch-editor: ^2.14.1
     ohash: ^2.0.12
@@ -74,7 +71,7 @@ catalogs:
     valibot: ^1.4.2
     verkit: ^0.4.0
   dev:
-    '@antfu/design': ^0.3.5
+    '@antfu/design': ^0.4.0
     '@antfu/ni': ^30.5.0
     '@nuxt/devtools': *nuxt-devtools
     bumpp: ^12.2.1
@@ -119,9 +116,9 @@ catalogs:
     nuxt-eslint-auto-explicit-import: ^0.2.0
     simple-git-hooks: ^2.13.1
   storybook:
-    '@storybook/addon-docs': ^10.5.9
-    '@storybook/vue3-vite': ^10.5.9
-    storybook: ^10.5.9
+    '@storybook/addon-docs': ^10.5.10
+    '@storybook/vue3-vite': ^10.5.10
+    storybook: ^10.5.10
   testing:
     '@axe-core/playwright': ^4.13.0
     '@playwright/test': ^1.62.1

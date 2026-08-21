@@ -369,7 +369,7 @@ const thirdPartyServices = computed(() => {
           :href="service.url"
           target="_blank"
           flex="~ items-center gap-1"
-          bg-ambient rounded-full px2
+          badge-color-gray rounded-full px2
           op75 hover:op100
         >
           <img v-if="service.icon" :src="service.icon" w-4 h-4 rounded-sm :class="service.iconClass">

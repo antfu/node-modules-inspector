@@ -117,7 +117,7 @@ function newInspect() {
       </template>
 
       <template v-for="tab of tabsMeta" :key="tab.path">
-        <RouterLink
+        <NuxtLink
           v-tooltip="tab.name"
           w-10 h-10 rounded-full hover:bg-hover
           flex="~ items-center justify-center"
@@ -127,7 +127,7 @@ function newInspect() {
           @click="resetPanelState()"
         >
           <div :class="tab.icon" text-xl />
-        </RouterLink>
+        </NuxtLink>
       </template>
 
       <!-- Filters -->
