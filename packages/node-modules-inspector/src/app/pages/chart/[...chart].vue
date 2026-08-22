@@ -17,7 +17,8 @@ import DisplayPackageSpec from '../../components/display/PackageSpec.vue'
 import OptionSelectGroup from '../../components/option/SelectGroup.vue'
 import { isDark } from '../../composables/dark'
 import { selectedNode } from '../../state/current'
-import { payloads } from '../../state/payload'
+import { getPublishTime, payloads } from '../../state/payload'
+import { query } from '../../state/query'
 import { settings } from '../../state/settings'
 import { isSidepanelCollapsed } from '../../state/ui'
 import { bytesToHumanSize } from '../../utils/format'
@@ -29,6 +30,56 @@ const chart = computed<'flamegraph' | 'treemap' | 'sunburst'>(() => params.chart
 const nodeHover = shallowRef<ChartNode | undefined>(undefined)
 const nodeSelected = shallowRef<ChartNode | undefined>(undefined)
 const location = window.location
+
+type ColoringMode = 'spectrum' | 'module' | 'age' | 'duplicated'
+const COLORING_MODES = ['spectrum', 'module', 'age', 'duplicated'] as const
+
+// The coloring mode is persisted in the query string (URL hash) so that it can
+// be shared/bookmarked. Default (`spectrum`) is stored as an empty string to
+// keep the URL clean.
+const coloringMode = computed<ColoringMode>({
+  get() {
+    return (COLORING_MODES.includes(query.chartColoring as ColoringMode)
+      ? query.chartColoring
+      : 'spectrum') as ColoringMode
+  },
+  set(value) {
+    query.chartColoring = value === 'spectrum' ? '' : value
+  },
+})
+
+const YEAR = 365 * 24 * 60 * 60 * 1000
+
+// "Published age" coloring: fresh packages stay gray, then shift towards
+// yellow / orange / red the older their published date is.
+function getAgeColor(pkg: PackageNode): string {
+  const time = getPublishTime(pkg)
+  if (!time)
+    return isDark.value ? '#3f3f46' : '#d4d4d8'
+  const age = Date.now() - +time
+  if (age < YEAR)
+    return isDark.value ? '#71717a' : '#a1a1aa'
+  if (age < 2 * YEAR)
+    return '#facc15'
+  if (age < 3 * YEAR)
+    return '#fb923c'
+  return '#ef4444'
+}
+
+// "Duplicated" coloring: every package name that resolves to more than one
+// version gets its own distinct color; all others stay gray.
+const duplicatedColors = computed(() => {
+  const map = new Map<string, string>()
+  const names = Array.from(payloads.filtered.versions.entries())
+    .filter(([, pkgs]) => pkgs.length > 1)
+    .map(([name]) => name)
+    .sort()
+  names.forEach((name, i) => {
+    const hue = Math.round((i / Math.max(names.length, 1)) * 360)
+    map.set(name, `hsl(${hue}, 70%, ${isDark.value ? 62 : 45}%)`)
+  })
+  return map
+})
 
 const tree = computed(() => {
   const packages = payloads.filtered.packages
@@ -149,6 +200,44 @@ const tree = computed(() => {
 let dispose: () => void | undefined
 
 const options = computed<GraphBaseOptions<PackageNode | undefined>>(() => {
+  const mode = coloringMode.value
+  const spectrum = createColorGetterSpectrum(
+    tree.value.root,
+    isDark.value ? 0.8 : 0.9,
+    isDark.value ? 1 : 1.1,
+  )
+  const gray = isDark.value ? '#3f3f46' : '#d4d4d8'
+
+  const getColor: typeof spectrum = (node) => {
+    if (mode === 'spectrum')
+      return spectrum(node)
+    if (!node.meta)
+      return undefined
+    switch (mode) {
+      case 'module': {
+        const type = getModuleType(node.meta.resolved.module)
+        switch (type) {
+          case 'esm':
+            return '#4ade80'
+          case 'cjs':
+            return '#facc15'
+          case 'dual':
+            return '#2dd4bf'
+          case 'faux':
+            return '#a3e635'
+          case 'dts':
+            return '#888888'
+        }
+        return undefined
+      }
+      case 'age':
+        return getAgeColor(node.meta)
+      case 'duplicated':
+        return duplicatedColors.value.get(node.meta.name) ?? gray
+    }
+    return undefined
+  }
+
   return {
     onClick(node) {
       if (node)
@@ -173,34 +262,12 @@ const options = computed<GraphBaseOptions<PackageNode | undefined>>(() => {
       fg: isDark.value ? '#fff' : '#000',
       bg: isDark.value ? '#111' : '#fff',
     },
-    getColor: settings.value.chartColoringMode === 'module'
-      ? (node) => {
-          if (!node.meta)
-            return undefined
-          const type = getModuleType(node.meta?.resolved.module)
-          switch (type) {
-            case 'esm':
-              return '#4ade80'
-            case 'cjs':
-              return '#facc15'
-            case 'dual':
-              return '#2dd4bf'
-            case 'faux':
-              return '#a3e635'
-            case 'dts':
-              return '#888888'
-          }
-        }
-      : createColorGetterSpectrum(
-          tree.value.root,
-          isDark.value ? 0.8 : 0.9,
-          isDark.value ? 1 : 1.1,
-        ),
+    getColor,
     getSubtext: (node) => {
       if (!node.meta)
         return node.subtext
-      if (settings.value.chartColoringMode === 'module') {
-        const type = getModuleType(node.meta?.resolved.module)
+      if (coloringMode.value === 'module') {
+        const type = getModuleType(node.meta.resolved.module)
         return type.toUpperCase()
       }
       return node.subtext
@@ -255,7 +322,7 @@ watch(
 )
 
 watch(
-  () => settings.value.chartColoringMode,
+  () => coloringMode.value,
   () => {
     graph.value?.draw()
   },
@@ -317,10 +384,10 @@ onUnmounted(() => {
 
     <div flex-auto />
     <OptionSelectGroup
-      v-model="settings.chartColoringMode"
+      v-model="coloringMode"
       v-tooltip="`Color Mode`"
-      :options="['spectrum', 'module']"
-      :titles="['Spectrum', 'Module']"
+      :options="['spectrum', 'module', 'age', 'duplicated']"
+      :titles="['Spectrum', 'Module', 'Published Age', 'Duplicated']"
     />
   </div>
   <div mt5>

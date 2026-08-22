@@ -18,7 +18,6 @@ export const SETTINGS_DEFAULT: SettingsOptions = {
   showMaintainerActions: false,
   showThirdPartyServices: false,
   treatFauxAsESM: false,
-  chartColoringMode: 'spectrum',
   collapseSidepanel: false,
   chartAnimation: true,
   preferNpmx: true,
