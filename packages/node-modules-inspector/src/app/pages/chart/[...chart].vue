@@ -92,8 +92,9 @@ const duplicatedColors = computed(() => {
   return map
 })
 
-// Hovering a package that has multiple versions highlights every block that
-// shares its name (i.e. all of its other versions), across all color modes.
+// Hovering a package that has multiple versions outlines every block that
+// shares its name (i.e. all of its other versions) with a ring. Only the
+// Treemap draws it — the other charts don't expose node geometry.
 const HIGHLIGHT_COLOR = '#ec4899'
 const highlightName = computed(() => {
   const name = nodeHover.value?.meta?.name
@@ -254,10 +255,6 @@ const options = computed<GraphBaseOptions<PackageNode | undefined>>(() => {
     isDark.value ? 1 : 1.1,
   )
   const getColor: typeof spectrum = (node) => {
-    // Read at draw time (not tracked by this computed) so hovering only
-    // triggers a redraw, never a full graph rebuild.
-    if (node.meta && node.meta.name === highlightName.value)
-      return HIGHLIGHT_COLOR
     if (mode === 'spectrum')
       return spectrum(node)
     if (!node.meta)
@@ -333,6 +330,45 @@ function selectNode(node: ChartNode | null, animate?: boolean) {
   graph.value?.select(node, animate)
 }
 
+// nanovis has no per-node border, so we wrap the Treemap's `draw()` and, after
+// it renders, stroke a ring around every block whose package shares the hovered
+// name (its other versions). We reuse the Treemap's own layout boxes via the
+// (private) `iterateNodeToDraw` generator, so the rings line up exactly.
+interface TreemapLayout {
+  node: ChartNode
+  box: [number, number, number, number]
+  children: TreemapLayout[]
+}
+interface TreemapInternals {
+  draw: () => void
+  c: CanvasRenderingContext2D
+  layers: { base?: TreemapLayout | null, current?: TreemapLayout | null }
+  iterateNodeToDraw: (layout: TreemapLayout, culling: number, cullingLayouts: unknown[]) => Iterable<TreemapLayout>
+}
+
+function installTreemapHighlight(treemap: Treemap<PackageNode | undefined>): void {
+  const tm = treemap as unknown as TreemapInternals
+  const original = tm.draw.bind(tm)
+  tm.draw = () => {
+    original()
+    const name = highlightName.value
+    const layout = tm.layers.current || tm.layers.base
+    if (!name || !layout)
+      return
+    const ctx = tm.c
+    ctx.save()
+    ctx.lineWidth = 2
+    ctx.strokeStyle = HIGHLIGHT_COLOR
+    for (const item of tm.iterateNodeToDraw(layout, 0, [])) {
+      if (item.node.meta?.name !== name)
+        continue
+      const [x, y, w, h] = item.box
+      ctx.strokeRect(x + 1, y + 1, Math.max(w - 2, 1), Math.max(h - 2, 1))
+    }
+    ctx.restore()
+  }
+}
+
 watch(
   () => [chart.value, tree.value, options.value],
   () => {
@@ -346,11 +382,14 @@ watch(
       case 'flamegraph':
         graph.value = new Flamegraph(tree.value.root, options.value)
         break
-      default:
-        graph.value = new Treemap(tree.value.root, {
+      default: {
+        const treemap = new Treemap(tree.value.root, {
           ...options.value,
           selectedPaddingRatio: 0,
         })
+        installTreemapHighlight(treemap)
+        graph.value = treemap
+      }
     }
 
     nextTick(() => {
@@ -377,15 +416,11 @@ watch(
   },
 )
 
-// Re-color the chart when the hover highlight changes. The Treemap caches its
-// base layer as a bitmap, so that cache has to be invalidated to re-run
-// `getColor`; the other charts re-color on every `draw()`.
+// Redraw so the Treemap hover ring (see installTreemapHighlight) follows the
+// currently highlighted package. A no-op for the other charts.
 watch(
   () => highlightName.value,
   () => {
-    const graphAny = graph.value as unknown as { baseLayoutCache?: unknown } | undefined
-    if (graphAny && 'baseLayoutCache' in graphAny)
-      graphAny.baseLayoutCache = undefined
     graph.value?.draw()
   },
 )
