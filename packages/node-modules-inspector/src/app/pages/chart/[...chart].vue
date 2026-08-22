@@ -48,23 +48,19 @@ const coloringMode = computed<ColoringMode>({
   },
 })
 
-const YEAR = 365 * 24 * 60 * 60 * 1000
+const baseShade = computed(() => isDark.value ? '#999' : '#eee')
 
-// A neutral shade for nodes that aren't highlighted by the current color mode.
-// nanovis only supports a single global foreground/text color (`palette.fg`),
-// so we can't lighten the text per-block on a dark base — a mid gray keeps the
-// node readable against both the light and dark text color.
-const baseShade = '#888'
+const YEAR = 365 * 24 * 60 * 60 * 1000
 
 // "Published age" coloring: fresh packages stay neutral, then shift towards
 // yellow / orange / red the older their published date is.
 function getAgeColor(pkg: PackageNode): string {
   const time = getPublishTime(pkg)
   if (!time)
-    return baseShade
+    return baseShade.value
   const age = Date.now() - +time
   if (age < YEAR)
-    return baseShade
+    return baseShade.value
   if (age < 2 * YEAR)
     return '#facc15'
   if (age < 3 * YEAR)
@@ -110,11 +106,11 @@ const legend = computed<{ background: string, label: string }[] | undefined>(() 
         { background: '#2dd4bf', label: 'Dual' },
         { background: '#facc15', label: 'CJS' },
         { background: '#a3e635', label: 'Faux' },
-        { background: '#888888', label: 'DTS' },
+        { background: baseShade.value, label: 'DTS' },
       ]
     case 'age':
       return [
-        { background: baseShade, label: '< 1 year' },
+        { background: baseShade.value, label: '< 1 year' },
         { background: '#facc15', label: '> 1 year' },
         { background: '#fb923c', label: '> 2 years' },
         { background: '#ef4444', label: '> 3 years' },
@@ -122,7 +118,7 @@ const legend = computed<{ background: string, label: string }[] | undefined>(() 
     case 'duplicated':
       return [
         { background: 'linear-gradient(90deg, hsl(0,70%,55%), hsl(120,70%,55%), hsl(240,70%,55%))', label: 'Multiple versions' },
-        { background: baseShade, label: 'Single version' },
+        { background: baseShade.value, label: 'Single version' },
       ]
     default:
       return undefined
@@ -272,16 +268,15 @@ const options = computed<GraphBaseOptions<PackageNode | undefined>>(() => {
           case 'faux':
             return '#a3e635'
           case 'dts':
-            return '#888888'
+            return baseShade.value
         }
         return undefined
       }
       case 'age':
         return getAgeColor(node.meta)
       case 'duplicated':
-        return duplicatedColors.value.get(node.meta.name) ?? baseShade
+        return duplicatedColors.value.get(node.meta.name) ?? baseShade.value
     }
-    return undefined
   }
 
   return {
@@ -304,7 +299,7 @@ const options = computed<GraphBaseOptions<PackageNode | undefined>>(() => {
     },
     animate: settings.value.chartAnimation,
     palette: {
-      stroke: isDark.value ? '#222' : '#555',
+      stroke: isDark.value ? '#444' : '#555',
       fg: isDark.value ? '#fff' : '#000',
       bg: isDark.value ? '#111' : '#fff',
     },
@@ -480,19 +475,27 @@ onUnmounted(() => {
     </NuxtLink>
 
     <div flex-auto />
-    <OptionSelectGroup
-      v-model="coloringMode"
-      v-tooltip="`Color Mode`"
-      :options="['spectrum', 'module', 'age', 'duplicated']"
-      :titles="['Spectrum', 'Module', 'Published Age', 'Duplicated']"
-    />
-  </div>
-  <div v-if="legend" mt2 flex="~ gap-3 items-center wrap justify-end" text-xs op-fade>
-    <div v-for="item of legend" :key="item.label" flex="~ gap-1.5 items-center">
-      <span inline-block h-3 w-3 rounded-sm border="~ base" :style="{ background: item.background }" />
-      <span>{{ item.label }}</span>
+    <div class="flex flex-col gap-2 justify-end">
+      <div class="flex items-center gap-2">
+        <div class="op-fade text-xs">
+          Colorization
+        </div>
+        <OptionSelectGroup
+          v-model="coloringMode"
+          v-tooltip="`Color Mode`"
+          :options="['spectrum', 'module', 'age', 'duplicated']"
+          :titles="['Spectrum', 'Module', 'Published Age', 'Duplicated']"
+        />
+      </div>
+      <div h-6 flex="~ gap-3 items-center wrap justify-end" text-xs op-fade border="~ base rounded" px2 mla>
+        <div v-for="item of legend" :key="item.label" flex="~ gap-1.5 items-center">
+          <span inline-block h-3 w-3 rounded-sm border="~ base" :style="{ background: item.background }" />
+          <span>{{ item.label }}</span>
+        </div>
+      </div>
     </div>
   </div>
+
   <div mt5>
     <ChartFlamegraph
       v-if="chart === 'flamegraph' && graph"
