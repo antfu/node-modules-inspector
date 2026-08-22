@@ -11,17 +11,20 @@ import { NuxtLink } from '#components'
 import ChartFlamegraph from '../../components/chart/Flamegraph.vue'
 import ChartSunburst from '../../components/chart/Sunburst.vue'
 import ChartTreemap from '../../components/chart/Treemap.vue'
+import DisplayDateBadge from '../../components/display/DateBadge.vue'
 import DisplayFileSizeBadge from '../../components/display/FileSizeBadge.vue'
 import DisplayModuleType from '../../components/display/ModuleType'
 import DisplayPackageSpec from '../../components/display/PackageSpec.vue'
 import OptionSelectGroup from '../../components/option/SelectGroup.vue'
 import { isDark } from '../../composables/dark'
 import { selectedNode } from '../../state/current'
-import { payloads } from '../../state/payload'
+import { getPublishTime, payloads } from '../../state/payload'
+import { query } from '../../state/query'
 import { settings } from '../../state/settings'
 import { isSidepanelCollapsed } from '../../state/ui'
 import { bytesToHumanSize } from '../../utils/format'
 import { getModuleType } from '../../utils/module-type'
+import { compareSemver } from '../../utils/semver'
 
 const mouse = reactive(useMouse())
 const params = useRoute().params as Record<string, string>
@@ -29,6 +32,115 @@ const chart = computed<'flamegraph' | 'treemap' | 'sunburst'>(() => params.chart
 const nodeHover = shallowRef<ChartNode | undefined>(undefined)
 const nodeSelected = shallowRef<ChartNode | undefined>(undefined)
 const location = window.location
+
+type ColoringMode = 'spectrum' | 'module' | 'age' | 'duplicated'
+const COLORING_MODES = ['spectrum', 'module', 'age', 'duplicated'] as const
+
+// The coloring mode is persisted in the query string (URL hash) so that it can
+// be shared/bookmarked. Default (`spectrum`) is stored as an empty string to
+// keep the URL clean.
+const coloringMode = computed<ColoringMode>({
+  get() {
+    return (COLORING_MODES.includes(query.chartColoring as ColoringMode)
+      ? query.chartColoring
+      : 'spectrum') as ColoringMode
+  },
+  set(value) {
+    query.chartColoring = value === 'spectrum' ? '' : value
+  },
+})
+
+const baseShade = computed(() => isDark.value ? '#999' : '#eee')
+
+const YEAR = 365 * 24 * 60 * 60 * 1000
+
+// "Published age" coloring: fresh packages stay neutral, then shift towards
+// yellow / orange / red the older their published date is.
+function getAgeColor(pkg: PackageNode): string {
+  const time = getPublishTime(pkg)
+  if (!time)
+    return baseShade.value
+  const age = Date.now() - +time
+  if (age < YEAR)
+    return baseShade.value
+  if (age < 2 * YEAR)
+    return '#facc15'
+  if (age < 3 * YEAR)
+    return '#fb923c'
+  return '#ef4444'
+}
+
+// Package names that resolve to more than one version.
+const duplicatedNames = computed(() =>
+  Array.from(payloads.filtered.versions.entries())
+    .filter(([, pkgs]) => pkgs.length > 1)
+    .map(([name]) => name)
+    .sort(),
+)
+
+// "Duplicated" coloring: every package name that resolves to more than one
+// version gets its own distinct color; all others stay gray.
+const duplicatedColors = computed(() => {
+  const map = new Map<string, string>()
+  const names = duplicatedNames.value
+  names.forEach((name, i) => {
+    const hue = Math.round((i / Math.max(names.length, 1)) * 360)
+    map.set(name, `hsl(${hue}, 70%, ${isDark.value ? 62 : 45}%)`)
+  })
+  return map
+})
+
+// Hovering a package that has multiple versions outlines every block that
+// shares its name (i.e. all of its other versions) with a ring. Only the
+// Treemap draws it — the other charts don't expose node geometry.
+const HIGHLIGHT_COLOR = '#ec4899'
+const highlightName = computed(() => {
+  const name = nodeHover.value?.meta?.name
+  return name && duplicatedColors.value.has(name) ? name : undefined
+})
+
+// The publish time of the currently hovered package, if known.
+const hoverPublishTime = computed(() =>
+  nodeHover.value?.meta ? getPublishTime(nodeHover.value.meta) : null,
+)
+
+// All resolved versions of the hovered package (only meaningful when > 1),
+// sorted by semver for the tooltip's duplicate list.
+const hoverVersions = computed(() => {
+  const meta = nodeHover.value?.meta
+  if (!meta)
+    return []
+  return [...(payloads.filtered.versions.get(meta.name) ?? [])]
+    .sort((a, b) => compareSemver(a.version, b.version))
+})
+
+// Legend entries for the current color mode (spectrum has none).
+const legend = computed<{ background: string, label: string }[] | undefined>(() => {
+  switch (coloringMode.value) {
+    case 'module':
+      return [
+        { background: '#4ade80', label: 'ESM' },
+        { background: '#2dd4bf', label: 'Dual' },
+        { background: '#facc15', label: 'CJS' },
+        { background: '#a3e635', label: 'Faux' },
+        { background: baseShade.value, label: 'DTS' },
+      ]
+    case 'age':
+      return [
+        { background: baseShade.value, label: '< 1 year' },
+        { background: '#facc15', label: '> 1 year' },
+        { background: '#fb923c', label: '> 2 years' },
+        { background: '#ef4444', label: '> 3 years' },
+      ]
+    case 'duplicated':
+      return [
+        { background: 'linear-gradient(90deg, hsl(0,70%,55%), hsl(120,70%,55%), hsl(240,70%,55%))', label: 'Multiple versions' },
+        { background: baseShade.value, label: 'Single version' },
+      ]
+    default:
+      return undefined
+  }
+})
 
 const tree = computed(() => {
   const packages = payloads.filtered.packages
@@ -149,6 +261,41 @@ const tree = computed(() => {
 let dispose: () => void | undefined
 
 const options = computed<GraphBaseOptions<PackageNode | undefined>>(() => {
+  const mode = coloringMode.value
+  const spectrum = createColorGetterSpectrum(
+    tree.value.root,
+    isDark.value ? 0.8 : 0.9,
+    isDark.value ? 1 : 1.1,
+  )
+  const getColor: typeof spectrum = (node) => {
+    if (mode === 'spectrum')
+      return spectrum(node)
+    if (!node.meta)
+      return undefined
+    switch (mode) {
+      case 'module': {
+        const type = getModuleType(node.meta.resolved.module)
+        switch (type) {
+          case 'esm':
+            return '#4ade80'
+          case 'cjs':
+            return '#facc15'
+          case 'dual':
+            return '#2dd4bf'
+          case 'faux':
+            return '#a3e635'
+          case 'dts':
+            return baseShade.value
+        }
+        return undefined
+      }
+      case 'age':
+        return getAgeColor(node.meta)
+      case 'duplicated':
+        return duplicatedColors.value.get(node.meta.name) ?? baseShade.value
+    }
+  }
+
   return {
     onClick(node) {
       if (node)
@@ -169,38 +316,16 @@ const options = computed<GraphBaseOptions<PackageNode | undefined>>(() => {
     },
     animate: settings.value.chartAnimation,
     palette: {
-      stroke: isDark.value ? '#222' : '#555',
+      stroke: isDark.value ? '#444' : '#555',
       fg: isDark.value ? '#fff' : '#000',
       bg: isDark.value ? '#111' : '#fff',
     },
-    getColor: settings.value.chartColoringMode === 'module'
-      ? (node) => {
-          if (!node.meta)
-            return undefined
-          const type = getModuleType(node.meta?.resolved.module)
-          switch (type) {
-            case 'esm':
-              return '#4ade80'
-            case 'cjs':
-              return '#facc15'
-            case 'dual':
-              return '#2dd4bf'
-            case 'faux':
-              return '#a3e635'
-            case 'dts':
-              return '#888888'
-          }
-        }
-      : createColorGetterSpectrum(
-          tree.value.root,
-          isDark.value ? 0.8 : 0.9,
-          isDark.value ? 1 : 1.1,
-        ),
+    getColor,
     getSubtext: (node) => {
       if (!node.meta)
         return node.subtext
-      if (settings.value.chartColoringMode === 'module') {
-        const type = getModuleType(node.meta?.resolved.module)
+      if (coloringMode.value === 'module') {
+        const type = getModuleType(node.meta.resolved.module)
         return type.toUpperCase()
       }
       return node.subtext
@@ -217,6 +342,45 @@ function selectNode(node: ChartNode | null, animate?: boolean) {
   graph.value?.select(node, animate)
 }
 
+// nanovis has no per-node border, so we wrap the Treemap's `draw()` and, after
+// it renders, stroke a ring around every block whose package shares the hovered
+// name (its other versions). We reuse the Treemap's own layout boxes via the
+// (private) `iterateNodeToDraw` generator, so the rings line up exactly.
+interface TreemapLayout {
+  node: ChartNode
+  box: [number, number, number, number]
+  children: TreemapLayout[]
+}
+interface TreemapInternals {
+  draw: () => void
+  c: CanvasRenderingContext2D
+  layers: { base?: TreemapLayout | null, current?: TreemapLayout | null }
+  iterateNodeToDraw: (layout: TreemapLayout, culling: number, cullingLayouts: unknown[]) => Iterable<TreemapLayout>
+}
+
+function installTreemapHighlight(treemap: Treemap<PackageNode | undefined>): void {
+  const tm = treemap as unknown as TreemapInternals
+  const original = tm.draw.bind(tm)
+  tm.draw = () => {
+    original()
+    const name = highlightName.value
+    const layout = tm.layers.current || tm.layers.base
+    if (!name || !layout)
+      return
+    const ctx = tm.c
+    ctx.save()
+    ctx.lineWidth = 2
+    ctx.strokeStyle = HIGHLIGHT_COLOR
+    for (const item of tm.iterateNodeToDraw(layout, 0, [])) {
+      if (item.node.meta?.name !== name)
+        continue
+      const [x, y, w, h] = item.box
+      ctx.strokeRect(x + 1, y + 1, Math.max(w - 2, 1), Math.max(h - 2, 1))
+    }
+    ctx.restore()
+  }
+}
+
 watch(
   () => [chart.value, tree.value, options.value],
   () => {
@@ -230,11 +394,14 @@ watch(
       case 'flamegraph':
         graph.value = new Flamegraph(tree.value.root, options.value)
         break
-      default:
-        graph.value = new Treemap(tree.value.root, {
+      default: {
+        const treemap = new Treemap(tree.value.root, {
           ...options.value,
           selectedPaddingRatio: 0,
         })
+        installTreemapHighlight(treemap)
+        graph.value = treemap
+      }
     }
 
     nextTick(() => {
@@ -255,7 +422,16 @@ watch(
 )
 
 watch(
-  () => settings.value.chartColoringMode,
+  () => coloringMode.value,
+  () => {
+    graph.value?.draw()
+  },
+)
+
+// Redraw so the Treemap hover ring (see installTreemapHighlight) follows the
+// currently highlighted package. A no-op for the other charts.
+watch(
+  () => highlightName.value,
   () => {
     graph.value?.draw()
   },
@@ -316,13 +492,27 @@ onUnmounted(() => {
     </NuxtLink>
 
     <div flex-auto />
-    <OptionSelectGroup
-      v-model="settings.chartColoringMode"
-      v-tooltip="`Color Mode`"
-      :options="['spectrum', 'module']"
-      :titles="['Spectrum', 'Module']"
-    />
+    <div class="flex flex-col gap-2 justify-end">
+      <div class="flex items-center gap-2">
+        <div class="op-fade text-xs">
+          Colorization
+        </div>
+        <OptionSelectGroup
+          v-model="coloringMode"
+          v-tooltip="`Color Mode`"
+          :options="['spectrum', 'module', 'age', 'duplicated']"
+          :titles="['Spectrum', 'Module', 'Published Age', 'Duplicated']"
+        />
+      </div>
+      <div h-6 flex="~ gap-3 items-center wrap justify-end" text-xs op-fade border="~ base rounded" px2 mla>
+        <div v-for="item of legend" :key="item.label" flex="~ gap-1.5 items-center">
+          <span inline-block h-3 w-3 rounded-sm border="~ base" :style="{ background: item.background }" />
+          <span>{{ item.label }}</span>
+        </div>
+      </div>
+    </div>
   </div>
+
   <div mt5>
     <ChartFlamegraph
       v-if="chart === 'flamegraph' && graph"
@@ -362,6 +552,17 @@ onUnmounted(() => {
         <span op-fade>/</span>
         <DisplayFileSizeBadge :bytes="nodeHover.size" :percent="false" />
       </template>
+      <DisplayDateBadge v-if="hoverPublishTime" :pkg="nodeHover.meta" />
+    </div>
+    <div v-if="hoverVersions.length > 1" flex="~ col gap-1">
+      <span op-fade text-xs>{{ hoverVersions.length }} versions</span>
+      <div flex="~ gap-1 wrap">
+        <span
+          v-for="v of hoverVersions" :key="v.spec"
+          font-mono text-xs px1 rounded border
+          :class="v.spec === nodeHover.meta.spec ? 'border-base' : 'border-transparent bg-gray:10 op-mute'"
+        >v{{ v.version }}</span>
+      </div>
     </div>
   </div>
 </template>

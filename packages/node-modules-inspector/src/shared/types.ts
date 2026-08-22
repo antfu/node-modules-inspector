@@ -87,7 +87,6 @@ export interface SettingsOptions {
   showPublintMessages: boolean
   showMaintainerActions: boolean
   showThirdPartyServices: boolean
-  chartColoringMode: 'spectrum' | 'module'
   collapseSidepanel: boolean
   chartAnimation: boolean
   preferNpmx: boolean
