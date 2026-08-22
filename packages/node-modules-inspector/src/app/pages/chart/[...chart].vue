@@ -50,19 +50,21 @@ const coloringMode = computed<ColoringMode>({
 
 const YEAR = 365 * 24 * 60 * 60 * 1000
 
-// A subtle neutral shade for nodes that aren't highlighted by the current
-// color mode, tuned per light/dark theme.
-const baseShade = computed(() => isDark.value ? '#333' : '#eee')
+// A neutral shade for nodes that aren't highlighted by the current color mode.
+// nanovis only supports a single global foreground/text color (`palette.fg`),
+// so we can't lighten the text per-block on a dark base — a mid gray keeps the
+// node readable against both the light and dark text color.
+const baseShade = '#888'
 
 // "Published age" coloring: fresh packages stay neutral, then shift towards
 // yellow / orange / red the older their published date is.
 function getAgeColor(pkg: PackageNode): string {
   const time = getPublishTime(pkg)
   if (!time)
-    return baseShade.value
+    return baseShade
   const age = Date.now() - +time
   if (age < YEAR)
-    return baseShade.value
+    return baseShade
   if (age < 2 * YEAR)
     return '#facc15'
   if (age < 3 * YEAR)
@@ -210,8 +212,6 @@ const options = computed<GraphBaseOptions<PackageNode | undefined>>(() => {
     isDark.value ? 0.8 : 0.9,
     isDark.value ? 1 : 1.1,
   )
-  const gray = baseShade.value
-
   const getColor: typeof spectrum = (node) => {
     if (mode === 'spectrum')
       return spectrum(node)
@@ -237,7 +237,7 @@ const options = computed<GraphBaseOptions<PackageNode | undefined>>(() => {
       case 'age':
         return getAgeColor(node.meta)
       case 'duplicated':
-        return duplicatedColors.value.get(node.meta.name) ?? gray
+        return duplicatedColors.value.get(node.meta.name) ?? baseShade
     }
     return undefined
   }
