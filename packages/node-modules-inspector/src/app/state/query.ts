@@ -9,6 +9,7 @@ export interface QueryOptions extends Partial<{ [x in keyof FilterOptions]?: str
   selected?: string
   install?: string
   mode?: string
+  chartColoring?: string
   selectedAction?: string
   selectedAuthors?: string
   actionAll?: string
@@ -21,6 +22,7 @@ export const query = reactive<QueryOptions>({
   selected: '',
   install: '',
   mode: '',
+  chartColoring: '',
   selectedAction: '',
   selectedAuthors: '',
   actionAll: '',
