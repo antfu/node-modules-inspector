@@ -11,6 +11,7 @@ import { NuxtLink } from '#components'
 import ChartFlamegraph from '../../components/chart/Flamegraph.vue'
 import ChartSunburst from '../../components/chart/Sunburst.vue'
 import ChartTreemap from '../../components/chart/Treemap.vue'
+import DisplayDateBadge from '../../components/display/DateBadge.vue'
 import DisplayFileSizeBadge from '../../components/display/FileSizeBadge.vue'
 import DisplayModuleType from '../../components/display/ModuleType'
 import DisplayPackageSpec from '../../components/display/PackageSpec.vue'
@@ -23,6 +24,7 @@ import { settings } from '../../state/settings'
 import { isSidepanelCollapsed } from '../../state/ui'
 import { bytesToHumanSize } from '../../utils/format'
 import { getModuleType } from '../../utils/module-type'
+import { compareSemver } from '../../utils/semver'
 
 const mouse = reactive(useMouse())
 const params = useRoute().params as Record<string, string>
@@ -95,6 +97,21 @@ const HIGHLIGHT_COLOR = '#ec4899'
 const highlightName = computed(() => {
   const name = nodeHover.value?.meta?.name
   return name && duplicatedColors.value.has(name) ? name : undefined
+})
+
+// The publish time of the currently hovered package, if known.
+const hoverPublishTime = computed(() =>
+  nodeHover.value?.meta ? getPublishTime(nodeHover.value.meta) : null,
+)
+
+// All resolved versions of the hovered package (only meaningful when > 1),
+// sorted by semver for the tooltip's duplicate list.
+const hoverVersions = computed(() => {
+  const meta = nodeHover.value?.meta
+  if (!meta)
+    return []
+  return [...(payloads.filtered.versions.get(meta.name) ?? [])]
+    .sort((a, b) => compareSemver(a.version, b.version))
 })
 
 // Legend entries for the current color mode (spectrum has none).
@@ -535,6 +552,20 @@ onUnmounted(() => {
         <span op-fade>/</span>
         <DisplayFileSizeBadge :bytes="nodeHover.size" :percent="false" />
       </template>
+    </div>
+    <div v-if="hoverPublishTime" flex="~ gap-1.5 items-center">
+      <span op-fade text-xs>Released</span>
+      <DisplayDateBadge :pkg="nodeHover.meta" />
+    </div>
+    <div v-if="hoverVersions.length > 1" flex="~ col gap-1">
+      <span op-fade text-xs>{{ hoverVersions.length }} versions</span>
+      <div flex="~ gap-1 wrap">
+        <span
+          v-for="v of hoverVersions" :key="v.spec"
+          font-mono text-xs px1 rounded
+          :class="v.spec === nodeHover.meta.spec ? 'bg-primary:15 text-primary' : 'bg-gray:10 op-fade'"
+        >v{{ v.version }}</span>
+      </div>
     </div>
   </div>
 </template>
