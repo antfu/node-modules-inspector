@@ -72,19 +72,60 @@ function getAgeColor(pkg: PackageNode): string {
   return '#ef4444'
 }
 
+// Package names that resolve to more than one version.
+const duplicatedNames = computed(() =>
+  Array.from(payloads.filtered.versions.entries())
+    .filter(([, pkgs]) => pkgs.length > 1)
+    .map(([name]) => name)
+    .sort(),
+)
+
 // "Duplicated" coloring: every package name that resolves to more than one
 // version gets its own distinct color; all others stay gray.
 const duplicatedColors = computed(() => {
   const map = new Map<string, string>()
-  const names = Array.from(payloads.filtered.versions.entries())
-    .filter(([, pkgs]) => pkgs.length > 1)
-    .map(([name]) => name)
-    .sort()
+  const names = duplicatedNames.value
   names.forEach((name, i) => {
     const hue = Math.round((i / Math.max(names.length, 1)) * 360)
     map.set(name, `hsl(${hue}, 70%, ${isDark.value ? 62 : 45}%)`)
   })
   return map
+})
+
+// Hovering a package that has multiple versions highlights every block that
+// shares its name (i.e. all of its other versions), across all color modes.
+const HIGHLIGHT_COLOR = '#ec4899'
+const highlightName = computed(() => {
+  const name = nodeHover.value?.meta?.name
+  return name && duplicatedColors.value.has(name) ? name : undefined
+})
+
+// Legend entries for the current color mode (spectrum has none).
+const legend = computed<{ background: string, label: string }[] | undefined>(() => {
+  switch (coloringMode.value) {
+    case 'module':
+      return [
+        { background: '#4ade80', label: 'ESM' },
+        { background: '#2dd4bf', label: 'Dual' },
+        { background: '#facc15', label: 'CJS' },
+        { background: '#a3e635', label: 'Faux' },
+        { background: '#888888', label: 'DTS' },
+      ]
+    case 'age':
+      return [
+        { background: baseShade, label: '< 1 year' },
+        { background: '#facc15', label: '> 1 year' },
+        { background: '#fb923c', label: '> 2 years' },
+        { background: '#ef4444', label: '> 3 years' },
+      ]
+    case 'duplicated':
+      return [
+        { background: 'linear-gradient(90deg, hsl(0,70%,55%), hsl(120,70%,55%), hsl(240,70%,55%))', label: 'Multiple versions' },
+        { background: baseShade, label: 'Single version' },
+      ]
+    default:
+      return undefined
+  }
 })
 
 const tree = computed(() => {
@@ -213,6 +254,10 @@ const options = computed<GraphBaseOptions<PackageNode | undefined>>(() => {
     isDark.value ? 1 : 1.1,
   )
   const getColor: typeof spectrum = (node) => {
+    // Read at draw time (not tracked by this computed) so hovering only
+    // triggers a redraw, never a full graph rebuild.
+    if (node.meta && node.meta.name === highlightName.value)
+      return HIGHLIGHT_COLOR
     if (mode === 'spectrum')
       return spectrum(node)
     if (!node.meta)
@@ -332,6 +377,19 @@ watch(
   },
 )
 
+// Re-color the chart when the hover highlight changes. The Treemap caches its
+// base layer as a bitmap, so that cache has to be invalidated to re-run
+// `getColor`; the other charts re-color on every `draw()`.
+watch(
+  () => highlightName.value,
+  () => {
+    const graphAny = graph.value as unknown as { baseLayoutCache?: unknown } | undefined
+    if (graphAny && 'baseLayoutCache' in graphAny)
+      graphAny.baseLayoutCache = undefined
+    graph.value?.draw()
+  },
+)
+
 watch(
   () => isSidepanelCollapsed.value,
   () => {
@@ -393,6 +451,12 @@ onUnmounted(() => {
       :options="['spectrum', 'module', 'age', 'duplicated']"
       :titles="['Spectrum', 'Module', 'Published Age', 'Duplicated']"
     />
+  </div>
+  <div v-if="legend" mt2 flex="~ gap-3 items-center wrap justify-end" text-xs op-fade>
+    <div v-for="item of legend" :key="item.label" flex="~ gap-1.5 items-center">
+      <span inline-block h-3 w-3 rounded-sm border="~ base" :style="{ background: item.background }" />
+      <span>{{ item.label }}</span>
+    </div>
   </div>
   <div mt5>
     <ChartFlamegraph
