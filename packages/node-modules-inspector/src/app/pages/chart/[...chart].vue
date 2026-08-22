@@ -552,18 +552,15 @@ onUnmounted(() => {
         <span op-fade>/</span>
         <DisplayFileSizeBadge :bytes="nodeHover.size" :percent="false" />
       </template>
-    </div>
-    <div v-if="hoverPublishTime" flex="~ gap-1.5 items-center">
-      <span op-fade text-xs>Released</span>
-      <DisplayDateBadge :pkg="nodeHover.meta" />
+      <DisplayDateBadge v-if="hoverPublishTime" :pkg="nodeHover.meta" />
     </div>
     <div v-if="hoverVersions.length > 1" flex="~ col gap-1">
       <span op-fade text-xs>{{ hoverVersions.length }} versions</span>
       <div flex="~ gap-1 wrap">
         <span
           v-for="v of hoverVersions" :key="v.spec"
-          font-mono text-xs px1 rounded
-          :class="v.spec === nodeHover.meta.spec ? 'bg-primary:15 text-primary' : 'bg-gray:10 op-fade'"
+          font-mono text-xs px1 rounded border
+          :class="v.spec === nodeHover.meta.spec ? 'border-base' : 'border-transparent bg-gray:10 op-mute'"
         >v{{ v.version }}</span>
       </div>
     </div>
