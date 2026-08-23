@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { GraphBase, GraphBaseOptions } from 'nanovis'
+import type { GraphBase, GraphBaseOptions, TreeNode } from 'nanovis'
 import type { PackageNode } from 'node-modules-tools'
 import type { ChartNode } from '../../types/chart'
 import { partition } from '@antfu/utils'
@@ -80,12 +80,12 @@ const duplicatedNames = computed(() =>
 
 // "Duplicated" coloring: every package name that resolves to more than one
 // version gets its own distinct color; all others stay gray.
-const duplicatedColors = computed(() => {
-  const map = new Map<string, string>()
+const duplicatedHue = computed(() => {
+  const map = new Map<string, number>()
   const names = duplicatedNames.value
   names.forEach((name, i) => {
     const hue = Math.round((i / Math.max(names.length, 1)) * 360)
-    map.set(name, `hsl(${hue}, 70%, ${isDark.value ? 62 : 45}%)`)
+    map.set(name, hue)
   })
   return map
 })
@@ -93,10 +93,15 @@ const duplicatedColors = computed(() => {
 // Hovering a package that has multiple versions outlines every block that
 // shares its name (i.e. all of its other versions) with a ring. Only the
 // Treemap draws it — the other charts don't expose node geometry.
-const HIGHLIGHT_COLOR = '#ec4899'
+const HIGHLIGHT_COLOR = '#facc15'
+const HIGHLIGHT_WIDTH = 2
 const highlightName = computed(() => {
+  if (coloringMode.value !== 'duplicated')
+    return undefined
   const name = nodeHover.value?.meta?.name
-  return name && duplicatedColors.value.has(name) ? name : undefined
+  return (name && duplicatedNames.value.includes(name))
+    ? name
+    : undefined
 })
 
 // The publish time of the currently hovered package, if known.
@@ -260,42 +265,55 @@ const tree = computed(() => {
 
 let dispose: () => void | undefined
 
-const options = computed<GraphBaseOptions<PackageNode | undefined>>(() => {
+const spectrum = computed(() => createColorGetterSpectrum(
+  tree.value.root,
+  isDark.value ? 0.8 : 0.9,
+  isDark.value ? 1 : 1.1,
+))
+
+function getColor(node: TreeNode<PackageNode | undefined>) {
   const mode = coloringMode.value
-  const spectrum = createColorGetterSpectrum(
-    tree.value.root,
-    isDark.value ? 0.8 : 0.9,
-    isDark.value ? 1 : 1.1,
-  )
-  const getColor: typeof spectrum = (node) => {
-    if (mode === 'spectrum')
-      return spectrum(node)
-    if (!node.meta)
-      return undefined
-    switch (mode) {
-      case 'module': {
-        const type = getModuleType(node.meta.resolved.module)
-        switch (type) {
-          case 'esm':
-            return '#4ade80'
-          case 'cjs':
-            return '#facc15'
-          case 'dual':
-            return '#2dd4bf'
-          case 'faux':
-            return '#a3e635'
-          case 'dts':
-            return baseShade.value
-        }
-        return undefined
+  if (mode === 'spectrum')
+    return spectrum.value(node)
+  if (!node.meta)
+    return undefined
+  switch (mode) {
+    case 'module': {
+      const type = getModuleType(node.meta.resolved.module)
+      switch (type) {
+        case 'esm':
+          return '#4ade80'
+        case 'cjs':
+          return '#facc15'
+        case 'dual':
+          return '#2dd4bf'
+        case 'faux':
+          return '#a3e635'
+        case 'dts':
+          return baseShade.value
       }
-      case 'age':
-        return getAgeColor(node.meta)
-      case 'duplicated':
-        return duplicatedColors.value.get(node.meta.name) ?? baseShade.value
+      return undefined
+    }
+    case 'age':
+      return getAgeColor(node.meta)
+    case 'duplicated': {
+      const hue = duplicatedHue.value.get(node.meta.name)
+      if (hue == null)
+        return baseShade.value
+      if (highlightName.value) {
+        if (node.meta.name === highlightName.value)
+          return `hsl(${hue}, 70%, ${isDark.value ? 62 : 45}%)`
+        else
+          return baseShade.value
+      }
+      return `hsl(${hue}, 70%, ${isDark.value ? 62 : 45}%)`
     }
   }
+}
 
+const treemap = shallowRef<Treemap<PackageNode | undefined> | undefined>(undefined)
+
+const options = computed<GraphBaseOptions<PackageNode | undefined>>(() => {
   return {
     onClick(node) {
       if (node)
@@ -330,6 +348,47 @@ const options = computed<GraphBaseOptions<PackageNode | undefined>>(() => {
       }
       return node.subtext
     },
+    onDidDraw() {
+      if (coloringMode.value !== 'duplicated')
+        return
+      if (!treemap.value)
+        return
+      const tm = treemap.value as unknown as TreemapInternals
+      const name = highlightName.value
+      const layout = tm.layers.current || tm.layers.base
+      if (!name || !layout)
+        return
+      const ctx = tm.c
+      const nodes = new Set<TreemapLayout>()
+      for (const item of tm.iterateNodeToDraw(layout, 0, [])) {
+        if (item.node.meta?.name !== name)
+          continue
+        nodes.add(item)
+      }
+      if (nodes.size <= 1)
+        return
+      ctx.save()
+      const hue = duplicatedHue.value.get(name)
+      const color = hue !== undefined ? `hsl(${hue}, 100%, ${isDark.value ? 62 : 45}%)` : HIGHLIGHT_COLOR
+      ctx.strokeStyle = color
+      const anchor = Array.from(nodes).find(item => item.node === nodeHover.value)
+      if (anchor) {
+        ctx.lineWidth = HIGHLIGHT_WIDTH
+        ctx.beginPath()
+        for (const item of nodes) {
+          if (item === anchor)
+            continue
+          const connector = getConnectorBetweenBoxes(anchor.box, item.box)
+          if (!connector)
+            continue
+          const [start, end] = connector
+          ctx.moveTo(...start)
+          ctx.lineTo(...end)
+        }
+        ctx.stroke()
+      }
+      ctx.restore()
+    },
   }
 })
 
@@ -358,31 +417,43 @@ interface TreemapInternals {
   iterateNodeToDraw: (layout: TreemapLayout, culling: number, cullingLayouts: unknown[]) => Iterable<TreemapLayout>
 }
 
-function installTreemapHighlight(treemap: Treemap<PackageNode | undefined>): void {
-  const tm = treemap as unknown as TreemapInternals
-  const original = tm.draw.bind(tm)
-  tm.draw = () => {
-    original()
-    const name = highlightName.value
-    const layout = tm.layers.current || tm.layers.base
-    if (!name || !layout)
-      return
-    const ctx = tm.c
-    ctx.save()
-    ctx.lineWidth = 2
-    ctx.strokeStyle = HIGHLIGHT_COLOR
-    for (const item of tm.iterateNodeToDraw(layout, 0, [])) {
-      if (item.node.meta?.name !== name)
-        continue
-      const [x, y, w, h] = item.box
-      ctx.strokeRect(x + 1, y + 1, Math.max(w - 2, 1), Math.max(h - 2, 1))
-    }
-    ctx.restore()
-  }
+type Box = TreemapLayout['box']
+type Point = [x: number, y: number]
+
+function getConnectorBetweenBoxes(source: Box, target: Box): [start: Point, end: Point] | undefined {
+  const [sourceX, sourceY, sourceWidth, sourceHeight] = source
+  const [targetX, targetY, targetWidth, targetHeight] = target
+  const sourceCenter: Point = [sourceX + sourceWidth / 2, sourceY + sourceHeight / 2]
+  const targetCenter: Point = [targetX + targetWidth / 2, targetY + targetHeight / 2]
+  const deltaX = targetCenter[0] - sourceCenter[0]
+  const deltaY = targetCenter[1] - sourceCenter[1]
+
+  if (deltaX === 0 && deltaY === 0)
+    return undefined
+
+  // Parameterize the center-to-center segment from 0 (source) to 1 (target),
+  // then keep only the part between the two rectangle boundaries.
+  const sourceEdge = Math.min(
+    deltaX === 0 ? Infinity : Math.abs(sourceWidth / 2 / deltaX),
+    deltaY === 0 ? Infinity : Math.abs(sourceHeight / 2 / deltaY),
+  )
+  const targetEdge = 1 - Math.min(
+    deltaX === 0 ? Infinity : Math.abs(targetWidth / 2 / deltaX),
+    deltaY === 0 ? Infinity : Math.abs(targetHeight / 2 / deltaY),
+  )
+
+  // Nested, overlapping, or touching boxes have no visible gap to connect.
+  if (sourceEdge >= targetEdge)
+    return undefined
+
+  return [
+    [sourceCenter[0] + deltaX * sourceEdge, sourceCenter[1] + deltaY * sourceEdge],
+    [sourceCenter[0] + deltaX * targetEdge, sourceCenter[1] + deltaY * targetEdge],
+  ]
 }
 
 watch(
-  () => [chart.value, tree.value, options.value],
+  [chart, tree, options],
   () => {
     dispose?.()
 
@@ -395,12 +466,12 @@ watch(
         graph.value = new Flamegraph(tree.value.root, options.value)
         break
       default: {
-        const treemap = new Treemap(tree.value.root, {
+        const tm = new Treemap(tree.value.root, {
           ...options.value,
           selectedPaddingRatio: 0,
         })
-        installTreemapHighlight(treemap)
-        graph.value = treemap
+        treemap.value = tm
+        graph.value = tm
       }
     }
 
@@ -422,18 +493,9 @@ watch(
 )
 
 watch(
-  () => coloringMode.value,
+  [coloringMode, highlightName, duplicatedHue, isDark],
   () => {
-    graph.value?.draw()
-  },
-)
-
-// Redraw so the Treemap hover ring (see installTreemapHighlight) follows the
-// currently highlighted package. A no-op for the other charts.
-watch(
-  () => highlightName.value,
-  () => {
-    graph.value?.draw()
+    graph.value?.invalidate()
   },
 )
 
@@ -443,7 +505,7 @@ watch(
     const start = Date.now()
     const run = () => {
       graph.value?.resize()
-      if (graph.value && Date.now() - start < 3000)
+      if (graph.value && (Date.now() - start < 3000))
         requestAnimationFrame(run)
     }
     requestAnimationFrame(run)

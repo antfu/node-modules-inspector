@@ -95,7 +95,7 @@ catalogs:
     fuse.js: ^7.5.0
     idb-keyval: ^6.3.0
     modern-screenshot: ^4.7.0
-    nanovis: ^1.0.0
+    nanovis: ^1.1.0
     reka-ui: ^2.10.3
     theme-vitesse: ^1.0.0
     vite-hot-client: ^2.2.0
