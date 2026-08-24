@@ -157,7 +157,8 @@ async function run() {
     // Navigate into the inspector with a real history push (not a replace) so
     // the browser Back button returns here to the landing. The landing lives
     // at `/`; once we're on an inspector route the payload renders MainEntry.
-    if (isLanding.value)
+    // Only move on a clean success — stay put if anything went wrong.
+    if (isLanding.value && !error.value)
       await router.push({ path: '/grid/depth', hash: location.hash })
   }
   catch (e) {
