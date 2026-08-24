@@ -68,6 +68,24 @@ export function createRegistryBackend(
       })
       registryWarnings.value = warnings
 
+      // If the user asked for top-level packages but none of them could be
+      // resolved, treat it as a hard failure. Throwing here propagates to the
+      // landing page's error box (via `fetchData(..., propagateError)`),
+      // instead of dropping the user into an empty graph with only a toast.
+      const requestedCount = Object.keys(dependencies).length
+      const root = [...result.packages.values()].find(pkg => pkg.workspace)
+      const resolvedTopLevel = root?.dependencies.size ?? 0
+      if (requestedCount && !resolvedTopLevel) {
+        const reasons = warnings
+          .filter(warning => !warning.dependent)
+          .map(warning => warning.message)
+        throw new Error(
+          reasons.length
+            ? reasons.join('\n')
+            : 'None of the requested packages could be resolved from the npm registry.',
+        )
+      }
+
       return {
         hash: getHash([...result.packages.keys()].sort()),
         timestamp: Date.now(),

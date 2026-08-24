@@ -2,13 +2,14 @@
 import type { InstallExcludeSpec } from 'node-modules-tools/registry'
 import { parseInstallSpecs } from 'node-modules-tools/registry'
 import { computed, defineAsyncComponent, onMounted, ref, shallowRef } from 'vue'
+import { useRouter } from '#app/composables/router'
 import { backend } from '../backends'
 import RegistryWarnings from '../components/registry/Warnings.vue'
 import UiCredits from '../components/ui/Credits.vue'
 import UiTitle from '../components/ui/Title.vue'
 import MainEntry from '../entries/main.vue'
 import { createRegistryBackend, registryProgress } from '../registry'
-import { fetchData, rawPayload } from '../state/data'
+import { fetchData } from '../state/data'
 import { query } from '../state/query'
 import { openTerminal, showTerminal } from '../state/terminal'
 
@@ -17,6 +18,11 @@ import { openTerminal, showTerminal } from '../state/terminal'
 const LazyPanelTerminal = defineAsyncComponent(() => import('../components/panel/Terminal.vue'))
 
 type WebMode = 'instant' | 'sandbox'
+
+const router = useRouter()
+// `Landing` renders outside `<NuxtPage>`, where `useRoute()` returns a stale
+// snapshot — `router.currentRoute` is the reactive source that tracks pushes.
+const isLanding = computed(() => router.currentRoute.value.path === '/')
 
 // The WebContainer SDK (`@webcontainer/api`) is heavy and only needed for
 // "Sandbox Install" mode. Load `./container` lazily so the default Instant
@@ -147,6 +153,12 @@ async function run() {
       await runSandbox(deps)
     else
       await runInstant(deps)
+
+    // Navigate into the inspector with a real history push (not a replace) so
+    // the browser Back button returns here to the landing. The landing lives
+    // at `/`; once we're on an inspector route the payload renders MainEntry.
+    if (isLanding.value)
+      await router.push({ path: '/grid/depth', hash: location.hash })
   }
   catch (e) {
     console.error(e)
@@ -187,7 +199,12 @@ async function runSandbox(deps: Record<string, string>) {
 </script>
 
 <template>
-  <template v-if="!backend || !rawPayload">
+  <!--
+    The landing lives at `/`. Gating on the route (rather than payload presence)
+    means Back-navigating to `/` shows the landing again, even though the
+    resolved payload is still in memory.
+  -->
+  <template v-if="isLanding">
     <div
       flex="~ col items-center gap-5" p10
       @dragover.prevent="isDragging = true"
@@ -291,8 +308,8 @@ async function runSandbox(deps: Record<string, string>) {
           <div font-bold>
             {{ mode === 'sandbox' ? 'Failed to Connect to the Backend' : 'Failed to Resolve Dependencies' }}
           </div>
-          <div text-red5 dark:text-red3>
-            {{ error }}
+          <div text-red5 dark:text-red3 text-center whitespace-pre-line>
+            {{ error?.message || error }}
           </div>
         </div>
 
