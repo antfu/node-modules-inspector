@@ -159,7 +159,7 @@ async function run() {
     // at `/`; once we're on an inspector route the payload renders MainEntry.
     // Only move on a clean success — stay put if anything went wrong.
     if (isLanding.value && !error.value)
-      await router.push({ path: '/grid/depth', hash: location.hash })
+      await router.push({ path: '/report', hash: location.hash })
   }
   catch (e) {
     console.error(e)
