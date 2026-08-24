@@ -24,6 +24,12 @@ interface PeerTask {
   depth: number
 }
 
+interface ExpandTask {
+  node: PackageNodeRaw
+  meta: RegistryAbbreviatedVersion
+  depth: number
+}
+
 /**
  * Resolve a dependency graph purely from npm-registry metadata — no package
  * manager, no filesystem. Produces the same result shape as
@@ -61,6 +67,12 @@ export async function resolveRegistryDependencies(
   const warnings: RegistryResolveWarning[] = []
   const resolutions = new Map<string, Promise<string | null>>()
   const peerTasks: PeerTask[] = []
+  // Expansion of a node's subtree is deferred and drained to a fixpoint by the
+  // driver below, rather than awaited inline while resolving the node. This is
+  // what keeps dependency cycles from deadlocking: a node's spec is returned as
+  // soon as its version is picked, so a cyclic edge back to an in-flight
+  // `name@range` resolves immediately instead of awaiting its own subtree.
+  const expandQueue: ExpandTask[] = []
 
   function warn(warning: RegistryResolveWarning) {
     warnings.push(warning)
@@ -178,8 +190,10 @@ export async function resolveRegistryDependencies(
           versionsByName.get(name)!.add(version)
           reportResolving()
 
+          // Defer expansion so this promise resolves to `spec` right away —
+          // see `expandQueue` above for why this avoids cycle deadlocks.
           if (depth < maxDepth)
-            await expandNode(node, meta, depth)
+            expandQueue.push({ node, meta, depth })
         }
         return spec
       })())
@@ -249,10 +263,20 @@ export async function resolveRegistryDependencies(
     }
   }))
 
-  // Auto-installed peers may bring their own dependencies and peers — iterate to fixpoint
-  while (peerTasks.length) {
-    const batch = peerTasks.splice(0)
-    await Promise.all(batch.map(task => resolvePeer(task)))
+  // Drain the deferred subtree expansions, then any auto-installed peers.
+  // Both may enqueue further work (expansions bring more deps and peers; peers
+  // may auto-install packages with their own subtrees), so iterate to a
+  // fixpoint. Expansions are fully drained before peers so a peer is matched
+  // against the complete non-peer graph (npm 7+ behavior).
+  while (expandQueue.length || peerTasks.length) {
+    if (expandQueue.length) {
+      const batch = expandQueue.splice(0)
+      await Promise.all(batch.map(task => expandNode(task.node, task.meta, task.depth)))
+    }
+    else {
+      const batch = peerTasks.splice(0)
+      await Promise.all(batch.map(task => resolvePeer(task)))
+    }
   }
 
   // Synthetic workspace root holding the inputs (hidden by the default workspace filter)

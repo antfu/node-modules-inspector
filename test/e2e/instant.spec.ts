@@ -119,4 +119,29 @@ test.describe('hosted instant mode', () => {
     await expect(page.getByText('approximate', { exact: true })).toBeVisible()
     await expect(page.getByRole('link', { name: 'npm registry' })).toBeVisible()
   })
+
+  test('shows an error on the landing when the query cannot be resolved', async ({ page }) => {
+    await mockRegistry(page)
+
+    // `ghost-pkg` is not in the fixtures, so the registry returns 404 for it.
+    await page.goto('/#install=ghost-pkg')
+
+    // The landing stays put and surfaces the failure — no empty graph.
+    await expect(page.getByText('Failed to Resolve Dependencies')).toBeVisible({ timeout: 30_000 })
+    await expect(page.getByRole('button', { name: 'Registry Query', exact: true })).toBeVisible()
+    await expect(page.locator('a[href^="/grid"]')).toHaveCount(0)
+  })
+
+  test('browser Back returns to the landing after a query', async ({ page }) => {
+    await mockRegistry(page)
+
+    await page.goto('/#install=demo-lib')
+    await expect(page.locator('a[href^="/grid"]').first()).toBeVisible({ timeout: 30_000 })
+    // Navigating into the inspector pushed a history entry, not a replace.
+    await expect(page).toHaveURL(/\/grid\//)
+
+    await page.goBack()
+    await expect(page.getByRole('button', { name: 'Registry Query', exact: true })).toBeVisible()
+    await expect(page.getByPlaceholder('Enter package names')).toBeVisible()
+  })
 })
