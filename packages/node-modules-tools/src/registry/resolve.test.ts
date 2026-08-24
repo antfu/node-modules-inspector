@@ -254,6 +254,43 @@ describe('resolveRegistryDependencies', () => {
     expect(result.warnings.map(w => w.type).sort()).toEqual(['fetch-error', 'unresolved-version'])
   })
 
+  it('resolves dependency cycles without deadlocking', async () => {
+    // A cycle where the same `name@range` recurs on the back-edge used to
+    // deadlock: a node's spec was only returned after its whole subtree
+    // expanded, so a cyclic edge back to the in-flight node awaited itself.
+    const { fetch } = createMockRegistry({
+      a: { versions: { '1.0.0': { dependencies: { b: '^1.0.0' } } } },
+      b: { versions: { '1.0.0': { dependencies: { c: '^1.0.0' } } } },
+      c: { versions: { '1.0.0': { dependencies: { a: '^1.0.0' } } } },
+    })
+
+    const result = await resolveRegistryDependencies({
+      dependencies: { a: '^1.0.0' },
+      fetch,
+    })
+
+    expect(specs(result)).toEqual(['a@1.0.0', 'b@1.0.0', 'c@1.0.0', ROOT_SPEC])
+    expect([...result.packages.get('a@1.0.0')!.dependencies]).toEqual(['b@1.0.0'])
+    expect([...result.packages.get('b@1.0.0')!.dependencies]).toEqual(['c@1.0.0'])
+    expect([...result.packages.get('c@1.0.0')!.dependencies]).toEqual(['a@1.0.0'])
+    expect(result.warnings).toEqual([])
+  })
+
+  it('resolves a self-referential dependency without deadlocking', async () => {
+    const { fetch } = createMockRegistry({
+      a: { versions: { '1.0.0': { dependencies: { a: '^1.0.0', b: '^1.0.0' } } } },
+      b: { versions: { '1.0.0': {} } },
+    })
+
+    const result = await resolveRegistryDependencies({
+      dependencies: { a: '^1.0.0' },
+      fetch,
+    })
+
+    expect(specs(result)).toEqual(['a@1.0.0', 'b@1.0.0', ROOT_SPEC])
+    expect([...result.packages.get('a@1.0.0')!.dependencies].sort()).toEqual(['a@1.0.0', 'b@1.0.0'])
+  })
+
   it('respects the depth limit', async () => {
     const { fetch } = createMockRegistry({
       d1: { versions: { '1.0.0': { dependencies: { d2: '*' } } } },
