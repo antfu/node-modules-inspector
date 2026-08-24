@@ -17,6 +17,12 @@ export interface PackageNodeRaw {
   spec: string
   /** Absolute file path of the package */
   filepath: string
+  /**
+   * Real package name from package.json metadata.
+   * Differs from `name` when the package is installed via `npm:` alias.
+   * Used for npm registry lookups and external links.
+   */
+  resolvedName?: string
   /** Direct dependencies of this package */
   dependencies: Set<string>
   /**

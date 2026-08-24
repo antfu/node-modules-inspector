@@ -154,12 +154,7 @@ export async function listPackageDependencies(
     }
   })
 
-  const mapNormalize = new WeakMap<PnpmPackageNode, PackageNodeRaw>()
-  function normalize(raw: PnpmPackageNode): PackageNodeRaw {
-    let node = mapNormalize.get(raw)
-    if (node)
-      return node
-
+  function normalize(raw: PnpmPackageNode, aliasName: string, aliasFilepath?: string): PackageNodeRaw {
     // Resolve workspace package version
     let version = raw.version
     if (version.includes(':')) {
@@ -168,26 +163,31 @@ export async function listPackageDependencies(
         version = workspaceMapping.node.version
     }
 
-    const spec = `${raw.from}@${version}`
+    const spec = `${aliasName}@${version}`
 
-    node = packages.get(spec) || {
+    const node = packages.get(spec) || {
       spec,
-      name: raw.from,
+      name: aliasName,
+      resolvedName: aliasName !== raw.from ? raw.from : undefined,
       version,
-      filepath: raw.path,
+      filepath: aliasFilepath || raw.path,
       dependencies: new Set(),
       clusters: new Set(),
     }
-    mapNormalize.set(raw, node)
     return node
   }
 
   function traverse(
     raw: PnpmPackageNode,
+    aliasName: string,
     level: number,
     clusters: Iterable<string>,
   ): PackageNodeRaw {
-    const node = normalize(raw)
+    const isAlias = aliasName !== raw.from
+    const aliasFilepath = isAlias && parentNmDir
+      ? join(parentNmDir, aliasName)
+      : undefined
+    const node = normalize(raw, aliasName, aliasFilepath)
 
     if (!node.workspace) {
       for (const cluster of clusters) {
@@ -214,8 +214,10 @@ export async function listPackageDependencies(
     packages.set(node.spec, node)
 
     if (options.dependenciesFilter?.(node) !== false) {
-      for (const dep of Object.values(raw.dependencies || {})) {
-        const resolvedDep = traverse(dep, level + 1, clusters)
+      // Determine the node_modules directory where this package's
+      // direct dependencies' alias symlinks would reside.
+      for (const [depName, dep] of Object.entries(raw.dependencies || {})) {
+        const resolvedDep = traverse(dep, depName, level + 1, clusters)
         node.dependencies.add(resolvedDep.spec)
       }
     }
@@ -225,12 +227,12 @@ export async function listPackageDependencies(
 
   // Traverse deps
   for (const { pkg, node } of workspacePackages) {
-    for (const dep of Object.values(pkg.dependencies || {})) {
-      const result = traverse(dep, 1, [CLUSTER_DEP_PROD])
+    for (const [depName, dep] of Object.entries(pkg.dependencies || {})) {
+      const result = traverse(dep, depName, 1, [CLUSTER_DEP_PROD], join(node.filepath, 'node_modules'))
       node.dependencies.add(result.spec)
     }
-    for (const dep of Object.values(pkg.devDependencies || {})) {
-      const result = traverse(dep, 1, [CLUSTER_DEP_DEV])
+    for (const [depName, dep] of Object.entries(pkg.devDependencies || {})) {
+      const result = traverse(dep, depName, 1, [CLUSTER_DEP_DEV], join(node.filepath, 'node_modules'))
       node.dependencies.add(result.spec)
     }
   }
