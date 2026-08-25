@@ -31,6 +31,8 @@ function analyzeExports(exports: unknown, depth = 0): ExportsAnalysis {
       result.hasImport = true
     else if (exports.endsWith('.cjs') || exports.endsWith('.cts'))
       result.hasRequire = true
+    else if (exports.endsWith('.node'))
+      return { hasImport: false, hasRequire: false, hasModule: false }
     return result
   }
 
@@ -66,6 +68,10 @@ export function analyzePackageModuleType(pkgJson: PackageJson): PackageModuleTyp
   // @types/ packages are always type-only
   if (pkgJson.name?.startsWith('@types/'))
     return 'dts'
+
+  // // Native binary packages (e.g. @oxc-parser/binding-linux-x64-gnu)
+  if (pkgJson.main?.endsWith('.node'))
+    return 'unknown'
 
   const hasExports = pkgJson.exports != null
   const hasModule = !!pkgJson.module
@@ -115,5 +121,5 @@ export function analyzePackageModuleType(pkgJson: PackageJson): PackageModuleTyp
   if (pkgJson.types || pkgJson.typings)
     return 'dts'
 
-  return 'cjs'
+  return 'unknown'
 }
