@@ -1,6 +1,6 @@
 import type { PackageModuleType } from './types'
 
-export const PackageModuleTypes: readonly PackageModuleType[] = Object.freeze(['cjs', 'esm', 'dual', 'faux', 'dts'])
+export const PackageModuleTypes: readonly PackageModuleType[] = Object.freeze(['cjs', 'esm', 'dual', 'faux', 'dts', 'unknown'])
 
 export const CLUSTER_DEP_PROD = 'dep:prod'
 export const CLUSTER_DEP_DEV = 'dep:dev'

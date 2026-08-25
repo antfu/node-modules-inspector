@@ -95,6 +95,14 @@ export const packageJsonSnapshots = {
       },
     },
   },
+  '@oxc-parser/binding-linux-x64-gnu (#124)': {
+    expected: 'unknown',
+    packageJson: {
+      name: '@oxc-parser/binding-linux-x64-gnu',
+      version: '0.147.0',
+      main: 'parser.linux-x64-gnu.node',
+    },
+  },
   '@octokit/rest@22.0.1 (#128)': {
     expected: 'esm',
     packageJson: {
