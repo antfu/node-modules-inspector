@@ -194,7 +194,7 @@ export default defineNuxtConfig({
     'prepare:types': function ({ tsConfig }) {
       const aliasesToRemoveFromAutocomplete = ['~~', '~~/*', '~', '~/*']
       for (const alias of aliasesToRemoveFromAutocomplete) {
-        if (tsConfig.compilerOptions?.paths[alias]) {
+        if (tsConfig.compilerOptions?.paths?.[alias]) {
           delete tsConfig.compilerOptions.paths[alias]
         }
       }
