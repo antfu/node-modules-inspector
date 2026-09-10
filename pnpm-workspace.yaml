@@ -91,7 +91,7 @@ catalogs:
     d3: ^7.9.0
     d3-hierarchy: ^3.1.2
     d3-shape: ^3.2.0
-    floating-vue: ^5.2.2
+    floating-vue: ^5.4.0
     fuse.js: ^7.5.0
     idb-keyval: ^6.3.0
     modern-screenshot: ^4.7.0
