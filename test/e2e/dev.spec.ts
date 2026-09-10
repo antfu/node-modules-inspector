@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test'
 
 // "Dev mode" = the live `node-modules-inspector` CLI. The HTTP server hosts the
 // built dist and a websocket backend that streams the current repo's
-// node_modules. The default route redirects to /grid/depth.
+// node_modules. The default route redirects to /report.
 
 // floating-vue's `v-tooltip` strips the native `title` attribute, so we locate
 // the nav rail by href instead — it's the only stable handle in production.
@@ -12,7 +12,7 @@ test.describe('dev mode (CLI + websocket backend)', () => {
   test('serves the inspector and connects to the live backend', async ({ page }) => {
     await page.goto('/')
 
-    await expect(page).toHaveURL(/\/grid\//, { timeout: 30_000 })
+    await expect(page).toHaveURL(/\/report/, { timeout: 30_000 })
     await expect(page).toHaveTitle(/Node Modules Inspector/)
 
     // Nav rail mounts only after the websocket backend is connected and the

@@ -40,7 +40,7 @@ test.describe('build mode (static export, sub-base)', () => {
 
     await page.goto(SUB)
 
-    await expect(page).toHaveURL(new RegExp(`${SUB.replace(/\//g, '\\/')}grid\\/`), { timeout: 30_000 })
+    await expect(page).toHaveURL(new RegExp(`${SUB.replace(/\//g, '\\/')}report`), { timeout: 30_000 })
     await expect(page.locator(navLink('/grid')).first()).toBeVisible({ timeout: 30_000 })
 
     expect(failures, `Asset failures under ${SUB}: ${failures.join(', ')}`).toEqual([])

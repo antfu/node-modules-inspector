@@ -24,7 +24,7 @@ test.describe('build mode (static export)', () => {
   test('renders the inspector UI from the prebuilt RPC dump', async ({ page }) => {
     await page.goto('/')
 
-    await expect(page).toHaveURL(/\/grid\//, { timeout: 30_000 })
+    await expect(page).toHaveURL(/\/report/, { timeout: 30_000 })
     // Nav rail mounts only after the static backend resolves the rpc dump.
     await expect(page.locator(navLink('/grid')).first()).toBeVisible({ timeout: 30_000 })
   })

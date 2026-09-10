@@ -138,7 +138,7 @@ test.describe('hosted instant mode', () => {
     await page.goto('/#install=demo-lib')
     await expect(page.locator('a[href^="/grid"]').first()).toBeVisible({ timeout: 30_000 })
     // Navigating into the inspector pushed a history entry, not a replace.
-    await expect(page).toHaveURL(/\/grid\//)
+    await expect(page).toHaveURL(/\/report/)
 
     await page.goBack()
     await expect(page.getByRole('button', { name: 'Registry Query', exact: true })).toBeVisible()

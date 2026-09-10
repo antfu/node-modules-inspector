@@ -3,7 +3,7 @@ import type { ProjectManifest } from '@pnpm/types'
 import type { ListPackageDependenciesOptions, ListPackageDependenciesRawResult, PackageNodeRaw } from '../../types'
 import fs from 'node:fs'
 import { load as yamlLoad } from 'js-yaml'
-import { dirname, join, relative } from 'pathe'
+import { dirname, join, normalize, relative } from 'pathe'
 import { x } from 'tinyexec'
 import { CLUSTER_DEP_DEV, CLUSTER_DEP_PROD } from '../../constants'
 import { JsonParseStreamError } from '../../json-parse-stream'
@@ -118,6 +118,26 @@ export async function getCatalogs(root: string): Promise<Record<string, Record<s
   }
 }
 
+const NODE_MODULES_SEGMENT = '/node_modules'
+
+/**
+ * Resolve the `node_modules` directory where the alias symlinks for a
+ * package's direct dependencies live.
+ *
+ * With pnpm's isolated layout a package sits at `<dir>/node_modules/<name>`
+ * and its dependencies are symlinked as siblings inside that same
+ * `<dir>/node_modules`. For workspace and linked packages (which are not
+ * inside a `node_modules` directory) the dependencies live in the package's
+ * own nested `node_modules`.
+ */
+function resolveDependenciesNodeModulesDir(filepath: string): string {
+  const path = normalize(filepath)
+  const index = path.lastIndexOf(`${NODE_MODULES_SEGMENT}/`)
+  return index === -1
+    ? join(path, 'node_modules')
+    : path.slice(0, index + NODE_MODULES_SEGMENT.length)
+}
+
 export async function listPackageDependencies(
   options: ListPackageDependenciesOptions,
 ): Promise<ListPackageDependenciesRawResult> {
@@ -154,7 +174,7 @@ export async function listPackageDependencies(
     }
   })
 
-  function normalize(raw: PnpmPackageNode, aliasName: string, aliasFilepath?: string): PackageNodeRaw {
+  function normalizeNode(raw: PnpmPackageNode, aliasName: string, aliasFilepath?: string): PackageNodeRaw {
     // Resolve workspace package version
     let version = raw.version
     if (version.includes(':')) {
@@ -182,12 +202,20 @@ export async function listPackageDependencies(
     aliasName: string,
     level: number,
     clusters: Iterable<string>,
+    /** `node_modules` directory holding the symlink the parent resolved this package through */
+    parentNmDir: string,
   ): PackageNodeRaw {
-    const isAlias = aliasName !== raw.from
-    const aliasFilepath = isAlias && parentNmDir
-      ? join(parentNmDir, aliasName)
-      : undefined
-    const node = normalize(raw, aliasName, aliasFilepath)
+    // An `npm:` alias is installed as a symlink named after the alias, sitting
+    // next to the parent's other dependencies. Prefer that path so the node
+    // points at the alias rather than at the shared real directory - but only
+    // when it actually exists, as hoisted layouts place it elsewhere.
+    let aliasFilepath: string | undefined
+    if (aliasName !== raw.from) {
+      const candidate = join(parentNmDir, aliasName)
+      if (fs.existsSync(candidate))
+        aliasFilepath = candidate
+    }
+    const node = normalizeNode(raw, aliasName, aliasFilepath)
 
     if (!node.workspace) {
       for (const cluster of clusters) {
@@ -216,8 +244,9 @@ export async function listPackageDependencies(
     if (options.dependenciesFilter?.(node) !== false) {
       // Determine the node_modules directory where this package's
       // direct dependencies' alias symlinks would reside.
+      const nmDir = resolveDependenciesNodeModulesDir(raw.path)
       for (const [depName, dep] of Object.entries(raw.dependencies || {})) {
-        const resolvedDep = traverse(dep, depName, level + 1, clusters)
+        const resolvedDep = traverse(dep, depName, level + 1, clusters, nmDir)
         node.dependencies.add(resolvedDep.spec)
       }
     }
