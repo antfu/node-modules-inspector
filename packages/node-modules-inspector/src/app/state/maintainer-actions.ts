@@ -3,20 +3,20 @@ import type {
   MaintainerActionGroup,
   MaintainerActionItem,
   MaintainerActionSortMode,
-} from '../../shared/reports/maintainers'
+} from '#shared/reports/maintainers'
 import { computed } from 'vue'
 import {
   collectMaintainerActionAuthors,
   computeMaintainerActions,
   groupMaintainerActions,
-} from '../../shared/reports/maintainers'
+} from '#shared/reports/maintainers'
 import { rawPayload, rawPublintMessages } from './data'
 import { getNpmMetaLatest, getPublishTime, payloads } from './payload'
 import { query } from './query'
 
 export {
   authorKey,
-} from '../../shared/reports/maintainers'
+} from '#shared/reports/maintainers'
 export type {
   DepUpgradeAction,
   MaintainerActionAuthorEntry,
@@ -24,7 +24,7 @@ export type {
   MaintainerActionItem,
   MaintainerActionSortMode,
   PublintAction,
-} from '../../shared/reports/maintainers'
+} from '#shared/reports/maintainers'
 
 export const maintainerActions = computed<MaintainerActionItem[]>(() => {
   return computeMaintainerActions({

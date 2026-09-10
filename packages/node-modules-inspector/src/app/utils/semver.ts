@@ -1,6 +1,6 @@
 import type { SemVerComparator } from 'verkit'
 import { isValidRange, parseRange } from 'verkit'
-import { compareSemver } from '../../shared/semver'
+import { compareSemver } from '#shared/semver'
 
 export { compareSemver }
 

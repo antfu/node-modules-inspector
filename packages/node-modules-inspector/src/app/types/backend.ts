@@ -1,6 +1,6 @@
 import type { NpmMeta, NpmMetaLatest, PackageNode, PublintMessage } from 'node-modules-tools'
 import type { Ref } from 'vue'
-import type { NodeModulesInspectorPayload } from '../../shared/types'
+import type { NodeModulesInspectorPayload } from '#shared/types'
 
 export interface ReferencePayloadFunctions {
   getReferencePayload?: (hash?: string) => Promise<NodeModulesInspectorPayload>

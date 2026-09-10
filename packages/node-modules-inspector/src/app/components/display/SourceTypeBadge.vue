@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
-import type { SettingsOptions } from '../../../shared/types'
+import type { SettingsOptions } from '#shared/types'
 import type { ComputedPayload } from '../../state/payload'
 import { computed } from 'vue'
 import { payloads } from '../../state/payload'

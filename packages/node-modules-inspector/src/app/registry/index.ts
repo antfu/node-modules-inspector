@@ -1,13 +1,13 @@
 import type { NpmMeta, NpmMetaLatest } from 'node-modules-tools'
 import type { InstallExcludeSpec, RegistryResolveWarning } from 'node-modules-tools/registry'
-import type { NodeModulesInspectorPayload } from '../../shared/types'
+import type { NodeModulesInspectorPayload } from '#shared/types'
 import type { Backend } from '../types/backend'
 import { resolveRegistryDependencies } from 'node-modules-tools/registry'
 import { hash as getHash } from 'ohash'
 import { createStorage } from 'unstorage'
 import driverIndexedDb from 'unstorage/drivers/indexedb'
 import { reactive, shallowRef } from 'vue'
-import { getPackagesNpmMeta, getPackagesNpmMetaLatest } from '../../shared/version-info'
+import { getPackagesNpmMeta, getPackagesNpmMetaLatest } from '#shared/version-info'
 
 export interface RegistryProgress {
   phase: 'idle' | 'resolving' | 'manifests'
