@@ -24,6 +24,6 @@ describe('analyzePackageModuleType', () => {
   it('stops recursive export analysis after max depth', () => {
     expect(analyze({
       exports: nestExports(11, './index.mjs'),
-    })).toBe('cjs')
+    })).toBe('unknown')
   })
 })

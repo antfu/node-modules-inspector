@@ -119,16 +119,28 @@ const hoverVersions = computed(() => {
     .sort((a, b) => compareSemver(a.version, b.version))
 })
 
+const MODULE_TYPES_COLOR = {
+  esm: '#4ade80',
+  dual: '#2dd4bf',
+  cjs: '#facc15',
+  faux: '#a3e635',
+  bin: '#6991e0',
+  dts: '#60c5db',
+  other: () => baseShade.value,
+}
+
 // Legend entries for the current color mode (spectrum has none).
 const legend = computed<{ background: string, label: string }[] | undefined>(() => {
   switch (coloringMode.value) {
     case 'module':
       return [
-        { background: '#4ade80', label: 'ESM' },
-        { background: '#2dd4bf', label: 'Dual' },
-        { background: '#facc15', label: 'CJS' },
-        { background: '#a3e635', label: 'Faux' },
-        { background: baseShade.value, label: 'DTS' },
+        { background: MODULE_TYPES_COLOR.esm, label: 'ESM' },
+        { background: MODULE_TYPES_COLOR.dual, label: 'DUAL' },
+        { background: MODULE_TYPES_COLOR.cjs, label: 'CJS' },
+        { background: MODULE_TYPES_COLOR.faux, label: 'FAUX' },
+        { background: MODULE_TYPES_COLOR.bin, label: 'BIN' },
+        { background: MODULE_TYPES_COLOR.dts, label: 'DTS' },
+        { background: MODULE_TYPES_COLOR.other(), label: 'OTHER' },
       ]
     case 'age':
       return [
@@ -282,17 +294,19 @@ function getColor(node: TreeNode<PackageNode | undefined>) {
       const type = getModuleType(node.meta.resolved.module)
       switch (type) {
         case 'esm':
-          return '#4ade80'
+          return MODULE_TYPES_COLOR.esm
         case 'cjs':
-          return '#facc15'
+          return MODULE_TYPES_COLOR.cjs
         case 'dual':
-          return '#2dd4bf'
+          return MODULE_TYPES_COLOR.dual
         case 'faux':
-          return '#a3e635'
+          return MODULE_TYPES_COLOR.faux
+        case 'bin':
+          return MODULE_TYPES_COLOR.bin
         case 'dts':
-          return baseShade.value
+          return MODULE_TYPES_COLOR.dts
       }
-      return undefined
+      return MODULE_TYPES_COLOR.other()
     }
     case 'age':
       return getAgeColor(node.meta)
