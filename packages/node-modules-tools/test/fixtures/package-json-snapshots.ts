@@ -153,6 +153,24 @@ export const packageJsonSnapshots = {
       ],
     },
   },
+  'theme-vitesse@1.0.0': {
+    expected: 'unknown',
+    packageJson: {
+      name: 'theme-vitesse',
+      version: '1.0.0',
+      license: 'MIT',
+      exports: {
+        './*': './*',
+      },
+      icon: 'icon.png',
+      files: [
+        'LICENSE.md',
+        'extra/*',
+        'icon.png',
+        'themes/*',
+      ],
+    },
+  },
   '@octokit/rest@22.0.1 (#128)': {
     expected: 'esm',
     packageJson: {
