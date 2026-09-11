@@ -41,6 +41,11 @@ jobs:
   test:
     runs-on: ${{ matrix.os }}
 
+    env:
+      # macos-latest runners report a lower usable heap than their physical
+      # RAM, which OOMs unbuild/rollup while bundling node-modules-tools.
+      NODE_OPTIONS: --max-old-space-size=6144
+
     strategy:
       matrix:
         node: [lts/*]
