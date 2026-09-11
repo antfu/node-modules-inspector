@@ -85,7 +85,6 @@ export const packageJsonSnapshots = {
       name: '@octokit/core',
       version: '7.0.5',
       type: 'module',
-      main: './dist-src/index.js',
       types: './dist-types/index.d.ts',
       exports: {
         '.': {
@@ -177,8 +176,6 @@ export const packageJsonSnapshots = {
       name: '@octokit/rest',
       version: '22.0.1',
       type: 'module',
-      main: './dist-src/index.js',
-      module: './dist-src/index.js',
       types: './dist-types/index.d.ts',
       exports: {
         '.': {
