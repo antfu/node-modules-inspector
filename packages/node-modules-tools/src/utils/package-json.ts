@@ -1,8 +1,20 @@
 import type { PackageJson } from '../types'
+import { existsSync, readdirSync, readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import { toArray } from '@antfu/utils'
 
 const RE_GITHUB_SPONSORS = /^(?:https?:\/\/)?(?:www\.)?github\.com\/sponsors\/([\w.-]+)/i
 const RE_GITHUB_USER_URL = /^(?:https?:\/\/)?(?:www\.)?github\.com\/([\w.-]+)\/?$/i
+const RE_LICENSE_NAMES = /^(?:LICENSE|LICENCE|COPYING|NOTICE)(?:\.(?:md|txt))?$/i
+const LICENSE_PATTERNS: [RegExp, string][] = [
+  [/Permission is hereby granted.*?without restriction/i, 'MIT'],
+  [/ISC License/i, 'ISC'],
+  [/Apache License,?\s*Version 2\.0/i, 'Apache-2.0'],
+  [/Redistribution and use in source and binary forms.*?provided that the following conditions are met/i, 'BSD-3-Clause'],
+  [/Redistribution and use in source and binary forms.*?provided that the following conditions are met.*?Neither the name/i, 'BSD-3-Clause'],
+  [/Redistribution and use in source and binary forms.*?provided that the following conditions are met(?!.*Neither)/i, 'BSD-2-Clause'],
+  [/UNIVERSAL PUBLIC LICENSE/i, 'UPL-1.0'],
+]
 const RE_GITHUB_PROFILE_LIKE = /^(?:https?:\/\/)?(?:www\.)?github\.com\/([\w.-]+)/i
 const RE_GITHUB_NOREPLY = /^(?:\d+\+)?([\w.-]+)@users\.noreply\.github\.com$/i
 const RE_OPENCOLLECTIVE = /^(?:https?:\/\/)?(?:www\.)?opencollective\.com\/([\w.-]+)/i
@@ -125,6 +137,24 @@ export function normalizePkgFundings(json: PackageJson): ParsedFunding[] | undef
     return undefined
 
   return fundings.map(f => parseFunding(f)).filter(Boolean)
+}
+/**
+ * Detect the SPDX license identifier from a LICENSE file in the given directory.
+ */
+
+export function detectLicenseFromFile(dir: string): string | undefined {
+  if (!existsSync(dir))
+    return undefined
+
+  const files = readdirSync(dir)
+  const licenseFile = files.find(f => RE_LICENSE_NAMES.test(f))
+  if (!licenseFile)
+    return undefined
+  const content = readFileSync(join(dir, licenseFile), 'utf-8')
+  for (const [pattern, spdx] of LICENSE_PATTERNS) {
+    if (pattern.test(content))
+      return spdx
+  }
 }
 
 export interface RawAuthor {
