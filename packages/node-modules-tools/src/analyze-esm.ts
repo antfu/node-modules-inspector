@@ -69,9 +69,9 @@ export function analyzePackageModuleType(pkgJson: PackageJson): PackageModuleTyp
   if (pkgJson.name?.startsWith('@types/'))
     return 'dts'
 
-  // // Native binary packages (e.g. @oxc-parser/binding-linux-x64-gnu)
+  // Native binary packages (e.g. @oxc-parser/binding-linux-x64-gnu)
   if (pkgJson.main?.endsWith('.node'))
-    return 'unknown'
+    return 'bin'
 
   const hasExports = pkgJson.exports != null
   const hasModule = !!pkgJson.module
@@ -120,6 +120,17 @@ export function analyzePackageModuleType(pkgJson: PackageJson): PackageModuleTyp
   // Type-only packages (no main, no exports, but has types)
   if (pkgJson.types || pkgJson.typings)
     return 'dts'
+
+  if (pkgJson.os || pkgJson.cpu)
+    return 'bin'
+
+  if (pkgJson.type === 'commonjs')
+    return 'cjs'
+
+  // No exports/main/module/type at all: Node resolves the implicit
+  // `./index.js` entry as CommonJS
+  if (!hasExports && !hasMain)
+    return 'cjs'
 
   return 'unknown'
 }

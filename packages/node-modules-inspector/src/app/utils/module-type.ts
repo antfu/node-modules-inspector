@@ -2,8 +2,8 @@ import type { PackageModuleType, PackageNode } from 'node-modules-tools'
 import { computed } from 'vue'
 import { settings } from '../state/settings'
 
-export const MODULE_TYPES_FULL = ['dual', 'esm', 'faux', 'cjs', 'dts', 'unknown'] as PackageModuleType[]
-export const MODULE_TYPES_FULL_SELECT = ['dual', 'esm', 'faux', 'cjs', 'unknown'] as PackageModuleType[]
+export const MODULE_TYPES_FULL = ['dual', 'esm', 'faux', 'cjs', 'dts', 'bin', 'unknown'] as PackageModuleType[]
+export const MODULE_TYPES_FULL_SELECT = ['dual', 'esm', 'faux', 'cjs', 'bin', 'unknown'] as PackageModuleType[]
 
 // @unocss-include
 export const MODULE_TYPES_COLOR_BADGE = {
@@ -12,6 +12,7 @@ export const MODULE_TYPES_COLOR_BADGE = {
   cjs: 'badge-color-yellow',
   faux: 'badge-color-lime',
   dts: 'badge-color-gray',
+  bin: 'badge-color-blue',
   unknown: 'badge-color-gray',
 }
 
@@ -21,7 +22,8 @@ export const MODULE_TYPES_NAME = {
   cjs: 'CJS',
   faux: 'FAUX',
   dts: 'DTS',
-  unknown: '?',
+  bin: 'BIN',
+  unknown: 'OTH',
 }
 
 export function getModuleType(node: PackageNode | PackageModuleType) {
@@ -36,7 +38,9 @@ export function getModuleType(node: PackageNode | PackageModuleType) {
     return 'dts'
   if (['cjs', 'faux'].includes(type))
     return 'cjs'
-  return 'esm'
+  if (type === 'esm')
+    return 'esm'
+  return 'unknown'
 }
 
 export function getModuleTypeCounts(nodes: Iterable<PackageNode>) {

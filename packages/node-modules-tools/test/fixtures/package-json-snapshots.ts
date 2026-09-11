@@ -96,11 +96,61 @@ export const packageJsonSnapshots = {
     },
   },
   '@oxc-parser/binding-linux-x64-gnu (#124)': {
-    expected: 'unknown',
+    expected: 'bin',
     packageJson: {
       name: '@oxc-parser/binding-linux-x64-gnu',
       version: '0.147.0',
       main: 'parser.linux-x64-gnu.node',
+    },
+  },
+  '@esbuild/darwin-arm64 (#124)': {
+    expected: 'bin',
+    packageJson: {
+      name: '@esbuild/darwin-arm64',
+      version: '0.28.2',
+      os: [
+        'darwin',
+      ],
+      cpu: [
+        'arm64',
+      ],
+    },
+  },
+  'anymatch@3.1.3': {
+    expected: 'cjs',
+    packageJson: {
+      name: 'anymatch',
+      version: '3.1.3',
+      description: 'Matches strings against configurable strings, globs, regular expressions, and/or functions',
+      files: [
+        'index.js',
+        'index.d.ts',
+      ],
+    },
+  },
+  'js-tokens@9.0.1': {
+    expected: 'cjs',
+    packageJson: {
+      name: 'js-tokens',
+      version: '9.0.1',
+      type: 'commonjs',
+      exports: './index.js',
+    },
+  },
+  'express@5.2.1': {
+    expected: 'cjs',
+    packageJson: {
+      name: 'express',
+      version: '5.2.1',
+      engines: {
+        node: '>= 18',
+      },
+      files: [
+        'LICENSE',
+        'Readme.md',
+        'index.js',
+        'lib/',
+      ],
     },
   },
   '@octokit/rest@22.0.1 (#128)': {

@@ -5,8 +5,8 @@ import type { PackageInstallSizeInfo } from './size'
 
 export type { PackageJson, PublintMessage }
 
-export type PackageModuleTypeSimple = 'cjs' | 'esm'
-export type PackageModuleType = 'cjs' | 'esm' | 'dual' | 'faux' | 'dts' | 'unknown'
+export type PackageModuleTypeSimple = 'cjs' | 'esm' | 'other'
+export type PackageModuleType = 'cjs' | 'esm' | 'dual' | 'faux' | 'dts' | 'bin' | 'unknown'
 
 export interface PackageNodeRaw {
   /** Package Name */
