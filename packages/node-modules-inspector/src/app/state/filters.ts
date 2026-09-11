@@ -185,6 +185,18 @@ export function createToggle(key: 'focus' | 'why' | 'excludes') {
   }
 }
 
+function createFilterGroup(keys: (keyof FilterOptions)[]) {
+  return {
+    reset: () => {
+      for (const key of keys) {
+        // @ts-expect-error any
+        state[key] = structuredClone(toRaw(filtersDefault.value[key]))
+      }
+    },
+    activated: computed(() => keys.filter(i => !isDeepEqual(state[i], filtersDefault.value[i]))),
+  }
+}
+
 export const filters = reactive({
   state,
   search: {
@@ -200,22 +212,6 @@ export const filters = reactive({
   excludes: {
     toggle: createToggle('excludes'),
   },
-  select: {
-    reset: () => {
-      for (const key of FILTER_KEYS_SELECT) {
-        // @ts-expect-error any
-        state[key] = structuredClone(toRaw(filtersDefault.value[key]))
-      }
-    },
-    activated: computed(() => FILTER_KEYS_SELECT.filter(i => !isDeepEqual(state[i], filtersDefault.value[i]))),
-  },
-  exclude: {
-    reset: () => {
-      for (const key of FILTER_KEYS_EXCLUDES) {
-        // @ts-expect-error any
-        state[key] = structuredClone(toRaw(filtersDefault.value[key]))
-      }
-    },
-    activated: computed(() => FILTER_KEYS_EXCLUDES.filter(i => !isDeepEqual(state[i], filtersDefault.value[i]))),
-  },
+  select: createFilterGroup(FILTER_KEYS_SELECT),
+  exclude: createFilterGroup(FILTER_KEYS_EXCLUDES),
 })
