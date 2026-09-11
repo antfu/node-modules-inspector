@@ -38,7 +38,7 @@ export function getModuleType(node: PackageNode | PackageModuleType) {
     return 'dts'
   if (['cjs', 'faux'].includes(type))
     return 'cjs'
-  if (type === 'esm')
+  if (type === 'esm' || type === 'dual')
     return 'esm'
   return 'unknown'
 }

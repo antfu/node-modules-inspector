@@ -36,6 +36,9 @@ export default defineComponent({
         return 'Package that ships non-standard module format, that might work with some bundlers but not Node.js'
       if (type.value === 'dts')
         return 'Package that ships TypeScript types'
+      if (type.value === 'bin')
+        return 'Package that ships platform-specific binaries'
+      return 'Unknown module type'
     })
 
     return () => {
