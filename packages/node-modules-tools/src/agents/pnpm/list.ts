@@ -27,11 +27,16 @@ type PnpmDependencyHierarchy = Pick<PackageDependencyHierarchy, 'name' | 'versio
     unsavedDependencies?: Record<string, PnpmPackageNode>
   }
 
+function resolveExecutable(options: ListPackageDependenciesOptions): string {
+  return options.rush ? 'rush-pnpm' : 'pnpm'
+}
+
 async function resolveRoot(options: ListPackageDependenciesOptions) {
   let raw: string | undefined
+  const pnpmBin = resolveExecutable(options)
   if (options.workspace === false) {
     try {
-      raw = (await x('pnpm', ['root'], { throwOnError: true, nodeOptions: { cwd: options.cwd } }))
+      raw = (await x(pnpmBin, ['root'], { throwOnError: true, nodeOptions: { cwd: options.cwd } }))
         .stdout
         .trim()
     }
@@ -42,13 +47,13 @@ async function resolveRoot(options: ListPackageDependenciesOptions) {
   }
   else {
     try {
-      raw = (await x('pnpm', ['root', '-w'], { throwOnError: true, nodeOptions: { cwd: options.cwd } }))
+      raw = (await x(pnpmBin, ['root', '-w'], { throwOnError: true, nodeOptions: { cwd: options.cwd } }))
         .stdout
         .trim()
     }
     catch {
       try {
-        raw = (await x('pnpm', ['root'], { throwOnError: true, nodeOptions: { cwd: options.cwd } }))
+        raw = (await x(pnpmBin, ['root'], { throwOnError: true, nodeOptions: { cwd: options.cwd } }))
           .stdout
           .trim()
       }
@@ -63,23 +68,25 @@ async function resolveRoot(options: ListPackageDependenciesOptions) {
 
 async function getPnpmVersion(options: ListPackageDependenciesOptions) {
   try {
-    const raw = await x('pnpm', ['--version'], { throwOnError: true, nodeOptions: { cwd: options.cwd } })
+    const pnpmBin = resolveExecutable(options)
+    const raw = await x(pnpmBin, ['--version'], { throwOnError: true, nodeOptions: { cwd: options.cwd } })
     return raw.stdout.trim()
   }
   catch (err) {
-    console.error('Failed to get pnpm version')
+    console.error(`Failed to get ${resolveExecutable(options)} version`)
     console.error(err)
     return undefined
   }
 }
 
 async function getDependenciesTree(options: ListPackageDependenciesOptions): Promise<PnpmDependencyHierarchy[]> {
+  const pnpmBin = resolveExecutable(options)
   const args = ['ls', '--json', '--depth', String(options.depth)]
   if (options.monorepo)
     args.push('--recursive')
   if (options.workspace === false)
     args.push('--ignore-workspace')
-  const process = x('pnpm', args, {
+  const process = x(pnpmBin, args, {
     throwOnError: true,
     nodeOptions: {
       stdio: 'pipe',
@@ -93,7 +100,7 @@ async function getDependenciesTree(options: ListPackageDependenciesOptions): Pro
       if (err instanceof JsonParseStreamError) {
         try {
           if (err.data.error?.message === 'Invalid string length') {
-            console.error(`pnpm ls output is too large to parse, please try using the --depth=${String(Math.ceil(options.depth / 3 * 2))} option to limit the depth of the dependency tree`)
+            console.error(`${pnpmBin} ls output is too large to parse, please try using the --depth=${String(Math.ceil(options.depth / 3 * 2))} option to limit the depth of the dependency tree`)
           }
         }
         catch {}
@@ -102,7 +109,7 @@ async function getDependenciesTree(options: ListPackageDependenciesOptions): Pro
     })
 
   if (!Array.isArray(json))
-    throw new Error(`Failed to parse \`pnpm ls\` output, expected an array but got: ${String(json)}`)
+    throw new Error(`Failed to parse \`${pnpmBin} ls\` output, expected an array but got: ${String(json)}`)
 
   return json
 }
