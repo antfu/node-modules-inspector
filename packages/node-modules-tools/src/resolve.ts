@@ -6,6 +6,7 @@ import { readFile } from 'node:fs/promises'
 import { join } from 'pathe'
 import { resolvePackageJsonFields } from './resolve-json'
 import { getPackageInstallSize } from './size'
+import { detectLicenseFromFile } from './utils/package-json'
 
 /**
  * Analyze a package node, and return a resolved package node.
@@ -28,8 +29,16 @@ export async function resolvePackage(
     const content = await readFile(path, 'utf-8')
     const json = JSON.parse(stripBomTag(content)) as PackageJson
 
+    const resolved = resolvePackageJsonFields(json)
+
+    // Fallback: when package.json has no license field, try to detect
+    // the license from a LICENSE file in the package directory.
+    if (!resolved.license) {
+      resolved.license = detectLicenseFromFile(pkg.filepath)
+    }
+
     _pkg.resolved = {
-      ...resolvePackageJsonFields(json),
+      ...resolved,
       installSize: await getPackageInstallSize(_pkg),
     }
   }
