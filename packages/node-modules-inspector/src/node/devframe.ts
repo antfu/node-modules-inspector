@@ -30,9 +30,9 @@ export default defineDevframe({
   homepage,
   description,
   icon: 'ph:package-duotone',
+  clientAssets: distDir,
   cli: {
     command: 'node-modules-inspector',
-    distDir,
   },
   setup(ctx, info) {
     const flags = (info?.flags ?? {}) as InspectorDevframeFlags

@@ -51,7 +51,7 @@ catalogs:
     unbuild: ^3.6.1
     vite: ^8.3.0
   deps:
-    '@modelcontextprotocol/sdk': ^1.30.0
+    '@devframes/agentic': ^0.10.0
     ansis: ^4.4.0
     cac: ^7.0.0
     devframe: *devframe

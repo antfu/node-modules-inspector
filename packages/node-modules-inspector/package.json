@@ -41,7 +41,7 @@
     "web:dev": "pnpm run -r stub && pnpm run wc:prepare && (cd src && NMI_BACKEND=web ROLLDOWN_OPTIONS_VALIDATION=loose nuxi dev)"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "catalog:deps",
+    "@devframes/agentic": "catalog:deps",
     "ansis": "catalog:deps",
     "cac": "catalog:deps",
     "devframe": "catalog:deps",
