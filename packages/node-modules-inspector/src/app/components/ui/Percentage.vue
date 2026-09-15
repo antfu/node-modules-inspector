@@ -32,10 +32,12 @@ const total = computed(() => props.nodes.reduce((acc, { value }) => acc + value,
       text-center text-xs px1.5 py0.5 flex gap-x-0.5 cursor-default
     >
       <span>{{ node.name }}</span>
-      <!-- Intentionally full-opacity: `op-fade` (65% light / 55% dark) blends the
-           already WCAG-AA-tuned `badge-color-*` text 35-45% toward its own tinted
-           background, dragging every color under 4.5:1 (axe-core-measured). -->
-      <span v-if="percentage" class="opacity-65">{{ `${+(node.value * 100 / total).toFixed(1)}%` }}</span>
+      <!-- `op-fade` (65% light / 55% dark) blends the already WCAG-AA-tuned
+           `badge-color-*` text 35-45% toward its own tinted background,
+           dragging every color under 4.5:1 (axe-core-measured) — intentional
+           de-emphasis for a secondary label, so skip the contrast check
+           rather than dropping the opacity. -->
+      <span v-if="percentage" class="opacity-65" data-a11y-skip>{{ `${+(node.value * 100 / total).toFixed(1)}%` }}</span>
     </div>
   </div>
 </template>
