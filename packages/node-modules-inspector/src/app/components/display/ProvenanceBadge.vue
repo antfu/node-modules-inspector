@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
-import { Tooltip } from 'floating-vue'
 import { computed } from 'vue'
+import { Tooltip } from 'vue-afloat'
 import { getNpmMeta } from '../../state/payload'
 import { settings } from '../../state/settings'
 

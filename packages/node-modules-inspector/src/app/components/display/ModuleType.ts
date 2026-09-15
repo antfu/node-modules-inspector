@@ -1,7 +1,7 @@
 import type { PackageModuleType, PackageNode } from 'node-modules-tools'
 import type { PropType } from 'vue'
-import { Tooltip as FloatingTooltip } from 'floating-vue'
 import { computed, defineComponent, h } from 'vue'
+import { Tooltip as FloatingTooltip } from 'vue-afloat'
 import { settings } from '../../state/settings'
 import { getModuleType, MODULE_TYPES_COLOR_BADGE, MODULE_TYPES_NAME } from '../../utils/module-type'
 

@@ -20,8 +20,8 @@ export default defineNuxtConfig({
   spaLoadingTemplate: false,
 
   // Nuxt 5's default flips `vue.optionsApi` to false (tied to
-  // `future.compatibilityVersion`), which breaks floating-vue's Options-API
-  // components (VMenu/Popper) and Nuxt's own NuxtLink/RouterLink shim.
+  // `future.compatibilityVersion`), which breaks Nuxt's own NuxtLink/RouterLink
+  // shim.
   vue: {
     optionsApi: true,
   },
@@ -171,7 +171,7 @@ export default defineNuxtConfig({
         'd3-hierarchy',
         'd3-shape',
         'modern-screenshot',
-        'floating-vue',
+        'vue-afloat',
         '@antfu/utils',
         'verkit',
         'devframe/client',

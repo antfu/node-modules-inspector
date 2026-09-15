@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
 import DisplayVersion from '@antfu/design/components/Display/DisplayVersion.vue'
-import { Menu as VMenu } from 'floating-vue'
 import { computed, nextTick } from 'vue'
+import { Menu as VMenu } from 'vue-afloat'
 import { useRouter } from '#app/composables/router'
 import { NuxtLink } from '#components'
 import { getBackend } from '../../backends'

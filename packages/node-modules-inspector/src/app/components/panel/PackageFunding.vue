@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { ParsedFunding } from 'node-modules-tools'
-import { Menu as VMenu } from 'floating-vue'
+import { Menu as VMenu } from 'vue-afloat'
 import { NuxtLink } from '#components'
 import DisplayFundingEntry from '../display/FundingEntry.vue'
 

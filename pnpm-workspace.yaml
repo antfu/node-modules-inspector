@@ -74,7 +74,7 @@ catalogs:
     valibot: ^1.5.0
     verkit: ^0.4.0
   dev:
-    '@antfu/design': ^0.4.0
+    '@antfu/design': ^0.5.0
     '@antfu/ni': ^30.5.0
     '@nuxt/devtools': *nuxt-devtools
     bumpp: ^12.3.0
@@ -91,7 +91,6 @@ catalogs:
     d3: ^7.9.0
     d3-hierarchy: ^3.1.2
     d3-shape: ^3.2.0
-    floating-vue: ^5.4.0
     fuse.js: ^7.5.0
     idb-keyval: ^6.3.0
     modern-screenshot: ^4.7.0
@@ -99,6 +98,7 @@ catalogs:
     reka-ui: ^2.10.4
     theme-vitesse: ^1.0.0
     vite-hot-client: ^2.2.0
+    vue-afloat: ^0.1.0
   icons:
     '@iconify-json/carbon': ^1.2.27
     '@iconify-json/catppuccin': ^1.2.17

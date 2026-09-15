@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Tooltip as VTooltip } from 'floating-vue'
+import { Tooltip as VTooltip } from 'vue-afloat'
 
 defineProps<{
   title: string

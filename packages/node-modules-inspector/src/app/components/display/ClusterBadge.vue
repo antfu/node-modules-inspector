@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { Tooltip } from 'floating-vue'
 import { computed } from 'vue'
+import { Tooltip } from 'vue-afloat'
 import { getHashColorFromString } from '../../utils/color'
 
 const props = defineProps<{

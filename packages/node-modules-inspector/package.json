@@ -77,7 +77,6 @@
     "d3": "catalog:frontend",
     "d3-hierarchy": "catalog:frontend",
     "d3-shape": "catalog:frontend",
-    "floating-vue": "catalog:frontend",
     "fuse.js": "catalog:frontend",
     "idb-keyval": "catalog:frontend",
     "modern-screenshot": "catalog:frontend",
@@ -86,6 +85,7 @@
     "rollup": "catalog:bundling",
     "storybook": "catalog:storybook",
     "theme-vitesse": "catalog:frontend",
-    "vite-hot-client": "catalog:frontend"
+    "vite-hot-client": "catalog:frontend",
+    "vue-afloat": "catalog:frontend"
   }
 }
