@@ -24,7 +24,7 @@ overrides:
   # @antfu/design pins its own unocss preset deps (^66.7.2), which resolve to
   # a separate @unocss/core than the one used by @unocss/nuxt (66.10.1),
   # producing a duplicate that breaks unocss's TS types. Force one version.
-  '@unocss/core': &unocss ^66.10.3
+  '@unocss/core': &unocss ^66.10.4
   '@unocss/preset-icons': *unocss
   '@unocss/preset-mini': *unocss
   '@unocss/preset-web-fonts': *unocss
@@ -44,7 +44,7 @@ catalogs:
     '@rollup/plugin-alias': ^6.0.0
     '@rollup/plugin-commonjs': ^29.0.3
     '@rollup/plugin-node-resolve': ^16.0.3
-    '@unocss/nuxt': ^66.10.3
+    '@unocss/nuxt': ^66.10.4
     '@vueuse/nuxt': ^14.4.0
     esbuild: ^0.28.2
     nuxt: npm:nuxt-nightly@5x
@@ -111,7 +111,7 @@ catalogs:
     '@antfu/eslint-config': ^9.5.1
     '@nuxt/eslint': ^1.17.0
     '@typescript-eslint/utils': ^8.70.0
-    '@unocss/eslint-config': ^66.10.3
+    '@unocss/eslint-config': ^66.10.4
     eslint: ^10.10.0
     nano-staged: ^1.0.2
     nuxt-eslint-auto-explicit-import: ^0.2.0
@@ -126,7 +126,7 @@ catalogs:
     '@valibot/to-json-schema': ^1.8.0
     mlly: ^1.8.2
     type-fest: 4.41.0
-    vitest: ^5.0.0
+    vitest: ^5.0.1
   types:
     '@pnpm/list': ^1000.3.4
     '@pnpm/types': ^1102.1.0
