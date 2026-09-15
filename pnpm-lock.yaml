@@ -198,9 +198,6 @@ catalogs:
       specifier: ^8.3.0
       version: 8.3.0
   deps:
-    '@devframes/agentic':
-      specifier: ^0.10.0
-      version: 0.10.0
     ansis:
       specifier: ^4.4.0
       version: 4.4.0
@@ -216,15 +213,6 @@ catalogs:
     js-yaml:
       specifier: ^5.4.2
       version: 5.4.2
-    launch-editor:
-      specifier: ^2.14.1
-      version: 2.14.1
-    ohash:
-      specifier: ^2.0.12
-      version: 2.0.12
-    open:
-      specifier: ^11.0.4
-      version: 11.0.4
     p-limit:
       specifier: ^7.3.2
       version: 7.3.2
@@ -240,9 +228,6 @@ catalogs:
     stream-json:
       specifier: ^3.6.0
       version: 3.6.0
-    structured-clone-es:
-      specifier: ^2.0.1
-      version: 2.0.1
     tinyexec:
       specifier: ^1.3.1
       version: 1.3.1
@@ -433,7 +418,9 @@ catalogs:
       version: 2.3.3
 
 overrides:
+  '@devframes/agentic': ^0.10.0
   '@devframes/hub': ^0.10.0
+  '@devframes/service-open': ^0.10.0
   '@nuxt/devtools': ^4.0.0-alpha.20
   '@nuxt/devtools-kit': ^4.0.0-alpha.20
   '@unocss/core': ^66.10.3
@@ -591,8 +578,11 @@ importers:
   packages/node-modules-inspector:
     dependencies:
       '@devframes/agentic':
-        specifier: catalog:deps
+        specifier: ^0.10.0
         version: 0.10.0(crossws@0.4.12(srvx@1.0.4))(devframe@0.10.0)(ocache@0.3.0)
+      '@devframes/service-open':
+        specifier: ^0.10.0
+        version: 0.10.0(devframe@0.10.0)
       ansis:
         specifier: catalog:deps
         version: 4.4.0
@@ -608,21 +598,12 @@ importers:
       h3:
         specifier: catalog:deps
         version: 2.0.1-rc.32(crossws@0.4.12(srvx@1.0.4))(ocache@0.3.0)
-      launch-editor:
-        specifier: catalog:deps
-        version: 2.14.1
       mlly:
         specifier: catalog:testing
         version: 1.8.2
       node-modules-tools:
         specifier: workspace:*
         version: link:../node-modules-tools
-      ohash:
-        specifier: catalog:deps
-        version: 2.0.12
-      open:
-        specifier: catalog:deps
-        version: 11.0.4
       p-limit:
         specifier: catalog:deps
         version: 7.3.2
@@ -632,9 +613,6 @@ importers:
       publint:
         specifier: catalog:deps
         version: 0.3.24
-      structured-clone-es:
-        specifier: catalog:deps
-        version: 2.0.1
       tinyglobby:
         specifier: catalog:deps
         version: 0.2.17
@@ -1068,7 +1046,7 @@ packages:
   '@devframes/hub@0.10.0':
     resolution: {integrity: sha512-6E2koTdtHPXoBNFbCZulmWowBXTXsIk1i3Vwzigp8TZAg75fxYSrPggqfjrbaHPOwpF/PQrYZx40U74uf3QNnA==}
     peerDependencies:
-      '@devframes/agentic': 0.10.0
+      '@devframes/agentic': ^0.10.0
       devframe: ^0.10.0
     peerDependenciesMeta:
       '@devframes/agentic':
@@ -4398,7 +4376,7 @@ packages:
     resolution: {integrity: sha512-zy9fjgS2xT5SBWs5L3fODZdzcuV7DuLBvR73TI1Af3mG5zVpNABm7VFqmfKeBR7kxCZm+ikfqCPeyr/BbAn2aQ==}
     hasBin: true
     peerDependencies:
-      '@devframes/agentic': 0.10.0
+      '@devframes/agentic': ^0.10.0
       cac: ^7.0.0
     peerDependenciesMeta:
       '@devframes/agentic':
@@ -5291,9 +5269,6 @@ packages:
 
   knitwork@1.3.0:
     resolution: {integrity: sha512-4LqMNoONzR43B1W0ek0fhXMsDNW/zxa1NdFAVMY+k28pgZLovR4G3PB5MrpTxCy1QaZCqNoiaKPr5w5qZHfSNw==}
-
-  launch-editor@2.14.1:
-    resolution: {integrity: sha512-QWBrQsMpH7gPr965dsKD/3cKWiNoTjpATQf++Xq63N6sKRGMwlVXz41O1IZTMfZQgBctD/K5Zt06+/I6pP6+HA==}
 
   levn@0.4.1:
     resolution: {integrity: sha512-+bT2uH4E5LGE7h/n3evcS/sQlJXCpIp6ym8OWJ5eV6+67Dsql/LaaT7qJBAt2rzfoa/5QBGBhxDix1dMt2kQKQ==}
@@ -6618,10 +6593,6 @@ packages:
     resolution: {integrity: sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==}
     engines: {node: '>=8'}
 
-  shell-quote@1.8.4:
-    resolution: {integrity: sha512-VsC6n6vz1ihYYyZZwX7YZSF5l5x36ca17OC+a69h94YqB7X6XLwf+5MOgynYir2SLFUbl8gIYvBo8K8RoNQ6bQ==}
-    engines: {node: '>= 0.4'}
-
   siginfo@2.0.0:
     resolution: {integrity: sha512-ybx0WO1/8bSBLEWXZvEd7gMW3Sn3JFlW3TvX1nREbDLRNQNaeNN8WK0meBwPdAaOI7TtRRRJn/Es1zhrrCHu7g==}
 
@@ -6763,9 +6734,6 @@ packages:
 
   strip-literal@4.0.0:
     resolution: {integrity: sha512-PaqAvfUZKBwc/SLmNZtHmzK+v19Z4O4eS3cKPeGvbIv/U3pnyEq4Tuw3/4v/FwfM8VQaEawsyCcOQ0P+kpwWWw==}
-
-  structured-clone-es@2.0.1:
-    resolution: {integrity: sha512-10ZL5r77LhknxlP1FBiCW+VdnuWOEFLdSS2SKtjyEV+L4qP1hUEIMIZW94LC3jKxRmT/Dj7KkD1mqh/IY6lhKQ==}
 
   stylehacks@7.0.10:
     resolution: {integrity: sha512-sRJ7klmhe/Fl5woJcbJUa2qP1Ueffsl1CQI4ePvqXLkZmcIuAt09aP9uT/FOFPqXh9Rh8M5UkgEnwTdTKn/Aag==}
@@ -13031,11 +12999,6 @@ snapshots:
 
   knitwork@1.3.0: {}
 
-  launch-editor@2.14.1:
-    dependencies:
-      picocolors: 1.1.1
-      shell-quote: 1.8.4
-
   levn@0.4.1:
     dependencies:
       prelude-ls: 1.2.1
@@ -14956,8 +14919,6 @@ snapshots:
 
   shebang-regex@3.0.0: {}
 
-  shell-quote@1.8.4: {}
-
   siginfo@2.0.0: {}
 
   signal-exit@3.0.7: {}
@@ -15098,8 +15059,6 @@ snapshots:
   strip-literal@4.0.0:
     dependencies:
       js-tokens: 10.0.0
-
-  structured-clone-es@2.0.1: {}
 
   stylehacks@7.0.10(postcss@8.5.28):
     dependencies:

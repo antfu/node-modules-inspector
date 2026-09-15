@@ -53,15 +53,16 @@ function showDuplicatedGraph(pkgs: PackageNode[]) {
 
 <template>
   <div flex="~ col gap-2">
-    <div flex gap2 items-center>
-      <DisplayPackageName
-        :name="pkg.name"
-        :provenance="meta?.provenance"
-        font-mono text-2xl flex="~ wrap items-center gap-2"
-        :class="deprecation?.latest ? deprecation.type === 'future' ? 'text-orange line-through' : 'text-red line-through' : ''"
-      />
-      <DisplayProvenanceBadge :pkg />
-    </div>
+    <DisplayPackageName
+      :name="pkg.name"
+      :provenance="meta?.provenance"
+      font-mono text-xl pr-8
+      :class="deprecation?.latest ? deprecation.type === 'future' ? 'text-orange line-through' : 'text-red line-through' : ''"
+    >
+      <template #after>
+        <DisplayProvenanceBadge :pkg class="ml-1" />
+      </template>
+    </DisplayPackageName>
 
     <div v-if="pkg.resolved?.packageJson?.description" text-sm op-fade line-clamp-3 text-ellipsis mt--1 mb1>
       {{ pkg.resolved?.packageJson?.description }}

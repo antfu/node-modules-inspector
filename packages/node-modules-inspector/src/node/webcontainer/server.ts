@@ -8,7 +8,7 @@
 
 import type { NpmMeta, NpmMetaLatest } from 'node-modules-tools'
 import process from 'node:process'
-import { stringify } from 'structured-clone-es'
+import { structuredCloneStringify } from 'devframe/utils/structured-clone'
 import { createStorage } from 'unstorage'
 import driverMemory from 'unstorage/drivers/memory'
 import { WEBCONTAINER_STDOUT_PREFIX } from '../../shared/constants'
@@ -24,14 +24,14 @@ const rpc = createInspectorRpcHandlers({
 async function run() {
   // eslint-disable-next-line unimport/auto-insert
   const heartbeat = setInterval(() => {
-    console.log(WEBCONTAINER_STDOUT_PREFIX + stringify({ status: 'heartbeat', heartbeat: Date.now() }))
+    console.log(WEBCONTAINER_STDOUT_PREFIX + structuredCloneStringify({ status: 'heartbeat', heartbeat: Date.now() }))
   }, 100)
 
   try {
-    console.log(WEBCONTAINER_STDOUT_PREFIX + stringify(await rpc.getPayload()))
+    console.log(WEBCONTAINER_STDOUT_PREFIX + structuredCloneStringify(await rpc.getPayload()))
   }
   catch (err) {
-    console.log(WEBCONTAINER_STDOUT_PREFIX + stringify({ status: 'error', error: err }))
+    console.log(WEBCONTAINER_STDOUT_PREFIX + structuredCloneStringify({ status: 'error', error: err }))
   }
   finally {
     clearInterval(heartbeat)

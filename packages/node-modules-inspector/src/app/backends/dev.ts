@@ -38,7 +38,6 @@ export async function createDevBackend(): Promise<Backend> {
 
   const isWebsocket = rpc.connectionMeta.backend === 'websocket'
   const call = rpc.call as (method: string, ...args: any[]) => Promise<any>
-  const callEvent = rpc.callEvent as (method: string, ...args: any[]) => Promise<void>
 
   return {
     name: isWebsocket ? 'dev' : 'static',
@@ -65,11 +64,12 @@ export async function createDevBackend(): Promise<Backend> {
       getPublint: isWebsocket
         ? (pkg: any) => call('nmi:get-publint', pkg)
         : undefined,
+      // Served by the shared `@devframes/service-open` wire service (see `node/devframe.ts`), not this tool's own RPC.
       openInEditor: isWebsocket
-        ? (filename: string) => { void callEvent('nmi:open-in-editor', filename) }
+        ? (filename: string) => { void call('devframes:service:open:open-in-editor', { path: filename }) }
         : undefined,
       openInFinder: isWebsocket
-        ? (filename: string) => { void callEvent('nmi:open-in-finder', filename) }
+        ? (filename: string) => { void call('devframes:service:open:open-in-finder', { path: filename }) }
         : undefined,
     },
   }

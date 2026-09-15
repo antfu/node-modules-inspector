@@ -1,3 +1,6 @@
+// Side-effect-free — pulls in the `devframe`/`DevframeRpcServerFunctions`
+// module augmentation for the service's RPC names declared below.
+import type {} from '@devframes/service-open'
 import process from 'node:process'
 import { defineDevframe } from 'devframe'
 import { description, homepage, name as packageName, version } from '../../package.json'
@@ -7,8 +10,6 @@ import { getPackagesNpmMetaLatestRpc } from './rpc/get-packages-npm-meta-latest'
 import { getPayloadRpc } from './rpc/get-payload'
 import { getPublintRpc } from './rpc/get-publint'
 import { createInspectorRpcHandlers } from './rpc/handlers'
-import { openInEditorRpc } from './rpc/open-in-editor'
-import { openInFinderRpc } from './rpc/open-in-finder'
 import { reportDuplicatesRpc } from './rpc/report-duplicates'
 import { reportMaintainersRpc } from './rpc/report-maintainers'
 import { reportSizesRpc } from './rpc/report-sizes'
@@ -34,6 +35,9 @@ export default defineDevframe({
   cli: {
     command: 'node-modules-inspector',
   },
+  // Shared "open in editor / reveal in finder" RPC — one installation, used
+  // by any devframe on the host instead of each shipping its own.
+  services: [{ package: '@devframes/service-open' }],
   setup(ctx, info) {
     const flags = (info?.flags ?? {}) as InspectorDevframeFlags
     // MCP adapter calls setup() without flags. CLI mcp subcommand sets these env vars as a bridge.
@@ -53,8 +57,6 @@ export default defineDevframe({
     ctx.rpc.register(getPackagesNpmMetaRpc(handlers))
     ctx.rpc.register(getPackagesNpmMetaLatestRpc(handlers))
     ctx.rpc.register(getPublintRpc(handlers))
-    ctx.rpc.register(openInEditorRpc(handlers))
-    ctx.rpc.register(openInFinderRpc(handlers))
     ctx.rpc.register(reportDuplicatesRpc(handlers))
     ctx.rpc.register(reportMaintainersRpc(handlers))
     ctx.rpc.register(reportSizesRpc(handlers))

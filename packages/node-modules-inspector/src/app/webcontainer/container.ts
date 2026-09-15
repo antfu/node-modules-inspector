@@ -3,8 +3,8 @@ import type { NodeModulesInspectorLog, NodeModulesInspectorPayload } from '#shar
 import type { Backend } from '../types/backend'
 import { WebContainer } from '@webcontainer/api'
 import c from 'ansis'
+import { structuredCloneParse } from 'devframe/utils/structured-clone'
 import { join } from 'pathe'
-import { parse } from 'structured-clone-es'
 import { createStorage } from 'unstorage'
 import driverIndexedDb from 'unstorage/drivers/indexedb'
 import { shallowRef } from 'vue'
@@ -81,7 +81,7 @@ export async function install(
   const _process = exec('node', ['__server.mjs'], false, (chunk) => {
     if (chunk.startsWith(WEBCONTAINER_STDOUT_PREFIX)) {
       const data = chunk.slice(WEBCONTAINER_STDOUT_PREFIX.length)
-      const parsed = parse(data) as NodeModulesInspectorLog
+      const parsed = structuredCloneParse(data) as NodeModulesInspectorLog
 
       if ('status' in parsed) {
         if (parsed.status === 'heartbeat') {

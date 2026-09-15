@@ -4,11 +4,13 @@ import DisplayVersion from '@antfu/design/components/Display/DisplayVersion.vue'
 import { computed } from 'vue'
 import { getDeprecatedInfo, getVulnerability } from '../../state/payload'
 import DisplayPackageName from './PackageName.vue'
+import DisplayProvenanceBadge from './ProvenanceBadge.vue'
 
 const props = defineProps<{
   pkg: PackageNode
   versionSize?: 'small' | 'normal'
   versionPrefix?: string
+  showProvenance?: boolean
 }>()
 
 const deprecation = computed(() => getDeprecatedInfo(props.pkg))
@@ -46,6 +48,7 @@ const vulnerability = computed(() => getVulnerability(props.pkg))
         'text-sm': 'small' === versionSize,
       }"
     />
+    <DisplayProvenanceBadge v-if="showProvenance" :pkg="props.pkg" class="ml-1 translate-y--0.1em" />
     <slot />
   </span>
 </template>

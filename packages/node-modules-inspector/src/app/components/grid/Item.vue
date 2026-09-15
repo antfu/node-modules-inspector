@@ -8,7 +8,6 @@ import DisplayDateBadge from '../display/DateBadge.vue'
 import DisplayFileSizeBadge from '../display/FileSizeBadge.vue'
 import DisplayModuleType from '../display/ModuleType'
 import DisplayPackageSpec from '../display/PackageSpec.vue'
-import DisplayProvenanceBadge from '../display/ProvenanceBadge.vue'
 import DisplaySourceTypeBadge from '../display/SourceTypeBadge.vue'
 import UiPackageBorder from '../ui/PackageBorder.vue'
 
@@ -26,9 +25,7 @@ defineProps<{
     @click="selectedNode = pkg === selectedNode ? undefined : pkg"
   >
     <div flex="~ gap-2 items-center" text-left>
-      <DisplayPackageSpec :pkg>
-        <DisplayProvenanceBadge :pkg class="translate-x-1 translate-y-0.55" />
-      </DisplayPackageSpec>
+      <DisplayPackageSpec :pkg :show-provenance="true" />
     </div>
     <div flex="~ wrap gap-2 items-center" text-sm>
       <DisplayModuleType :pkg />

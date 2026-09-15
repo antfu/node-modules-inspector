@@ -3,8 +3,8 @@ import type { Storage } from 'unstorage'
 import type { ListPackagesNpmMetaLatestOptions, ListPackagesNpmMetaOptions, NodeModulesInspectorConfig, NodeModulesInspectorPayload } from '../../shared/types'
 import process from 'node:process'
 import c from 'ansis'
+import { hash as getHash } from 'devframe/utils/hash'
 import { constructPackageFilters, listPackageDependencies } from 'node-modules-tools'
-import { hash as getHash } from 'ohash'
 import pLimit from 'p-limit'
 import { loadConfig } from 'unconfig'
 import { isNpmMetaLatestValid } from '../../shared/utils'
@@ -30,8 +30,6 @@ export interface InspectorRpcHandlers {
   getPackagesNpmMeta: (specs: string[]) => Promise<Map<string, import('node-modules-tools').NpmMeta | null>>
   getPackagesNpmMetaLatest: (pkgNames: string[]) => Promise<Map<string, import('node-modules-tools').NpmMetaLatest | null>>
   getPublint: (pkg: Pick<PackageNode, 'private' | 'workspace' | 'spec' | 'filepath'>) => Promise<PublintMessage[] | null>
-  openInEditor: (filename: string) => Promise<void>
-  openInFinder: (filename: string) => Promise<void>
 }
 
 export function createInspectorRpcHandlers(options: CreateInspectorRpcHandlersOptions): InspectorRpcHandlers {
@@ -215,11 +213,5 @@ export function createInspectorRpcHandlers(options: CreateInspectorRpcHandlersOp
     getPackagesNpmMeta,
     getPackagesNpmMetaLatest,
     getPublint,
-    async openInEditor(filename: string) {
-      await import('launch-editor').then(r => (r.default || r)(filename))
-    },
-    async openInFinder(filename: string) {
-      await import('open').then(r => r.default(filename))
-    },
   }
 }
