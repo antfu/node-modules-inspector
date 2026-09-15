@@ -45,6 +45,12 @@ export function populateRawResult(input: ListPackageDependenciesRawResult): List
       seen: Set<PackageNodeBase> = new Set(),
     ) {
       for (const dep of node.dependencies) {
+        // Peer-satisfied edges are not "pulled in" by `node` - they must
+        // already be provided by whoever installs it - so they don't count
+        // towards transitive dependencies, depth, or cluster propagation.
+        if (node.peerDependencies?.has(dep))
+          continue
+
         const level = node.depth + 1
         const depNode = result.packages.get(dep)
         if (!depNode)
@@ -81,9 +87,14 @@ export function populateRawResult(input: ListPackageDependenciesRawResult): List
           continue
         pkg.flatDependents.add(dep)
         const parentNode = result.packages.get(dep)!
-        postTasks.push(() => {
-          parentNode.flatDependencies.add(pkg.spec)
-        })
+        // Mirror `traverseDependencies`'s peer skip: `pkg` is still a real
+        // dependent of `parentNode` even via a peer edge, but it must not be
+        // re-added to `parentNode.flatDependencies` after being excluded there.
+        if (!parentNode.peerDependencies?.has(pkg.spec)) {
+          postTasks.push(() => {
+            parentNode.flatDependencies.add(pkg.spec)
+          })
+        }
         traverseDependents(parentNode)
       }
     }

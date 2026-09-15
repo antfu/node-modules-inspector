@@ -1,6 +1,5 @@
 import type { AgentName } from 'package-manager-detector'
-import type { ListPackageDependenciesBaseResult, ListPackageDependenciesOptions, ListPackageDependenciesRawResult } from '../types'
-import { populateRawResult } from '../graph'
+import type { ListPackageDependenciesOptions, ListPackageDependenciesRawResult } from '../types'
 
 /**
  * List dependencies of packages in the current project.
@@ -10,16 +9,12 @@ import { populateRawResult } from '../graph'
 export async function listPackageDependenciesRaw(
   manager: AgentName,
   options: ListPackageDependenciesOptions,
-): Promise<ListPackageDependenciesBaseResult> {
-  let result: ListPackageDependenciesRawResult
+): Promise<ListPackageDependenciesRawResult> {
   if (manager === 'pnpm')
-    result = await import('../agents/pnpm').then(r => r.listPackageDependencies(options))
-  else if (manager === 'npm')
-    result = await import('../agents/npm').then(r => r.listPackageDependencies(options))
-  else if (manager === 'bun')
-    result = await import('../agents/bun').then(r => r.listPackageDependencies(options))
-  else
-    throw new Error(`Package manager ${manager} is not yet supported`)
-
-  return populateRawResult(result)
+    return await import('../agents/pnpm').then(r => r.listPackageDependencies(options))
+  if (manager === 'npm')
+    return await import('../agents/npm').then(r => r.listPackageDependencies(options))
+  if (manager === 'bun')
+    return await import('../agents/bun').then(r => r.listPackageDependencies(options))
+  throw new Error(`Package manager ${manager} is not yet supported`)
 }
