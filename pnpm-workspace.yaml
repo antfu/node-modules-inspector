@@ -98,7 +98,7 @@ catalogs:
     reka-ui: ^2.10.4
     theme-vitesse: ^1.0.0
     vite-hot-client: ^2.2.0
-    vue-afloat: ^0.1.0
+    vue-afloat: ^0.1.1
   icons:
     '@iconify-json/carbon': ^1.2.27
     '@iconify-json/catppuccin': ^1.2.17

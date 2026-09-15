@@ -330,8 +330,8 @@ catalogs:
       specifier: ^2.2.0
       version: 2.2.0
     vue-afloat:
-      specifier: ^0.1.0
-      version: 0.1.0
+      specifier: ^0.1.1
+      version: 0.1.1
   icons:
     '@iconify-json/carbon':
       specifier: ^1.2.27
@@ -653,7 +653,7 @@ importers:
     devDependencies:
       '@antfu/design':
         specifier: catalog:dev
-        version: 0.5.0(738de4081301e3adcf33676f8a629935)
+        version: 0.5.0(aa09400b3381f35a3183debaf5db0f5e)
       '@storybook/addon-docs':
         specifier: catalog:storybook
         version: 10.6.0(@types/react@19.2.18)(storybook@10.6.0(@types/react@19.2.18)(react@19.2.8))
@@ -722,7 +722,7 @@ importers:
         version: 2.2.0(vite@8.3.0)
       vue-afloat:
         specifier: catalog:frontend
-        version: 0.1.0(vue@3.5.42(typescript@6.0.3))
+        version: 0.1.1(vue@3.5.42(typescript@6.0.3))
 
   packages/node-modules-tools:
     dependencies:
@@ -7962,8 +7962,8 @@ packages:
   vscode-uri@3.1.0:
     resolution: {integrity: sha512-/BpdSx+yCQGnCvecbyXdxHDkuk55/G3xwnC0GqY4gmQ3j+A+g8kzzgB4Nk/SINjqn6+waqw3EgbVF2QKExkRxQ==}
 
-  vue-afloat@0.1.0:
-    resolution: {integrity: sha512-mMcVh3y9s+LEC4EBfKQbboirnJirocTsn2JFwwuFAGX2t7qwmEucz5Juxjwq11nss+2+hq4CnVRr5deXTPDwrg==}
+  vue-afloat@0.1.1:
+    resolution: {integrity: sha512-uo4suEE+B0eEeBD6xFvVc+DBaz3dondjJAryrVcd8WH9ps4sR29XQ2SrKF3NmGqwzgTA5S/wgdBrmwyhZpfwhg==}
     peerDependencies:
       vue: ^3.5.0
 
@@ -8201,7 +8201,7 @@ snapshots:
       '@jridgewell/gen-mapping': 0.3.13
       '@jridgewell/trace-mapping': 0.3.31
 
-  '@antfu/design@0.5.0(738de4081301e3adcf33676f8a629935)':
+  '@antfu/design@0.5.0(aa09400b3381f35a3183debaf5db0f5e)':
     dependencies:
       '@vueuse/core': 14.4.0(vue@3.5.42(typescript@6.0.3))
       unocss: 66.10.2(@devframes/hub-ui@0.9.18(@devframes/hub@0.9.19(crossws@0.4.12(srvx@1.0.4))(devframe@0.9.19(cac@7.0.0)(ocache@0.3.0)(srvx@1.0.4))(ocache@0.3.0))(@devframes/json-render@0.9.18(@devframes/hub@0.9.19(crossws@0.4.12(srvx@1.0.4))(devframe@0.9.19(cac@7.0.0)(ocache@0.3.0)(srvx@1.0.4))(ocache@0.3.0))(devframe@0.9.19(cac@7.0.0)(ocache@0.3.0)(srvx@1.0.4)))(devframe@0.9.19(cac@7.0.0)(ocache@0.3.0)(srvx@1.0.4)))(@devframes/hub@0.9.19(crossws@0.4.12(srvx@1.0.4))(devframe@0.9.19(cac@7.0.0)(ocache@0.3.0)(srvx@1.0.4))(ocache@0.3.0))(@unocss/webpack@66.10.2(esbuild@0.28.2)(rolldown@1.2.8)(rollup@4.63.2)(vite@8.3.0)(webpack@5.98.0(esbuild@0.28.2)))(cac@7.0.0)(crossws@0.4.12(srvx@1.0.4))(ocache@0.3.0)(rolldown@1.2.8)(rollup@4.63.2)(srvx@1.0.4)(vite@8.3.0)
@@ -8215,7 +8215,7 @@ snapshots:
       colorjs.io: 0.7.1
       playwright: 1.62.1
       reka-ui: 2.10.4(vue@3.5.42(typescript@6.0.3))
-      vue-afloat: 0.1.0(vue@3.5.42(typescript@6.0.3))
+      vue-afloat: 0.1.1(vue@3.5.42(typescript@6.0.3))
 
   '@antfu/eslint-config@9.5.1(@typescript-eslint/typescript-estree@8.70.0(supports-color@10.0.0)(typescript@6.0.3))(@typescript-eslint/utils@8.70.0(eslint@10.10.0(jiti@2.7.0)(supports-color@10.0.0))(supports-color@10.0.0)(typescript@6.0.3))(@unocss/eslint-plugin@66.8.0(eslint@10.10.0(jiti@2.7.0)(supports-color@10.0.0))(supports-color@10.0.0)(typescript@6.0.3))(@vue/compiler-sfc@3.5.42)(eslint@10.10.0(jiti@2.7.0)(supports-color@10.0.0))(supports-color@10.0.0)(typescript@6.0.3)(vitest@5.0.0(@types/node@22.13.9)(vite@8.3.0))':
     dependencies:
@@ -17198,7 +17198,7 @@ snapshots:
 
   vscode-uri@3.1.0: {}
 
-  vue-afloat@0.1.0(vue@3.5.42(typescript@6.0.3)):
+  vue-afloat@0.1.1(vue@3.5.42(typescript@6.0.3)):
     dependencies:
       '@floating-ui/dom': 1.8.0
       vue: 3.5.42(typescript@6.0.3)

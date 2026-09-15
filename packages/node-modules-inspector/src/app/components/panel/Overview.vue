@@ -155,7 +155,10 @@ const timepassed = computed(() => rawPayload.value?.timestamp ? Date.now() - raw
       </div>
     </div>
     <div>
-      <UiPercentageModuleType :packages="payloads.available.packages" :rounded="false" />
+      <UiPercentageModuleType
+        :packages="payloads.available.packages" :rounded="false"
+        :ignores="['unknown']"
+      />
     </div>
     <UiCredits border="t base" />
   </div>

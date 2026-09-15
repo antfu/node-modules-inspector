@@ -11,6 +11,7 @@ const props = withDefaults(
     packages?: PackageNode[]
     flat?: boolean
     rounded?: boolean
+    ignores?: PackageModuleType[]
   }>(),
   {
     flat: false,
@@ -30,6 +31,7 @@ const nodes = computed(() => {
 
   return (Object.entries(getModuleTypeCounts(pkgs)) as [PackageModuleType, number][])
     .filter(([_, c]) => c > 0)
+    .filter(([type, _]) => !props.ignores?.includes(type))
     .map(([type, c]) => ({
       value: c,
       name: type.toUpperCase(),
