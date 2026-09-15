@@ -16,20 +16,20 @@ trustPolicyExclude:
   - tinyexec@1.2.2
 
 overrides:
-  '@devframes/hub': &devframe ^0.9.19
-  '@nuxt/devtools': &nuxt-devtools ^4.0.0-alpha.19
+  '@devframes/hub': &devframe ^0.10.0
+  '@nuxt/devtools': &nuxt-devtools ^4.0.0-alpha.20
   '@nuxt/devtools-kit': *nuxt-devtools
   # @antfu/design pins its own unocss preset deps (^66.7.2), which resolve to
   # a separate @unocss/core than the one used by @unocss/nuxt (66.10.1),
   # producing a duplicate that breaks unocss's TS types. Force one version.
-  '@unocss/core': &unocss ^66.10.2
+  '@unocss/core': &unocss ^66.10.3
   '@unocss/preset-icons': *unocss
   '@unocss/preset-mini': *unocss
   '@unocss/preset-web-fonts': *unocss
   '@unocss/preset-wind3': *unocss
   '@unocss/preset-wind4': *unocss
   '@unocss/transformer-directives': *unocss
-  '@vitejs/devtools': &vite-devtools ^0.7.3
+  '@vitejs/devtools': &vite-devtools ^0.7.4
   '@vitejs/devtools-kit': *vite-devtools
   '@vitejs/devtools-rolldown': *vite-devtools
   chokidar: 5.0.0
@@ -42,11 +42,11 @@ catalogs:
     '@rollup/plugin-alias': ^6.0.0
     '@rollup/plugin-commonjs': ^29.0.3
     '@rollup/plugin-node-resolve': ^16.0.3
-    '@unocss/nuxt': ^66.10.2
+    '@unocss/nuxt': ^66.10.3
     '@vueuse/nuxt': ^14.4.0
     esbuild: ^0.28.2
     nuxt: npm:nuxt-nightly@5x
-    rollup: ^4.63.2
+    rollup: ^4.63.3
     rollup-plugin-esbuild: ^6.2.1
     unbuild: ^3.6.1
     vite: ^8.3.0
@@ -56,11 +56,11 @@ catalogs:
     cac: ^7.0.0
     devframe: *devframe
     fast-npm-meta: ^2.2.0
-    h3: ^2.0.1-rc.31
+    h3: ^2.0.1-rc.32
     js-yaml: ^5.4.2
     launch-editor: ^2.14.1
     ohash: ^2.0.12
-    open: ^11.0.3
+    open: ^11.0.4
     p-limit: ^7.3.2
     package-manager-detector: ^1.8.0
     pathe: ^2.0.3
@@ -84,7 +84,7 @@ catalogs:
     vite-plugin-inspect: ^12.0.2
     vue-tsc: ^3.3.11
   frontend:
-    '@vitejs/plugin-vue': ^6.0.8
+    '@vitejs/plugin-vue': ^6.0.9
     '@webcontainer/api': ^1.6.4
     '@xterm/addon-fit': ^0.11.0
     '@xterm/xterm': ^6.0.0
@@ -112,7 +112,7 @@ catalogs:
     '@antfu/eslint-config': ^9.5.1
     '@nuxt/eslint': ^1.17.0
     '@typescript-eslint/utils': ^8.70.0
-    '@unocss/eslint-config': ^66.10.2
+    '@unocss/eslint-config': ^66.10.3
     eslint: ^10.10.0
     nano-staged: ^1.0.2
     nuxt-eslint-auto-explicit-import: ^0.2.0
