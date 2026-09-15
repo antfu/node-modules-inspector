@@ -69,6 +69,12 @@ export default defineConfig({
         // default `dark:text-gray-300` only clears 4.13:1 (axe-core-measured).
         // Bump to the 200 shade (~4.9:1) like the hue-specific overrides above.
         'badge-color-gray': 'bg-gray-400/20 dark:bg-gray-400/10 text-gray-700 dark:text-gray-200 border border-gray-600/15 dark:border-gray-300/15',
+        // `muted` isn't a real Tailwind color ramp (the preset's `color-muted`
+        // shortcut aliases it to `neutral-600`/`neutral-400`, not a `muted-*`
+        // scale) — the `badge-color-<name>` dynamic rule generates `bg-muted-400/10`
+        // etc. regardless, which unocss can never resolve. Alias it to the same
+        // `gray` ramp/formula as `badge-color-gray` above.
+        'badge-color-muted': 'bg-gray-400/20 dark:bg-gray-400/10 text-gray-700 dark:text-gray-200 border border-gray-600/15 dark:border-gray-300/15',
       },
     }),
     presetWind3(),
@@ -95,6 +101,7 @@ export default defineConfig({
     'badge-color-gray',
     'badge-color-green',
     'badge-color-lime',
+    'badge-color-muted',
     'badge-color-orange',
     'badge-color-pink',
     'badge-color-purple',

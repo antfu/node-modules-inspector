@@ -566,21 +566,18 @@ onUnmounted(() => {
       <div i-ph-chart-bar-horizontal-duotone />
       Flamegraph
     </NuxtLink>
-
-    <div flex-auto />
-    <div class="flex flex-col gap-2 justify-end">
-      <div class="flex items-center gap-2">
-        <div class="op-fade text-xs">
-          Colorization
-        </div>
-        <OptionSelectGroup
-          v-model="coloringMode"
-          v-tooltip="`Color Mode`"
-          :options="['spectrum', 'module', 'age', 'duplicated']"
-          :titles="['Spectrum', 'Module', 'Published Age', 'Duplicated']"
-        />
-      </div>
-      <div h-6 flex="~ gap-3 items-center wrap justify-end" text-xs op-fade border="~ base rounded" px2 mla>
+    <div class="w-1px h-5 border-l border-base mx-2" />
+    <div class="flex gap-2 items-center">
+      <div v-tooltip="`Colorization`" class="i-ph-palette-duotone op-fade" />
+      <OptionSelectGroup
+        v-model="coloringMode"
+        :options="['spectrum', 'module', 'age', 'duplicated']"
+        :titles="['Spectrum', 'Module Type', 'Published Age', 'Duplicated']"
+      />
+      <div
+        v-if="legend && legend.length > 0"
+        h-6 flex="~ gap-3 items-center wrap" text-xs op-fade border="~ base rounded" px2
+      >
         <div v-for="item of legend" :key="item.label" flex="~ gap-1.5 items-center">
           <span inline-block h-3 w-3 rounded-sm border="~ base" :style="{ background: item.background }" />
           <span>{{ item.label }}</span>
