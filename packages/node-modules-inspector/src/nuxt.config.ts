@@ -19,13 +19,6 @@ export default defineNuxtConfig({
   ssr: false,
   spaLoadingTemplate: false,
 
-  // Nuxt 5's default flips `vue.optionsApi` to false (tied to
-  // `future.compatibilityVersion`), which breaks Nuxt's own NuxtLink/RouterLink
-  // shim.
-  vue: {
-    optionsApi: true,
-  },
-
   modules: [
     '@vueuse/nuxt',
     '@unocss/nuxt',
