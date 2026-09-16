@@ -16,9 +16,9 @@ trustPolicyExclude:
   - tinyexec@1.2.2
 
 overrides:
-  '@devframes/agentic': &devframe ^0.10.0
-  '@devframes/hub': &devframe ^0.10.0
-  '@devframes/service-open': &devframe ^0.10.0
+  '@devframes/agentic': &devframe ^1.0.0
+  '@devframes/hub': *devframe
+  '@devframes/service-open': *devframe
   '@nuxt/devtools': &nuxt-devtools ^4.0.0-alpha.20
   '@nuxt/devtools-kit': *nuxt-devtools
   # @antfu/design pins its own unocss preset deps (^66.7.2), which resolve to
