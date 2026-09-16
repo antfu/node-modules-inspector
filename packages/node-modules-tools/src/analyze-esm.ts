@@ -69,13 +69,16 @@ export function analyzePackageModuleType(pkgJson: PackageJson): PackageModuleTyp
   if (pkgJson.name?.startsWith('@types/'))
     return 'dts'
 
+  // Ensure main is a string (can be false in some packages)
+  const main = typeof pkgJson.main === 'string' ? pkgJson.main : undefined
+
   // Native binary packages (e.g. @oxc-parser/binding-linux-x64-gnu)
-  if (pkgJson.main?.endsWith('.node'))
+  if (main?.endsWith('.node'))
     return 'bin'
 
   const hasExports = pkgJson.exports != null
   const hasModule = !!pkgJson.module
-  const hasMain = !!pkgJson.main
+  const hasMain = !!main
   const isTypeModule = pkgJson.type === 'module'
 
   // Check exports field for module format indicators
@@ -103,15 +106,15 @@ export function analyzePackageModuleType(pkgJson: PackageJson): PackageModuleTyp
 
   // Legacy detection (no exports or exports without clear conditions)
   if (hasModule && hasMain) {
-    const mainIsCJS = pkgJson.main?.endsWith('.cjs')
-      || (pkgJson.main?.endsWith('.js') && !isTypeModule)
+    const mainIsCJS = main?.endsWith('.cjs')
+      || (main?.endsWith('.js') && !isTypeModule)
     return mainIsCJS ? 'faux' : 'esm'
   }
 
   if (hasModule)
     return 'faux'
 
-  if (isTypeModule || (hasMain && pkgJson.main?.endsWith('.mjs')))
+  if (isTypeModule || (hasMain && main?.endsWith('.mjs')))
     return 'esm'
 
   if (hasMain)
