@@ -11,7 +11,7 @@ export const SETTINGS_DEFAULT: SettingsOptions = {
   colorizePackageSize: true,
   showInstallSizeBadge: true,
   showPublishTimeBadge: false,
-  showProvenanceBadge: 'present',
+  showSupplyChainBadge: 'present',
   showFileComposition: false,
   showDependencySourceBadge: 'dev',
   showPublintMessages: false,

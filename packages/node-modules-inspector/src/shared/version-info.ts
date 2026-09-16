@@ -142,6 +142,8 @@ export async function getPackagesNpmMetaLatest(
       deprecated: r.deprecated,
       version: r.version!,
       provenance: r.provenance,
+      trustedPublisher: r.trustedPublisher,
+      staged: r.staged,
       fetechedAt: Date.now(),
       vaildUntil: Date.now() + ttl,
     }

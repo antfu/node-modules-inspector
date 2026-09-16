@@ -25,7 +25,7 @@ defineProps<{
     @click="selectedNode = pkg === selectedNode ? undefined : pkg"
   >
     <div flex="~ gap-2 items-center" text-left>
-      <DisplayPackageSpec :pkg :show-provenance="true" />
+      <DisplayPackageSpec :pkg :show-supply-chain="true" />
     </div>
     <div flex="~ wrap gap-2 items-center" text-sm>
       <DisplayModuleType :pkg />
