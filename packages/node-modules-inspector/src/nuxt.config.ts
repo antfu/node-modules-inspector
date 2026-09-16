@@ -24,7 +24,7 @@ export default defineNuxtConfig({
     '@unocss/nuxt',
     '@nuxt/eslint',
     'nuxt-eslint-auto-explicit-import',
-    ...isWeb ? ['./app/modules/webcontainer'] : [],
+    './app/modules/webcontainer',
   ],
 
   alias: {
