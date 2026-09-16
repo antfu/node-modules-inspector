@@ -11,9 +11,10 @@ import DisplayModuleType from '../../components/display/ModuleType'
 import GridExpand from '../../components/grid/Expand.vue'
 import { getNpmMeta, payloads } from '../../state/payload'
 import { getModuleType } from '../../utils/module-type'
+import { getSupplyChainScore, SUPPLY_CHAIN_SIGNALS } from '../../utils/supply-chain'
 
 const params = useRoute().params as Record<string, string>
-const tab = computed<'depth' | 'clusters' | 'module-type' | 'authors' | 'licenses' | 'provenance'>(() => params.grid?.[0] as any || 'depth')
+const tab = computed<'depth' | 'clusters' | 'module-type' | 'authors' | 'licenses' | 'supply-chain'>(() => params.grid?.[0] as any || 'depth')
 
 const location = window.location
 
@@ -21,6 +22,7 @@ const MAX_DEPTH = 5
 
 interface Group {
   name: string
+  description?: string
   cluster?: string
   module?: PackageModuleType
   author?: ParsedAuthor
@@ -110,26 +112,24 @@ const groups = computed<Group[]>(() => {
         expanded: false,
       }))
   }
-  else if (tab.value === 'provenance') {
-    const map = new Map<'Trusted Publisher' | 'Provenance' | 'None', PackageNode[]>([
-      ['Trusted Publisher', []],
-      ['Provenance', []],
-      ['None', []],
-    ])
-    for (const pkg of payloads.filtered.packages) {
-      const meta = getNpmMeta(pkg)
-      const provenance = meta?.provenance === 'trustedPublisher'
-        ? 'Trusted Publisher'
-        : meta?.provenance === true ? 'Provenance' : 'None'
-      map.get(provenance)!.push(pkg)
-    }
+  else if (tab.value === 'supply-chain') {
+    // Grouped by how many of the three signals a package has, best first. Only
+    // the top and bottom groups are a single combination, so the others are
+    // named by count and spelled out in the tooltip.
+    const map = new Map<number, PackageNode[]>([[3, []], [2, []], [1, []], [0, []]])
+    for (const pkg of payloads.filtered.packages)
+      map.get(getSupplyChainScore(getNpmMeta(pkg)))!.push(pkg)
 
     return [...map.entries()]
-      .map(([provenance, packages]) => ({
-        name: provenance,
-        provenance,
+      .map(([score, packages]) => ({
+        name: score === 3
+          ? `All ${SUPPLY_CHAIN_SIGNALS.length} Signals`
+          : score === 0 ? 'No Signals' : `${score} of ${SUPPLY_CHAIN_SIGNALS.length} Signals`,
+        description: score === 3
+          ? SUPPLY_CHAIN_SIGNALS.join(' + ')
+          : `${score === 0 ? 'None' : `Any ${score}`} of: ${SUPPLY_CHAIN_SIGNALS.join(', ')}`,
         packages,
-        expanded: provenance !== 'None',
+        expanded: score > 0,
       }))
   }
   else {
@@ -187,9 +187,9 @@ const groups = computed<Group[]>(() => {
         <div i-ph-file-text-duotone />
         License
       </NuxtLink>
-      <NuxtLink btn-action as="button" :to="{ path: '/grid/provenance', hash: location.hash }" active-class="text-primary-700 dark:text-primary-300 bg-primary:5 op100!">
-        <div i-ph:circle-wavy-check-duotone />
-        Provenance
+      <NuxtLink btn-action as="button" :to="{ path: '/grid/supply-chain', hash: location.hash }" active-class="text-primary-700 dark:text-primary-300 bg-primary:5 op100!">
+        <div i-ph:shield-check-duotone />
+        Supply Chain
       </NuxtLink>
     </div>
 
@@ -204,7 +204,7 @@ const groups = computed<Group[]>(() => {
           <DisplayClusterBadge v-if="group.cluster" :cluster="group.cluster" />
           <DisplayModuleType v-else-if="group.module" :pkg="group.module" />
           <DisplayAuthors v-else-if="group.author" :authors="[group.author]" :link="false" />
-          <span v-else op75>{{ group.name }}</span>
+          <span v-else v-tooltip="group.description" op75>{{ group.name }}</span>
         </div>
         <DisplayNumberBadge :value="group.packages.length" ml2 />
       </template>

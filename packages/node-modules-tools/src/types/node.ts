@@ -97,7 +97,9 @@ export type AuditLevelString = 'low' | 'moderate' | 'high' | 'critical'
 export interface NpmMeta {
   publishedAt: number
   deprecated?: string
-  provenance?: 'trustedPublisher' | boolean
+  provenance?: boolean
+  trustedPublisher?: boolean
+  staged?: boolean
   vulnerability?: {
     level: AuditLevelString
     title: string

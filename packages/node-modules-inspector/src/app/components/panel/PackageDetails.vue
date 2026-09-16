@@ -18,7 +18,7 @@ import IntegrationsPublintCounts from '../integrations/PublintCounts.vue'
 import TreeDependencies from '../tree/Dependencies.vue'
 import UiPercentageFileCategories from '../ui/PercentageFileCategories.vue'
 import UiPercentageModuleType from '../ui/PercentageModuleType.vue'
-import UiPercentageProvenance from '../ui/PercentageProvenance.vue'
+import UiPercentageSupplyChain from '../ui/PercentageSupplyChain.vue'
 import PanelMaintainerActionTypePill from './MaintainerActionTypePill.vue'
 import PanelPackageDetailsInfo from './PackageDetailsInfo.vue'
 
@@ -466,9 +466,9 @@ const thirdPartyServices = computed(() => {
             :flat="settings.deepDependenciesTree"
           />
           <div op-fade text-sm mt2>
-            Dependency Provenance
+            Dependency Supply Chain
           </div>
-          <UiPercentageProvenance
+          <UiPercentageSupplyChain
             :pkg="pkg"
             :flat="settings.deepDependenciesTree"
           />

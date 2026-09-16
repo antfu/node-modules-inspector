@@ -80,7 +80,7 @@ export interface SettingsOptions {
   colorizePackageSize: boolean
   showInstallSizeBadge: boolean
   showPublishTimeBadge: boolean
-  showProvenanceBadge: 'present' | 'absent' | 'none'
+  showSupplyChainBadge: 'present' | 'absent' | 'none'
   showFileComposition: boolean
   showDependencySourceBadge: 'none' | 'dev' | 'prod' | 'both'
   treatFauxAsESM: boolean

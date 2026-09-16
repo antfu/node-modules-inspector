@@ -36,9 +36,9 @@ const showConfigDialog = ref(false)
       <OptionItem :div="true" title="Show publish time badge" description="Show publish time badge on package list">
         <FormCheckbox v-model="settings.showPublishTimeBadge" />
       </OptionItem>
-      <OptionItem title="Provenance badge" description="Show provenance indicator on packages">
+      <OptionItem title="Supply chain badge" description="Show supply chain signals on packages">
         <OptionSelectGroup
-          v-model="settings.showProvenanceBadge"
+          v-model="settings.showSupplyChainBadge"
           :options="['present', 'absent', 'none']"
           :titles="['Present', 'Absent', 'None']"
         />

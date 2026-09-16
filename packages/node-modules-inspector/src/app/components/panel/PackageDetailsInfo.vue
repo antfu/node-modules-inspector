@@ -8,15 +8,15 @@ import { NuxtLink } from '#components'
 import { getBackend } from '../../backends'
 import { selectedNode } from '../../state/current'
 import { filters } from '../../state/filters'
-import { getDeprecatedInfo, getNpmMeta, getNpmMetaLatest, getPublishTime, payloads } from '../../state/payload'
+import { getDeprecatedInfo, getNpmMetaLatest, getPublishTime, payloads } from '../../state/payload'
 import { settings } from '../../state/settings'
 import DisplayAuthors from '../display/Authors.vue'
 import DisplayDateBadge from '../display/DateBadge.vue'
 import DisplayModuleType from '../display/ModuleType'
 import DisplayNodeVersionRange from '../display/NodeVersionRange.vue'
 import DisplayPackageName from '../display/PackageName.vue'
-import DisplayProvenanceBadge from '../display/ProvenanceBadge.vue'
 import DisplaySourceTypeBadge from '../display/SourceTypeBadge.vue'
+import DisplaySupplyChainBadge from '../display/SupplyChainBadge.vue'
 import DisplayVersionWithUpdates from '../display/VersionWithUpdates.vue'
 import PanelPackageFunding from './PackageFunding.vue'
 
@@ -27,7 +27,6 @@ const props = defineProps<{
 const backend = getBackend()
 const router = useRouter()
 
-const meta = computed(() => getNpmMeta(props.pkg))
 const latestMeta = computed(() => getNpmMetaLatest(props.pkg))
 const deprecation = computed(() => getDeprecatedInfo(props.pkg))
 const resolved = computed(() => props.pkg.resolved)
@@ -55,12 +54,11 @@ function showDuplicatedGraph(pkgs: PackageNode[]) {
   <div flex="~ col gap-2">
     <DisplayPackageName
       :name="pkg.name"
-      :provenance="meta?.provenance"
       font-mono text-xl pr-8
       :class="deprecation?.latest ? deprecation.type === 'future' ? 'text-orange line-through' : 'text-red line-through' : ''"
     >
       <template #after>
-        <DisplayProvenanceBadge :pkg class="ml-1" />
+        <DisplaySupplyChainBadge :pkg class="ml-1" />
       </template>
     </DisplayPackageName>
 
