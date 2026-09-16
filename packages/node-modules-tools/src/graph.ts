@@ -109,5 +109,16 @@ export function populateRawResult(input: ListPackageDependenciesRawResult): List
   for (const pkg of result.packages.values())
     resolveFlatDependencies(pkg)
 
+  // Packages never reached by the relaxation above (e.g. only reachable via
+  // peer edges, or genuinely orphaned/extraneous installs) are left at
+  // `Infinity`. Treat them as direct children of the workspace so they still
+  // show up in depth-based views, but flag them so callers can tell them apart.
+  for (const pkg of result.packages.values()) {
+    if (pkg.depth === Infinity) {
+      pkg.depth = 1
+      pkg.orphaned = true
+    }
+  }
+
   return result
 }

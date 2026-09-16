@@ -54,6 +54,13 @@ export interface PackageNodeBase extends PackageNodeRaw {
   dependents: Set<string>
   /** The lowest depth of this package */
   depth: number
+  /**
+   * True when this package is unreachable from any workspace root via
+   * `dependencies` edges (peer-only edges don't count). Its `depth` is
+   * reset to `1`, as if it were a direct child of the workspace, so it
+   * still surfaces in depth-based views instead of vanishing.
+   */
+  orphaned?: boolean
   /** The shallowest dependent of this package */
   shallowestDependent: Set<string> | undefined
   /** All nested dependencies of this package */

@@ -8,7 +8,7 @@ import { payloads } from '../../state/payload'
 const availableDepths = computed(() => {
   let max = 0
   for (const pkg of payloads.available.packages) {
-    if (pkg.depth != null && !Number.isNaN(pkg.depth) && pkg.depth > max && pkg.depth !== Infinity) {
+    if (pkg.depth != null && !Number.isNaN(pkg.depth) && pkg.depth > max) {
       max = pkg.depth
     }
   }
