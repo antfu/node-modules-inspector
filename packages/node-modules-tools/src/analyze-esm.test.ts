@@ -26,4 +26,14 @@ describe('analyzePackageModuleType', () => {
       exports: nestExports(11, './index.mjs'),
     })).toBe('unknown')
   })
+
+  it('handles main: false without crashing', () => {
+    // Some packages (e.g. math-intrinsics, dunder-proto) declare "main": false
+    // to indicate exports-only packages. Should not crash.
+    expect(analyze({
+      name: 'math-intrinsics',
+      main: false as any,
+      exports: { './abs': './abs.js' },
+    })).toBe('unknown')
+  })
 })
