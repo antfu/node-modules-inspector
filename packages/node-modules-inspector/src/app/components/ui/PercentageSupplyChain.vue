@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import type { PackageNode } from 'node-modules-tools'
+import { SUPPLY_CHAIN_SIGNALS } from 'node-modules-tools/utils'
 import { computed } from 'vue'
 import { getNpmMeta, payloads } from '../../state/payload'
-import { getSupplyChainScore, SUPPLY_CHAIN_SIGNALS } from '../../utils/supply-chain'
+import { getSupplyChainScore } from '../../utils/supply-chain'
 import UiPercentage from './Percentage.vue'
 
 const props = withDefaults(

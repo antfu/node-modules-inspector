@@ -4,7 +4,7 @@ import type { ListPackagesNpmMetaLatestOptions, ListPackagesNpmMetaOptions, Node
 import process from 'node:process'
 import c from 'ansis'
 import { hash as getHash } from 'devframe/utils/hash'
-import { constructPackageFilters, listPackageDependencies } from 'node-modules-tools'
+import { constructPackageFilters, getSupplyChainScore, listPackageDependencies } from 'node-modules-tools'
 import pLimit from 'p-limit'
 import { loadConfig } from 'unconfig'
 import { isNpmMetaLatestValid } from '../../shared/utils'
@@ -184,12 +184,16 @@ export function createInspectorRpcHandlers(options: CreateInspectorRpcHandlersOp
     await Promise.all(Array.from(result.packages.values())
       .map(async (pkg) => {
         const meta = await options.storageNpmMeta.getItem(pkg.spec)
-        if (meta)
+        if (meta) {
+          meta.supplyChainScore = getSupplyChainScore(meta)
           pkg.resolved.npmMeta = meta
+        }
 
         const metaLatest = await options.storageNpmMetaLatest.getItem(pkg.name)
-        if (metaLatest && isNpmMetaLatestValid(metaLatest))
+        if (metaLatest && isNpmMetaLatestValid(metaLatest)) {
+          metaLatest.supplyChainScore = getSupplyChainScore(metaLatest)
           pkg.resolved.npmMetaLatest = metaLatest
+        }
       }))
 
     log(c.green`${MARK_CHECK} node_modules read finished`)

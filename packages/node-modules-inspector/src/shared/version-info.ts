@@ -2,6 +2,7 @@ import type { ResolvedPackageVersionWithMetadata } from 'fast-npm-meta'
 import type { NpmMeta, NpmMetaLatest } from 'node-modules-tools'
 import type { ListPackagesNpmMetaLatestOptions, ListPackagesNpmMetaOptions } from './types'
 import { getLatestVersion, getLatestVersionBatch } from 'fast-npm-meta'
+import { getSupplyChainScore } from 'node-modules-tools'
 import pLimit from 'p-limit'
 import { isNpmMetaLatestValid } from './utils'
 import { addPackagesNpmVulnerabilityMeta } from './vulnerable-info'
@@ -97,6 +98,11 @@ export async function getPackagesNpmMeta(
     }
   }))
 
+  // Computed fresh on every read (never persisted) so a cache entry written
+  // before this signal existed still gets a correct, up-to-date score.
+  for (const meta of map.values())
+    meta.supplyChainScore = getSupplyChainScore(meta)
+
   return map
 }
 
@@ -154,6 +160,11 @@ export async function getPackagesNpmMetaLatest(
   if (missing.size) {
     console.warn('Failed to get npm meta for:', [...missing])
   }
+
+  // Computed fresh on every read (never persisted) so a cache entry written
+  // before this signal existed still gets a correct, up-to-date score.
+  for (const meta of map.values())
+    meta.supplyChainScore = getSupplyChainScore(meta)
 
   return map
 }

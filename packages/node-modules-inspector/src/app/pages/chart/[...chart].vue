@@ -18,13 +18,14 @@ import DisplayPackageSpec from '../../components/display/PackageSpec.vue'
 import OptionSelectGroup from '../../components/option/SelectGroup.vue'
 import { isDark } from '../../composables/dark'
 import { selectedNode } from '../../state/current'
-import { getPublishTime, payloads } from '../../state/payload'
+import { getNpmMeta, getPublishTime, payloads } from '../../state/payload'
 import { query } from '../../state/query'
 import { settings } from '../../state/settings'
 import { isSidepanelCollapsed } from '../../state/ui'
 import { bytesToHumanSize } from '../../utils/format'
 import { getModuleType } from '../../utils/module-type'
 import { compareSemver } from '../../utils/semver'
+import { getSupplyChainScore } from '../../utils/supply-chain'
 
 const mouse = reactive(useMouse())
 const params = useRoute().params as Record<string, string>
@@ -33,8 +34,8 @@ const nodeHover = shallowRef<ChartNode | undefined>(undefined)
 const nodeSelected = shallowRef<ChartNode | undefined>(undefined)
 const location = window.location
 
-type ColoringMode = 'spectrum' | 'module' | 'age' | 'duplicated'
-const COLORING_MODES = ['spectrum', 'module', 'age', 'duplicated'] as const
+type ColoringMode = 'spectrum' | 'module' | 'age' | 'duplicated' | 'supply-chain'
+const COLORING_MODES = ['spectrum', 'module', 'age', 'duplicated', 'supply-chain'] as const
 
 // The coloring mode is persisted in the query string (URL hash) so that it can
 // be shared/bookmarked. Default (`spectrum`) is stored as an empty string to
@@ -68,6 +69,17 @@ function getAgeColor(pkg: PackageNode): string {
   if (age < 3 * YEAR)
     return '#fb923c'
   return '#ef4444'
+}
+
+// "Supply chain" coloring: same green/teal/blue ramp as the badge, worst
+// (no signals) falls back to neutral instead of a warning color, since most
+// of the graph won't have opted into any of the three signals yet.
+const SUPPLY_CHAIN_SCORE_COLOR = ['#6991e0', '#2dd4bf', '#4ade80'] as const
+function getSupplyChainColor(pkg: PackageNode): string {
+  const score = getSupplyChainScore(getNpmMeta(pkg))
+  if (score <= 0)
+    return baseShade.value
+  return SUPPLY_CHAIN_SCORE_COLOR[score - 1]!
 }
 
 // Package names that resolve to more than one version.
@@ -153,6 +165,13 @@ const legend = computed<{ background: string, label: string }[] | undefined>(() 
       return [
         { background: 'linear-gradient(90deg, hsl(0,70%,55%), hsl(120,70%,55%), hsl(240,70%,55%))', label: 'Multiple versions' },
         { background: baseShade.value, label: 'Single version' },
+      ]
+    case 'supply-chain':
+      return [
+        { background: baseShade.value, label: '0 signals' },
+        { background: SUPPLY_CHAIN_SCORE_COLOR[0], label: '1 signal' },
+        { background: SUPPLY_CHAIN_SCORE_COLOR[1], label: '2 signals' },
+        { background: SUPPLY_CHAIN_SCORE_COLOR[2], label: '3 signals' },
       ]
     default:
       return undefined
@@ -310,6 +329,8 @@ function getColor(node: TreeNode<PackageNode | undefined>) {
     }
     case 'age':
       return getAgeColor(node.meta)
+    case 'supply-chain':
+      return getSupplyChainColor(node.meta)
     case 'duplicated': {
       const hue = duplicatedHue.value.get(node.meta.name)
       if (hue == null)
@@ -571,8 +592,8 @@ onUnmounted(() => {
       <div v-tooltip="`Colorization`" class="i-ph-palette-duotone op-fade" />
       <OptionSelectGroup
         v-model="coloringMode"
-        :options="['spectrum', 'module', 'age', 'duplicated']"
-        :titles="['Spectrum', 'Module Type', 'Published Age', 'Duplicated']"
+        :options="['spectrum', 'module', 'age', 'duplicated', 'supply-chain']"
+        :titles="['Spectrum', 'Module Type', 'Published Age', 'Duplicated', 'Supply Chain']"
       />
       <div
         v-if="legend && legend.length > 0"
@@ -616,7 +637,7 @@ onUnmounted(() => {
     }"
   >
     <div flex="~ gap-1 items-center">
-      <DisplayPackageSpec :pkg="nodeHover.meta" text-base />
+      <DisplayPackageSpec :pkg="nodeHover.meta" :show-supply-chain="true" text-base />
       <DisplayModuleType :pkg="nodeHover.meta" />
     </div>
     <div flex="~ gap-1 items-center">

@@ -100,6 +100,12 @@ export interface NpmMeta {
   provenance?: boolean
   trustedPublisher?: boolean
   staged?: boolean
+  /**
+   * Count (0-3) of supply-chain signals this package carries (provenance,
+   * trusted publisher, staged publish). Computed server-side and attached
+   * on top of the raw signals, never persisted to the npm meta cache.
+   */
+  supplyChainScore?: number
   vulnerability?: {
     level: AuditLevelString
     title: string
