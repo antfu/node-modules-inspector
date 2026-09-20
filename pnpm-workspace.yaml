@@ -124,7 +124,6 @@ catalogs:
     '@axe-core/playwright': ^4.13.0
     '@playwright/test': ^1.63.0
     '@valibot/to-json-schema': ^1.8.0
-    mlly: ^1.8.2
     type-fest: 4.41.0
     vitest: ^5.0.1
   types:

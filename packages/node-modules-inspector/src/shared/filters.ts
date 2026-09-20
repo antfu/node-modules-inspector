@@ -21,7 +21,7 @@ export interface FilterOptions {
   compareB: null | string[]
 }
 
-export interface FilterSchema<Type> {
+interface FilterSchema<Type> {
   type: StringConstructor | ArrayConstructor | BooleanConstructor
   default: Type
   category: 'select' | 'exclude' | 'compare' | 'option'

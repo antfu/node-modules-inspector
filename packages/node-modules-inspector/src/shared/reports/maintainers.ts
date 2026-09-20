@@ -13,7 +13,7 @@ interface BaseAction {
   key: string
 }
 
-export interface DepUpgradeAction extends BaseAction {
+interface DepUpgradeAction extends BaseAction {
   kind: 'dep-upgrade'
   depName: string
   depType: 'peer' | 'prod'
@@ -31,7 +31,7 @@ export interface DepUpgradeAction extends BaseAction {
   migrationRatio: number
 }
 
-export interface PublintAction extends BaseAction {
+interface PublintAction extends BaseAction {
   kind: 'publint'
   messages: PublintMessage[]
   counts: { error: number, warning: number, suggestion: number }
@@ -39,7 +39,7 @@ export interface PublintAction extends BaseAction {
 
 export type MaintainerActionItem = DepUpgradeAction | PublintAction
 
-export type MaintainerActionSortMode = 'depth' | 'migration' | 'latest'
+type MaintainerActionSortMode = 'depth' | 'migration' | 'latest'
 
 export interface MaintainerActionGroup {
   consumer: PackageNode
@@ -50,7 +50,7 @@ export interface MaintainerActionGroup {
   latestReleasedAt: number
 }
 
-export interface MaintainerActionAuthorEntry {
+interface MaintainerActionAuthorEntry {
   author: ParsedAuthor
   count: number
 }

@@ -4,7 +4,7 @@ import { compareSemver } from '#shared/semver'
 
 export { compareSemver }
 
-export interface ParsedSemver {
+interface ParsedSemver {
   valid: boolean
   raw: string
   highest?: string

@@ -69,7 +69,3 @@ export function renderTable(columns: Column[], rows: string[][]): string {
 
   return [headerLine, rule, ...rowLines].join('\n')
 }
-
-export function section(title: string, body: string): string {
-  return `${c.bold.cyan(title)}\n${body}\n`
-}
