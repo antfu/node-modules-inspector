@@ -43,7 +43,7 @@ export interface RegistryCache<T = any> {
   setItem: (key: string, value: T) => Promise<void>
 }
 
-export interface ResolveRegistryDependenciesProgress {
+interface ResolveRegistryDependenciesProgress {
   /** Current phase: resolving the graph, or fetching full manifests */
   phase: 'resolving' | 'manifests'
   /** Number of packages resolved so far */
@@ -52,7 +52,7 @@ export interface ResolveRegistryDependenciesProgress {
   total?: number
 }
 
-export type RegistryResolveWarningType
+type RegistryResolveWarningType
   = | 'unsupported-spec'
     | 'unresolved-version'
     | 'fetch-error'

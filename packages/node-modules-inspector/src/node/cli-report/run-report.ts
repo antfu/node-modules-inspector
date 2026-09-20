@@ -14,8 +14,7 @@ import { formatDuplicates } from './format-duplicates'
 import { formatMaintainers } from './format-maintainers'
 import { formatSizes } from './format-sizes'
 
-export type ReportType = 'maintainers' | 'duplicates' | 'sizes'
-
+type ReportType = 'maintainers' | 'duplicates' | 'sizes'
 export interface RunReportOptions {
   type: ReportType
   root: string

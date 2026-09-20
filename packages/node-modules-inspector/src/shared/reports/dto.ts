@@ -5,18 +5,18 @@ import type {
   MaintainerActionItem,
 } from './maintainers'
 
-export interface ReportConsumerDto {
+interface ReportConsumerDto {
   spec: string
   name: string
   version: string
   depth: number
 }
 
-export type MaintainerActionItemDto
+type MaintainerActionItemDto
   = | MaintainerActionDepUpgradeDto
     | MaintainerActionPublintDto
 
-export interface MaintainerActionDepUpgradeDto {
+interface MaintainerActionDepUpgradeDto {
   kind: 'dep-upgrade'
   depName: string
   depType: 'peer' | 'prod'
@@ -45,7 +45,7 @@ export interface MaintainersGroupDto {
   latestReleasedAt: number
 }
 
-export function toMaintainerItemDto(item: MaintainerActionItem): MaintainerActionItemDto {
+function toMaintainerItemDto(item: MaintainerActionItem): MaintainerActionItemDto {
   if (item.kind === 'publint') {
     return {
       kind: 'publint',
