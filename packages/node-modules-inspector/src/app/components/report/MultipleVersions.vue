@@ -40,9 +40,7 @@ function showGraph(pkgs: PackageNode[]) {
       Multi-Versions Packages
       <DisplayNumberBadge :value="sorted.length" />
     </UiSubTitle>
-    <!-- Bun does not provide a `bun dedupe` command yet: https://github.com/oven-sh/bun/issues/1343 -->
     <div
-      v-if="rawPayload?.packageManager !== 'bun'"
       badge-color-primary
       flex="~ gap-2 items-center"
       rounded-lg p2 my2 px3
