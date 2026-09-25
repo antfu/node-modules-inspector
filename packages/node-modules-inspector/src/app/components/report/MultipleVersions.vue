@@ -40,9 +40,9 @@ function showGraph(pkgs: PackageNode[]) {
       Multi-Versions Packages
       <DisplayNumberBadge :value="sorted.length" />
     </UiSubTitle>
-    <!-- Bun does not provide a `bun dedupe` command yet: https://github.com/oven-sh/bun/issues/1343 -->
+    <!-- Hide when package manager is unknown (npm-registry) or when it's bun (no dedupe command yet) -->
     <div
-      v-if="rawPayload?.packageManager !== 'bun'"
+      v-if="rawPayload?.packageManager && rawPayload.packageManager !== 'bun' && rawPayload.packageManager !== 'npm-registry'"
       badge-color-primary
       flex="~ gap-2 items-center"
       rounded-lg p2 my2 px3
@@ -50,7 +50,7 @@ function showGraph(pkgs: PackageNode[]) {
       <div i-ph-lightbulb-duotone flex-none />
       <span>
         Run
-        <code color-active bg-primary:10 rounded px1 py0.5>{{ rawPayload?.packageManager }} dedupe</code>
+        <code color-active bg-primary:10 rounded px1 py0.5>{{ rawPayload.packageManager }} dedupe</code>
         to de-duplicate packages that satisfies with the ranges
       </span>
     </div>
