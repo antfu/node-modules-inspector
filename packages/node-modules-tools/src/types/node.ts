@@ -90,6 +90,14 @@ export interface PackageNode extends PackageNodeBase {
     license?: ParsedLicense
     /** Parsed funding entries with avatars when known */
     fundings?: ParsedFunding[]
+    /***
+     * Whether the package has side effects.
+     * - `true` (default): the package has side effects (cannot be tree-shaken)
+     * - `false`: the package has no side effects (safe to tree-shake)
+     * - `string[]`: specific file paths that have side effects
+     * - `undefined`: not declared in package.json
+     */
+    sideEffects?: boolean | string[]
   }
 }
 export type AuditLevelString = 'low' | 'moderate' | 'high' | 'critical'

@@ -15,6 +15,7 @@ import DisplayDateBadge from '../display/DateBadge.vue'
 import DisplayModuleType from '../display/ModuleType'
 import DisplayNodeVersionRange from '../display/NodeVersionRange.vue'
 import DisplayPackageName from '../display/PackageName.vue'
+import DisplaySideEffectsBadge from '../display/SideEffectsBadge.vue'
 import DisplaySourceTypeBadge from '../display/SourceTypeBadge.vue'
 import DisplaySupplyChainBadge from '../display/SupplyChainBadge.vue'
 import DisplayVersionWithUpdates from '../display/VersionWithUpdates.vue'
@@ -59,6 +60,7 @@ function showDuplicatedGraph(pkgs: PackageNode[]) {
     >
       <template #after>
         <DisplaySupplyChainBadge :pkg class="ml-1" />
+        <DisplaySideEffectsBadge :pkg class="ml-1" />
       </template>
     </DisplayPackageName>
 

@@ -238,6 +238,23 @@ export interface ParsedRepository {
   org?: string
 }
 
+/**
+ * Normalize the `sideEffects` field from package.json.
+ * Can be a boolean or an array of file paths.
+ * Returns `undefined` if not declared.
+ */
+
+export function normalizePkgSideEffects(json: PackageJson): boolean | string[] | undefined {
+  const raw = (json as Record<string, unknown>).sideEffects
+  if (raw === undefined)
+    return undefined
+  if (typeof raw === 'boolean')
+    return raw
+  if (Array.isArray(raw))
+    return raw.filter((item): item is string => typeof item === 'string')
+  return undefined
+}
+
 export function normalizePkgRepository(json: PackageJson): ParsedRepository | undefined {
   if (!json.repository && !json.bugs)
     return undefined

@@ -43,6 +43,9 @@ const showConfigDialog = ref(false)
           :titles="['Present', 'Absent', 'None']"
         />
       </OptionItem>
+      <OptionItem :div="true" title="Show side effects badge" description="Show whether a package has side effects">
+        <FormCheckbox v-model="settings.showSideEffectsBadge" />
+      </OptionItem>
       <OptionItem :div="true" title="Colorize size badge" description="Colorize package size badge">
         <FormCheckbox v-model="settings.colorizePackageSize" />
       </OptionItem>

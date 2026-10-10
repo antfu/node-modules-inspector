@@ -81,6 +81,7 @@ export interface SettingsOptions {
   showInstallSizeBadge: boolean
   showPublishTimeBadge: boolean
   showSupplyChainBadge: 'present' | 'absent' | 'none'
+  showSideEffectsBadge: boolean
   showFileComposition: boolean
   showDependencySourceBadge: 'none' | 'dev' | 'prod' | 'both'
   treatFauxAsESM: boolean

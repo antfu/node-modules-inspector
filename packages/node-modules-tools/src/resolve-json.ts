@@ -2,8 +2,7 @@ import type { PackageJson } from 'pkg-types'
 import type { PackageNode } from './types'
 import { objectPick } from '@antfu/utils'
 import { analyzePackageModuleType } from './analyze-esm'
-import { normalizePkgAuthors, normalizePkgFundings, normalizePkgLicense, normalizePkgRepository } from './utils/package-json'
-
+import { normalizePkgAuthors, normalizePkgFundings, normalizePkgLicense, normalizePkgRepository, normalizePkgSideEffects } from './utils/package-json'
 // @keep-unique
 // @keep-sorted
 export const PACKAGE_JSON_KEYS = [
@@ -46,5 +45,6 @@ export function resolvePackageJsonFields(json: PackageJson): Omit<PackageNode['r
     repository: normalizePkgRepository(json),
     license: normalizePkgLicense(json),
     fundings: normalizePkgFundings(json),
+    sideEffects: normalizePkgSideEffects(json),
   }
 }

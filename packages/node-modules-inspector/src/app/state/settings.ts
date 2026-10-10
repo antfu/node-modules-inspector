@@ -12,6 +12,7 @@ export const SETTINGS_DEFAULT: SettingsOptions = {
   showInstallSizeBadge: true,
   showPublishTimeBadge: false,
   showSupplyChainBadge: 'present',
+  showSideEffectsBadge: false,
   showFileComposition: false,
   showDependencySourceBadge: 'dev',
   showPublintMessages: false,

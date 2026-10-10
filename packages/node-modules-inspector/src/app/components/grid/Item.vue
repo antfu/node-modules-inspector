@@ -8,6 +8,7 @@ import DisplayDateBadge from '../display/DateBadge.vue'
 import DisplayFileSizeBadge from '../display/FileSizeBadge.vue'
 import DisplayModuleType from '../display/ModuleType'
 import DisplayPackageSpec from '../display/PackageSpec.vue'
+import DisplaySideEffectsBadge from '../display/SideEffectsBadge.vue'
 import DisplaySourceTypeBadge from '../display/SourceTypeBadge.vue'
 import UiPackageBorder from '../ui/PackageBorder.vue'
 
@@ -54,6 +55,8 @@ defineProps<{
       />
 
       <DisplaySourceTypeBadge :pkg />
+
+      <DisplaySideEffectsBadge :pkg />
 
       <!--
       <span op-mute>·</span>
