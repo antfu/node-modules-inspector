@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/antfu-node-modules-inspector-badge.png)](https://mseep.ai/app/antfu-node-modules-inspector)
+
 ![Logo](./packages/node-modules-inspector/src/public/favicon.svg)
 
 # Node Modules Inspector
