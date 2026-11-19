@@ -1,0 +1,17 @@
+{
+  "name": "nub-fixture-simple",
+  "private": true,
+  "dependencies": {
+    "debug": "4.3.4"
+  },
+  "devDependencies": {
+    "picocolors": "1.1.1"
+  },
+  "devEngines": {
+    "packageManager": {
+      "name": "nub",
+      "version": "^0.9.6",
+      "onFail": "ignore"
+    }
+  }
+}

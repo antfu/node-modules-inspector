@@ -66,6 +66,14 @@ jobs:
       - name: Install Bun
         uses: oven-sh/setup-bun@v2
 
+      - name: Install Aube
+        uses: jdx/aube-action@v1
+
+      - name: Install Nub
+        uses: nubjs/setup-nub@v0
+        with:
+          provision-node: false
+
       - name: Setup
         run: npm i -g @antfu/ni
 

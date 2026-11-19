@@ -16,5 +16,9 @@ export async function listPackageDependenciesRaw(
     return await import('../agents/npm').then(r => r.listPackageDependencies(options))
   if (manager === 'bun')
     return await import('../agents/bun').then(r => r.listPackageDependencies(options))
+  if (manager === 'aube')
+    return await import('../agents/aube').then(r => r.listPackageDependencies(options))
+  if (manager === 'nub')
+    return await import('../agents/nub').then(r => r.listPackageDependencies(options))
   throw new Error(`Package manager ${manager} is not yet supported`)
 }

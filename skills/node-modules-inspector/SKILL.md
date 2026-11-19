@@ -10,7 +10,7 @@ description: >
   could upgrade past, or list publint problems. Available as a CLI
   (`npx node-modules-inspector report <duplicates|sizes|maintainers> [--json]`)
   or an MCP stdio server (`npx node-modules-inspector mcp`) exposing the same
-  three reports as agent tools. Works with pnpm, npm, and bun.
+  three reports as agent tools. Works with pnpm, npm, bun, aube, and nub.
 ---
 
 # node-modules-inspector
@@ -25,7 +25,7 @@ description: >
 
 Reports run against the real on-disk `node_modules` — no registry calls are required for the basic shape; npm metadata is fetched only to enrich the maintainers report (gated by config).
 
-Works with pnpm, npm, and bun. The default `npx node-modules-inspector` (with no subcommand) opens a Vue web UI for humans; agents should use the `report` and `mcp` subcommands below.
+Works with pnpm, npm, bun, aube, and nub. The default `npx node-modules-inspector` (with no subcommand) opens a Vue web UI for humans; agents should use the `report` and `mcp` subcommands below.
 
 ## When to reach for this
 
@@ -185,7 +185,7 @@ Prefer the CLI (`report ... --json`) when shell-pipelining (`jq`, redirect, etc.
 
 ## Failure modes
 
-- "No package manager detected" — the project has no `node_modules` directory, or none of pnpm/npm/bun lockfiles. Suggest the user run install first.
+- "No package manager detected" — the project has no `node_modules` directory, or none of pnpm/npm/bun/aube/nub lockfiles. Suggest the user run install first.
 - Empty `duplicates` result — fine, it means everything is deduped (mention `pnpm dedupe` etc. only if user wants to verify).
 - Empty `maintainers` result — usually means there are no dep-upgrade opportunities AND `publint: true` is not set in the config; if the user expected publint output, point them at the config.
 

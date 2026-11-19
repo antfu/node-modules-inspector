@@ -12,7 +12,7 @@ Visualize your node_modules, inspect dependencies, and more.
 
 ## Quick Start
 
-Try it by running following command under your `pnpm`/`npm`/`bun` project.
+Try it by running following command under your `pnpm`/`npm`/`bun`/`aube`/`nub` project.
 
 ```bash
 pnpx node-modules-inspector
@@ -24,7 +24,7 @@ npx node-modules-inspector
 bunx node-modules-inspector
 ```
 
-> Currently supports `pnpm`, `npm`, and `bun` projects. We are counting on the community to bring support for other package managers.
+> Currently supports `pnpm`, `npm`, `bun`, `aube`, and `nub` projects. We are counting on the community to bring support for other package managers.
 
 ### Online Version
 

@@ -1,0 +1,9 @@
+{
+  "name": "aube-fixture-peers",
+  "private": true,
+  "dependencies": {
+    "autoprefixer": "10.4.20",
+    "postcss": "8.5.33"
+  },
+  "devEngines": { "packageManager": { "name": "aube", "version": "^2.10.1", "onFail": "ignore" } }
+}

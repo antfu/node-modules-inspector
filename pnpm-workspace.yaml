@@ -75,6 +75,8 @@ catalogs:
   dev:
     '@antfu/design': ^0.5.0
     '@antfu/ni': ^30.5.0
+    '@endevco/aube': ^2.10.1
+    '@nubjs/nub': ^0.11.1
     '@nuxt/devtools': *nuxt-devtools
     bumpp: ^12.3.0
     colorjs.io: ^0.7.1
@@ -137,6 +139,8 @@ catalogs:
     pkg-types: ^2.3.3
 
 allowBuilds:
+  '@endevco/aube': true
+  '@nubjs/nub': true
   '@parcel/watcher': true
   esbuild: true
   simple-git-hooks: true
