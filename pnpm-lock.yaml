@@ -253,6 +253,12 @@ catalogs:
     '@antfu/ni':
       specifier: ^30.5.0
       version: 30.5.0
+    '@endevco/aube':
+      specifier: ^2.10.1
+      version: 2.10.1
+    '@nubjs/nub':
+      specifier: ^0.11.1
+      version: 0.11.1
     bumpp:
       specifier: ^12.3.0
       version: 12.3.0
@@ -454,6 +460,9 @@ importers:
       '@axe-core/playwright':
         specifier: catalog:testing
         version: 4.13.0(playwright-core@1.63.0)
+      '@endevco/aube':
+        specifier: catalog:dev
+        version: 2.10.1
       '@iconify-json/carbon':
         specifier: catalog:icons
         version: 1.2.27
@@ -472,6 +481,9 @@ importers:
       '@iconify-json/simple-icons':
         specifier: catalog:icons
         version: 1.2.96
+      '@nubjs/nub':
+        specifier: catalog:dev
+        version: 0.11.1
       '@nuxt/devtools':
         specifier: ^4.0.0-alpha.20
         version: 4.0.0-alpha.20(d137514f84530c8d898d280e2218facb)
@@ -1205,6 +1217,11 @@ packages:
   '@emnapi/wasi-threads@1.2.2':
     resolution: {integrity: sha512-c95qOXkHdydNKhscBTebqEC1CVAZpyqOfVfBzQ1qgzyl3gfeldUjIggDbIZgDKsHLgnsM+igH7TJ/eAasaVuMA==}
 
+  '@endevco/aube@2.10.1':
+    resolution: {integrity: sha512-l91C1r2B64soRjwoLkViX0PGyIM+3lYJrPPa5dMNcD5kWbLNZQm4SoSmU5lfgVA0VrsTcrtbU4Dh4o8GC0Mplg==}
+    engines: {node: '>=14'}
+    hasBin: true
+
   '@es-joy/jsdoccomment@0.91.0':
     resolution: {integrity: sha512-vgqlMGNNhZxwDYbUNIHj3Hskb4R28iqdXx90ufHyt/NeuTQkeqjTDslAs9I0/GCAfbxP5BpH5WsL1R1fht5Lxg==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24}
@@ -1744,6 +1761,55 @@ packages:
     peerDependencies:
       '@emnapi/core': ^1.7.1
       '@emnapi/runtime': ^1.7.1
+
+  '@nubjs/nub-darwin-arm64@0.11.1':
+    resolution: {integrity: sha512-16jEvLAWL+pkQQ47HPYQJvmSAYAPS5an4clE44rjdmxF1rJls1ZLIhmdJPA2/IWfkyYGIdU0bZXskDOAKNvzUA==}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@nubjs/nub-darwin-x64@0.11.1':
+    resolution: {integrity: sha512-esSvSnvVOH1e53oJ16xhJyIFkmIslWhIpRssgv/6HMIDx0rBrureXgneV5VctwAqMPULgvlgnqzGi30tThSV0g==}
+    cpu: [x64]
+    os: [darwin]
+
+  '@nubjs/nub-linux-arm64-musl@0.11.1':
+    resolution: {integrity: sha512-LZ03s9a02Idnl+Cf+/CUGWPN9D4bkK9+QwTZ5NdPbIY+1SGwv0GlNNwvu6z1PhAMCxlpF5CG/6IVAG1okeNdAA==}
+    cpu: [arm64]
+    os: [linux]
+    libc: [musl]
+
+  '@nubjs/nub-linux-arm64@0.11.1':
+    resolution: {integrity: sha512-cbawIJ0ebJV4Eult/58LY9l08Smpd27UFzET/cHLRU/3S5ko2fBERQ8EMCNTsy7hkOoPlG7AjpXfi2SVfqq+zg==}
+    cpu: [arm64]
+    os: [linux]
+    libc: [glibc]
+
+  '@nubjs/nub-linux-x64-musl@0.11.1':
+    resolution: {integrity: sha512-zOaEVgxlFuztt+/K3zcMRYNASBqVcYWGeaY0G68E3wJIlvq+bEHiVzQuvUMhhHH/U3QSHIGEOdSyMXQy1q2Dxw==}
+    cpu: [x64]
+    os: [linux]
+    libc: [musl]
+
+  '@nubjs/nub-linux-x64@0.11.1':
+    resolution: {integrity: sha512-gHxVmi6V0BtmXDgRgbwG58K2S4pI/PDvgMR0Ozh03frP7vD7libpF5QgH7s/NCFAPEBdqnwnxBlAx4xi/41OeA==}
+    cpu: [x64]
+    os: [linux]
+    libc: [glibc]
+
+  '@nubjs/nub-win32-arm64@0.11.1':
+    resolution: {integrity: sha512-2KTM9HshwjoP3jebvH+mJqorRDNBgwxIQ78n876LZqrDHPrqJa4W4WjTR+mCGJ7erzcGzk7l0Nuy6HSHsOj/gQ==}
+    cpu: [arm64]
+    os: [win32]
+
+  '@nubjs/nub-win32-x64@0.11.1':
+    resolution: {integrity: sha512-YspouzpEt2xn5Iwf7rolc1Q/3XucZ56smN+TpzTt3G95/lPXw4wZDH4Ek5GX9zCPYcEjZLjFKWMZdKXPT4sWDQ==}
+    cpu: [x64]
+    os: [win32]
+
+  '@nubjs/nub@0.11.1':
+    resolution: {integrity: sha512-9ueoeUIhcfSKeEgEkInp0XnjUa+VlQb7tNSJajafze1TAEkaXF2AQwYgzweI8DmhUMWYZ7G+QdKJGA73ot3CZA==}
+    engines: {node: '>=18.19.0'}
+    hasBin: true
 
   '@nuxt/cli-nightly@4.0.0-20260907-104727-9e18028':
     resolution: {integrity: sha512-wib2C60dTGY69HcCjVdoXJS3UxujWIAg53mrqX8TNVVEYX7NVlJCiAjCm03Oi9MG3Tgg+tbYhF2h5vysvifQhA==}
@@ -8165,6 +8231,8 @@ snapshots:
       tslib: 2.8.1
     optional: true
 
+  '@endevco/aube@2.10.1': {}
+
   '@es-joy/jsdoccomment@0.91.0':
     dependencies:
       '@types/estree': 1.0.9
@@ -8603,6 +8671,41 @@ snapshots:
       '@emnapi/runtime': 1.9.2
       '@tybys/wasm-util': 0.10.3
     optional: true
+
+  '@nubjs/nub-darwin-arm64@0.11.1':
+    optional: true
+
+  '@nubjs/nub-darwin-x64@0.11.1':
+    optional: true
+
+  '@nubjs/nub-linux-arm64-musl@0.11.1':
+    optional: true
+
+  '@nubjs/nub-linux-arm64@0.11.1':
+    optional: true
+
+  '@nubjs/nub-linux-x64-musl@0.11.1':
+    optional: true
+
+  '@nubjs/nub-linux-x64@0.11.1':
+    optional: true
+
+  '@nubjs/nub-win32-arm64@0.11.1':
+    optional: true
+
+  '@nubjs/nub-win32-x64@0.11.1':
+    optional: true
+
+  '@nubjs/nub@0.11.1':
+    optionalDependencies:
+      '@nubjs/nub-darwin-arm64': 0.11.1
+      '@nubjs/nub-darwin-x64': 0.11.1
+      '@nubjs/nub-linux-arm64': 0.11.1
+      '@nubjs/nub-linux-arm64-musl': 0.11.1
+      '@nubjs/nub-linux-x64': 0.11.1
+      '@nubjs/nub-linux-x64-musl': 0.11.1
+      '@nubjs/nub-win32-arm64': 0.11.1
+      '@nubjs/nub-win32-x64': 0.11.1
 
   '@nuxt/cli-nightly@4.0.0-20260907-104727-9e18028(@nuxt/schema-nightly@5.0.0-29825076.e0e162c2)(jiti@2.7.0)(oxc-parser@0.131.0)(rolldown@1.2.8)':
     dependencies:

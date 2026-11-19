@@ -1,17 +1,12 @@
-import { spawnSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import { listPackageDependencies } from '../../src'
 
 // `nub install --lockfile-only` writes `nub.lock` without linking
 // node_modules, which keeps the fixtures small.
-//
-// The nub CLI itself is required to read the graph: install it with
-// `mise use -g nub` (or see https://nubjs.com/docs/install).
-const hasNub = spawnSync('nub', ['--version'], { stdio: 'ignore' }).status === 0
 
 describe('listNubPackageDependencies', () => {
-  it.skipIf(!hasNub)('runs with simple fixture', { timeout: 30000 }, async () => {
+  it('runs with simple fixture', { timeout: 30000 }, async () => {
     const list = await listPackageDependencies({
       cwd: fileURLToPath(new URL('./fixtures/simple', import.meta.url)),
       depth: 25,
@@ -42,7 +37,7 @@ describe('listNubPackageDependencies', () => {
     expect(picocolors?.clusters.has('dep:prod')).toBe(false)
   })
 
-  it.skipIf(!hasNub)('runs with workspace fixture', { timeout: 30000 }, async () => {
+  it('runs with workspace fixture', { timeout: 30000 }, async () => {
     const list = await listPackageDependencies({
       cwd: fileURLToPath(new URL('./fixtures/workspace', import.meta.url)),
       depth: 25,
@@ -64,5 +59,39 @@ describe('listNubPackageDependencies', () => {
     expect(pkgB?.dependencies.has('ms@2.1.3')).toBe(true)
 
     expect(list.packages.get('debug@4.3.4')?.dependencies.has('ms@2.1.2')).toBe(true)
+  })
+
+  it('handles a standalone project in monorepo mode', { timeout: 30000 }, async () => {
+    // The fixture declares no workspace, so `ls --recursive` has no workspace
+    // root to walk; it must not abort the listing.
+    const list = await listPackageDependencies({
+      cwd: fileURLToPath(new URL('./fixtures/simple', import.meta.url)),
+      depth: 25,
+      monorepo: true,
+    })
+
+    expect(list.packageManager).toBe('nub')
+    expect(list.packages.size).toBe(4)
+
+    const workspaceNames = Array.from(list.packages.values())
+      .filter(pkg => pkg.workspace)
+      .map(pkg => pkg.name)
+    expect(workspaceNames).toEqual(['nub-fixture-simple'])
+  })
+
+  it('strips peer suffixes from reported versions', { timeout: 30000 }, async () => {
+    const list = await listPackageDependencies({
+      cwd: fileURLToPath(new URL('./fixtures/peers', import.meta.url)),
+      depth: 25,
+      monorepo: false,
+    })
+
+    // `nub ls` reports peer-resolved versions (`1.4.0(browserslist@4.29.6)`),
+    // which would break registry lookups and spec identity.
+    const specs = Array.from(list.packages.keys())
+    expect(specs.some(spec => spec.includes('('))).toBe(false)
+
+    const browserslistUpdate = list.packages.get('update-browserslist-db@1.4.0')
+    expect(browserslistUpdate?.version).toBe('1.4.0')
   })
 })

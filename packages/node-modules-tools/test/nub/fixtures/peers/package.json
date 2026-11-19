@@ -1,0 +1,9 @@
+{
+  "name": "nub-fixture-peers",
+  "private": true,
+  "dependencies": {
+    "autoprefixer": "10.4.20",
+    "postcss": "8.5.33"
+  },
+  "devEngines": { "packageManager": { "name": "nub", "version": "^0.9.6", "onFail": "ignore" } }
+}

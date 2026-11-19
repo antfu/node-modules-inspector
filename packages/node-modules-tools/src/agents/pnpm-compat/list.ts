@@ -38,6 +38,16 @@ interface PnpmCompatImporter extends PnpmCompatPackageNode {
   path: string
 }
 
+/**
+ * aube and nub report peer-resolved versions (`postcss@8.5.33(postcss@8.5.33)`),
+ * where the suffix names the virtual store entry rather than the package
+ * version. `pnpm ls` reports the plain version, and the rest of the tooling
+ * (registry lookups, version comparisons, spec keys) expects that shape.
+ */
+function stripPeerSuffix(version: string): string {
+  return version.replace(/\(.*\)$/, '')
+}
+
 async function getVersion(config: PnpmCompatOptions, options: ListPackageDependenciesOptions) {
   try {
     const raw = await x(config.binary, ['--version'], { throwOnError: true, nodeOptions: { cwd: options.cwd } })
@@ -85,8 +95,67 @@ async function runJson<T>(
   }
 }
 
+/**
+ * Lockfiles that mark the directory owning the install. aube and nub stop
+ * their workspace lookup there, so a project with its own lockfile is never
+ * considered part of a workspace further up the tree.
+ */
+const LOCKFILES = ['pnpm-lock.yaml', 'aube-lock.yaml', 'nub.lock', 'yarn.lock', 'package-lock.json', 'bun.lock', 'bun.lockb']
+
+/**
+ * aube and nub only accept `ls --recursive` inside a workspace: nub exits
+ * non-zero when no workspace root exists, aube prints nothing. Mirror the
+ * lookup they perform - a workspace manifest, or a `workspaces` field in a
+ * package.json at or above the project - so standalone projects can skip the
+ * extra run.
+ */
+async function findWorkspaceRoot(root: string, manifests: string[]): Promise<string | undefined> {
+  let dir = root
+  for (;;) {
+    if (manifests.some(manifest => fs.existsSync(join(dir, manifest))))
+      return dir
+    const manifest = await readManifest(dir)
+    if (manifest?.workspaces)
+      return dir
+    if (LOCKFILES.some(lockfile => fs.existsSync(join(dir, lockfile))))
+      return undefined
+    const parent = dirname(dir)
+    if (parent === dir)
+      return undefined
+    dir = parent
+  }
+}
+
+async function getWorkspaceImporters(
+  config: PnpmCompatOptions,
+  root: string,
+  baseArgs: string[],
+  options: ListPackageDependenciesOptions,
+): Promise<PnpmCompatImporter[]> {
+  if (!await findWorkspaceRoot(root, config.workspaceManifests))
+    return []
+
+  try {
+    const { stdout } = await x(config.binary, [...baseArgs, '-r'], {
+      throwOnError: true,
+      nodeOptions: { cwd: options.cwd, stdio: 'pipe' },
+    })
+    const trimmed = stdout.trim()
+    // aube answers a standalone project with an empty body rather than `[]`.
+    if (!trimmed)
+      return []
+    const parsed = JSON.parse(trimmed) as PnpmCompatImporter[]
+    return Array.isArray(parsed) ? parsed : []
+  }
+  catch {
+    console.warn(`\`${config.binary} ls --recursive\` failed, listing the root importer only`)
+    return []
+  }
+}
+
 async function getImporters(
   config: PnpmCompatOptions,
+  root: string,
   options: ListPackageDependenciesOptions,
 ): Promise<PnpmCompatImporter[]> {
   const baseArgs = ['ls', '--json', '--depth', String(options.depth)]
@@ -101,14 +170,9 @@ async function getImporters(
   // `-r` lists workspace packages without the root importer, so both runs are
   // merged. Not every version supports `--include-workspace-root`, and running
   // the plain command keeps the root project represented either way.
-  const workspaceImporters = await runJson<PnpmCompatImporter[]>(config, [...baseArgs, '-r'], options)
+  const workspaceImporters = await getWorkspaceImporters(config, root, baseArgs, options)
   const seen = new Set(importers.map(i => i.path))
-  return [
-    ...importers,
-    ...(Array.isArray(workspaceImporters)
-      ? workspaceImporters.filter(i => !seen.has(i.path))
-      : []),
-  ]
+  return [...importers, ...workspaceImporters.filter(i => !seen.has(i.path))]
 }
 
 async function getCatalogs(root: string, manifests: string[]): Promise<Record<string, Record<string, string> | undefined>> {
@@ -141,7 +205,7 @@ export function createListPackageDependencies(config: PnpmCompatOptions) {
     options: ListPackageDependenciesOptions,
   ): Promise<ListPackageDependenciesRawResult> {
     const root = await resolveRoot(config, options)
-    const importers = await getImporters(config, options)
+    const importers = await getImporters(config, root, options)
     const catalogsMap = await getCatalogs(root, config.workspaceManifests)
     const resolveFilepath = createVirtualStoreResolver(root, config.virtualStoreDirs)
     const packages = new Map<string, PackageNodeRaw>()
@@ -156,7 +220,7 @@ export function createListPackageDependencies(config: PnpmCompatOptions) {
         const suffix = path.toLowerCase().replace(/[^a-z0-9-]+/g, '_').slice(0, 20)
         name = suffix ? `#workspace-${suffix}` : (index === 0 ? '#workspace-root' : `#workspace-${index + 1}`)
       }
-      const version = pkg.version || manifest?.version || '0.0.0'
+      const version = stripPeerSuffix(pkg.version || manifest?.version || '0.0.0')
       const node: PackageNodeRaw = {
         spec: `${name}@${version}`,
         name,
@@ -183,7 +247,7 @@ export function createListPackageDependencies(config: PnpmCompatOptions) {
       level: number,
       clusters: Iterable<string>,
     ): PackageNodeRaw {
-      const version = raw.version || '0.0.0'
+      const version = stripPeerSuffix(raw.version || '0.0.0')
       const spec = `${aliasName}@${version}`
 
       let node = packages.get(spec)

@@ -1,17 +1,12 @@
-import { spawnSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import { listPackageDependencies } from '../../src'
 
 // `aube install --lockfile-only` writes the lockfile without linking
 // node_modules, which keeps the fixtures small.
-//
-// The aube CLI itself is required to read the graph: install it with
-// `mise use -g aube` (or see https://aube.sh/installation).
-const hasAube = spawnSync('aube', ['--version'], { stdio: 'ignore' }).status === 0
 
 describe('listAubePackageDependencies', () => {
-  it.skipIf(!hasAube)('runs with simple fixture', { timeout: 30000 }, async () => {
+  it('runs with simple fixture', { timeout: 30000 }, async () => {
     const list = await listPackageDependencies({
       cwd: fileURLToPath(new URL('./fixtures/simple', import.meta.url)),
       depth: 25,
@@ -43,7 +38,7 @@ describe('listAubePackageDependencies', () => {
     expect(picocolors?.clusters.has('dep:prod')).toBe(false)
   })
 
-  it.skipIf(!hasAube)('runs with workspace fixture', { timeout: 30000 }, async () => {
+  it('runs with workspace fixture', { timeout: 30000 }, async () => {
     const list = await listPackageDependencies({
       cwd: fileURLToPath(new URL('./fixtures/workspace', import.meta.url)),
       depth: 25,
@@ -67,5 +62,39 @@ describe('listAubePackageDependencies', () => {
 
     expect(list.packages.get('debug@4.3.4')?.dependencies.has('ms@2.1.2')).toBe(true)
     expect(list.packages.get('picocolors@1.1.1')?.clusters.has('dep:dev')).toBe(true)
+  })
+
+  it('handles a standalone project in monorepo mode', { timeout: 30000 }, async () => {
+    // The fixture declares no workspace, so `ls --recursive` has no workspace
+    // root to walk; it must not abort the listing.
+    const list = await listPackageDependencies({
+      cwd: fileURLToPath(new URL('./fixtures/simple', import.meta.url)),
+      depth: 25,
+      monorepo: true,
+    })
+
+    expect(list.packageManager).toBe('aube')
+    expect(list.packages.size).toBe(4)
+
+    const workspaceNames = Array.from(list.packages.values())
+      .filter(pkg => pkg.workspace)
+      .map(pkg => pkg.name)
+    expect(workspaceNames).toEqual(['aube-fixture-simple'])
+  })
+
+  it('strips peer suffixes from reported versions', { timeout: 30000 }, async () => {
+    const list = await listPackageDependencies({
+      cwd: fileURLToPath(new URL('./fixtures/peers', import.meta.url)),
+      depth: 25,
+      monorepo: false,
+    })
+
+    // `aube ls` reports peer-resolved versions (`1.4.0(browserslist@4.29.6)`),
+    // which would break registry lookups and spec identity.
+    const specs = Array.from(list.packages.keys())
+    expect(specs.some(spec => spec.includes('('))).toBe(false)
+
+    const browserslistUpdate = list.packages.get('update-browserslist-db@1.4.0')
+    expect(browserslistUpdate?.version).toBe('1.4.0')
   })
 })
