@@ -1,6 +1,6 @@
 # AGENTS.md
 
-CLI + web UI to visualize a project's `node_modules`. Supports `pnpm`, `npm`, `bun`. Hosted version: [node-modules.dev](https://node-modules.dev).
+CLI + web UI to visualize a project's `node_modules`. Supports `pnpm`, `npm`, `bun`, `aube`, `nub`. Hosted version: [node-modules.dev](https://node-modules.dev).
 
 ## Layout
 

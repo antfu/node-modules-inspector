@@ -103,6 +103,7 @@ const timepassed = computed(() => rawPayload.value?.timestamp ? Date.now() - raw
       <div v-if="rawPayload.packageManager !== 'npm-registry'" flex="~ gap-2 items-center">
         <div v-if="rawPayload.packageManager === 'pnpm'" i-catppuccin-pnpm icon-catppuccin flex-none />
         <div v-else-if="rawPayload.packageManager === 'npm'" i-catppuccin-npm icon-catppuccin flex-none />
+        <div v-else-if="rawPayload.packageManager === 'bun'" i-catppuccin-bun icon-catppuccin flex-none />
         <span>{{ rawPayload.packageManager }}</span>
         <DisplayVersion v-if="rawPayload.packageManagerVersion" :version="rawPayload.packageManagerVersion" text-xs prefix="@" op75 />
       </div>
