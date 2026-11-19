@@ -1,0 +1,14 @@
+{
+  "name": "nub-fixture-ws",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "devEngines": {
+    "packageManager": {
+      "name": "nub",
+      "version": "^0.9.6",
+      "onFail": "ignore"
+    }
+  }
+}

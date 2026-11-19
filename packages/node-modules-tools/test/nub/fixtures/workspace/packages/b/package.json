@@ -1,0 +1,1 @@
+{ "name": "pkg-b", "version": "2.0.0", "dependencies": { "ms": "2.1.3" } }
